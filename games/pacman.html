@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Make a Wish - Dilek Labirenti 🧚‍♀️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* Mobilde uzun basınca seçimi engelle */
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #1a0033 0%, #2d1b4e 50%, #0a1628 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Mobilde üstten başlasın */
+            color: #fff;
+            overflow: hidden;
+            padding-top: 10px;
+        }
+
+        .game-container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            padding: 0 10px;
+        }
+
+        h1 {
+            font-size: 1.8em; /* Mobilde daha küçük başlık */
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px #ff69b4, 0 0 30px #ff1493;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #ff69b4, 0 0 30px #ff1493; }
+            to { text-shadow: 0 0 30px #ff69b4, 0 0 50px #ff1493, 0 0 60px #ff69b4; }
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 10px 0;
+            font-size: 1em;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 15px;
+            border: 1px solid #ff69b4;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+        }
+
+        canvas {
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+            background: #0a0a1a;
+            display: block;
+            margin: 0 auto;
+            /* Canvas'ın responsive olması için */
+            max-width: 100%;
+        }
+
+        /* --- MOBİL KONTROLLER (YENİ) --- */
+        .mobile-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .d-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid #ff69b4;
+            border-radius: 50%;
+            color: #ffd700;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+            transition: transform 0.1s;
+            /* Dokunma tepkisi için */
+            touch-action: manipulation; 
+        }
+
+        .d-btn:active {
+            background: rgba(255, 105, 180, 0.4);
+            transform: scale(0.9);
+        }
+
+        .controls-text {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #aaa;
+            display: none; /* Mobilde metni gizle, butonlar var zaten */
+        }
+        
+        /* PC'de metni göster, mobilde butonları göster */
+        @media (min-width: 769px) {
+            .mobile-controls { display: none; }
+            .controls-text { display: block; }
+        }
+
+        /* --- MODAL STILLERI --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #2d1b4e 0%, #1a0033 100%);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid #ff69b4;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            animation: modalPop 0.5s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .modal h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .modal p {
+            font-size: 1.1em;
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+
+        .wish-quote {
+            font-style: italic;
+            color: #ff69b4;
+            font-size: 1em;
+            margin: 20px 0;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.6);
+            width: 100%; /* Mobilde tam genişlik */
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="game-container">
+        <h1>✨ Make a Wish ✨</h1>
+        
+        <div class="stats">
+            <div class="stat-item">
+                ⏰ <span id="timer">15</span>s
+            </div>
+            <div class="stat-item">
+                ⭐ <span id="score">0</span>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+        
+        <div class="mobile-controls">
+            <div class="d-btn" onclick="movePlayer(0, -1)">▲</div>
+            <div class="control-row">
+                <div class="d-btn" onclick="movePlayer(-1, 0)">◀</div>
+                <div class="d-btn" onclick="movePlayer(0, 1)">▼</div>
+                <div class="d-btn" onclick="movePlayer(1, 0)">▶</div>
+            </div>
+        </div>
+
+        <div class="controls-text">
+            ⌨️ Yön tuşları ile hareket et • Dilek Kapısına ulaş! 🚪✨
+        </div>
+    </div>
+
+    <div id="wishModal" class="modal">
+        <div class="modal-content">
+            <h2>✨ Make a Wish! ✨</h2>
+            <p id="wishMessage"></p>
+            <p class="wish-quote" id="wishQuote"></p>
+            <button onclick="continueGame()">🌟 Dileği Tuttum 🌟</button>
+        </div>
+    </div>
+
+    <div id="victoryModal" class="modal victory">
+        <div class="modal-content">
+            <h2>🎉 TEBRİKLER! 🎉</h2>
+            <p>Dilek Kapısına ulaştın! 🧚‍♀️✨</p>
+            <p>Skor: <span id="finalScore"></span></p>
+            <button onclick="location.reload()">🔄 Yeni Oyun</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // EKRAN BOYUTUNA GÖRE AYARLAMA
+        function resizeCanvas() {
+            // Ekran genişliğinden biraz pay bırak (padding)
+            // Maksimum 600px olsun, yoksa mobilde ekran genişliği kadar olsun
+            const size = Math.min(window.innerWidth - 30, window.innerHeight - 350, 600);
+            canvas.width = size;
+            canvas.height = size;
+            return size;
+        }
+
+        const canvasSize = resizeCanvas();
+        
+        const MAZE_SIZE = 15; 
+        const CELL_SIZE = canvas.width / MAZE_SIZE;
+        
+        let maze = [];
+        let player = { x: 0, y: 0 };
+        let score = 0;
+        let timer = 15;
+        let gameRunning = false;
+        let timerInterval;
+        let starDust = [];
+        
+        const wishMessages = [
+            "En büyük hayalin ne?",
+            "Bir dilek tut ve gerçekleşeceğine inan!",
+            "Yıldızlar seninle! ⭐",
+            "Kalbin ne söylüyor?",
+            "Hayal gücünün sınırı yok!",
+            "Evrenin sana sunduğu sonsuz olasılıkları hayal et!",
+            "Bu an, dileklerinin kapısı!",
+            "Gökyüzüne bak ve özgürce hayal kur!"
+        ];
+        
+        const wishQuotes = [
+            "\"Hayal kurmaktan asla vazgeçme!\"",
+            "\"Her dilek bir tohum, sabır ise sudur.\"",
+            "\"İnanç, mucizeler yaratır.\"",
+            "\"Yıldızlara uzanan eller, gökyüzünü yakalar.\"",
+            "\"Düşler gerçek olur, sadece inanmalısın.\"",
+            "\"Kalbinin sesini dinle, o seni asla yanıltmaz.\""
+        ];
+
+        // Yıldız arka plan oluşturma
+        function createStarBackground() {
+            const particlesDiv = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) { // Mobilde performans için sayıyı azalttım
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                particlesDiv.appendChild(star);
+            }
+        }
+
+        // Labirent üretimi
+        function generateMaze() {
+            maze = Array(MAZE_SIZE).fill().map(() => 
+                Array(MAZE_SIZE).fill().map(() => ({
+                    top: true, right: true, bottom: true, left: true,
+                    visited: false,
+                    hasStar: Math.random() > 0.65
+                }))
+            );
+
+            const stack = [];
+            let current = { x: 0, y: 0 };
+            maze[0][0].visited = true;
+            stack.push(current);
+
+            while (stack.length > 0) {
+                const neighbors = getUnvisitedNeighbors(current.x, current.y);
+                
+                if (neighbors.length > 0) {
+                    const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                    removeWall(current, next);
+                    maze[next.y][next.x].visited = true;
+                    stack.push(next);
+                    current = next;
+                } else {
+                    current = stack.pop();
+                }
+            }
+
+            createAdditionalPaths();
+            maze[0][0].hasStar = false;
+            maze[MAZE_SIZE - 1][MAZE_SIZE - 1].hasStar = false;
+        }
+
+        function createAdditionalPaths() {
+            const pathsToCreate = Math.floor(MAZE_SIZE * 1.5);
+            for (let i = 0; i < pathsToCreate; i++) {
+                const x = Math.floor(Math.random() * MAZE_SIZE);
+                const y = Math.floor(Math.random() * MAZE_SIZE);
+                const direction = Math.floor(Math.random() * 4);
+                
+                switch(direction) {
+                    case 0: if (y > 0) { maze[y][x].top = false; maze[y - 1][x].bottom = false; } break;
+                    case 1: if (x < MAZE_SIZE - 1) { maze[y][x].right = false; maze[y][x + 1].left = false; } break;
+                    case 2: if (y < MAZE_SIZE - 1) { maze[y][x].bottom = false; maze[y + 1][x].top = false; } break;
+                    case 3: if (x > 0) { maze[y][x].left = false; maze[y][x - 1].right = false; } break;
+                }
+            }
+        }
+
+        function getUnvisitedNeighbors(x, y) {
+            const neighbors = [];
+            if (y > 0 && !maze[y - 1][x].visited) neighbors.push({ x, y: y - 1, dir: 'top' });
+            if (x < MAZE_SIZE - 1 && !maze[y][x + 1].visited) neighbors.push({ x: x + 1, y, dir: 'right' });
+            if (y < MAZE_SIZE - 1 && !maze[y + 1][x].visited) neighbors.push({ x, y: y + 1, dir: 'bottom' });
+            if (x > 0 && !maze[y][x - 1].visited) neighbors.push({ x: x - 1, y, dir: 'left' });
+            return neighbors;
+        }
+
+        function removeWall(current, next) {
+            const dx = next.x - current.x;
+            const dy = next.y - current.y;
+            if (dx === 1) { maze[current.y][current.x].right = false; maze[next.y][next.x].left = false; }
+            else if (dx === -1) { maze[current.y][current.x].left = false; maze[next.y][next.x].right = false; }
+            else if (dy === 1) { maze[current.y][current.x].bottom = false; maze[next.y][next.x].top = false; }
+            else if (dy === -1) { maze[current.y][current.x].top = false; maze[next.y][next.x].bottom = false; }
+        }
+
+        function drawMaze() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let y = 0; y < MAZE_SIZE; y++) {
+                for (let x = 0; x < MAZE_SIZE; x++) {
+                    const cell = maze[y][x];
+                    const px = x * CELL_SIZE;
+                    const py = y * CELL_SIZE;
+
+                    ctx.strokeStyle = '#00bfff';
+                    ctx.shadowBlur = 5; // Mobilde performans için blur'u azalttım
+                    ctx.shadowColor = '#00bfff';
+                    ctx.lineWidth = 2; // Mobilde çizgiler daha ince olsun
+
+                    if (cell.top) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + CELL_SIZE, py); ctx.stroke(); }
+                    if (cell.right) { ctx.beginPath(); ctx.moveTo(px + CELL_SIZE, py); ctx.lineTo(px + CELL_SIZE, py + CELL_SIZE); ctx.stroke(); }
+                    if (cell.bottom) { ctx.beginPath(); ctx.moveTo(px, py + CELL_SIZE); ctx.lineTo(px + CELL_SIZE, py + CELL_SIZE); ctx.stroke(); }
+                    if (cell.left) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, py + CELL_SIZE); ctx.stroke(); }
+
+                    ctx.shadowBlur = 0;
+
+                    if (cell.hasStar) {
+                        ctx.fillStyle = '#ffd700';
+                        ctx.shadowBlur = 5;
+                        ctx.shadowColor = '#ffd700';
+                        ctx.beginPath();
+                        ctx.arc(px + CELL_SIZE / 2, py + CELL_SIZE / 2, CELL_SIZE/6, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+
+            const exitX = (MAZE_SIZE - 1) * CELL_SIZE;
+            const exitY = (MAZE_SIZE - 1) * CELL_SIZE;
+            ctx.font = `${CELL_SIZE * 0.7}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('✨', exitX + CELL_SIZE / 2, exitY + CELL_SIZE / 2);
+
+            ctx.font = `${CELL_SIZE * 0.7}px Arial`;
+            ctx.fillText('🧚‍♀️', player.x * CELL_SIZE + CELL_SIZE / 2, player.y * CELL_SIZE + CELL_SIZE / 2);
+
+            starDust.forEach((particle, index) => {
+                ctx.fillStyle = `rgba(255, 215, 0, ${particle.alpha})`;
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                ctx.fill();
+                particle.y -= 1;
+                particle.alpha -= 0.05;
+                if (particle.alpha <= 0) starDust.splice(index, 1);
+            });
+        }
+
+        function movePlayer(dx, dy) {
+            if (!gameRunning) return;
+
+            const newX = player.x + dx;
+            const newY = player.y + dy;
+
+            if (newX < 0 || newX >= MAZE_SIZE || newY < 0 || newY >= MAZE_SIZE) return;
+
+            const cell = maze[player.y][player.x];
+
+            if (dx === 1 && cell.right) return;
+            if (dx === -1 && cell.left) return;
+            if (dy === 1 && cell.bottom) return;
+            if (dy === -1 && cell.top) return;
+
+            player.x = newX;
+            player.y = newY;
+
+            if (maze[player.y][player.x].hasStar) {
+                maze[player.y][player.x].hasStar = false;
+                score += 10;
+                document.getElementById('score').textContent = score;
+                
+                for (let i = 0; i < 5; i++) {
+                    starDust.push({
+                        x: player.x * CELL_SIZE + CELL_SIZE / 2 + (Math.random() - 0.5) * 10,
+                        y: player.y * CELL_SIZE + CELL_SIZE / 2,
+                        size: Math.random() * 2 + 1,
+                        alpha: 1
+                    });
+                }
+            }
+
+            if (player.x === MAZE_SIZE - 1 && player.y === MAZE_SIZE - 1) {
+                winGame();
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (gameRunning) {
+                    timer--;
+                    document.getElementById('timer').textContent = timer;
+                    if (timer <= 0) pauseForWish();
+                }
+            }, 1000);
+        }
+
+        function pauseForWish() {
+            gameRunning = false;
+            const modal = document.getElementById('wishModal');
+            const message = wishMessages[Math.floor(Math.random() * wishMessages.length)];
+            const quote = wishQuotes[Math.floor(Math.random() * wishQuotes.length)];
+            
+            document.getElementById('wishMessage').textContent = message;
+            document.getElementById('wishQuote').textContent = quote;
+            modal.style.display = 'block';
+        }
+
+        function continueGame() {
+            const modal = document.getElementById('wishModal');
+            modal.style.display = 'none';
+            timer = 15;
+            document.getElementById('timer').textContent = timer;
+            gameRunning = true;
+        }
+
+        function winGame() {
+            gameRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('victoryModal').style.display = 'block';
+        }
+
+        // Klavye desteğini koru (PC kullanıcıları için)
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowUp': movePlayer(0, -1); break;
+                case 'ArrowDown': movePlayer(0, 1); break;
+                case 'ArrowLeft': movePlayer(-1, 0); break;
+                case 'ArrowRight': movePlayer(1, 0); break;
+            }
+        });
+
+        // Butonlara dokunma sırasında kaydırmayı engelle
+        document.querySelectorAll('.d-btn').forEach(btn => {
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Butona basınca sayfa oynamasın
+                btn.click(); // Click olayını tetikle
+            }, {passive: false});
+        });
+
+        function gameLoop() {
+            drawMaze();
+            requestAnimationFrame(gameLoop);
+        }
+
+        createStarBackground();
+        generateMaze();
+        gameRunning = true;
+        startTimer();
+        gameLoop();
+    </script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyun Değerlendirme Formu | Make-A-Wish Türkiye</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+        :root {
+            --maw-blue: #0057B8;
+            --maw-light-blue: #41B6E6;
+            --maw-gold: #FFD700;
+            --text-dark: #2c3e50;
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --border-color: #e1e8f0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#e1e8f0 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 800px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 87, 184, 0.08);
+            overflow: hidden;
+            border-top: 6px solid var(--maw-gold);
+        }
+
+        .form-header {
+            background: var(--maw-blue);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .form-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .form-header p {
+            margin: 10px 0 0 0;
+            color: #e1f5fe;
+            font-size: 16px;
+        }
+
+        .form-body {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+            background: #fdfdfd;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group:hover {
+            border-color: var(--maw-light-blue);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 700;
+            color: var(--maw-blue);
+            margin-bottom: 15px;
+            font-size: 17px;
+        }
+
+        /* Input Styles */
+        input[type="text"], 
+        textarea, 
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            color: var(--text-dark);
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus, 
+        textarea:focus, 
+        select:focus {
+            outline: none;
+            border-color: var(--maw-blue);
+            box-shadow: 0 0 0 3px rgba(0, 87, 184, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Radio & Checkbox Buttons (Pills) */
+        .options-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .options-grid label {
+            background: #f0f7ff;
+            border: 1px solid var(--maw-light-blue);
+            color: var(--maw-blue);
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .options-grid input[type="radio"],
+        .options-grid input[type="checkbox"] {
+            display: none; /* Hide default inputs for custom styling */
+        }
+
+        /* Simulate checked state for static presentation (using :checked + label wouldn't work easily without changing HTML structure, so we just use hover to show interactivity) */
+        .options-grid label:hover {
+            background: var(--maw-blue);
+            color: white;
+        }
+
+        /* Rating 1-5 */
+        .rating-group {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            max-width: 400px;
+        }
+
+        .rating-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            background: white;
+            color: var(--text-dark);
+            font-weight: 800;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rating-btn:hover {
+            border-color: var(--maw-gold);
+            background: #FFF9C4;
+            color: #F57F17;
+            transform: scale(1.1);
+        }
+
+        .submit-btn {
+            background: var(--maw-blue);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 800;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            font-family: 'Nunito', sans-serif;
+            margin-top: 10px;
+            box-shadow: 0 8px 20px rgba(0, 87, 184, 0.2);
+        }
+
+        .submit-btn:hover {
+            background: #004494;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 87, 184, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .form-body { padding: 25px; }
+            .form-group { padding: 15px; }
+            .rating-group { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Gönüllü Oyun Değerlendirmesi</h1>
+            <p>Dilek yolculuğunu daha sihirli hale getirmek için gözlemlerin çok değerli.</p>
+        </div>
+
+        <div class="form-body">
+            <div class="form-group">
+                <label class="form-label">🎮 Hangi oyunu oynattınız?</label>
+                <select>
+                    <option value="" disabled selected>Lütfen listeden seçin...</option>
+                    <option value="cizim">🎨 Çizim Atölyesi</option>
+                    <option value="taklit">🎭 Taklit Ustası</option>
+                    <option value="bowling">🎳 Sihirli Bowling</option>
+                    <option value="balon">🎈 Dilek Balonu Macerası</option>
+                    <option value="gokyuzu">🎣 Yıldız Kapmaca</option>
+                    <option value="cark">🎡 Dilek Çarkı</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">1. Oyun çocuğun dikkatini ve ilgisini ne kadar süre canlı tutabildi?</label>
+                <div style="font-size: 13px; color: #666; margin-bottom: 15px;">1: Hiç tutamadı - 5: Baştan sona pürdikkat oynadı</div>
+                <div class="rating-group">
+                    <div class="rating-btn">1</div>
+                    <div class="rating-btn">2</div>
+                    <div class="rating-btn">3</div>
+                    <div class="rating-btn">4</div>
+                    <div class="rating-btn">5</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">2. Oyun sırasında çocuğun genel duygu durumu nasıldı? (Birden fazla seçebilirsiniz)</label>
+                <div class="options-grid">
+                    <label><input type="checkbox"> Çekingen</label>
+                    <label><input type="checkbox"> Meraklı</label>
+                    <label><input type="checkbox"> Eğlenen</label>
+                    <label><input type="checkbox"> Odaklanmış</label>
+                    <label><input type="checkbox"> Heyecanlı</label>
+                    <label><input type="checkbox"> Sıkılmış</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">3. Oyun, çocukla aranızdaki buzları eritmeye ve doğal bir sohbet başlatmaya yardımcı oldu mu?</label>
+                <div class="options-grid">
+                    <label><input type="radio" name="q3"> Evet</label>
+                    <label><input type="radio" name="q3"> Kısmen</label>
+                    <label><input type="radio" name="q3"> Hayır</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">4. Çocuğun oyunda en çok sevdiği, güldüğü veya tepki verdiği spesifik bir an oldu mu?</label>
+                <input type="text" placeholder="Örn: Kancayla mavi yıldızı yakaladığında çok sevindi...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">5. Çocuğun oyunda ilgisini kaybettiği veya zorlandığı bir an oldu mu?</label>
+                <input type="text" placeholder="Örn: 3. soruda cevap bulmakta zorlandı ve sustu...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">6. Bu oyunu gelecekteki dilek alımlarında diğer gönüllülere tavsiye eder misin?</label>
+                <div class="options-grid">
+                    <label><input type="radio" name="q6"> Kesinlikle Evet</label>
+                    <label><input type="radio" name="q6"> Hayır</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">7. Oyun sırasında herhangi bir teknik aksaklık (donma, butonun çalışmaması vb.) yaşadınız mı?</label>
+                <textarea placeholder="Sorun yaşamadıysanız boş bırakabilirsiniz..."></textarea>
+            </div>
+
+            <div class="form-group" style="border-left: 4px solid var(--maw-gold);">
+                <label class="form-label">✨ 8. Elinde sihirli bir değnek olsa, bu oyuna ne ekler veya bu oyunda neyi değiştirirdin?</label>
+                <textarea placeholder="Fikirlerin oyunlarımızı geliştirmek için çok önemli. Dilediğin gibi yazabilirsin!"></textarea>
+            </div>
+
+            <button type="button" class="submit-btn" onclick="alert('Bu bir sunum maketidir. Form verileri başarıyla gönderildi simülasyonu çalıştı!')">Değerlendirmeyi Gönder</button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Türk Motifli Bowling</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root {
+    --red: #C0392B;
+    --gold: #D4A017;
+    --cream: #FFF8F0;
+    --teal: #1A6B7A;
+    --navy: #1A2A4A;
+    --turquoise: #1ABC9C;
+    --wood1: #8B5E3C;
+    --wood2: #A0714F;
+    --wood3: #6B4226;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
+
+  body {
+    background: #1A1A2E;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; font-family: 'Nunito', sans-serif; overflow: hidden;
+  }
+
+  #hud {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; max-width: 620px; padding: 8px 16px;
+    background: linear-gradient(90deg, #0D0D1A, #1A1A35, #0D0D1A);
+    border-bottom: 2px solid #00D4FF;
+    backdrop-filter: blur(4px); z-index: 10;
+    box-shadow: 0 2px 20px rgba(0,212,255,0.3);
+  }
+  .hud-item { text-align: center; }
+  .hud-label { font-size: 10px; letter-spacing: 2px; color: #00D4FF; text-transform: uppercase; }
+  .hud-value { font-size: 22px; font-weight: 800; color: #fff; font-family: 'Cinzel', serif; text-shadow: 0 0 10px rgba(0,212,255,0.6); }
+
+  #canvas-wrap {
+    position: relative; width: 100%; max-width: 620px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  canvas { display: block; width: 100%; cursor: crosshair; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(10,15,30,0.85);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; backdrop-filter: blur(6px);
+  }
+  .modal-overlay.hidden { display: none; }
+
+  .modal-box {
+    background: linear-gradient(145deg, #FFF8F0, #FFE8CC);
+    border-radius: 20px; padding: 36px 32px 28px;
+    max-width: 440px; width: 90%; text-align: center;
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 60px rgba(212,160,23,0.4), 0 20px 60px rgba(0,0,0,0.6);
+    position: relative; overflow: hidden;
+  }
+  .modal-ornament {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 8px;
+    background: repeating-linear-gradient(90deg, var(--red) 0, var(--red) 20px, var(--gold) 20px, var(--gold) 40px, var(--teal) 40px, var(--teal) 60px);
+  }
+  .modal-title {
+    font-family: 'Cinzel', serif; font-size: 22px; color: var(--navy);
+    margin-bottom: 12px; margin-top: 8px;
+  }
+  .modal-subtitle {
+    font-size: 13px; color: #888; margin-bottom: 20px; letter-spacing: 1px;
+  }
+  .modal-question {
+    font-size: 17px; font-weight: 700; color: var(--navy);
+    background: rgba(26,107,122,0.1); border-left: 4px solid var(--teal);
+    padding: 14px 16px; border-radius: 10px; margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .modal-hint {
+    font-size: 13px; color: #666; margin-bottom: 24px; font-style: italic;
+  }
+  .modal-btn {
+    background: linear-gradient(135deg, var(--red), #8B1A10);
+    color: #fff; font-size: 17px; font-weight: 800; font-family: 'Nunito', sans-serif;
+    border: none; border-radius: 50px; padding: 14px 48px; cursor: pointer;
+    box-shadow: 0 6px 20px rgba(192,57,43,0.4); transition: transform .15s, box-shadow .15s;
+    letter-spacing: 1px;
+  }
+  .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(192,57,43,0.5); }
+  .modal-btn:active { transform: translateY(1px); }
+
+  .modal-rules { text-align: left; font-size: 14px; color: #333; line-height: 1.8; }
+  .modal-rules li { margin-bottom: 6px; }
+  .modal-rules .emoji { margin-right: 6px; }
+
+  .score-badge {
+    display: inline-block; background: var(--gold); color: var(--navy);
+    font-size: 48px; font-weight: 800; border-radius: 50%; width: 100px; height: 100px;
+    line-height: 100px; margin: 0 auto 16px; font-family: 'Cinzel', serif;
+    box-shadow: 0 0 30px rgba(212,160,23,0.6);
+  }
+</style>
+</head>
+<body>
+
+<div id="hud">
+  <div class="hud-item">
+    <div class="hud-label">Tur</div>
+    <div class="hud-value" id="hud-frame">1/10</div>
+  </div>
+  <div class="hud-item">
+    <div class="hud-label">🎳 Türk Bowling</div>
+    <div class="hud-value" style="font-size:14px;color:#FF3CAC;text-shadow:0 0 8px rgba(255,60,172,0.8)">🎳 Bowling Salonu</div>
+  </div>
+  <div class="hud-item">
+    <div class="hud-label">Skor</div>
+    <div class="hud-value" id="hud-score">0</div>
+  </div>
+</div>
+
+<div id="canvas-wrap">
+  <canvas id="c"></canvas>
+</div>
+
+<!-- Intro Modal -->
+<div class="modal-overlay" id="modal-intro">
+  <div class="modal-box">
+    <div class="modal-ornament"></div>
+    <div class="modal-title">🎳 Türk Motifli Bowling</div>
+    <div class="modal-subtitle">NASIL OYNANIR?</div>
+    <ul class="modal-rules">
+      <li><span class="emoji">🖱️</span><strong>Fare / Parmak:</strong> Topu tutup sürükle, bırak ile fırlat</li>
+      <li><span class="emoji">🎯</span>10 labutun hepsini devir = <strong>Strike!</strong></li>
+      <li><span class="emoji">🔄</span>Her turda <strong>2 atış</strong> hakkın var</li>
+      <li><span class="emoji">📋</span><strong>8 turda</strong> soru çıkar — cevabını sesli paylaş</li>
+      <li><span class="emoji">🏆</span>10 turda toplam puanın en yüksek olsun!</li>
+      <li><span class="emoji">🔵</span>Strike bonusu: sonraki 2 atışın puanı eklenir</li>
+      <li><span class="emoji">🟡</span>Spare bonusu: sonraki 1 atışın puanı eklenir</li>
+    </ul>
+    <br>
+    <button class="modal-btn" onclick="startGame()">🎳 OYUNA BAŞLA</button>
+  </div>
+</div>
+
+<!-- Question Modal -->
+<div class="modal-overlay hidden" id="modal-question">
+  <div class="modal-box">
+    <div class="modal-ornament"></div>
+    <div class="modal-title">🌙 Soru Zamanı</div>
+    <div class="modal-question" id="q-text"></div>
+    <div class="modal-hint">💬 Cevabını sesli olarak paylaş!</div>
+    <button class="modal-btn" onclick="closeQuestion()">Devam Et →</button>
+  </div>
+</div>
+
+<!-- End Modal -->
+<div class="modal-overlay hidden" id="modal-end">
+  <div class="modal-box">
+    <div class="modal-ornament"></div>
+    <div class="modal-title">🏆 Oyun Bitti!</div>
+    <div class="score-badge" id="final-score">0</div>
+    <div class="modal-question" id="end-msg"></div>
+    <br>
+    <button class="modal-btn" onclick="restartGame()">🔄 Tekrar Oyna</button>
+  </div>
+</div>
+
+<script>
+// ==================== QUESTIONS ====================
+const QUESTIONS = [
+  "Türkiye'de en sevdiğin şehir hangisi ve neden?",
+  "Geleneksel Türk yemeklerinden en sevdiğin hangisi?",
+  "Hayatında seni en çok etkileyen kişi kim oldu?",
+  "5 yıl sonra kendini nerede görüyorsun?",
+  "En anlamlı anın hangisiydi, kısaca anlatır mısın?",
+  "Bir haftanı istediğin gibi geçirebilseydin ne yapardın?",
+  "Türk müziğinden hangi sanatçıyı seversin?",
+  "Gençlere vermek istediğin en önemli tavsiye nedir?"
+];
+
+// ==================== SOUND ENGINE (Gerçekçi Bowling) ====================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+let rollSource = null; // yuvarlanma sesi loop için
+
+function getAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+// Gürültü buffer üretici
+function makeNoiseBuffer(ac, duration, type = 'white') {
+  const len = ac.sampleRate * duration;
+  const buf = ac.createBuffer(1, len, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+  return buf;
+}
+
+// 🎳 TOP YUVARLANMA — derin, sürtünmeli gürültü (top gidene kadar çalar, sonra kesilir)
+function playRoll() {
+  stopRoll();
+  const ac = getAudio();
+  const t = ac.currentTime;
+
+  // Ana gürültü kaynağı (yüzeyde sürtünme)
+  const buf = makeNoiseBuffer(ac, 3.0);
+  const src = ac.createBufferSource();
+  src.buffer = buf;
+  src.loop = true;
+
+  // Alçak geçiren filtre → ağır, köreltilmiş ses
+  const lpf = ac.createBiquadFilter();
+  lpf.type = 'lowpass';
+  lpf.frequency.setValueAtTime(120, t);
+  lpf.Q.value = 0.8;
+
+  // Bandpass → orta frekanslara hafif baskı
+  const bpf = ac.createBiquadFilter();
+  bpf.type = 'bandpass';
+  bpf.frequency.value = 80;
+  bpf.Q.value = 1.2;
+
+  // Titreşim etkisi için hafif periyodik modülasyon
+  const lfo = ac.createOscillator();
+  lfo.type = 'sine';
+  lfo.frequency.value = 28; // topin dönüşüne yakın frekans
+  const lfoGain = ac.createGain();
+  lfoGain.gain.value = 18;
+  lfo.connect(lfoGain);
+  lfoGain.connect(lpf.frequency);
+
+  const gain = ac.createGain();
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(0.55, t + 0.12); // yumuşak açılış
+
+  src.connect(lpf);
+  lpf.connect(bpf);
+  bpf.connect(gain);
+  gain.connect(ac.destination);
+
+  src.start(t);
+  lfo.start(t);
+
+  rollSource = { src, gain, lfo, ac };
+}
+
+function stopRoll() {
+  if (!rollSource) return;
+  try {
+    const { src, gain, lfo, ac } = rollSource;
+    const t = ac.currentTime;
+    gain.gain.setValueAtTime(gain.gain.value, t);
+    gain.gain.linearRampToValueAtTime(0, t + 0.18);
+    src.stop(t + 0.2);
+    lfo.stop(t + 0.2);
+  } catch(e) {}
+  rollSource = null;
+}
+
+// 💥 TOPA ÇARPMA — ağır, gerçek ahşap/plastik darbe sesi
+function playHit(intensity = 1) {
+  const ac = getAudio();
+  const t = ac.currentTime;
+
+  // Darbeli gürültü — anlık patlama
+  const nBuf = makeNoiseBuffer(ac, 0.25);
+  const nSrc = ac.createBufferSource();
+  nSrc.buffer = nBuf;
+
+  const nFilter = ac.createBiquadFilter();
+  nFilter.type = 'bandpass';
+  nFilter.frequency.setValueAtTime(900, t);
+  nFilter.frequency.exponentialRampToValueAtTime(200, t + 0.15);
+  nFilter.Q.value = 0.5;
+
+  const nGain = ac.createGain();
+  nGain.gain.setValueAtTime(0.7 * Math.min(intensity, 1.8), t);
+  nGain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+
+  nSrc.connect(nFilter); nFilter.connect(nGain); nGain.connect(ac.destination);
+  nSrc.start(t); nSrc.stop(t + 0.25);
+
+  // Düşük frekanslı "thump" — topin ağırlığı
+  const thump = ac.createOscillator();
+  thump.type = 'sine';
+  thump.frequency.setValueAtTime(85, t);
+  thump.frequency.exponentialRampToValueAtTime(35, t + 0.12);
+  const tGain = ac.createGain();
+  tGain.gain.setValueAtTime(0.8, t);
+  tGain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+  thump.connect(tGain); tGain.connect(ac.destination);
+  thump.start(t); thump.stop(t + 0.14);
+}
+
+// 🪵 LABUT DÜŞME — ahşap/plastik labut yere çarpma sesi
+function playPinFall() {
+  const ac = getAudio();
+  const t = ac.currentTime;
+
+  // Kısa gürültü patlaması
+  const nBuf = makeNoiseBuffer(ac, 0.18);
+  const nSrc = ac.createBufferSource();
+  nSrc.buffer = nBuf;
+  const nF = ac.createBiquadFilter();
+  nF.type = 'bandpass';
+  nF.frequency.setValueAtTime(1800, t);
+  nF.frequency.exponentialRampToValueAtTime(400, t + 0.1);
+  nF.Q.value = 1.2;
+  const nG = ac.createGain();
+  nG.gain.setValueAtTime(0.28, t);
+  nG.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+  nSrc.connect(nF); nF.connect(nG); nG.connect(ac.destination);
+  nSrc.start(t); nSrc.stop(t + 0.18);
+
+  // Kısa "clack" tonu — plastik gövde rezonansı
+  const clack = ac.createOscillator();
+  clack.type = 'triangle';
+  clack.frequency.setValueAtTime(320 + Math.random()*80, t);
+  clack.frequency.exponentialRampToValueAtTime(140, t + 0.08);
+  const cG = ac.createGain();
+  cG.gain.setValueAtTime(0.22, t);
+  cG.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+  clack.connect(cG); cG.connect(ac.destination);
+  clack.start(t); clack.stop(t + 0.1);
+}
+
+// 🎉 STRİKE — bowling salonunda duyulan gerçek "kitleme" anı
+function playStrike() {
+  stopRoll();
+  const ac = getAudio();
+  const t = ac.currentTime;
+
+  // Büyük gürültü patlaması — tüm labutlar bir anda devrilir
+  const nBuf = makeNoiseBuffer(ac, 1.2);
+  const nSrc = ac.createBufferSource();
+  nSrc.buffer = nBuf;
+  const nF = ac.createBiquadFilter();
+  nF.type = 'lowpass';
+  nF.frequency.setValueAtTime(2500, t);
+  nF.frequency.exponentialRampToValueAtTime(300, t + 0.8);
+  const nG = ac.createGain();
+  nG.gain.setValueAtTime(0.9, t);
+  nG.gain.exponentialRampToValueAtTime(0.001, t + 1.0);
+  nSrc.connect(nF); nF.connect(nG); nG.connect(ac.destination);
+  nSrc.start(t); nSrc.stop(t + 1.2);
+
+  // Derin boom — zeminden gelen yankı
+  const boom = ac.createOscillator();
+  boom.type = 'sine';
+  boom.frequency.setValueAtTime(60, t);
+  boom.frequency.exponentialRampToValueAtTime(28, t + 0.5);
+  const bG = ac.createGain();
+  bG.gain.setValueAtTime(1.0, t);
+  bG.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+  boom.connect(bG); bG.connect(ac.destination);
+  boom.start(t); boom.stop(t + 0.55);
+
+  // Birden fazla labut "clack" sesi — üst üste
+  [0.04, 0.09, 0.14, 0.19, 0.25, 0.31].forEach((delay, i) => {
+    const p = ac.createOscillator();
+    p.type = 'triangle';
+    p.frequency.setValueAtTime(280 + i * 30 + Math.random()*40, t + delay);
+    p.frequency.exponentialRampToValueAtTime(120, t + delay + 0.09);
+    const pg = ac.createGain();
+    pg.gain.setValueAtTime(0.3 - i*0.03, t + delay);
+    pg.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.12);
+    p.connect(pg); pg.connect(ac.destination);
+    p.start(t + delay); p.stop(t + delay + 0.12);
+  });
+
+  // Kısa bir sessizlik sonrası "Yeaah!" benzeri salondan yankı (reverb sim)
+  setTimeout(() => {
+    const ac2 = getAudio();
+    const t2 = ac2.currentTime;
+    const echo = makeNoiseBuffer(ac2, 0.5);
+    const eSrc = ac2.createBufferSource();
+    eSrc.buffer = echo;
+    const eF = ac2.createBiquadFilter(); eF.type = 'bandpass'; eF.frequency.value = 800; eF.Q.value = 3;
+    const eG = ac2.createGain();
+    eG.gain.setValueAtTime(0.12, t2);
+    eG.gain.linearRampToValueAtTime(0, t2 + 0.5);
+    eSrc.connect(eF); eF.connect(eG); eG.connect(ac2.destination);
+    eSrc.start(t2); eSrc.stop(t2 + 0.5);
+  }, 500);
+}
+
+// ✅ SPARE — daha sessiz ama tatmin edici çift darbe
+function playSpare() {
+  stopRoll();
+  const ac = getAudio();
+  const t = ac.currentTime;
+
+  // İki aşamalı çarpma + düşme
+  [0, 0.08].forEach((delay, i) => {
+    const nBuf = makeNoiseBuffer(ac, 0.3);
+    const nSrc = ac.createBufferSource();
+    nSrc.buffer = nBuf;
+    const nF = ac.createBiquadFilter();
+    nF.type = 'bandpass';
+    nF.frequency.setValueAtTime(1400 - i*200, t + delay);
+    nF.frequency.exponentialRampToValueAtTime(300, t + delay + 0.2);
+    nF.Q.value = 0.8;
+    const nG = ac.createGain();
+    nG.gain.setValueAtTime(0.45 - i*0.1, t + delay);
+    nG.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.28);
+    nSrc.connect(nF); nF.connect(nG); nG.connect(ac.destination);
+    nSrc.start(t + delay); nSrc.stop(t + delay + 0.3);
+
+    const thump = ac.createOscillator();
+    thump.type = 'sine';
+    thump.frequency.setValueAtTime(70, t + delay);
+    thump.frequency.exponentialRampToValueAtTime(30, t + delay + 0.1);
+    const tG = ac.createGain();
+    tG.gain.setValueAtTime(0.5, t + delay);
+    tG.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.12);
+    thump.connect(tG); tG.connect(ac.destination);
+    thump.start(t + delay); thump.stop(t + delay + 0.12);
+  });
+
+  // 2-3 labut düşme sesi
+  [0.05, 0.13, 0.21].forEach(delay => {
+    setTimeout(() => playPinFall(), delay * 1000);
+  });
+}
+
+// ==================== GAME STATE ====================
+const FRAME_COUNT = 10;
+// Frames with questions: randomly pick 8 of 10 frames
+let questionFrames = [];
+let questions = [];
+
+let frames = []; // each: { rolls: [], pins: [...10 bools] }
+let currentFrame = 0;
+let currentRoll = 0; // 0 or 1 within frame
+let totalScore = 0;
+let gameRunning = false;
+
+// ==================== CANVAS SETUP ====================
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const CANVAS_W = 600;
+const CANVAS_H = 900;
+canvas.width = CANVAS_W;
+canvas.height = CANVAS_H;
+
+// ==================== PIN LAYOUT ====================
+// Standard bowling triangle: row1=1, row2=2, row3=3, row4=4 pins (10 total)
+// We'll position them near the top of the lane
+function getPinPositions() {
+  const cx = CANVAS_W / 2;
+  const topY = 90;
+  const gapX = 38;
+  const gapY = 40;
+  const positions = [];
+  let id = 0;
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col <= row; col++) {
+      const x = cx - (row * gapX / 2) + col * gapX;
+      const y = topY + row * gapY;
+      positions.push({ x, y, id: id++ });
+    }
+  }
+  return positions;
+}
+
+// ==================== PHYSICS STATE ====================
+let pins = [];
+let ball = null;
+let ballMoving = false;
+let dragStart = null;
+let dragCurrent = null;
+let animId = null;
+let settleTimer = 0;
+
+function initPins(fallen = []) {
+  const pos = getPinPositions();
+  pins = pos.map((p, i) => ({
+    x: p.x, y: p.y, vx: 0, vy: 0,
+    fallen: fallen.includes(i),
+    wobble: 0, wobbleV: 0,
+    id: i
+  }));
+}
+
+function resetBall() {
+  ball = {
+    x: CANVAS_W / 2 + (Math.random() - 0.5) * 20,
+    y: CANVAS_H - 180,
+    vx: 0, vy: 0,
+    r: 22,
+    moving: false
+  };
+}
+
+// ==================== DRAWING ====================
+function drawBackground() {
+  // === BOWLING SALONU ARKA PLANI ===
+
+  // Tavan - koyu lacivert/mor gradient
+  const ceilGrad = ctx.createLinearGradient(0, 0, 0, 170);
+  ceilGrad.addColorStop(0, '#0D0D1A');
+  ceilGrad.addColorStop(1, '#1A1A35');
+  ctx.fillStyle = ceilGrad;
+  ctx.fillRect(0, 0, CANVAS_W, 170);
+
+  // Neon ışık bantları - tavanda renkli çizgiler
+  const neonColors = ['#FF3CAC','#7B2FBE','#00D4FF','#00FF94','#FFD600'];
+  neonColors.forEach((col, i) => {
+    const y = 8 + i * 5;
+    ctx.save();
+    ctx.shadowColor = col;
+    ctx.shadowBlur = 10;
+    ctx.strokeStyle = col;
+    ctx.globalAlpha = 0.7;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, y); ctx.lineTo(CANVAS_W, y);
+    ctx.stroke();
+    ctx.restore();
+  });
+
+  // Tavan lambalar (spot lights)
+  const lights = [80, 190, 310, 430, 530];
+  lights.forEach(lx => {
+    // Lamba gövdesi
+    ctx.save();
+    ctx.fillStyle = '#2A2A3E';
+    ctx.beginPath(); ctx.roundRect(lx - 18, 28, 36, 14, 6); ctx.fill();
+    ctx.fillStyle = '#444460';
+    ctx.beginPath(); ctx.roundRect(lx - 14, 32, 28, 8, 4); ctx.fill();
+
+    // Işık huzmesi (V şeklinde)
+    const beamGrad = ctx.createLinearGradient(lx, 42, lx, 170);
+    beamGrad.addColorStop(0, 'rgba(255,240,180,0.25)');
+    beamGrad.addColorStop(1, 'rgba(255,240,180,0)');
+    ctx.fillStyle = beamGrad;
+    ctx.beginPath();
+    ctx.moveTo(lx - 4, 42);
+    ctx.lineTo(lx - 45, 170);
+    ctx.lineTo(lx + 45, 170);
+    ctx.lineTo(lx + 4, 42);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ampul sarısı ışık
+    ctx.save();
+    ctx.shadowColor = '#FFE066';
+    ctx.shadowBlur = 16;
+    ctx.fillStyle = '#FFE566';
+    ctx.beginPath(); ctx.arc(lx, 35, 5, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+    ctx.restore();
+  });
+
+  // Yan duvarlar - bowling salonu panelleri
+  // Sol duvar
+  drawWallPanel(0, 0, 80, 170);
+  // Sağ duvar
+  drawWallPanel(CANVAS_W - 80, 0, 80, 170);
+
+  // Zemin - bowling pisti öncesi koyu zemin (gutter area sides)
+  const floorGrad = ctx.createLinearGradient(0, 168, 0, 200);
+  floorGrad.addColorStop(0, '#111122');
+  floorGrad.addColorStop(1, '#1A1A2E');
+  ctx.fillStyle = floorGrad;
+  ctx.fillRect(0, 168, CANVAS_W, 32);
+
+  // Gutterlar (yan çukurlar)
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 168, 80, CANVAS_H - 168);
+  ctx.fillRect(CANVAS_W - 80, 168, 80, CANVAS_H - 168);
+
+  // Gutter kenar çizgileri (neon)
+  ctx.save();
+  ctx.shadowColor = '#FF3CAC';
+  ctx.shadowBlur = 8;
+  ctx.strokeStyle = '#FF3CAC';
+  ctx.lineWidth = 2;
+  ctx.globalAlpha = 0.6;
+  ctx.beginPath(); ctx.moveTo(80, 168); ctx.lineTo(80, CANVAS_H); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(CANVAS_W-80, 168); ctx.lineTo(CANVAS_W-80, CANVAS_H); ctx.stroke();
+  ctx.restore();
+
+  // Gutter'da dekoratif yıldız/emoji sembolleri
+  drawGutterDeco();
+
+  // Arka duvar - pin arkası
+  const backGrad = ctx.createLinearGradient(80, 168, 80, 240);
+  backGrad.addColorStop(0, '#1E1E3A');
+  backGrad.addColorStop(1, '#252540');
+  ctx.fillStyle = backGrad;
+  ctx.fillRect(80, 168, CANVAS_W - 160, 32);
+
+  // Arka duvarda neon "BOWLING" yazısı efekti
+  ctx.save();
+  ctx.font = 'bold 13px "Nunito", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = '#00D4FF';
+  ctx.shadowBlur = 12;
+  ctx.fillStyle = '#00D4FF';
+  ctx.globalAlpha = 0.8;
+  ctx.fillText('🎳  B O W L I N G  🎳', CANVAS_W/2, 186);
+  ctx.restore();
+}
+
+function drawWallPanel(x, y, w, h) {
+  // Koyu panel
+  ctx.fillStyle = '#15152A';
+  ctx.fillRect(x, y, w, h);
+
+  // Renkli neon şeritler yan duvarda
+  const panelColors = ['#FF3CAC','#7B2FBE','#00D4FF'];
+  panelColors.forEach((c, i) => {
+    ctx.save();
+    ctx.fillStyle = c;
+    ctx.globalAlpha = 0.15;
+    ctx.fillRect(x, y + 30 + i*40, w, 18);
+    ctx.globalAlpha = 0.6;
+    ctx.strokeStyle = c;
+    ctx.lineWidth = 1.5;
+    ctx.shadowColor = c;
+    ctx.shadowBlur = 6;
+    ctx.strokeRect(x + 6, y + 30 + i*40, w - 12, 18);
+    ctx.restore();
+  });
+
+  // Küçük yıldız / bowling emojileri
+  ctx.save();
+  ctx.font = '16px serif';
+  ctx.textAlign = 'center';
+  ctx.globalAlpha = 0.5;
+  [[x+w/2, y+150], [x+w/2, y+105]].forEach(([px,py]) => {
+    ctx.fillText('⭐', px, py);
+  });
+  ctx.restore();
+}
+
+function drawGutterDeco() {
+  // Sol gutter - küçük yıldızlar
+  ctx.save();
+  ctx.font = '13px serif';
+  ctx.textAlign = 'center';
+  ctx.globalAlpha = 0.35;
+  [[40, 280],[40, 340],[40, 400],[40, 460]].forEach(([px,py]) => {
+    ctx.fillText('✨', px, py);
+  });
+  [[CANVAS_W-40, 280],[CANVAS_W-40, 340],[CANVAS_W-40, 400],[CANVAS_W-40, 460]].forEach(([px,py]) => {
+    ctx.fillText('✨', px, py);
+  });
+  ctx.restore();
+}
+
+function drawLane() {
+  // Wood lane
+  const laneX = 80, laneW = CANVAS_W - 160;
+
+  // Lane wood base
+  for (let i = 0; i < 8; i++) {
+    const woodGrad = ctx.createLinearGradient(laneX + i*laneW/8, 0, laneX + (i+1)*laneW/8, 0);
+    const c1 = i % 2 === 0 ? '#8B5E3C' : '#A0714F';
+    const c2 = i % 2 === 0 ? '#9A6B45' : '#8B5A38';
+    woodGrad.addColorStop(0, c1);
+    woodGrad.addColorStop(1, c2);
+    ctx.fillStyle = woodGrad;
+    ctx.fillRect(laneX + i*laneW/8, 170, laneW/8, CANVAS_H - 170);
+  }
+
+  // Lane border
+  ctx.strokeStyle = var_gold();
+  ctx.lineWidth = 3;
+  ctx.strokeRect(laneX, 170, laneW, CANVAS_H - 170);
+
+  // Kilim pattern overlay
+  drawKilimPattern(laneX, 170, laneW, CANVAS_H - 170);
+
+  // Arrows on lane
+  ctx.fillStyle = 'rgba(212,160,23,0.5)';
+  const arrY = CANVAS_H - 140;
+  const arrows = [-60, -30, 0, 30, 60];
+  arrows.forEach(ax => {
+    ctx.beginPath();
+    ctx.moveTo(CANVAS_W/2 + ax, arrY);
+    ctx.lineTo(CANVAS_W/2 + ax - 8, arrY + 14);
+    ctx.lineTo(CANVAS_W/2 + ax + 8, arrY + 14);
+    ctx.closePath();
+    ctx.fill();
+  });
+}
+
+function var_gold() { return '#D4A017'; }
+
+function drawKilimPattern(x, y, w, h) {
+  ctx.save();
+  ctx.globalAlpha = 0.12;
+
+  // Diamond/geometric kilim motifs
+  const colors = ['#C0392B','#1ABC9C','#D4A017','#1A6B7A'];
+  const step = 50;
+  for (let ky = y + 20; ky < y + h - 20; ky += step) {
+    for (let kx = x + 20; kx < x + w - 20; kx += step) {
+      const ci = ((kx + ky) / step | 0) % 4;
+      ctx.strokeStyle = colors[ci];
+      ctx.lineWidth = 2;
+      // Diamond
+      ctx.beginPath();
+      ctx.moveTo(kx + 15, ky);
+      ctx.lineTo(kx + 30, ky + 15);
+      ctx.lineTo(kx + 15, ky + 30);
+      ctx.lineTo(kx, ky + 15);
+      ctx.closePath();
+      ctx.stroke();
+      // Center
+      ctx.fillStyle = colors[(ci+1)%4];
+      ctx.beginPath();
+      ctx.arc(kx+15, ky+15, 3, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  ctx.restore();
+}
+
+function drawPin(pin) {
+  if (pin.fallen) return;
+  ctx.save();
+  ctx.translate(pin.x, pin.y);
+
+  if (pin.wobble !== 0) {
+    ctx.rotate(pin.wobble * 0.15);
+  }
+
+  // Pin shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.beginPath();
+  ctx.ellipse(3, 20, 10, 4, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Pin body
+  const pinGrad = ctx.createLinearGradient(-12, -28, 12, 28);
+  pinGrad.addColorStop(0, '#FFFFFF');
+  pinGrad.addColorStop(0.4, '#F0F0F0');
+  pinGrad.addColorStop(1, '#D0D0D0');
+  ctx.fillStyle = pinGrad;
+
+  ctx.beginPath();
+  ctx.moveTo(-6, 20);
+  ctx.quadraticCurveTo(-12, 5, -5, -5);
+  ctx.quadraticCurveTo(0, -28, 0, -28);
+  ctx.quadraticCurveTo(0, -28, 5, -5);
+  ctx.quadraticCurveTo(12, 5, 6, 20);
+  ctx.closePath();
+  ctx.fill();
+
+  // Nazar boncuğu (evil eye)
+  // Outer white
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(0, -8, 9, 0, Math.PI*2); ctx.fill();
+  // Blue
+  ctx.fillStyle = '#1A6BB5';
+  ctx.beginPath(); ctx.arc(0, -8, 7, 0, Math.PI*2); ctx.fill();
+  // Light blue
+  ctx.fillStyle = '#5BC8F5';
+  ctx.beginPath(); ctx.arc(0, -8, 4.5, 0, Math.PI*2); ctx.fill();
+  // White
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(0, -8, 2.5, 0, Math.PI*2); ctx.fill();
+  // Pupil
+  ctx.fillStyle = '#000';
+  ctx.beginPath(); ctx.arc(0, -8, 1.2, 0, Math.PI*2); ctx.fill();
+  // Shine
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.beginPath(); ctx.arc(1.5, -9.5, 1, 0, Math.PI*2); ctx.fill();
+
+  // Red stripe
+  ctx.strokeStyle = '#C0392B';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(-7, 5);
+  ctx.quadraticCurveTo(0, 8, 7, 5);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawBall() {
+  if (!ball) return;
+  ctx.save();
+  ctx.translate(ball.x, ball.y);
+
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(4, ball.r - 2, ball.r * 0.9, ball.r * 0.35, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Ball body
+  const ballGrad = ctx.createRadialGradient(-7, -7, 3, 0, 0, ball.r);
+  ballGrad.addColorStop(0, '#FF6B6B');
+  ballGrad.addColorStop(0.4, '#C0392B');
+  ballGrad.addColorStop(1, '#5A0A0A');
+  ctx.fillStyle = ballGrad;
+  ctx.beginPath();
+  ctx.arc(0, 0, ball.r, 0, Math.PI*2);
+  ctx.fill();
+
+  // White swirl stripes (çini style)
+  ctx.save();
+  ctx.clip();
+  ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(0, 0, ball.r * 0.55, -Math.PI * 0.8, Math.PI * 0.3);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 0, ball.r * 0.8, Math.PI * 0.5, Math.PI * 1.5);
+  ctx.stroke();
+  ctx.restore();
+
+  // Finger holes
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.beginPath(); ctx.arc(-6, -5, 3.5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(4, -8, 3.5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(5, 4, 3, 0, Math.PI*2); ctx.fill();
+
+  // Shine
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.beginPath(); ctx.arc(-8, -8, 6, 0, Math.PI*2); ctx.fill();
+
+  ctx.restore();
+}
+
+function drawAimArrow() {
+  if (!dragStart || ballMoving) return;
+  const dx = dragStart.x - dragCurrent.x;
+  const dy = dragStart.y - dragCurrent.y;
+  const len = Math.sqrt(dx*dx+dy*dy);
+  if (len < 10) return;
+
+  ctx.save();
+  ctx.globalAlpha = 0.6;
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 2.5;
+  ctx.setLineDash([8,6]);
+  ctx.beginPath();
+  ctx.moveTo(ball.x, ball.y);
+  const endX = ball.x + dx * 1.5;
+  const endY = ball.y + dy * 1.5;
+  ctx.lineTo(endX, endY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Arrowhead
+  const angle = Math.atan2(dy, dx);
+  ctx.fillStyle = '#FFD700';
+  ctx.beginPath();
+  ctx.moveTo(endX, endY);
+  ctx.lineTo(endX - 12*Math.cos(angle-0.4), endY - 12*Math.sin(angle-0.4));
+  ctx.lineTo(endX - 12*Math.cos(angle+0.4), endY - 12*Math.sin(angle+0.4));
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawFallenEffect() {
+  // Floating stars for fallen pins
+}
+
+// ==================== ANIMATION LOOP ====================
+function updatePhysics() {
+  if (!ball || !ball.moving) return;
+
+  ball.x += ball.vx;
+  ball.y += ball.vy;
+
+  // Spin rotation tracking
+  ball.angle = (ball.angle || 0) + ball.vx * 0.05;
+
+  // Ball-pin collision
+  pins.forEach(pin => {
+    if (pin.fallen) return;
+    const dx = ball.x - pin.x;
+    const dy = ball.y - pin.y;
+    const dist = Math.sqrt(dx*dx+dy*dy);
+    const minDist = ball.r + 14;
+    if (dist < minDist) {
+      // Elastic-ish collision
+      const nx = dx/dist, ny = dy/dist;
+      const overlap = minDist - dist;
+      pin.vx += nx * 8 + ball.vx * 0.6;
+      pin.vy += ny * 8 + ball.vy * 0.6;
+      pin.wobble = (nx * 15);
+      pin.wobbleV = 1;
+      ball.vx += nx * -0.3;
+      ball.vy += ny * -0.3;
+      if (!pin._hitSounded) { pin._hitSounded = true; playHit(1 + Math.abs(ball.vy) * 0.05); }
+    }
+  });
+
+  // Pin-pin collision
+  for (let i = 0; i < pins.length; i++) {
+    if (pins[i].fallen) continue;
+    for (let j = i+1; j < pins.length; j++) {
+      if (pins[j].fallen) continue;
+      const dx = pins[i].x - pins[j].x;
+      const dy = pins[i].y - pins[j].y;
+      const dist = Math.sqrt(dx*dx+dy*dy);
+      if (dist < 32) {
+        const nx = dx/dist || 0, ny = dy/dist || 0;
+        const dv = (pins[i].vx - pins[j].vx)*nx + (pins[i].vy - pins[j].vy)*ny;
+        if (dv < 0) {
+          pins[i].vx -= dv*nx*0.7;
+          pins[i].vy -= dv*ny*0.7;
+          pins[j].vx += dv*nx*0.7;
+          pins[j].vy += dv*ny*0.7;
+        }
+      }
+    }
+  }
+
+  // Update pin positions
+  pins.forEach(pin => {
+    if (pin.fallen) return;
+    pin.x += pin.vx;
+    pin.y += pin.vy;
+    pin.vx *= 0.85;
+    pin.vy *= 0.85;
+    pin.wobble += pin.wobbleV;
+    pin.wobbleV *= -0.6;
+    pin.wobble *= 0.8;
+
+    // Check if pin has moved far enough to fall
+    const initPos = getPinPositions()[pin.id];
+    const dx = pin.x - initPos.x;
+    const dy = pin.y - initPos.y;
+    if (Math.sqrt(dx*dx+dy*dy) > 50) {
+      if (!pin.fallen) playPinFall();
+      pin.fallen = true;
+    }
+  });
+
+  // Ball out of bounds
+  if (ball.y < -50 || ball.x < 60 || ball.x > CANVAS_W - 60) {
+    ball.moving = false;
+    stopRoll();
+    setTimeout(onRollEnd, 400);
+  }
+}
+
+function loop() {
+  ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+  drawBackground();
+  drawLane();
+  pins.forEach(pin => drawPin(pin));
+  if (!ballMoving) drawAimArrow();
+  drawBall();
+  updatePhysics();
+
+  // Check settle
+  if (ball && ball.moving) {
+    const allStill = pins.every(p => p.fallen || (Math.abs(p.vx) < 0.3 && Math.abs(p.vy) < 0.3));
+    if (allStill) {
+      settleTimer++;
+      if (settleTimer > 30) {
+        ball.moving = false;
+        stopRoll();
+        setTimeout(onRollEnd, 300);
+      }
+    } else {
+      settleTimer = 0;
+    }
+  }
+
+  animId = requestAnimationFrame(loop);
+}
+
+// ==================== GAME LOGIC ====================
+function startGame() {
+  document.getElementById('modal-intro').classList.add('hidden');
+
+  // Setup frames
+  frames = [];
+  for (let i = 0; i < FRAME_COUNT; i++) {
+    frames.push({ rolls: [], pinsStanding: Array(10).fill(true), fallenThisRoll: [] });
+  }
+
+  // Pick question frames: 8 of 10 random
+  const frameIndices = Array.from({length:10},(_,i)=>i);
+  const shuffled = frameIndices.sort(()=>Math.random()-0.5);
+  questionFrames = shuffled.slice(0, 8);
+
+  // Assign questions to those frames
+  const qShuffled = [...QUESTIONS].sort(()=>Math.random()-0.5);
+  questions = {};
+  questionFrames.forEach((f, i) => { questions[f] = qShuffled[i]; });
+
+  currentFrame = 0;
+  currentRoll = 0;
+  totalScore = 0;
+  gameRunning = true;
+
+  updateHUD();
+  initPins([]);
+  resetBall();
+  loop();
+}
+
+function restartGame() {
+  document.getElementById('modal-end').classList.add('hidden');
+  startGame();
+}
+
+function countFallen() {
+  return pins.filter(p => p.fallen).length;
+}
+
+function onRollEnd() {
+  if (!gameRunning) return;
+
+  const fallenNow = countFallen();
+  const frame = frames[currentFrame];
+  let knockedThisRoll;
+
+  if (currentRoll === 0) {
+    knockedThisRoll = fallenNow;
+    frame.rolls[0] = knockedThisRoll;
+  } else {
+    const prevFallen = frame.rolls[0] || 0;
+    knockedThisRoll = fallenNow - prevFallen;
+    frame.rolls[1] = knockedThisRoll;
+  }
+
+  const firstRollKnocked = frame.rolls[0] || 0;
+  const isStrike = currentRoll === 0 && firstRollKnocked === 10;
+  const isFrameDone = isStrike || currentRoll === 1;
+
+  if (isFrameDone) {
+    // Score calculation (simplified running total)
+    calculateScore();
+
+    // Strike / Spare sesleri
+    if (isStrike) {
+      playStrike();
+    } else if (currentRoll === 1 && (frame.rolls[0] || 0) + (frame.rolls[1] || 0) === 10) {
+      playSpare();
+    }
+
+    if (questionFrames.includes(currentFrame)) {
+      showQuestion(questions[currentFrame]);
+    } else {
+      advanceFrame();
+    }
+  } else {
+    // Second roll: keep fallen pins
+    currentRoll = 1;
+    const fallenIds = pins.filter(p=>p.fallen).map(p=>p.id);
+    initPins(fallenIds);
+    resetBall();
+    ballMoving = false;
+  }
+}
+
+function calculateScore() {
+  let score = 0;
+  for (let f = 0; f < currentFrame + 1; f++) {
+    const r = frames[f].rolls;
+    if (!r || r.length === 0) continue;
+    const r0 = r[0] || 0;
+    const r1 = r[1] || 0;
+    const isStrike = r0 === 10 && r.length >= 1;
+    const isSpare = !isStrike && r0 + r1 === 10;
+
+    if (isStrike) {
+      // Bonus from next 2 rolls
+      let bonus = 0;
+      const nextFrame = frames[f+1];
+      if (nextFrame) {
+        bonus += nextFrame.rolls[0] || 0;
+        if (nextFrame.rolls[1] !== undefined) bonus += nextFrame.rolls[1];
+        else {
+          const nf2 = frames[f+2];
+          if (nf2) bonus += nf2.rolls[0] || 0;
+        }
+      }
+      score += 10 + bonus;
+    } else if (isSpare) {
+      const nextFrame = frames[f+1];
+      const bonus = nextFrame ? (nextFrame.rolls[0] || 0) : 0;
+      score += 10 + bonus;
+    } else {
+      score += r0 + r1;
+    }
+  }
+  totalScore = score;
+  updateHUD();
+}
+
+function advanceFrame() {
+  currentFrame++;
+  currentRoll = 0;
+
+  if (currentFrame >= FRAME_COUNT) {
+    endGame();
+    return;
+  }
+
+  initPins([]);
+  resetBall();
+  ballMoving = false;
+  updateHUD();
+}
+
+function showQuestion(q) {
+  document.getElementById('q-text').textContent = q;
+  document.getElementById('modal-question').classList.remove('hidden');
+}
+
+function closeQuestion() {
+  document.getElementById('modal-question').classList.add('hidden');
+  advanceFrame();
+}
+
+function endGame() {
+  gameRunning = false;
+  document.getElementById('final-score').textContent = totalScore;
+  let msg = totalScore >= 150 ? '🏆 Muhteşem! Gerçek bir bowling ustasısın!' :
+            totalScore >= 100 ? '⭐ Harika! Çok güzel bir oyun çıkardın!' :
+            totalScore >= 60  ? '👏 İyi iş! Pratik yaptıkça daha da iyileşeceksin.' :
+                                '🎳 Güzel deneme! Bir daha dene!';
+  document.getElementById('end-msg').textContent = msg;
+  document.getElementById('modal-end').classList.remove('hidden');
+}
+
+function updateHUD() {
+  document.getElementById('hud-frame').textContent = `${Math.min(currentFrame+1,10)}/10`;
+  document.getElementById('hud-score').textContent = totalScore;
+}
+
+// ==================== INPUT HANDLING ====================
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = CANVAS_W / rect.width;
+  const scaleY = CANVAS_H / rect.height;
+  const src = e.touches ? e.touches[0] : e;
+  return {
+    x: (src.clientX - rect.left) * scaleX,
+    y: (src.clientY - rect.top) * scaleY
+  };
+}
+
+function onDown(e) {
+  if (!gameRunning || ballMoving) return;
+  e.preventDefault();
+  const pos = getPos(e);
+  const dx = pos.x - ball.x, dy = pos.y - ball.y;
+  if (Math.sqrt(dx*dx+dy*dy) < ball.r * 2.5) {
+    dragStart = { x: pos.x, y: pos.y };
+    dragCurrent = { x: pos.x, y: pos.y };
+  }
+}
+
+function onMove(e) {
+  if (!dragStart) return;
+  e.preventDefault();
+  dragCurrent = getPos(e);
+}
+
+function onUp(e) {
+  if (!dragStart || ballMoving) return;
+  e.preventDefault();
+  const dx = dragStart.x - dragCurrent.x;
+  const dy = dragStart.y - dragCurrent.y;
+  const len = Math.sqrt(dx*dx+dy*dy);
+  if (len > 15) {
+    const speed = Math.min(len * 0.22, 22);
+    ball.vx = (dx / len) * speed;
+    ball.vy = (dy / len) * speed;
+    ball.moving = true;
+    ballMoving = true;
+    settleTimer = 0;
+    playRoll();
+  }
+  dragStart = null;
+  dragCurrent = null;
+}
+
+canvas.addEventListener('mousedown', onDown);
+canvas.addEventListener('mousemove', onMove);
+canvas.addEventListener('mouseup', onUp);
+canvas.addEventListener('touchstart', onDown, {passive:false});
+canvas.addEventListener('touchmove', onMove, {passive:false});
+canvas.addEventListener('touchend', onUp, {passive:false});
+
+// Sync ballMoving with ball.moving
+setInterval(() => { if (ball) ballMoving = ball.moving; }, 16);
+
+// Initial draw
+(function initialDraw() {
+  ctx.clearRect(0,0,CANVAS_W,CANVAS_H);
+  drawBackground();
+  drawLane();
+  initPins([]);
+  pins.forEach(drawPin);
+  resetBall();
+  drawBall();
+})();
+</script>
+</body>
+</html>

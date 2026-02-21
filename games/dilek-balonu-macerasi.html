@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#ff6eb4">
+<title>Dilek Balonu Macerası – Make-A-Wish® Türkiye</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Pacifico&display=swap');
+:root{--pink:#ff6eb4;--gold:#ffd700;--purple:#9b59b6;--joy:#ff4757;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#87ceeb;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden;font-family:'Nunito',Arial,sans-serif;touch-action:none;}
+
+/* WRAPPER */
+#gw{position:relative;width:360px;height:640px;overflow:hidden;border-radius:24px;box-shadow:0 8px 60px #ff6eb455,0 0 0 3px #ff6eb433;}
+#sky{position:absolute;inset:0;transition:background 4s ease;}
+
+/* HUD */
+#hud{position:absolute;top:12px;left:0;right:0;display:flex;justify-content:space-between;padding:0 12px;z-index:40;pointer-events:none;}
+.hudBox{background:linear-gradient(135deg,#ffffffcc,#fff8f8bb);border:2.5px solid var(--pink);border-radius:16px;padding:5px 14px;text-align:center;box-shadow:0 2px 12px #ff6eb455;backdrop-filter:blur(4px);}
+.hudLabel{font-size:10px;font-weight:800;color:var(--purple);text-transform:uppercase;}
+.hudValue{font-size:24px;font-weight:900;color:var(--joy);line-height:1.1;text-shadow:0 1px 0 #fff;}
+
+/* BALLOON */
+#player{position:absolute;width:60px;height:90px;bottom:80px;transform:translateX(-50%);z-index:20;transition:left .15s cubic-bezier(.34,1.56,.64,1);animation:balloonFloat 2.2s ease-in-out infinite;}
+@keyframes balloonFloat{0%,100%{transform:translateX(-50%) rotate(-3deg);}50%{transform:translateX(-50%) rotate(3deg);}}
+.bBody{position:absolute;top:0;left:50%;transform:translateX(-50%);width:54px;height:64px;border-radius:50% 50% 50% 50%/55% 55% 45% 45%;box-shadow:0 4px 20px #ff475766,inset -6px -6px 16px #00000022,inset 4px 4px 10px #ffffff44;transition:background .5s;}
+.bShine{position:absolute;top:8px;left:14px;width:16px;height:22px;background:linear-gradient(135deg,rgba(255,255,255,.7),transparent);border-radius:50%;transform:rotate(-20deg);}
+.bFace{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:32px;height:18px;display:flex;justify-content:space-around;align-items:center;}
+.bEye{width:10px;height:10px;background:#fff;border-radius:50%;position:relative;overflow:hidden;}
+.bEye::after{content:'';position:absolute;top:2px;left:2px;width:6px;height:6px;background:#ff4757;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:eyeHeart 1.5s ease-in-out infinite;}
+@keyframes eyeHeart{0%,100%{transform:scale(1);}50%{transform:scale(1.3);}}
+.bString{position:absolute;top:62px;left:50%;transform:translateX(-50%);width:2px;height:14px;background:linear-gradient(180deg,#b38d5a,#c8a56e);border-radius:1px;}
+.bBasket{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:10px;background:linear-gradient(180deg,#c8a56e,#a0784a);border-radius:3px 3px 4px 4px;border:1.5px solid #7a5c32;}
+.bSparkle{position:absolute;width:6px;height:6px;background:var(--gold);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:sparkleOrbit 2s linear infinite;}
+.bSparkle:nth-child(1){animation-delay:0s;top:-6px;left:50%;}
+.bSparkle:nth-child(2){animation-delay:.5s;top:20px;left:-8px;}
+.bSparkle:nth-child(3){animation-delay:1s;top:20px;right:-8px;}
+.bSparkle:nth-child(4){animation-delay:1.5s;bottom:20px;left:30%;}
+@keyframes sparkleOrbit{0%,100%{transform:scale(.5) rotate(0);opacity:.4;}50%{transform:scale(1.3) rotate(180deg);opacity:1;}}
+
+/* CLOUD */
+.obstacle{position:absolute;width:72px;height:44px;transform:translateX(-50%);z-index:15;animation:cloudWobble .7s ease-in-out infinite alternate;}
+@keyframes cloudWobble{from{transform:translateX(-50%) rotate(-2deg) scale(1);}to{transform:translateX(-50%) rotate(2deg) scale(1.04);}}
+.cloudShape{position:absolute;inset:0;background:linear-gradient(180deg,#8899aa,#667788,#556677);border-radius:30px;box-shadow:inset -4px -4px 12px #00000033,0 4px 16px #44556644;}
+.cloudShape::before{content:'';position:absolute;top:-18px;left:14px;width:28px;height:28px;background:linear-gradient(135deg,#8899aa,#667788);border-radius:50%;box-shadow:20px -8px 0 16px #778899;}
+.cloudShape::after{content:'';position:absolute;top:-10px;left:38px;width:20px;height:20px;background:linear-gradient(135deg,#778899,#556677);border-radius:50%;}
+.lightning{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);font-size:20px;animation:boltFlash .8s ease-in-out infinite;filter:drop-shadow(0 0 4px #ffe066);}
+@keyframes boltFlash{0%,100%{opacity:.2;transform:translateX(-50%) scale(.8);}50%{opacity:1;transform:translateX(-50%) scale(1.1);}}
+
+/* STAR */
+.wishStar{position:absolute;width:38px;height:38px;transform:translateX(-50%);z-index:15;animation:starGlow .9s ease-in-out infinite alternate;}
+@keyframes starGlow{from{transform:translateX(-50%) scale(.85) rotate(-10deg);filter:drop-shadow(0 0 6px #ffd700);}to{transform:translateX(-50%) scale(1.2) rotate(10deg);filter:drop-shadow(0 0 18px #ffd700);}}
+.starShape{width:100%;height:100%;background:conic-gradient(#ffd700 0,#ffec6e 30deg,#ff9f43 60deg,#ffd700 90deg,#ffe082 120deg,#ffd700 150deg,#ffec6e 180deg,#ff9f43 210deg,#ffd700 240deg,#ffe082 270deg,#ffd700 300deg,#ffec6e 330deg,#ffd700 360deg);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
+.starSparkle{position:absolute;inset:-4px;animation:sparkleRing 1s linear infinite;}
+@keyframes sparkleRing{0%{opacity:0;transform:scale(.8) rotate(0);}50%{opacity:.8;}100%{opacity:0;transform:scale(1.5) rotate(360deg);}}
+.sparkDot{position:absolute;width:4px;height:4px;background:var(--gold);border-radius:50%;}
+.sparkDot:nth-child(1){top:0;left:50%;transform:translateX(-50%);}
+.sparkDot:nth-child(2){bottom:0;left:50%;transform:translateX(-50%);}
+.sparkDot:nth-child(3){left:0;top:50%;transform:translateY(-50%);}
+.sparkDot:nth-child(4){right:0;top:50%;transform:translateY(-50%);}
+
+/* PARTICLES */
+.particle{position:absolute;border-radius:50%;pointer-events:none;z-index:35;animation:pFade .7s ease-out forwards;}
+@keyframes pFade{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(.2);}}
+.confettiPiece{position:absolute;pointer-events:none;z-index:35;animation:confettiFall var(--dur,.9s) ease-out forwards;}
+@keyframes confettiFall{0%{opacity:1;transform:translate(0,0) rotate(0) scale(1);}100%{opacity:0;transform:translate(var(--cx),var(--cy)) rotate(var(--cr)) scale(.4);}}
+.floatScore{position:absolute;z-index:40;font-size:22px;font-weight:900;color:var(--gold);text-shadow:0 0 10px #ffd700,0 2px 0 #fff;pointer-events:none;animation:floatUp 1s ease-out forwards;}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-60px) scale(1.4);}}
+
+/* BG CLOUDS */
+.bgC{position:absolute;background:rgba(255,255,255,.45);border-radius:40px;}
+
+/* SCREENS */
+.screen{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;background:linear-gradient(160deg,#ffeef8ee,#e8f4ffee);backdrop-filter:blur(6px);}
+#goScreen,#pauseScreen,#questionScreen,#customizeScreen{display:none;}
+
+/* LOGO */
+.mawLogo{display:flex;flex-direction:column;align-items:center;margin-bottom:12px;}
+.mawStar{width:48px;height:48px;background:linear-gradient(135deg,#ffd700,#ff9f43);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);box-shadow:0 0 24px #ffd70099;animation:logoPulse 1.5s ease-in-out infinite;}
+@keyframes logoPulse{0%,100%{transform:scale(1) rotate(0);box-shadow:0 0 24px #ffd70099;}50%{transform:scale(1.12) rotate(8deg);box-shadow:0 0 40px #ffd700cc;}}
+.mawName{font-family:'Pacifico',cursive;font-size:12px;color:var(--purple);margin-top:5px;text-align:center;line-height:1.4;}
+.gameTitle{font-family:'Pacifico',cursive;font-size:27px;color:var(--pink);text-align:center;line-height:1.2;margin-bottom:4px;text-shadow:0 3px 0 #ff6eb444;animation:titleBounce 2s ease-in-out infinite;}
+@keyframes titleBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.gameSub{font-size:12px;color:var(--purple);text-align:center;margin-bottom:14px;line-height:1.7;}
+.gameSub strong{color:var(--joy);}
+.howTo{background:#fff8;border-radius:16px;padding:9px 14px;margin-bottom:14px;width:100%;max-width:300px;border:2px solid #ff6eb433;}
+.howRow{display:flex;align-items:center;gap:9px;font-size:12px;color:#555;padding:3px 0;}
+.howIcon{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 26px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;border:none;border-radius:50px;cursor:pointer;transition:transform .12s;text-decoration:none;letter-spacing:.3px;}
+.btn:active{transform:scale(.96);}
+.btnPlay{background:linear-gradient(135deg,var(--pink),#ff4757);color:#fff;box-shadow:0 4px 24px #ff6eb488;font-size:16px;padding:14px 38px;margin-bottom:10px;}
+.btnDonate{background:linear-gradient(135deg,#ffd700,#ff9f43);color:#5d3900;box-shadow:0 4px 20px #ffd70066;font-size:12px;margin-bottom:8px;}
+.btnRestart{background:linear-gradient(135deg,var(--pink),#c44dca);color:#fff;box-shadow:0 4px 20px #ff6eb488;margin-bottom:10px;}
+.btnShare{background:linear-gradient(135deg,#1da1f2,#0d8de0);color:#fff;font-size:12px;}
+.btnLink{background:none;border:2px solid var(--purple);color:var(--purple);font-size:11px;padding:6px 16px;border-radius:50px;cursor:pointer;text-decoration:none;font-family:'Nunito',sans-serif;font-weight:700;}
+.btnCustom{background:linear-gradient(135deg,#a29bfe,#6c5ce7);color:#fff;font-size:12px;margin-bottom:8px;}
+
+/* GAME OVER */
+.goEmoji{font-size:48px;margin-bottom:4px;animation:goEmojiBounce .8s ease-in-out infinite alternate;}
+@keyframes goEmojiBounce{from{transform:scale(.9) rotate(-5deg);}to{transform:scale(1.1) rotate(5deg);}}
+.goTitle{font-family:'Pacifico',cursive;font-size:21px;color:var(--purple);margin-bottom:4px;text-align:center;}
+.goScore{font-size:48px;font-weight:900;color:var(--joy);line-height:1;}
+.goScoreLabel{font-size:11px;color:#888;margin-bottom:3px;}
+.goBest{font-size:12px;color:var(--purple);font-weight:700;margin-bottom:12px;}
+.goMotivate{font-size:12px;color:#666;text-align:center;margin-bottom:12px;line-height:1.6;background:#fff8;border-radius:12px;padding:8px 12px;max-width:290px;border:1.5px solid #ff6eb433;}
+
+/* PAUSE */
+.pauseTitle{font-family:'Pacifico',cursive;font-size:28px;color:var(--purple);margin-bottom:18px;}
+
+/* QUESTION CARD */
+.qCard{background:#fff;border-radius:24px;padding:28px 22px;max-width:310px;width:100%;box-shadow:0 8px 40px #ff6eb444;border:3px solid var(--pink);text-align:center;animation:qPop .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes qPop{from{transform:scale(.6);opacity:0;}to{transform:scale(1);opacity:1;}}
+.qEmoji{font-size:52px;margin-bottom:6px;}
+.qCategory{font-size:10px;font-weight:800;color:var(--pink);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.qText{font-family:'Pacifico',cursive;font-size:18px;color:var(--purple);line-height:1.5;margin-bottom:10px;}
+.qHint{font-size:12px;color:#aaa;margin-bottom:20px;font-style:italic;}
+
+/* HIZLAN BUTTON */
+.btnHizlan{width:100%;padding:16px;font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;border:none;border-radius:50px;cursor:not-allowed;color:#fff;background:linear-gradient(135deg,#b2bec3,#95a5a6);box-shadow:none;transition:background .4s,box-shadow .4s;}
+.btnHizlan.ready{background:linear-gradient(135deg,#00b894,#00cec9);box-shadow:0 6px 28px #00b89455;cursor:pointer;animation:devamPulse .7s ease-in-out infinite alternate;}
+@keyframes devamPulse{from{transform:scale(1);}to{transform:scale(1.05);}}
+
+/* CUSTOMIZE */
+.custTitle{font-family:'Pacifico',cursive;font-size:21px;color:var(--pink);margin-bottom:14px;}
+.colorGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;width:100%;max-width:270px;}
+.colorSwatch{width:100%;aspect-ratio:1;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .12s;box-shadow:0 3px 10px #0002;}
+.colorSwatch.active{border-color:#333;transform:scale(1.18);}
+.custLabel{font-size:11px;color:#888;margin-bottom:8px;font-weight:700;letter-spacing:.5px;}
+.previewBalloon{width:54px;height:64px;border-radius:50% 50% 50% 50%/55% 55% 45% 45%;box-shadow:0 4px 20px #ff475744;margin:0 auto 14px;transition:background .3s;}
+
+/* SPEED BAR */
+#speedBar{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;z-index:20;pointer-events:none;}
+.speedLbl{font-size:10px;font-weight:800;color:var(--purple);letter-spacing:1px;opacity:.7;}
+#speedTrack{width:70px;height:6px;background:#ff6eb422;border-radius:4px;overflow:hidden;border:1px solid #ff6eb455;}
+#speedFill{height:100%;background:linear-gradient(90deg,#7bed9f,#ffd32a,#ff6348);border-radius:4px;transition:width .4s;}
+
+/* FOOTER + PAUSE BTN */
+.footer{position:absolute;bottom:0;left:0;right:0;text-align:center;padding:4px 0 5px;font-size:9px;color:var(--purple);opacity:.6;font-weight:700;z-index:41;pointer-events:none;}
+#pauseBtn{position:absolute;top:12px;right:12px;z-index:41;width:32px;height:32px;border-radius:50%;border:2px solid var(--pink);background:#fff9;color:var(--pink);font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;font-weight:900;}
+#pauseBtn.show{display:flex;}
+</style>
+</head>
+<body>
+<div id="gw">
+  <div id="sky"></div>
+
+  <div id="hud">
+    <div class="hudBox"><div class="hudLabel">⭐ Dilek</div><div class="hudValue" id="scoreDisplay">0</div></div>
+    <div class="hudBox"><div class="hudLabel">🏆 En İyi</div><div class="hudValue" id="bestDisplay">0</div></div>
+  </div>
+
+  <button id="pauseBtn" title="Duraklat">II</button>
+
+  <div id="player">
+    <div class="bSparkle"></div><div class="bSparkle"></div>
+    <div class="bSparkle"></div><div class="bSparkle"></div>
+    <div class="bBody" id="bBody">
+      <div class="bShine"></div>
+      <div class="bFace"><div class="bEye"></div><div class="bEye"></div></div>
+    </div>
+    <div class="bString"></div><div class="bBasket"></div>
+  </div>
+
+  <div id="speedBar">
+    <div class="speedLbl">HIZ</div>
+    <div id="speedTrack"><div id="speedFill" style="width:8%"></div></div>
+  </div>
+  <div class="footer">Make-A-Wish® Türkiye – Bir Dilek Tut Derneği</div>
+
+  <div class="screen" id="startScreen">
+    <div class="mawLogo">
+      <div class="mawStar"></div>
+      <div class="mawName">Make-A-Wish® Türkiye<br>Bir Dilek Tut Derneği</div>
+    </div>
+    <div class="gameTitle">🎈 Dilek Balonu<br>Macerası!</div>
+    <div class="gameSub">Yıldızları topla, <strong>dilekleri gerçekleştir!</strong><br>Her yıldız = bir çocuğun umudu ✨</div>
+    <div class="howTo">
+      <div class="howRow"><div class="howIcon">⬅️➡️</div><span>Ok tuşları / A D ile uç</span></div>
+      <div class="howRow"><div class="howIcon">📱</div><span>Sola-sağa kaydır</span></div>
+      <div class="howRow"><div class="howIcon">⭐</div><span>Yıldız topla <strong>+100 puan</strong></span></div>
+      <div class="howRow"><div class="howIcon">🌩️</div><span>Fırtına bulutlarından kaç!</span></div>
+      <div class="howRow"><div class="howIcon">💬</div><span>Çarptıktan sonra soru gelir!</span></div>
+    </div>
+    <button class="btn btnCustom" id="customizeBtn">🎨 Balonunu Özelleştir</button>
+    <button class="btn btnPlay" id="startBtn">🎈 UÇUŞA BAŞLA!</button>
+    <a class="btnLink" href="https://www.makeawishturkiye.org/" target="_blank" rel="noopener">makeawishturkiye.org →</a>
+  </div>
+
+  <div class="screen" id="goScreen">
+    <div class="goEmoji">💖</div>
+    <div class="goTitle">Harika Macera!</div>
+    <div class="goScoreLabel">Topladığın puan:</div>
+    <div class="goScore" id="goScoreVal">0</div>
+    <div class="goBest">🏆 En iyi: <span id="goBestVal">0</span></div>
+    <div class="goMotivate" id="goMsg"></div>
+    <button class="btn btnRestart" id="restartBtn">🎈 Yeniden Başla!</button>
+    <a class="btn btnDonate" href="https://www.makeawishturkiye.org/" target="_blank" rel="noopener">💛 Gerçek Dileklere Destek Ol</a>
+    <button class="btn btnShare" id="shareBtn">🐦 Paylaş!</button>
+  </div>
+
+  <div class="screen" id="pauseScreen">
+    <div class="pauseTitle">⏸ Duraklat</div>
+    <p style="color:#888;font-size:13px;margin-bottom:18px;text-align:center">Balonun seni bekliyor...</p>
+    <button class="btn btnPlay" id="resumeBtn">▶ Devam Et</button>
+  </div>
+
+  <div class="screen" id="questionScreen">
+    <div class="qCard">
+      <div class="qEmoji" id="qEmoji">⭐</div>
+      <div class="qCategory" id="qCat"></div>
+      <div class="qText" id="qText"></div>
+      <div class="qHint">hazır olunca devam edebilsin 💭</div>
+      <button class="btnHizlan" id="devamBtn" disabled>Sohbet Zamanı...</button>
+    </div>
+  </div>
+
+  <div class="screen" id="customizeScreen">
+    <div class="custTitle">🎨 Balonunu Seç!</div>
+    <div class="previewBalloon" id="previewBalloon"></div>
+    <div class="custLabel">RENK / DESEN</div>
+    <div class="colorGrid" id="colorGrid"></div>
+    <button class="btn btnPlay" id="custDoneBtn" style="font-size:14px;padding:12px 32px;margin-bottom:0;">✅ Tamam!</button>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════
+   CONSTANTS
+════════════════════════════════════════════════════ */
+const LANE_X    = [90, 180, 270];
+const BASE_SPD  = 3.5;
+const MAX_ADD   = 9;
+const SPAWN_MIN = 1800;
+const SPAWN_MAX = 2800;
+const STAR_P    = 0.33;
+const PLR_H     = 90, PLR_W = 60;
+const OBS_H     = 60;
+const STR_H     = 38;
+const GH        = 640;  // game height
+const SHARE_URL = 'https://www.makeawishturkiye.org/';
+
+/* ════════════════════════════════════════════════════
+   BALLOON SKINS
+════════════════════════════════════════════════════ */
+const SKINS = [
+  {l:'Gökkuşağı', b:'conic-gradient(from 0deg,#ff4757 0deg 40deg,#ff6b81 40deg 80deg,#ffd32a 80deg 120deg,#ff6348 120deg 160deg,#7bed9f 160deg 200deg,#70a1ff 200deg 240deg,#5352ed 240deg 280deg,#ff4757 280deg 360deg)'},
+  {l:'Pembe',     b:'linear-gradient(135deg,#ff6eb4,#ff4fa0,#ff9fcc)'},
+  {l:'Mavi',      b:'linear-gradient(135deg,#70a1ff,#1e90ff,#a8d8ff)'},
+  {l:'Sarı',      b:'linear-gradient(135deg,#ffd32a,#ffbe00,#fff176)'},
+  {l:'Yeşil',     b:'linear-gradient(135deg,#7bed9f,#2ed573,#a8ffbc)'},
+  {l:'Mor',       b:'linear-gradient(135deg,#a29bfe,#6c5ce7,#d5ccff)'},
+  {l:'Turuncu',   b:'linear-gradient(135deg,#ff6348,#ff4500,#ffb347)'},
+  {l:'Okyanus',   b:'linear-gradient(135deg,#00cec9,#81ecec,#00b894)'},
+  {l:'Kırmızı',   b:'linear-gradient(135deg,#ff0000,#cc0000,#ff6666)'},
+  {l:'Altın',     b:'linear-gradient(135deg,#ffd700,#ff9f43,#fff176)'},
+  {l:'Bulut',     b:'radial-gradient(circle at 30% 30%,#fff,#a8d8f0 60%)'},
+  {l:'Uzay',      b:'conic-gradient(from 45deg,#2d3436,#6c5ce7,#00cec9,#2d3436)'},
+];
+
+/* ════════════════════════════════════════════════════
+   QUESTIONS  (shown one-by-one after each crash)
+════════════════════════════════════════════════════ */
+const QUESTIONS = [
+  {e:'🎮', c:'Gamer / İnfluencer / Youtuber', t:'En sevdiğin YouTuber veya oyuncu kim?'},
+  {e:'🦸', c:'Süper Kahraman',               t:'Süper kahramanın ya da idolün kim?'},
+  {e:'🧸', c:'Oyuncaklar',                   t:'En sevdiğin oyuncak veya oyun nedir?'},
+  {e:'📚', c:'Kitap',                        t:'En sevdiğin kitap hangisi?'},
+  {e:'🎵', c:'Müzik Grubu / Şarkıcı',        t:'En sevdiğin şarkıcı ya da grup kim?'},
+  {e:'⚽', c:'Spor Dalı',                    t:'En sevdiğin spor hangisi?'},
+  {e:'🏅', c:'Sporcu',                       t:'Favori sporcun kim?'},
+  {e:'🏟️', c:'Takım',                        t:'Hangi takımı tutuyorsun?'},
+  {e:'🐾', c:'Hayvan',                       t:'En sevdiğin hayvan nedir?'},
+];
+
+/* ════════════════════════════════════════════════════
+   SKY THEMES
+════════════════════════════════════════════════════ */
+const SKIES = [
+  'linear-gradient(180deg,#a8d8f0 0%,#c5e8ff 30%,#ffd6e8 65%,#ffe0b2 100%)',
+  'linear-gradient(180deg,#ffd6a5 0%,#ffb3d9 45%,#c5adf4 100%)',
+  'linear-gradient(180deg,#1a1a3e 0%,#2d1b69 40%,#4a0080 100%)',
+  'linear-gradient(180deg,#87ceeb 0%,#b0e0ff 40%,#e0f7fa 100%)',
+];
+
+/* ════════════════════════════════════════════════════
+   STATE — two booleans control everything:
+     running   = loop is active (rAF is running)
+     showingQ  = question screen is visible
+   Never allow both true at the same time.
+════════════════════════════════════════════════════ */
+let running  = false;
+let showingQ = false;
+let score    = 0;
+let best     = +(localStorage.getItem('dilekBest') || 0);
+let lane     = 1;
+let speed    = BASE_SPD;
+let fid      = null;   // requestAnimationFrame id
+let lastTs   = 0;
+let scoreFrac= 0;
+let obs      = [];     // obstacles
+let strs     = [];     // stars
+let spawnT   = 0;
+let spawnN   = 2000;
+let qIdx     = 0;
+let askedSet = new Set();  // indices of already-shown questions
+let skyIdx   = 0;
+let skyT     = 0;
+let cntIv    = null;   // question countdown interval
+let roundT   = 0;      // ms since last question / round start
+const ROUND_MS = 30000; // 30 seconds
+let skinIdx  = +(localStorage.getItem('dilekSkin') || 0);
+
+/* ════════════════════════════════════════════════════
+   DOM
+════════════════════════════════════════════════════ */
+const GW        = document.getElementById('gw');
+const PLAYER    = document.getElementById('player');
+const BBODY     = document.getElementById('bBody');
+const SCORE_EL  = document.getElementById('scoreDisplay');
+const BEST_EL   = document.getElementById('bestDisplay');
+const SP_FILL   = document.getElementById('speedFill');
+const PBTN      = document.getElementById('pauseBtn');
+const SKY_EL    = document.getElementById('sky');
+
+const scStart   = document.getElementById('startScreen');
+const scGo      = document.getElementById('goScreen');
+const scPause   = document.getElementById('pauseScreen');
+const scQ       = document.getElementById('questionScreen');
+const scCust    = document.getElementById('customizeScreen');
+
+BEST_EL.textContent = best;
+
+/* ════════════════════════════════════════════════════
+   SKIN
+════════════════════════════════════════════════════ */
+function applySkin(i) {
+  skinIdx = i;
+  BBODY.style.background = SKINS[i].b;
+  localStorage.setItem('dilekSkin', i);
+}
+applySkin(skinIdx);
+
+/* ════════════════════════════════════════════════════
+   SKY
+════════════════════════════════════════════════════ */
+function applySky(i) { SKY_EL.style.background = SKIES[i]; }
+applySky(0);
+
+/* ════════════════════════════════════════════════════
+   STATIC BG CLOUDS
+════════════════════════════════════════════════════ */
+(function buildClouds() {
+  [{t:60,l:-20,w:90,h:28},{t:140,r:-10,w:80,h:24},{t:250,l:5,w:70,h:22},
+   {t:350,r:5,w:100,h:30},{t:460,l:-15,w:85,h:26},{t:550,r:-5,w:75,h:23}
+  ].forEach(p => {
+    const d = document.createElement('div'); d.className = 'bgC';
+    const side = p.l !== undefined ? `left:${p.l}px` : `right:${p.r}px`;
+    d.style.cssText = `top:${p.t}px;${side};width:${p.w}px;height:${p.h}px;`;
+    [
+      `position:absolute;width:${Math.round(p.w*.5)}px;height:${Math.round(p.h*.9)}px;top:${-Math.round(p.h*.45)}px;left:10px;background:inherit;border-radius:50%;`,
+      `position:absolute;width:${Math.round(p.w*.35)}px;height:${Math.round(p.h*.7)}px;top:${-Math.round(p.h*.35)}px;right:10px;background:inherit;border-radius:50%;`
+    ].forEach(s => { const b = document.createElement('div'); b.style.cssText = s; d.appendChild(b); });
+    SKY_EL.appendChild(d);
+  });
+})();
+
+/* ════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════ */
+function rndSpawn() {
+  const t = Math.min(1, (speed - BASE_SPD) / MAX_ADD);
+  return SPAWN_MIN*(1-t*.55) + Math.random()*(SPAWN_MAX*(1-t*.45) - SPAWN_MIN*(1-t*.55));
+}
+function setLane() { PLAYER.style.left = LANE_X[lane] + 'px'; }
+setLane();
+
+function plrBox() {
+  return { y: GH - 80 - PLR_H + 12, h: PLR_H - 22 };
+}
+function hitsObs(ob) {
+  if (ob.lane !== lane || ob.y < -10) return false;
+  const p = plrBox(), oy = ob.y + 10, oh = OBS_H - 14;
+  return !(p.y + p.h < oy || p.y > oy + oh);
+}
+function hitsStar(s) {
+  if (s.lane !== lane || s.y < -10) return false;
+  const p = plrBox(), sy = s.y + 4, sh = STR_H - 8;
+  return !(p.y + p.h < sy || p.y > sy + sh);
+}
+
+/* ════════════════════════════════════════════════════
+   AUDIO
+════════════════════════════════════════════════════ */
+let AC, bgG;
+function initAC() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); }
+function ding() {
+  if (!AC) return;
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.connect(g); g.connect(AC.destination); o.type = 'sine';
+  o.frequency.setValueAtTime(880, AC.currentTime);
+  o.frequency.exponentialRampToValueAtTime(1320, AC.currentTime + .15);
+  g.gain.setValueAtTime(.3, AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001, AC.currentTime + .5);
+  o.start(); o.stop(AC.currentTime + .5);
+}
+function whoosh() {
+  if (!AC) return;
+  const o = AC.createOscillator(), g = AC.createGain(), f = AC.createBiquadFilter();
+  o.connect(f); f.connect(g); g.connect(AC.destination);
+  o.type = 'sawtooth'; f.type = 'lowpass'; f.frequency.value = 400;
+  o.frequency.setValueAtTime(300, AC.currentTime);
+  o.frequency.exponentialRampToValueAtTime(80, AC.currentTime + .4);
+  g.gain.setValueAtTime(.18, AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001, AC.currentTime + .4);
+  o.start(); o.stop(AC.currentTime + .4);
+}
+function startMusic() {
+  if (!AC || bgG) return;
+  bgG = AC.createGain(); bgG.gain.value = .04; bgG.connect(AC.destination);
+  const notes = [523,659,784,880,784,659,523,440]; let i = 0;
+  (function tick() {
+    if (!running) { bgG = null; return; }
+    const o = AC.createOscillator(); o.type = 'sine'; o.connect(bgG);
+    o.frequency.value = notes[i++ % notes.length];
+    o.start(); o.stop(AC.currentTime + .35);
+    setTimeout(tick, 400);
+  })();
+}
+function stopMusic() {
+  if (bgG) { bgG.gain.setTargetAtTime(0, AC.currentTime, .1); bgG = null; }
+}
+
+/* ════════════════════════════════════════════════════
+   SPAWN
+════════════════════════════════════════════════════ */
+function spawnItem() {
+  const li = Math.floor(Math.random() * 3), x = LANE_X[li];
+  if (Math.random() < STAR_P) {
+    const el = document.createElement('div');
+    el.className = 'wishStar'; el.style.left = x + 'px'; el.style.top = '-44px';
+    el.innerHTML = '<div class="starShape"></div><div class="starSparkle"><div class="sparkDot"></div><div class="sparkDot"></div><div class="sparkDot"></div><div class="sparkDot"></div></div>';
+    GW.appendChild(el); strs.push({ el, y: -44, lane: li });
+  } else {
+    const el = document.createElement('div');
+    el.className = 'obstacle'; el.style.left = x + 'px'; el.style.top = '-70px';
+    el.innerHTML = '<div class="cloudShape"></div><div class="lightning">⚡</div>';
+    GW.appendChild(el); obs.push({ el, x, y: -70, lane: li });
+  }
+}
+
+/* ════════════════════════════════════════════════════
+   EFFECTS
+════════════════════════════════════════════════════ */
+const CC = ['#ff6eb4','#ffd700','#7bed9f','#70a1ff','#ff4757','#ffeaa7','#fd79a8','#a29bfe','#00cec9','#e17055'];
+function burst(cx, cy) {
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div'); el.className = 'confettiPiece';
+    const a = (Math.PI*2/40)*i, d = 45+Math.random()*85, sz = 5+Math.random()*9, dur = (.65+Math.random()*.6)+'s';
+    el.style.cssText = `width:${sz}px;height:${sz}px;background:${CC[i%CC.length]};left:${cx}px;top:${cy}px;border-radius:${Math.random()>.5?'50%':'2px'};--cx:${Math.cos(a)*d}px;--cy:${Math.sin(a)*d-20}px;--cr:${Math.round(Math.random()*720)}deg;--dur:${dur};`;
+    GW.appendChild(el); setTimeout(() => el.remove(), 1400);
+  }
+}
+function hitFX(x, y) {
+  for (let i = 0; i < 12; i++) {
+    const el = document.createElement('div'); el.className = 'particle';
+    const a = Math.random()*Math.PI*2, d = 20+Math.random()*35;
+    el.style.cssText = `width:${5+Math.random()*7}px;height:${5+Math.random()*7}px;background:${['#8899aa','#aabbcc','#fff'][i%3]};left:${x}px;top:${y}px;--px:${Math.cos(a)*d}px;--py:${Math.sin(a)*d}px;`;
+    GW.appendChild(el); setTimeout(() => el.remove(), 750);
+  }
+}
+function floatTxt(t, x, y) {
+  const f = document.createElement('div'); f.className = 'floatScore';
+  f.textContent = t; f.style.cssText = `left:${x-24}px;top:${y-10}px;`;
+  GW.appendChild(f); setTimeout(() => f.remove(), 1100);
+}
+
+/* ════════════════════════════════════════════════════
+   GAME LOOP
+════════════════════════════════════════════════════ */
+function loop(ts) {
+  if (!running || showingQ) { fid = null; return; }
+
+  const dt = Math.min(ts - lastTs, 50); lastTs = ts;
+
+  // Score
+  scoreFrac += dt / 16.67;
+  const inc = Math.floor(scoreFrac / 2);
+  if (inc > 0) {
+    score += inc; scoreFrac %= 2; SCORE_EL.textContent = score;
+    speed = BASE_SPD + Math.min(MAX_ADD, score / 200);
+    SP_FILL.style.width = (8 + Math.min(92, (speed-BASE_SPD)/MAX_ADD*92)) + '%';
+  }
+
+  // Sky cycle
+  skyT += dt;
+  if (skyT > 40000) { skyT = 0; skyIdx = (skyIdx+1) % SKIES.length; applySky(skyIdx); }
+
+  // 30-second question timer
+  roundT += dt;
+  if (roundT >= ROUND_MS) {
+    roundT = 0;
+    triggerQuestion(); return;
+  }
+
+  const mv = speed * (dt / 16.67);
+  spawnT += dt;
+  if (spawnT >= spawnN) { spawnT = 0; spawnN = rndSpawn(); spawnItem(); }
+
+  // Obstacles
+  for (let i = obs.length - 1; i >= 0; i--) {
+    const o = obs[i]; o.y += mv; o.el.style.top = o.y + 'px';
+    if (o.y > GH + 80) { o.el.remove(); obs.splice(i, 1); continue; }
+    if (hitsObs(o)) {
+      hitFX(o.x, o.y + 20); whoosh();
+      onCrash(); return; 
+    }
+  }
+
+  // Stars
+  for (let i = strs.length - 1; i >= 0; i--) {
+    const s = strs[i]; s.y += mv; s.el.style.top = s.y + 'px';
+    if (s.y > GH + 50) { s.el.remove(); strs.splice(i, 1); continue; }
+    if (hitsStar(s)) {
+      burst(LANE_X[s.lane], s.y); floatTxt('+100 ⭐', LANE_X[s.lane], s.y);
+      s.el.remove(); strs.splice(i, 1);
+      score += 100; SCORE_EL.textContent = score; ding();
+    }
+  }
+
+  fid = requestAnimationFrame(loop);
+}
+
+/* ════════════════════════════════════════════════════
+   ON CRASH 
+════════════════════════════════════════════════════ */
+function onCrash() {
+  running  = false;
+  showingQ = true;
+  cancelAnimationFrame(fid); fid = null;
+  stopMusic();
+  PBTN.classList.remove('show');
+  if (score > best) { best = score; localStorage.setItem('dilekBest', best); BEST_EL.textContent = best; }
+  triggerQuestion();
+}
+
+/* ════════════════════════════════════════════════════
+   TRIGGER QUESTION 
+════════════════════════════════════════════════════ */
+function triggerQuestion() {
+  running  = false;
+  showingQ = true;
+  cancelAnimationFrame(fid); fid = null;
+  stopMusic();
+  PBTN.classList.remove('show');
+
+  let nextIdx = -1;
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    if (!askedSet.has(i)) { nextIdx = i; break; }
+  }
+
+  if (nextIdx === -1) {
+    showingQ = false;
+    resumeFromQuestion();
+    return;
+  }
+
+  askedSet.add(nextIdx);
+  qIdx = nextIdx;
+  openQuestion();
+}
+
+/* ════════════════════════════════════════════════════
+   QUESTION SCREEN (Gizli Geri Sayım)
+════════════════════════════════════════════════════ */
+function openQuestion() {
+  const q = QUESTIONS[qIdx];
+  document.getElementById('qEmoji').textContent = q.e;
+  document.getElementById('qCat').textContent   = q.c;
+  document.getElementById('qText').textContent  = q.t;
+
+  const btn = document.getElementById('devamBtn');
+  
+  // Başlangıçta pasif ve metni "Sohbet Zamanı..."
+  btn.disabled = true; 
+  btn.classList.remove('ready');
+  btn.innerHTML = 'Sohbet Zamanı...';
+
+  let secs = 10;
+  clearInterval(cntIv);
+  
+  // Geri sayım arka planda çalışıyor, ekranda görünmüyor
+  cntIv = setInterval(() => {
+    secs--;
+    if (secs <= 0) {
+      clearInterval(cntIv);
+      btn.innerHTML = '🚀 DEVAM ET!';
+      btn.disabled = false; 
+      btn.classList.add('ready');
+    }
+  }, 1000);
+
+  scQ.style.display = 'flex';
+}
+
+function closeQuestion() {
+  clearInterval(cntIv);
+  scQ.style.display = 'none';
+  resumeFromQuestion();
+}
+
+/* ════════════════════════════════════════════════════
+   RESUME AFTER QUESTION
+════════════════════════════════════════════════════ */
+function resumeFromQuestion() {
+  obs.forEach(o => o.el.remove()); obs = [];
+  strs.forEach(s => s.el.remove()); strs = [];
+  spawnT = 0; spawnN = rndSpawn();
+  roundT = 0; 
+
+  lane = 1; setLane();
+
+  showingQ = false;
+  running  = true;
+
+  PBTN.classList.add('show');
+  lastTs = performance.now();
+  cancelAnimationFrame(fid);
+  startMusic();
+  fid = requestAnimationFrame(loop);
+}
+
+/* ════════════════════════════════════════════════════
+   START 
+════════════════════════════════════════════════════ */
+function startFresh() {
+  initAC();
+  obs.forEach(o => o.el.remove()); obs = [];
+  strs.forEach(s => s.el.remove()); strs = [];
+  score = 0; lane = 1; speed = BASE_SPD; spawnT = 0; scoreFrac = 0;
+  qIdx = 0; askedSet = new Set(); roundT = 0;
+  skyIdx = 0; skyT = 0; applySky(0);
+  spawnN = rndSpawn();
+  SCORE_EL.textContent = 0; SP_FILL.style.width = '8%';
+  setLane();
+
+  showingQ = false;
+  running  = true;
+
+  [scStart, scGo, scPause, scQ, scCust].forEach(s => s.style.display = 'none');
+  PBTN.classList.add('show');
+  lastTs = performance.now();
+  cancelAnimationFrame(fid);
+  startMusic();
+  fid = requestAnimationFrame(loop);
+}
+
+/* ════════════════════════════════════════════════════
+   PAUSE / RESUME
+════════════════════════════════════════════════════ */
+let pauseStart = 0;
+function pauseGame() {
+  if (!running || showingQ) return;
+  running = false; cancelAnimationFrame(fid); fid = null;
+  pauseStart = performance.now();
+  stopMusic(); PBTN.classList.remove('show'); scPause.style.display = 'flex';
+}
+function resumeGame() {
+  if (showingQ) return;
+  roundT = Math.max(0, roundT - (performance.now() - pauseStart));
+  scPause.style.display = 'none'; PBTN.classList.add('show');
+  running = true; lastTs = performance.now();
+  cancelAnimationFrame(fid); startMusic();
+  fid = requestAnimationFrame(loop);
+}
+
+/* ════════════════════════════════════════════════════
+   CUSTOMIZE
+════════════════════════════════════════════════════ */
+const cGrid = document.getElementById('colorGrid');
+const prevB  = document.getElementById('previewBalloon');
+SKINS.forEach((s, i) => {
+  const sw = document.createElement('div'); sw.className = 'colorSwatch' + (i === skinIdx ? ' active' : '');
+  sw.style.background = s.b; sw.title = s.l;
+  sw.addEventListener('click', () => {
+    cGrid.querySelectorAll('.colorSwatch').forEach(x => x.classList.remove('active'));
+    sw.classList.add('active'); applySkin(i); prevB.style.background = s.b;
+  });
+  cGrid.appendChild(sw);
+});
+prevB.style.background = SKINS[skinIdx].b;
+
+document.getElementById('customizeBtn').addEventListener('click', () => { scStart.style.display = 'none'; scCust.style.display = 'flex'; });
+document.getElementById('custDoneBtn').addEventListener('click', () => { scCust.style.display = 'none'; scStart.style.display = 'flex'; });
+
+/* ════════════════════════════════════════════════════
+   BUTTONS
+════════════════════════════════════════════════════ */
+document.getElementById('startBtn').addEventListener('click', startFresh);
+
+document.getElementById('devamBtn').addEventListener('click', () => {
+  if (!document.getElementById('devamBtn').disabled) closeQuestion();
+});
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+  scGo.style.display = 'none'; startFresh();
+});
+document.getElementById('resumeBtn').addEventListener('click', resumeGame);
+PBTN.addEventListener('click', () => {
+  if (scPause.style.display === 'flex') resumeGame(); else pauseGame();
+});
+
+document.getElementById('shareBtn').addEventListener('click', () => {
+  const txt = `${score} puan topladım! 🎈⭐ ${SHARE_URL} #MakeAWishTurkiye`;
+  if (navigator.share) navigator.share({ title: 'Dilek Balonu', text: txt, url: SHARE_URL }).catch(() => {});
+  else window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(txt), '_blank');
+});
+
+/* ════════════════════════════════════════════════════
+   CONTROLS
+════════════════════════════════════════════════════ */
+function moveL() { if (!running || showingQ) return; if (lane > 0) { lane--; setLane(); } }
+function moveR() { if (!running || showingQ) return; if (lane < 2) { lane++; setLane(); } }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft'  || e.key === 'a' || e.key === 'A') moveL();
+  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveR();
+  if (e.key === 'Escape') { if (scPause.style.display === 'flex') resumeGame(); else pauseGame(); }
+});
+
+let tx = null;
+GW.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+GW.addEventListener('touchend',   e => {
+  if (tx === null) return;
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 28) { dx < 0 ? moveL() : moveR(); }
+  tx = null;
+}, { passive: true });
+</script>
+</body>
+</html>
