@@ -106,7 +106,7 @@
             color: inherit; 
             border: 2px solid transparent; 
             position: relative; 
-            overflow: visible; /* Butonun taşmasına izin ver */
+            overflow: visible;
         }
         
         .card:hover { 
@@ -136,7 +136,6 @@
         .info h2 { margin: 0; font-size: 19px; color: var(--maw-blue); font-weight: 800; }
         .info span { font-size: 14px; color: #555; font-weight: 600; display: block; margin-top: 5px; line-height: 1.4; }
         
-        /* Cihaz Uyarı Yazısı Stili */
         .device-support {
             font-size: 11px;
             color: var(--maw-blue);
@@ -170,7 +169,7 @@
         .tag-pink { background: #FCE4EC; color: #C2185B; }
 
         .footer { 
-            margin-top: 50px; 
+            margin-top: 20px; 
             padding: 30px; 
             text-align: center;
             font-size: 13px; 
@@ -182,7 +181,6 @@
         
         .footer strong { color: var(--maw-blue); }
 
-        /* Bilgi Butonu */
         .info-btn {
             position: absolute;
             top: -10px;
@@ -210,7 +208,6 @@
             color: white;
         }
 
-        /* Modal (Pop-up) Stilleri */
         .game-modal {
             display: none;
             position: fixed;
@@ -246,7 +243,6 @@
         .game-modal-content ul { text-align: left; padding-left: 0; list-style: none; color: #444; margin-bottom: 25px; }
         .game-modal-content li { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; font-size: 15px; }
 
-        /* YENİ: Modal Buton Grubu */
         .modal-buttons {
             display: flex;
             flex-direction: column;
@@ -269,7 +265,6 @@
 
         .close-modal:hover { background: var(--maw-light-blue); transform: scale(1.05); }
 
-        /* YENİ: Döküman Butonu */
         .doc-modal-btn {
             background: transparent;
             color: var(--maw-blue);
@@ -287,14 +282,6 @@
         .doc-modal-btn:hover {
             background: #f0f7ff;
             border-color: var(--maw-light-blue);
-        }
-
-        @media (max-width: 600px) {
-            .swirl-star { font-size: 60px; }
-            .header h1 { font-size: 24px; }
-            .card { padding: 20px; }
-            .icon-box { width: 60px; height: 60px; font-size: 28px; }
-            .category-title { font-size: 18px; margin-top: 30px; }
         }
 
         .philosophy-btn {
@@ -321,7 +308,6 @@
             box-shadow: 0 6px 15px rgba(0, 87, 184, 0.1);
         }
 
-        /* --- YENİ EKLENEN: FORM ÇAĞRI ALANI STİLLERİ --- */
         .feedback-banner {
             width: 90%;
             max-width: 1100px;
@@ -385,15 +371,88 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        @media (max-width: 800px) {
-            .feedback-banner {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-                padding: 30px 20px;
-            }
+        /* --- YENİ EKLENEN: EKİP FOTOĞRAFI STİLLERİ --- */
+        .team-banner {
+            width: 90%;
+            max-width: 600px;
+            margin: 40px auto 30px auto;
+            text-align: center;
         }
 
+        .team-banner h3 {
+            color: var(--maw-blue);
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+.team-photo-card {
+    background: white;
+    padding: 25px;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(0, 87, 184, 0.12);
+    border: 3px solid var(--maw-gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 550px;
+    margin: 0 auto;
+    transition: transform 0.3s ease;
+}
+
+        .team-photo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 87, 184, 0.15);
+        }
+
+.team-photo-card img {
+    width: 100%;
+    max-height: none;
+    border-radius: 15px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 20px;
+}
+.team-names {
+    font-size: 16px;
+    color: #444;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; 
+}
+
+.team-names span {
+    color: var(--maw-blue);
+    font-weight: 800;
+}
+
+.team-photo-card p {
+    margin: 0;
+    font-size: 15px;
+    color: #666;
+    font-weight: 600;
+    font-style: italic;
+}
+
+@media (max-width: 600px) {
+            .swirl-star { font-size: 60px; }
+            .header h1 { font-size: 24px; }
+            .card { padding: 20px; }
+            .icon-box { width: 60px; height: 60px; font-size: 28px; }
+            .category-title { font-size: 18px; margin-top: 30px; }
+            .team-banner h3 { font-size: 18px; }
+            
+            /* İsimlerin mobilde yan yana kalması için eklenen kısım */
+            .team-names { 
+                flex-direction: row !important; 
+                font-size: 11px; 
+                gap: 5px; 
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -530,6 +589,17 @@
         </a>
     </div>
 
+<div class="team-banner">
+    <h3>✨ Sihrin Arkasındaki Ekip</h3>
+    <div class="team-photo-card">
+        <img src="resim.jpg" alt="Siteyi Geliştiren Gönüllü Ekip">
+        <div class="team-names">
+            <span>Şevval Müftüoğlu</span> • <span>Erhan Zorlu</span> • <span>Melek Seçil Aka</span>
+        </div>
+        <p>Dilek yolculuğunda sizinle birlikte yürümekten mutluluk duyuyoruz!</p>
+    </div>
+</div>
+
     <div class="footer">
         Bu araç <strong>Make-A-Wish®</strong> gönüllüleri için, dilek yolculuğunu güzelleştirmek amacıyla hazırlanmıştır. ❤️<br>
         Sihirli anlar yaratmanız dileğiyle!
@@ -558,7 +628,6 @@
                     '💬 <b>Sohbet:</b> Her tur sonunda çıkan soruları çocuğumuzla paylaş.',
                     '🧿 <b>Sürpriz:</b> Nazar boncuklu labutları devirmek çok şanslıdır!'
                 ]
-                // Dokümanı henüz yoksa docUrl yazmıyoruz.
             },
             'balon': {
                 title: 'Dilek Balonu Macerası',
@@ -569,7 +638,7 @@
                     '🎨 <b>Özelleştir:</b> Başlamadan önce balonunun rengini kendi zevkine göre seçebilirsin.',
                     '⏱️ <b>Sohbet Zamanı:</b> Oyun sırasında sürpriz sohbet aralarıyla birbirimizi daha yakından tanıyacağız.'
                 ],
-                docUrl: 'pages/dilek-balonu-rehber.html' // pages klasöründeki html linki
+                docUrl: 'pages/dilek-balonu-rehber.html' 
             },
             'gokyuzu': {
                 title: 'Sihirli Gökyüzü (Yıldız Kapmaca)',
@@ -578,13 +647,13 @@
                     '⏳ <b>Sohbet Zamanı:</b> Yıldızı yakaladığında bir soru çıkar. Düşünmen için 10 saniye süren var!',
                     '🎯 <b>Amaç:</b> Ekranda yazan favorileri (yemek, renk vb.) yakalayarak birbirimizi tanımak.'
                 ],
-                docUrl: 'pages/sihirli-gokyuzu-rehber.html' // pages klasöründeki html linki
+                docUrl: 'pages/sihirli-gokyuzu-rehber.html' 
             }
         };
 
         function openGameInfo(event, gameKey) {
-            event.preventDefault(); // Sayfa yönlendirmesini engeller
-            event.stopPropagation(); // Üst elementlere tıklama etkisini engeller
+            event.preventDefault(); 
+            event.stopPropagation(); 
             
             const data = gameData[gameKey];
             if(!data) return;
@@ -599,7 +668,6 @@
                 list.appendChild(li);
             });
 
-            // YENİ: Döküman linki varsa butonu göster, yoksa gizle
             const docLinkBtn = document.getElementById('modalDocLink');
             if (data.docUrl) {
                 docLinkBtn.href = data.docUrl;
@@ -615,7 +683,6 @@
             document.getElementById('infoModal').style.display = 'none';
         }
 
-        // Modal dışına tıklayınca kapatma
         window.onclick = function(event) {
             const modal = document.getElementById('infoModal');
             if (event.target == modal) {
