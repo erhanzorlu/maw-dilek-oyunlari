@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make-A-Wish | Gönüllü Oyun Merkezi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
+
+        :root {
+            --maw-blue: #0057B8;
+            /* Resmi Make-A-Wish Mavisi */
+            --maw-light-blue: #41B6E6;
+            --maw-gold: #FFD700;
+            --bg-color: #f7f9fc;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(#e1e8f0 1px, transparent 1px),
+                radial-gradient(#e1e8f0 1px, transparent 1px);
+            background-position: 0 0, 25px 25px;
+            background-size: 50px 50px;
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .swirl-star {
+            font-size: 70px;
+            color: var(--maw-blue);
+            display: inline-block;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 87, 184, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        h1 {
+            color: var(--maw-blue);
+            margin: 0;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            max-width: 500px;
+            margin: 10px auto;
+            font-weight: 600;
+        }
+
+        .brand-line {
+            width: 60px;
+            height: 4px;
+            background: var(--maw-gold);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+
+        .category-title {
+            width: 90%;
+            max-width: 1100px;
+            color: var(--maw-blue);
+            font-size: 22px;
+            font-weight: 800;
+            margin: 40px 0 20px 0;
+            padding-left: 15px;
+            border-left: 6px solid var(--maw-gold);
+            display: flex;
+            align-items: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            width: 90%;
+            max-width: 1100px;
+            padding-bottom: 10px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 87, 184, 0.08);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: visible;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 87, 184, 0.15);
+            border-color: var(--maw-blue);
+        }
+
+        .icon-box {
+            width: 70px;
+            height: 70px;
+            margin-right: 20px;
+            background: #F0F7FF;
+            color: var(--maw-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            font-size: 32px;
+            flex-shrink: 0;
+            transition: background 0.3s;
+        }
+
+        .card:hover .icon-box {
+            background: var(--maw-blue);
+            color: white;
+        }
+
+        .info {
+            flex: 1;
+        }
+
+        .info h2 {
+            margin: 0;
+            font-size: 19px;
+            color: var(--maw-blue);
+            font-weight: 800;
+        }
+
+        .info span {
+            font-size: 14px;
+            color: #555;
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .device-support {
+            font-size: 11px;
+            color: var(--maw-blue);
+            font-weight: 800;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #E1F5FE;
+            padding: 4px 10px;
+            border-radius: 8px;
+            width: fit-content;
+            text-transform: uppercase;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tag-blue {
+            background: #E1F5FE;
+            color: var(--maw-blue);
+        }
+
+        .tag-gold {
+            background: #FFF9C4;
+            color: #F57F17;
+        }
+
+        .tag-purple {
+            background: #F3E5F5;
+            color: #7B1FA2;
+        }
+
+        .tag-green {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .tag-pink {
+            background: #FCE4EC;
+            color: #C2185B;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding: 30px;
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            background: white;
+            width: 100%;
+            border-top: 1px solid #eee;
+        }
+
+        .footer strong {
+            color: var(--maw-blue);
+        }
+
+        .info-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 28px;
+            height: 28px;
+            background: var(--maw-gold);
+            color: var(--maw-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+            transition: all 0.2s;
+            border: 2px solid white;
+        }
+
+        .info-btn:hover {
+            transform: scale(1.2) rotate(10deg);
+            background: var(--maw-blue);
+            color: white;
+        }
+
+        .game-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 87, 184, 0.5);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .game-modal-content {
+            background: white;
+            padding: 35px;
+            border-radius: 30px;
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            border: 5px solid var(--maw-gold);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transform: scale(0.9);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .game-modal-content h3 {
+            color: var(--maw-blue);
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .game-modal-content ul {
+            text-align: left;
+            padding-left: 0;
+            list-style: none;
+            color: #444;
+            margin-bottom: 25px;
+        }
+
+        .game-modal-content li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .close-modal {
+            background: var(--maw-blue);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-modal:hover {
+            background: var(--maw-light-blue);
+            transform: scale(1.05);
+        }
+
+        .doc-modal-btn {
+            background: transparent;
+            color: var(--maw-blue);
+            border: 2px solid #e1e8f0;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .doc-modal-btn:hover {
+            background: #f0f7ff;
+            border-color: var(--maw-light-blue);
+        }
+
+        .philosophy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: white;
+            color: var(--maw-blue);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 20px;
+            border: 2px solid #e1e8f0;
+            box-shadow: 0 4px 10px rgba(0, 87, 184, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .philosophy-btn:hover {
+            background-color: #f0f7ff;
+            border-color: var(--maw-light-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 87, 184, 0.1);
+        }
+
+        .feedback-banner {
+            width: 90%;
+            max-width: 1100px;
+            margin: 50px auto 10px auto;
+            background: linear-gradient(135deg, var(--maw-blue) 0%, #004494 100%);
+            border-radius: 20px;
+            padding: 35px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0, 87, 184, 0.15);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .feedback-banner::before {
+            content: '📋';
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.1;
+            right: 5%;
+            top: -20px;
+            transform: rotate(15deg);
+        }
+
+        .feedback-text h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: var(--maw-gold);
+        }
+
+        .feedback-text p {
+            margin: 0;
+            font-size: 15px;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        .feedback-btn {
+            background: var(--maw-gold);
+            color: #5D4037;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .feedback-btn:hover {
+            background: #fff;
+            color: var(--maw-blue);
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- YENİ EKLENEN: EKİP FOTOĞRAFI STİLLERİ --- */
+        .team-banner {
+            width: 90%;
+            max-width: 600px;
+            margin: 40px auto 30px auto;
+            text-align: center;
+        }
+
+        .team-banner h3 {
+            color: var(--maw-blue);
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .team-photo-card {
+            background: white;
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0, 87, 184, 0.12);
+            border: 3px solid var(--maw-gold);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 550px;
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+        }
+
+        .team-photo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 87, 184, 0.15);
+        }
+
+        .team-photo-card img {
+            width: 100%;
+            max-height: none;
+            border-radius: 15px;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .team-names {
+            font-size: 16px;
+            color: #444;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-names span {
+            color: var(--maw-blue);
+            font-weight: 800;
+        }
+
+        .team-photo-card p {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .swirl-star {
+                font-size: 60px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .icon-box {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+
+            .category-title {
+                font-size: 18px;
+                margin-top: 30px;
+            }
+
+            .team-banner h3 {
+                font-size: 18px;
+            }
+
+            /* İsimlerin mobilde yan yana kalması için eklenen kısım */
+            .team-names {
+                flex-direction: row !important;
+                font-size: 11px;
+                gap: 5px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="swirl-star">★</div>
+        <h1>Gönüllü Oyun Merkezi</h1>
+        <div class="brand-line"></div>
+        <p class="subtitle">Dilek çocuğumuzla buzları eritmek ve sihirli anlar yaratmak için bir macera seç.</p>
+
+        <a href="pages/neden-oyun-oynuyoruz.html" class="philosophy-btn">
+            <span>🧠</span> Neden Oyun Oynuyoruz? (Pedagojik Altyapı)
+        </a>
+    </div>
+
+    <div class="category-title">🔥 Isınma Oyunları</div>
+    <div class="grid">
+
+        <a href="games/benim-cizim-atolyem.html" class="card">
+            <div class="icon-box">🎨</div>
+            <div class="info">
+                <h2>Çizim Atölyesi</h2>
+                <span>Hayallerini tuvale dök ve renklerin sihrini keşfet!</span>
+                <div class="tag tag-pink">Yaratıcılık</div>
+                <div class="device-support">💻 Tablet ve Laptop Uygun 📱</div>
+            </div>
+        </a>
+
+        <a href="games/emoji.html" class="card">
+            <div class="icon-box">🎭</div>
+            <div class="info">
+                <h2>Taklit Ustası</h2>
+                <span>Çarkı çevir, gelen emojiyi taklit et ve eğlen!</span>
+                <div class="tag tag-pink">Eğlence & Gülmece</div>
+            </div>
+        </a>
+
+        <a href="games/voice.html" class="card">
+            <div class="icon-box">🐿️</div>
+            <div class="info">
+                <h2>Sincap Tom</h2>
+                <span>Sesini sihirli bir şekilde değiştir ve komik taklitler yap!</span>
+                <div class="tag tag-gold">Eğlence & Kahkaha</div>
+            </div>
+        </a>
+
+        <a href="games/kazikazan.html" class="card">
+            <div class="icon-box">✨</div>
+            <div class="info">
+                <h2>Sihirli Kazı Kazan</h2>
+                <span>Kartı parmağınla kazı, sürpriz soruyu keşfet!</span>
+                <div class="tag tag-gold">Sürpriz</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="category-title">⚡ Hareketli & Enerjik Oyunlar</div>
+    <div class="grid">
+        <div class="card">
+            <div class="info-btn" onclick="openGameInfo(event, 'bowling')">?</div>
+            <a href="games/bowling.html"
+                style="text-decoration:none; color:inherit; display:flex; align-items:center; width:100%;">
+                <div class="icon-box">🎳</div>
+                <div class="info">
+                    <h2>Sihirli Bowling</h2>
+                    <span>Nazar boncuklu labutları devir, soruları cevapla!</span>
+                    <div class="tag tag-blue">Fizik & Eğlence</div>
+                </div>
+            </a>
+        </div>
+
+        <a href="games/futbol.html" class="card">
+            <div class="icon-box">⚽</div>
+            <div class="info">
+                <h2>Sihirli Futbol</h2>
+                <span>9 zorlu turda şutlarını çek, engelleri aş ve soruları cevapla!</span>
+                <div class="tag tag-green">Enerji & Beceri</div>
+            </div>
+        </a>
+
+        <div class="card">
+            <div class="info-btn" onclick="openGameInfo(event, 'balon')">?</div>
+            <a href="games/dilek-balonu-macerasi.html"
+                style="text-decoration:none; color:inherit; display:flex; align-items:center; width:100%;">
+                <div class="icon-box">🎈</div>
+                <div class="info">
+                    <h2>Dilek Balonu</h2>
+                    <span>Yıldızları topla, engellerden kaç ve gökyüzüne ulaş!</span>
+                    <div class="tag tag-blue">Macera & Enerji</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="info-btn" onclick="openGameInfo(event, 'gokyuzu')">?</div>
+            <a href="games/yildiz-kapmaca.html"
+                style="text-decoration:none; color:inherit; display:flex; align-items:center; width:100%;">
+                <div class="icon-box">🎣</div>
+                <div class="info">
+                    <h2>Yıldız Kapmaca</h2>
+                    <span>Kancayı at, yıldızı yakala ve sorusunu cevapla.</span>
+                    <div class="tag tag-gold">Tanışma & Sohbet</div>
+                </div>
+            </a>
+        </div>
+
+        <a href="games/dilek-arabasi.html" class="card">
+            <div class="icon-box">🏎️</div>
+            <div class="info">
+                <h2>Dilek Arabası</h2>
+                <span>Direksiyona geç, engelleri aş ve hedefe doğru hızla ilerle!</span>
+                <div class="tag tag-blue">Aksiyon & Hız</div>
+            </div>
+        </a>
+
+        <a href="games/pacman.html" class="card">
+            <div class="icon-box">👻</div>
+            <div class="info">
+                <h2>Sevimli Pacman</h2>
+                <span>Labirentte altınları topla, hayaletlerden kaç!</span>
+                <div class="tag tag-gold">Klasik Eğlence</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="category-title">🌙 Hobiler & Hayaller</div>
+    <div class="grid">
+        <a href="games/carkifelek.html" class="card">
+            <div class="icon-box">🎡</div>
+            <div class="info">
+                <h2>Dilek Çarkı</h2>
+                <span>Çarkı çevir, hayallerini ve favorilerini paylaş!</span>
+                <div class="tag tag-purple">Buzkıran</div>
+            </div>
+        </a>
+
+        <a href="games/sihirli-degnek.html" class="card">
+            <div class="icon-box">🔦</div>
+            <div class="info">
+                <h2>Yıldızın Feneri</h2>
+                <span>Karanlıkta saklanan sihirli arkadaşlarını ara.</span>
+                <div class="tag tag-blue">Gizem & Keşif</div>
+                <div class="device-support">💻 Tablet ve Laptop Uygun 📱</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="category-title">🪐 Hikaye & Macera</div>
+    <div class="grid">
+        <div class="card">
+            <div class="info-btn" onclick="openGameInfo(event, 'gezen')">?</div>
+            <a href="games/Dilek-gezegeni.html"
+                style="text-decoration:none; color:inherit; display:flex; align-items:center; width:100%;">
+                <div class="icon-box">🧚‍♀️</div>
+                <div class="info">
+                    <h2>Dilek Gezegeni</h2>
+                    <span>Peri ile uyan, yıldız tozlarını topla ve gizemli bir yolculuğa çık.</span>
+                    <div class="tag tag-purple">Anlatı Odaklı</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="feedback-banner">
+        <div class="feedback-text">
+            <h2>Gözlemlerin Çok Değerli!</h2>
+            <p>Oyun bittikten sonra, çocuğumuzun tepkilerini ve oyunu nasıl geliştirebileceğimize dair fikirlerini
+                bizimle paylaşır mısın?</p>
+        </div>
+        <a href="pages/form.html" class="feedback-btn">
+            Formu Doldur ✍️
+        </a>
+    </div>
+
+    <div class="team-banner">
+        <h3>✨ Sihrin Arkasındaki Ekip</h3>
+        <div class="team-photo-card">
+            <img src="images/resim.png" alt="Siteyi Geliştiren Gönüllü Ekip">
+            <div class="team-names">
+                <span>Nurcan Durak</span> • <span>Şevval Müftüoğlu</span> • <span>Erhan Zorlu</span> • <span>Melek Seçil
+                    Aka</span>
+            </div>
+            <p>Dilek yolculuğunda sizinle birlikte yürümekten mutluluk duyuyoruz!</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        Bu araç <strong>Make-A-Wish®</strong> gönüllüleri için, dilek yolculuğunu güzelleştirmek amacıyla
+        hazırlanmıştır. ❤️<br>
+        Sihirli anlar yaratmanız dileğiyle!
+    </div>
+
+    <div id="infoModal" class="game-modal">
+        <div class="game-modal-content">
+            <div class="swirl-star" style="font-size: 40px;">★</div>
+            <h3 id="modalTitle">Oyun Hakkında</h3>
+            <ul id="modalList"></ul>
+
+            <div class="modal-buttons">
+                <button class="close-modal" onclick="closeGameInfo()">Anladım, Kapat</button>
+                <a href="#" id="modalDocLink" class="doc-modal-btn" target="_blank" style="display: none;">📘 Teknik
+                    Rehberi Oku</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gameData = {
+            'bowling': {
+                title: 'Sihirli Bowling',
+                rules: [
+                    '🎳 <b>Nasıl Atılır:</b> Topu farenle/parmağınla geriye çek ve bırak.',
+                    '🌟 <b>Hedef:</b> 10 tur boyunca labutları devirerek puan topla.',
+                    '💬 <b>Sohbet:</b> Her tur sonunda çıkan soruları çocuğumuzla paylaş.',
+                    '🧿 <b>Sürpriz:</b> Nazar boncuklu labutları devirmek çok şanslıdır!'
+                ]
+            },
+            'balon': {
+                title: 'Dilek Balonu Macerası',
+                rules: [
+                    '⬅️➡️ <b>Nasıl Oynanır:</b> Ok tuşlarıyla veya ekranda sağa/sola kaydırarak balonunu yönlendir.',
+                    '⭐ <b>Yıldızları Topla:</b> Gökyüzündeki dilek yıldızlarını toplayarak puan kazan.',
+                    '🌩️ <b>Dikkat:</b> Fırtına bulutlarına çarpmamaya özen göster!',
+                    '🎨 <b>Özelleştir:</b> Başlamadan önce balonunun rengini kendi zevkine göre seçebilirsin.',
+                    '⏱️ <b>Sohbet Zamanı:</b> Oyun sırasında sürpriz sohbet aralarıyla birbirimizi daha yakından tanıyacağız.'
+                ],
+                docUrl: 'pages/dilek-balonu-rehber.html'
+            },
+            'gokyuzu': {
+                title: 'Sihirli Gökyüzü (Yıldız Kapmaca)',
+                rules: [
+                    '🛸 <b>Nasıl Oynanır:</b> Sallanan UFO kancası istediğin yıldızın üzerine gelince tıkla (veya Space bas).',
+                    '⏳ <b>Sohbet Zamanı:</b> Yıldızı yakaladığında bir soru çıkar. Düşünmen için 10 saniye süren var!',
+                    '🎯 <b>Amaç:</b> Ekranda yazan favorileri (yemek, renk vb.) yakalayarak birbirimizi tanımak.'
+                ],
+                docUrl: 'pages/sihirli-gokyuzu-rehber.html'
+            },
+            // Yeni Eklenen: Dilek Gezegeni Modal Verisi
+            'gezen': {
+                title: 'Dilek Gezegeni',
+                rules: [
+                    '🧚‍♀️ <b>Hikaye:</b> Sihirli bir odada uyan ve perinin rehberliğinde maceraya başla.',
+                    '⭐ <b>Mini Oyun:</b> Dilek gezegenine ulaşmak için yakıt olarak yıldız tozlarını topla.',
+                    '💬 <b>Etkileşim:</b> Karakter diyaloglarını okuyarak hikayeyi birlikte ilerletin.'
+                ]
+            }
+        };
+
+        function openGameInfo(event, gameKey) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const data = gameData[gameKey];
+            if (!data) return;
+
+            document.getElementById('modalTitle').innerText = data.title;
+            const list = document.getElementById('modalList');
+            list.innerHTML = '';
+
+            data.rules.forEach(rule => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>✨</span> <div>${rule}</div>`;
+                list.appendChild(li);
+            });
+
+            const docLinkBtn = document.getElementById('modalDocLink');
+            if (data.docUrl) {
+                docLinkBtn.href = data.docUrl;
+                docLinkBtn.style.display = 'inline-block';
+            } else {
+                docLinkBtn.style.display = 'none';
+            }
+
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeGameInfo() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('infoModal');
+            if (event.target == modal) {
+                closeGameInfo();
+            }
+        }
+    </script>
+</body>
+
+</html>

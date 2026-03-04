@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyun Rehberi: Dilek Balonu Macerası</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+        :root {
+            --maw-blue: #0057B8;
+            --maw-light-blue: #41B6E6;
+            --maw-gold: #FFD700;
+            --text-dark: #2c3e50;
+            --text-light: #546e7a;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- HEADER --- */
+        .hero {
+            background: linear-gradient(135deg, #0057B8 0%, #41B6E6 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--maw-gold);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #e1f5fe;
+            margin-top: 10px;
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            max-width: 900px;
+            margin: -30px auto 50px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--maw-blue);
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- QUICK FACTS GRID --- */
+        .quick-facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .fact-box {
+            background: #f8fbff;
+            border-left: 5px solid var(--maw-light-blue);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .fact-box h3 { margin: 0 0 10px 0; color: var(--maw-blue); font-size: 1.1rem; }
+        .fact-box p { margin: 0; color: var(--text-light); font-size: 0.95rem; }
+
+        /* --- WARNING BOX --- */
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .warning-box h3 { margin: 0 0 10px 0; color: #856404; }
+        .warning-box p { margin: 0 0 10px 0; color: #856404; font-size: 0.95rem; }
+        .warning-box ul { margin: 0; padding-left: 20px; color: #856404; font-size: 0.95rem; }
+
+        /* --- GAMEPLAY STEPS --- */
+        .step {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 40px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: var(--maw-gold);
+            color: var(--maw-blue);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+
+        .step-title { margin: 0; color: var(--text-dark); font-size: 1.3rem; }
+
+        .volunteer-tip {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #2e7d32;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* --- TABLE --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+        }
+
+        th { background-color: var(--maw-blue); color: white; }
+        tr:nth-child(even) { background-color: #fcfcfc; }
+
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>🎈 Dilek Balonu Macerası Rehberi</h1>
+        <p>Gönüllüler İçin Refleks, Beceri ve Sohbet Oyunu</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>🎯 Oyunun Amacı Nedir?</h2>
+            <ul style="color: var(--text-light);">
+                <li><strong>Etkileşim Başlatıcı Oyun:</strong> Gönüllü ile çocuk arasındaki iletişimi, heyecanlı bir "balon uçurma" oyunuyla başlatmak.</li>
+                <li><strong>İlgi Alanlarını Keşfetme:</strong> Oyunun en önemli mekaniği olan "Çarpma = Soru" mantığı sayesinde; çocuk yandığında veya süre dolduğunda çıkan sorularla (En sevdiğin YouTuber, Takım, Müzik vb.) çocuğu tanımak.</li>
+                <li><strong>Dilek Odaklı:</strong> "Yıldız toplama" temasıyla çocuğa Make-A-Wish'in dilek gerçekleştirme misyonunu oyunlaştırılarak hissettirmek.</li>
+            </ul>
+        </div>
+
+        <div class="quick-facts">
+            <div class="fact-box">
+                <h3>⏱️ Ne Kadar Sürecek?</h3>
+                <p><strong>Süre:</strong> Ortalama 5 - 10 Dakika.<br>
+                <strong>Zamanlayıcı:</strong> Oyun sadece çarpınca durmaz; aynı zamanda çocuk hiç yanmasa bile <strong>her 30 saniyede bir otomatik olarak duraklayıp</strong> soru ekranını açar. (9 farklı kategori bulunur).</p>
+            </div>
+            <div class="fact-box">
+                <h3>🧒 Hangi Yaş Grubuna Uygun?</h3>
+                <p><strong>İdeal:</strong> 6 - 15 Yaş.<br>
+                Sorular okul çağı ve ergenlik öncesi çocukların ilgi alanlarına yöneliktir. Oyun hızı refleks gerektirdiği için çok küçük çocuklar (3-5 yaş) zorlanabilir.</p>
+            </div>
+            <div class="fact-box">
+                <h3>📂 Kategori</h3>
+                <p><strong>Tür:</strong> Refleks ve Beceri Oyunu (Endless Runner).<br>
+                Hem dokunmatik ekran (mobil/tablet) hem de klavye ile oynanabilir iyi bir sohbet başlatıcıdır.</p>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ Kimler İçin Uygun Değildir?</h3>
+            <ul>
+                <li><strong>Fotosensitif Epilepsi Riski Olanlar:</strong> Oyunda bulutlara çarpınca şimşek çakma efekti (yanıp sönme) bulunmaktadır. Bu durum hassas çocukları rahatsız edebilir.</li>
+                <li><strong>Ağır Motor Beceri Kısıtlılığı:</strong> Oyun hızlandıkça şerit değiştirmek zorlaşabilir. Bu durumda "Sen söyle (Sağ/Sol), ben basayım" yöntemi uygulanabilir.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🎮 Oynanış Adımları</h2>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Balonunu Tasarla! 🎨</h3>
+                </div>
+                <p>Oyun hemen başlamaz. Önce "Balonunu Özelleştir" ekranı gelir. Çocuk listeden istediği deseni (Gökkuşağı, Uzay, Bulut, Altın vb.) seçer.</p>
+                
+                
+                
+                <div class="volunteer-tip">
+                    <strong>💡 Gönüllü İpucu:</strong> "Senin hayalindeki balon hangisi? Bakalım zevkin nasılmış?" diyerek ilk tercihlerini ve renk zevkini gözlemleyin.
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Gökyüzüne Yolculuk ☁️</h3>
+                </div>
+                <p>"Uçuşa Başla" denildiğinde balon yükselir. Bilgisayarda <strong>Yön Tuşları</strong> veya <strong>A/D</strong>; Tablet/Telefonda ise parmakla <strong>Sağa/Sola Kaydırma</strong> ile balon 3 şerit arasında hareket eder. Amaç fırtına bulutlarından (⚡) kaçmak ve Yıldızları (⭐) toplamaktır.</p>
+                
+                
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Soru Molası (Çarpma veya Süre Dolumu) 🛑</h3>
+                </div>
+                <p>Çocuk bir buluta çarparsa <strong>VEYA 30 saniye boyunca hiç yanmazsa</strong> oyun donar ve bir soru kartı açılır. (Örn: 🎵 Emoji: Müzik -> "En sevdiğin şarkıcı ya da grup kim?")</p>
+                
+                
+
+                <div class="volunteer-tip">
+                    <strong>🧠 Kritik Özellik (10 Saniye Kuralı):</strong> "Devam Et" butonu ilk 10 saniye boyunca PASİFTİR (Tıklanamaz). Geri sayım (⏳) başlar. Çocuğun soruyu okumadan hemen oyuna dönmesini engellemek ve odaklı bir sohbet alanı yaratmak için tasarlanmıştır.
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Cevap ve Devam</h3>
+                </div>
+                <p>Süre dolup buton yeşil olduğunda ("🚀 DEVAM ET!") çocuk butona basar. Oyun kaldığı yerden (fakat puanı sıfırlamadan ve engelleri temizleyerek) devam eder. Müzik tekrar başlar.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <h3 class="step-title">Büyük Final (Game Over)</h3>
+                </div>
+                <p>Gönüllü veya çocuk "Yeterli bu kadar" dediğinde veya tüm sorular bittiğinde, oyun sonlandırılabilir. Ekranda "Toplam Puan" ve "En İyi Skor" görünür.</p>
+                
+                
+
+                <div class="volunteer-tip">
+                    <strong>💡 Gönüllü İpucu:</strong> Çocuğu yüksek skoru için mutlaka tebrik edip motive edin. Bu onun özgüvenini artıracaktır.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <h2>🛠️ Teknik Sorun Giderme (Troubleshooting)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sorun</th>
+                        <th>Olası Neden</th>
+                        <th>Çözüm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ses gelmiyor</strong></td>
+                        <td>Tarayıcı kısıtlaması</td>
+                        <td>Oyun sesleri, kullanıcı sayfaya ilk kez tıkladığında ("Başla" dediğinde) aktif olur. Cihazın sessiz modda olmadığından emin olun.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Balon hareket etmiyor</strong></td>
+                        <td>Odak (Focus) sorunu</td>
+                        <td>Eğer klavye çalışmıyorsa oyun alanına (gökyüzüne) bir kez tıklayın. Tablette parmağınızı sürükleyin (tıklama değil, kaydırma).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>"Devam Et" butonu çalışmıyor</strong></td>
+                        <td>Süre kısıtlaması</td>
+                        <td>Butonun üzerindeki geri sayımın (10 sn) bitmesini bekleyin. Buton griyken çalışmaz, yeşil olunca çalışır.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Oyun çok hızlı</strong></td>
+                        <td>Puan artışı</td>
+                        <td>Puan arttıkça oyun otomatik hızlanır. Eğer çocuk takip edemiyorsa, bilerek yanıp (soru ekranına gelip) oyunu yavaşlatabilirsiniz (her soru sonrası veya yeniden başlama hızı sıfırlar).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

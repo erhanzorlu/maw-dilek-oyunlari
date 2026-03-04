@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyun Rehberi: Sihirli Gökyüzü</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+        :root {
+            --maw-blue: #0057B8;
+            --maw-light-blue: #41B6E6;
+            --maw-gold: #FFD700;
+            --text-dark: #2c3e50;
+            --text-light: #546e7a;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- HEADER --- */
+        .hero {
+            background: linear-gradient(135deg, #1B2735 0%, #090A0F 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--maw-gold);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #b0bec5;
+            margin-top: 10px;
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            max-width: 900px;
+            margin: -30px auto 50px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--maw-blue);
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- QUICK FACTS GRID --- */
+        .quick-facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .fact-box {
+            background: #f8fbff;
+            border-left: 5px solid var(--maw-light-blue);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .fact-box h3 { margin: 0 0 10px 0; color: var(--maw-blue); font-size: 1.1rem; }
+        .fact-box p { margin: 0; color: var(--text-light); font-size: 0.95rem; }
+
+        /* --- WARNING BOX --- */
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .warning-box h3 { margin: 0 0 10px 0; color: #856404; }
+        .warning-box p { margin: 0 0 10px 0; color: #856404; font-size: 0.95rem; }
+        .warning-box ul { margin: 0; padding-left: 20px; color: #856404; font-size: 0.95rem; }
+
+        /* --- GAMEPLAY STEPS --- */
+        .step {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 40px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: var(--maw-gold);
+            color: var(--maw-blue);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+
+        .step-title { margin: 0; color: var(--text-dark); font-size: 1.3rem; }
+
+        .volunteer-tip {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #2e7d32;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* --- TABLE --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th { background-color: var(--maw-blue); color: white; }
+        tr:nth-child(even) { background-color: #fcfcfc; }
+
+        /* --- RESPONSIVE IMAGE --- */
+        .doc-image {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 15px 0;
+            display: block;
+            border: 3px solid #eee;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>🛸 Sihirli Gökyüzü Rehberi</h1>
+        <p>Gönüllüler İçin Dijital Tanışma ve Etkileşim Oyunu</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>🎯 Oyunun Amacı Nedir?</h2>
+            <ul style="color: var(--text-light);">
+                <li><strong>Etkileşim Başlatıcı:</strong> Gönüllü ve çocuk arasındaki ilk tanışma anındaki çekingenliği, eğlenceli bir "yıldız avlama" oyunuyla kırmak.</li>
+                <li><strong>Favorileri Öğrenme:</strong> Oyun içindeki sorular <i>(En sevdiğin yemek? Hangi renk? vb.)</i> sayesinde çocuğun zevklerini, hobilerini ve hayallerini bir röportaj yapıyormuş hissi vermeden doğal yolla öğrenmek.</li>
+                <li><strong>Odaklanma ve Zamanlama:</strong> Hareketli bir UFO kancasını doğru zamanda fırlatarak çocuğun dikkatini ekrana toplamasını sağlamak.</li>
+            </ul>
+        </div>
+
+        <div class="quick-facts">
+            <div class="fact-box">
+                <h3>⏱️ Ne Kadar Sürecek?</h3>
+                <p><strong>Süre:</strong> 4 - 7 Dakika.<br>
+                <strong>İçerik:</strong> 7 adet hedef (Yemek, Tatlı, Renk, Hayvan vb.) bulunur. Çocuk sıkılırsa 3-4 temel sorudan sonra oyun esnekçe sonlandırılabilir.</p>
+            </div>
+            <div class="fact-box">
+                <h3>👶 Hangi Yaş Grubuna Uygun?</h3>
+                <p><strong>İdeal:</strong> 4 - 14 Yaş.<br>
+                Görseller (emojiler) küçük yaş grubuna hitap ederken, sorular ergenlik öncesi çocuklar için de harika bir sohbet başlatıcıdır.</p>
+            </div>
+            <div class="fact-box">
+                <h3>📂 Kategori</h3>
+                <p><strong>Tür:</strong> Dijital Tanışma ve Sohbet Oyunu.<br>
+                Çevrimiçi (Zoom/Teams) ekran paylaşımıyla veya yan yana tablet üzerinden oynamaya uygundur.</p>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ Kimler İçin Uygun Değildir?</h3>
+            <ul>
+                <li><strong>Görme Engeli Olanlar:</strong> Oyun tamamen görsel takibe (sallanan kancayı izlemeye) dayalı olduğu için uygun değildir.</li>
+                <li><strong>İnce Motor/Kas Kontrol Sorunu Olanlar:</strong> Çocuk ekrana dokunmakta veya zamanlamayı tutturmakta zorlanıyorsa hayal kırıklığı yaratabilir. <br>
+                <i>Çözüm:</i> "Sen komut ver (ŞİMDİ de!), ben basayım" yöntemiyle gönüllü desteği sağlayın.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🎮 Oynanış Adımları</h2>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">UFO ve Sallanan Kanca</h3>
+                </div>
+                <p>Ekranda pastel renkli bir gökyüzü, uçuşan bulutlar ve en tepede sağa-sola sallanan bir UFO (🛸) göreceksiniz.</p>
+                
+                
+                
+                <div class="volunteer-tip">
+                    <strong>💡 Gönüllü İpucu:</strong> "Bak! Uzay gemisi senin için yıldızları toplamak istiyor ama yardıma ihtiyacı var. Çizgi tam istediğin yıldızın üzerine gelince ekrana dokun!" diyerek hikayeleştirin.
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Atış Yap ve Yakala!</h3>
+                </div>
+                <p>Çocuk ekrana dokunduğunda veya 'Space' tuşuna bastığında kanca aşağıya doğru uzar. Eğer kanca bir yıldıza (örneğin 🍕 Pizza dilimine) değerse onu yakalar ve yukarı çeker. Boşa atarsa kanca boş döner.</p>
+                
+                
+
+                <div class="volunteer-tip">
+                    <strong>💡 Gönüllü İpucu:</strong> Kanca boş dönerse "Hadi bir daha deneyelim, biraz daha bekle ve tam üzerindeyken bas!" diyerek çocuğu teşvik edin.
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Soru Zamanı (Sihirli Kutu)</h3>
+                </div>
+                <p>Yıldız yukarı çekildiğinde ekranda bir soru penceresi açılır. (Örn: <i>En sevdiğin yemek nedir?</i>). Buton üzerinde 10 saniyelik bir geri sayım (⏳) başlar.</p>
+                
+                
+
+                <div class="volunteer-tip">
+                    <strong>🧠 Pedagojik İpucu (Süre Kaygısı):</strong> 10 saniyelik süre çocuğu telaşlandırmak için değil, hemen "bilmiyorum" demesini engelleyip düşünmesini sağlamak içindir. Çocuğa, <i>"Sürenin bitmesi oyunu kaybettirmez, acele etme. En çok neyi seversin iyice düşün bakalım..."</i> diyerek kaygı seviyesini düşürün.
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Cevap ve Kutlama</h3>
+                </div>
+                <p>Geri sayım bitince buton aktif olur ("Cevapladım! 🚀"). Butona basıldığında ekranda rengarenk konfetiler patlar ve "SÜPERSİN!" gibi övgü dolu yazılar belirir. Ardından oyun UFO'nun sallanmasıyla diğer yıldızlar için tekrar başlar.</p>
+                
+                
+            </div>
+
+        </div>
+
+        <div class="card">
+            <h2>🛠️ Teknik Sorun Giderme (Troubleshooting)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sorun</th>
+                        <th>Olası Neden</th>
+                        <th>Çözüm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Kanca tepki vermiyor</strong></td>
+                        <td>Klavye / Dokunmatik sorunu</td>
+                        <td>Sayfaya fareyle bir kez tıklayarak odaklanın (Focus). Mobildeyseniz ekrana dokunun.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Butona basılmıyor</strong></td>
+                        <td>Geri sayım bitmedi</td>
+                        <td>Buton üzerindeki sürenin (10 sn) bitmesini bekleyin. Buton gri ise henüz aktif değildir.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ekran çok büyük/küçük</strong></td>
+                        <td>Tarayıcı boyutu</td>
+                        <td>Oyun penceresini tam ekran yapın veya tarayıcıyı daraltarak (mobildeymiş gibi) dikey forma getirin.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Yazılar okunmuyor</strong></td>
+                        <td>Çözünürlük uyumsuzluğu</td>
+                        <td>Bu oyun dikey (mobil) veya kare formatta en iyi çalışır. Çok geniş ekranlarda kenarlarda boşluk kalabilir.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

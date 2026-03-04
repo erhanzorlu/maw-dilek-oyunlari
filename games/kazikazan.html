@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sihirli Kazı Kazan - Renkli Versiyon</title>
+    <style>
+        /* CSS Değişkenleri (Dinamik Renkler için) */
+        :root {
+            --primary-color: #d63384;
+            --border-color: #ff69b4;
+            --bg-gradient-start: #ffdde1;
+            --bg-gradient-end: #ee9ca7;
+            --btn-gradient-start: #ff9a9e;
+            --btn-gradient-end: #fad0c4;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            /* Arka plan rengi artık değişkenlerden geliyor */
+            background: radial-gradient(circle, var(--bg-gradient-start), var(--bg-gradient-end));
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            touch-action: none;
+            transition: background 1s ease; /* Renk geçişi yumuşak olsun */
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-shadow: 2px 2px 0px #fff;
+            margin-bottom: 20px;
+            pointer-events: none;
+            animation: float 3s ease-in-out infinite;
+            text-align: center;
+            transition: color 1s ease;
+        }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .card-container {
+            position: relative;
+            width: 320px;
+            height: 420px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            background: white;
+            border: 5px solid var(--border-color); /* Kenarlık rengi değişken */
+            animation: popIn 0.8s;
+            transition: border-color 1s ease;
+        }
+
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        .hidden-content {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px; box-sizing: border-box; background: #fff; z-index: 1;
+        }
+
+        .icon-area { font-size: 80px; margin-bottom: 10px; }
+        /* Gizli içerik başlık rengi değişken */
+        .hidden-content h2 { color: var(--primary-color); margin: 0; font-size: 24px; transition: color 1s ease;}
+        .hidden-content p { font-size: 18px; color: #333; margin-top: 10px; }
+        
+        .star-reward {
+            position: absolute; font-size: 100px; top: 20px; right: 20px; opacity: 0; pointer-events: none; z-index: 10;
+        }
+        .star-animate { animation: starPop 1s ease-out forwards; }
+        @keyframes starPop { 
+            0% { transform: scale(0) rotate(0deg); opacity: 0; } 
+            50% { transform: scale(1.5) rotate(180deg); opacity: 1; } 
+            100% { transform: scale(1) rotate(360deg); opacity: 0; } 
+        }
+
+        /* Buton rengi değişken */
+        .next-btn {
+            margin-top: 25px; padding: 12px 30px; 
+            background: linear-gradient(45deg, var(--btn-gradient-start), var(--btn-gradient-end));
+            color: #fff; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        canvas {
+            position: absolute; top: 0; left: 0; z-index: 2;
+            transition: opacity 1s;
+            cursor: auto;
+        }
+
+        #final-screen { display: none; text-align: center; color: var(--primary-color); animation: fadeIn 2s; }
+        #final-screen h2 { font-size: 40px; text-shadow: 2px 2px 0px #fff; margin: 0; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <h1 id="main-title">✨ Peri'nin Gizli Kartları ✨</h1>
+
+    <div class="card-container" id="game-card">
+        <div class="star-reward" id="star">🌟</div>
+        <div class="hidden-content" id="secret-layer">
+            <div class="icon-area">❓</div>
+            <h2>Hazır mısın?</h2>
+            <p>Parmağınla kartı kazı!</p>
+            <button class="next-btn" onclick="nextCard()">Sıradaki Sır ➡️</button>
+        </div>
+        <canvas id="scratchCanvas"></canvas>
+    </div>
+
+    <div id="final-screen">
+        <h2>🎉 TEBRİKLER! 🎉</h2>
+        <p>Perinin tüm sırlarını keşfettin!</p>
+        <div style="font-size: 80px; margin-top: 20px;">🧚‍♀️✨💖</div>
+        <button class="next-btn" style="display:inline-block; margin-top:20px;" onclick="location.reload()">Tekrar Oyna</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const canvas = document.getElementById('scratchCanvas');
+        const ctx = canvas.getContext('2d');
+        const nextBtn = document.querySelector('.next-btn');
+        const hiddenLayer = document.getElementById('secret-layer');
+        const iconArea = hiddenLayer.querySelector('.icon-area');
+        const titleArea = hiddenLayer.querySelector('h2');
+        const textArea = hiddenLayer.querySelector('p');
+        const star = document.getElementById('star');
+        const root = document.documentElement; // CSS değişkenlerine erişim için
+
+        // --- RENK PALETLERİ ---
+        const palettes = [
+            { name: "Pamuk Şeker", primary: "#d63384", border: "#ff69b4", cover: ['#ff9a9e', '#fad0c4'], bg: ['#ffdde1', '#ee9ca7'] },
+            { name: "Okyanus Esintisi", primary: "#007bff", border: "#00c6ff", cover: ['#00c6ff', '#0072ff'], bg: ['#e0c3fc', '#8ec5fc'] },
+            { name: "Güneş Işığı", primary: "#ff9800", border: "#ffc107", cover: ['#fceabb', '#f8b500'], bg: ['#fff1c1', '#ffe082'] },
+            { name: "Doğa Yeşili", primary: "#28a745", border: "#38f9d7", cover: ['#43e97b', '#38f9d7'], bg: ['#d4fc79', '#96e6a1'] },
+            { name: "Mistik Mor", primary: "#6f42c1", border: "#a6c0fe", cover: ['#a6c0fe', '#f68084'], bg: ['#fccb90', '#d57eeb'] }
+        ];
+        let currentPalette = palettes[0]; // Başlangıç paleti
+
+        // --- RESİM İMLEÇ SİSTEMİ ---
+        const wandImg = new Image();
+        wandImg.src = 'degnek.png';
+        wandImg.crossOrigin = "Anonymous";
+        wandImg.onload = function() {
+            const resizeCanvas = document.createElement('canvas');
+            resizeCanvas.width = 64; resizeCanvas.height = 64;
+            resizeCanvas.getContext('2d').drawImage(wandImg, 0, 0, 64, 64);
+            canvas.style.cursor = `url(${resizeCanvas.toDataURL('image/png')}) 50 10, auto`; 
+        };
+        wandImg.onerror = function() {
+             canvas.style.cursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><text y="20" font-size="20">🪄</text></svg>') 0 20, auto`;
+        };
+
+        const questions = [
+            { icon: "🎭", title: "DUYGU", text: "Bir duygunu taklit et (Mutlu, Şaşkın, Kızgın)!" },
+            { icon: "☀️", title: "MUTLULUK", text: "Bugün seni mutlu eden bir şey söyle." },
+            { icon: "🦁", title: "HAYVAN", text: "Bir hayvan sesi çıkar (Miyav, Hav Hav)!" },
+            { icon: "🤫", title: "FISILTI", text: "Bir kelimeyi fısıldayarak söyle." }
+        ];
+        
+        let currentQIndex = 0;
+        let isDrawing = false;
+        let isRevealed = false;
+
+        function initCard() {
+            canvas.width = 320;
+            canvas.height = 420;
+            
+            // --- YENİ: Rastgele Palet Seç ve Uygula ---
+            currentPalette = palettes[Math.floor(Math.random() * palettes.length)];
+            
+            // CSS Değişkenlerini Güncelle
+            root.style.setProperty('--primary-color', currentPalette.primary);
+            root.style.setProperty('--border-color', currentPalette.border);
+            root.style.setProperty('--bg-gradient-start', currentPalette.bg[0]);
+            root.style.setProperty('--bg-gradient-end', currentPalette.bg[1]);
+            root.style.setProperty('--btn-gradient-start', currentPalette.cover[0]);
+            root.style.setProperty('--btn-gradient-end', currentPalette.cover[1]);
+
+            // Canvas Kapağını Boya (Seçilen palete göre)
+            ctx.globalCompositeOperation = 'source-over';
+            const gradient = ctx.createLinearGradient(0, 0, 320, 420);
+            gradient.addColorStop(0, currentPalette.cover[0]); 
+            gradient.addColorStop(1, currentPalette.cover[1]); 
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Yıldız Desenleri
+            ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+            for(let i=0; i<40; i++) {
+                ctx.font = Math.random() * 20 + 10 + "px Arial";
+                ctx.fillText("✨", Math.random() * canvas.width, Math.random() * canvas.height);
+            }
+
+            // Kapak Yazısı (Okunabilirlik için beyaz ve gölgeli yaptık)
+            ctx.fillStyle = "#fff";
+            ctx.shadowColor = currentPalette.primary;
+            ctx.shadowBlur = 5;
+            ctx.font = "bold 26px Comic Sans MS";
+            ctx.textAlign = "center";
+            ctx.fillText("✨ Sürprizi Kazı ✨", 160, 200);
+            ctx.shadowBlur = 0; // Gölgeyi sıfırla
+
+            // İçeriği Güncelle
+            const q = questions[currentQIndex];
+            iconArea.innerText = q.icon;
+            titleArea.innerText = q.title;
+            textArea.innerText = q.text;
+            
+            nextBtn.style.display = 'none';
+            canvas.style.opacity = 1;
+            canvas.style.pointerEvents = 'auto';
+            isRevealed = false;
+            star.classList.remove('star-animate');
+        }
+
+        function getBrushPos(xRef, yRef) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (xRef - rect.left) * (canvas.width / rect.width),
+                y: (yRef - rect.top) * (canvas.height / rect.height)
+            };
+        }
+
+        function drawDot(mouseX, mouseY) {
+            if (isRevealed) return;
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(mouseX, mouseY, 30, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        const startDraw = (e) => {
+            isDrawing = true;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const pos = getBrushPos(clientX, clientY);
+            drawDot(pos.x, pos.y);
+        };
+
+        const moveDraw = (e) => {
+            if (!isDrawing) return;
+            e.preventDefault(); 
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const pos = getBrushPos(clientX, clientY);
+            drawDot(pos.x, pos.y);
+            checkPercentage();
+        };
+
+        const endDraw = () => { isDrawing = false; };
+
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('touchstart', startDraw, {passive: false});
+        window.addEventListener('mousemove', moveDraw);
+        window.addEventListener('touchmove', moveDraw, {passive: false});
+        window.addEventListener('mouseup', endDraw);
+        window.addEventListener('touchend', endDraw);
+
+        function checkPercentage() {
+            if (isRevealed) return;
+            if (Math.random() > 0.15) return; 
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+            let transparentPixels = 0;
+            for (let i = 3; i < pixels.length; i += 4) {
+                if (pixels[i] === 0) transparentPixels++;
+            }
+            const percentage = (transparentPixels / (pixels.length / 4)) * 100;
+            if (percentage > 40) { 
+                revealCard();
+            }
+        }
+
+        function revealCard() {
+            isRevealed = true;
+            canvas.style.transition = "opacity 0.8s";
+            canvas.style.opacity = 0; 
+            canvas.style.pointerEvents = 'none';
+            star.classList.add('star-animate');
+            
+            // --- YENİ: Konfeti renklerini o anki palete göre ayarla ---
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: [currentPalette.primary, currentPalette.border, '#FFD700', '#ffffff']
+            });
+            
+            setTimeout(() => {
+                nextBtn.style.display = 'inline-block';
+            }, 500);
+        }
+
+        function nextCard() {
+            currentQIndex++;
+            if (currentQIndex >= questions.length) {
+                // Final Ekranı
+                document.getElementById('game-card').style.display = 'none';
+                document.getElementById('main-title').style.display = 'none';
+                document.getElementById('final-screen').style.display = 'block';
+                // Final konfetisi (Final ekranının rengine uygun)
+                let end = Date.now() + 3000;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: [currentPalette.primary, '#FFD700'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: [currentPalette.primary, '#FFD700'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            } else {
+                // Yeni kart yükle (Yeni renkler seçilecek)
+                initCard();
+            }
+        }
+
+        initCard();
+
+    </script>
+</body>
+</html>

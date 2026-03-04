@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make-A-Wish | Mentorler</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    /* ── SHARED SIDEBAR VARS ── */
+    :root {
+      --primary: #005596;
+      --primary-dark: #003d73;
+      --primary-light: #e8f3ff;
+      --gold: #f59e0b;
+      --gold-light: #fffbeb;
+      --green: #10b981;
+      --green-light: #ecfdf5;
+      --red: #ef4444;
+      --purple: #7c3aed;
+      --purple-light: #f5f3ff;
+      --bg: #f0f5fb;
+      --card: #ffffff;
+      --border: #e8edf5;
+      --text: #1e293b;
+      --muted: #64748b;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 16px rgba(0, 60, 140, 0.09);
+      --shadow-lg: 0 12px 40px rgba(0, 60, 140, 0.13);
+      --radius: 16px;
+      --radius-sm: 10px;
+      /* Sidebar */
+      --sidebar-bg: #0a1628;
+      --sidebar-hover: #1a2d4a;
+      --sidebar-active: #005596;
+      --sidebar-text: #94a3b8;
+      --sidebar-width: 270px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ══════════════════════════════
+       SIDEBAR
+    ══════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-height: 100vh;
+      background: var(--sidebar-bg);
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      z-index: 200;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      transition: background 0.2s;
+    }
+
+    .sidebar-logo:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .sidebar-logo .logo-star {
+      font-size: 26px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-logo h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.3px;
+      line-height: 1.3;
+    }
+
+    .sidebar-logo p {
+      font-size: 11px;
+      color: var(--sidebar-text);
+      margin-top: 3px;
+      font-weight: 400;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 12px;
+      overflow-y: auto;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: rgba(148, 163, 184, 0.5);
+      padding: 12px 12px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--sidebar-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: var(--sidebar-hover);
+      color: #fff;
+    }
+
+    .nav-item.active {
+      background: var(--sidebar-active);
+      color: #fff;
+    }
+
+    .nav-item .nav-icon {
+      font-size: 16px;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .nav-item.amber:hover,
+    .nav-item.amber.active {
+      background: #78350f;
+      color: #fff;
+    }
+
+    .nav-item.purple-nav:hover,
+    .nav-item.purple-nav.active {
+      background: #4c1d95;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 11px;
+      color: rgba(148, 163, 184, 0.4);
+      text-align: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* ══════════════════════════════
+       OVERLAY + HAMBURGER
+    ══════════════════════════════ */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 190;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      color: var(--text);
+      font-size: 22px;
+    }
+
+    /* ══════════════════════════════
+       MAIN WRAPPER
+    ══════════════════════════════ */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 100vh;
+    }
+
+    /* ── TOP BAR ── */
+    .top-bar {
+      background: var(--card);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px;
+    }
+
+    /* ── HERO ── */
+    .mentor-hero {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, #1a7fd4 100%);
+      border-radius: var(--radius);
+      padding: 22px 28px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mentor-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-text {
+      position: relative;
+    }
+
+    .hero-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: white;
+      margin-bottom: 5px;
+    }
+
+    .hero-text p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.72);
+      max-width: 420px;
+      line-height: 1.55;
+    }
+
+    .hero-stats {
+      position: relative;
+      flex-shrink: 0;
+      display: flex;
+      gap: 12px;
+    }
+
+    .hero-stat {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .hero-stat span {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 14px 10px 38px;
+      border: 1.5px solid var(--border);
+      border-radius: 30px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13.5px;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 101, 195, 0.08);
+    }
+
+    .search-wrap input::placeholder {
+      color: #94a3b8;
+    }
+
+    .filter-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: 30px;
+      border: 1.5px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.18s;
+      white-space: nowrap;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .filter-chip.active {
+      border-color: transparent;
+      background: var(--primary-dark);
+      color: white;
+    }
+
+    /* ── MENTOR GRID ── */
+    .mentor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .mentor-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.22s;
+      animation: fadeUp 0.35s ease both;
+    }
+
+    .mentor-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: #d4e5f7;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .mentor-photo-wrap {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      background: #e8edf5;
+    }
+
+    .mentor-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transition: transform 0.4s;
+    }
+
+    .mentor-card:hover .mentor-photo-wrap img {
+      transform: scale(1.06);
+    }
+
+    .mentor-info {
+      padding: 14px 16px 16px;
+    }
+
+    .mentor-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      color: var(--text);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .mentor-degree {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .age-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .age-chip {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .card-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .card-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 4px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      background: var(--bg);
+      cursor: pointer;
+      transition: 0.18s;
+    }
+
+    .card-btn:hover {
+      background: var(--primary-light);
+      border-color: #bbd8ff;
+      color: var(--primary);
+    }
+
+    .card-btn.wa-btn:hover {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #15803d;
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(6px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: var(--card);
+      width: 100%;
+      max-width: 580px;
+      border-radius: var(--radius);
+      box-shadow: 0 24px 60px rgba(0, 60, 140, 0.22);
+      overflow: hidden;
+      transform: scale(0.95) translateY(20px);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.open .modal-box {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-photo-area {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      background: #e8edf5;
+    }
+
+    .modal-photo-area img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .modal-photo-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.08) 55%, transparent 100%);
+    }
+
+    .modal-photo-info {
+      position: absolute;
+      bottom: 16px;
+      left: 20px;
+      right: 52px;
+    }
+
+    .modal-photo-info h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: white;
+      margin-bottom: 3px;
+    }
+
+    .modal-photo-info p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.82);
+      font-weight: 600;
+    }
+
+    .modal-x {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-x:hover {
+      background: rgba(220, 38, 38, 0.75);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .section-lbl {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-lbl:first-child {
+      margin-top: 0;
+    }
+
+    .section-lbl i {
+      font-size: 13px;
+    }
+
+    .age-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 4px;
+    }
+
+    .age-tag {
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 5px 13px;
+      border-radius: 20px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid #bbd8ff;
+    }
+
+    .spec-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 4px;
+    }
+
+    .spec-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 13.5px;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .spec-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    .group-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 4px;
+    }
+
+    .group-tag {
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 5px 13px;
+      border-radius: 20px;
+      background: var(--purple-light);
+      color: var(--purple);
+      border: 1px solid #ddd6fe;
+    }
+
+    .contact-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .contact-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .contact-card.wa {
+      background: var(--green-light);
+      border-color: #a7f3d0;
+    }
+
+    .contact-card.wa:hover {
+      background: #bbf7d0;
+      border-color: #4ade80;
+    }
+
+    .contact-icon-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      flex-shrink: 0;
+    }
+
+    .contact-icon-wrap.wa {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+    }
+
+    .contact-info-text label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+
+    .contact-info-text strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-wrapper {
+        margin-left: 0;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .top-bar {
+        padding: 0 16px;
+      }
+
+      .main-content {
+        padding: 16px;
+      }
+
+      .hero-stats {
+        display: none;
+      }
+
+      .mentor-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+      }
+
+      .modal-box {
+        border-radius: var(--radius) var(--radius) 0 0;
+        max-height: 95vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo" style="text-decoration:none;display:block;">
+      <span class="logo-star">⭐</span>
+      <h2>Make-A-Wish<br>Türkiye</h2>
+      <p>Operasyon Paneli</p>
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="nav-label">Dilek Alımları</div>
+      <a href="https://dernegi1-my.sharepoint.com/:f:/g/personal/mail_makeawish_org_tr/IgA8vh2ABPBHSYfS71ElAhffAbAizVuhLzD-sAAcOBHnGBg?e=3KaJDz"
+        target="_blank" class="nav-item">
+        <span class="nav-icon">📅</span> Haftalık &amp; Aylık Takvimler
+      </a>
+      <a href="https://form.jotform.com/242213350145039" target="_blank" class="nav-item">
+        <span class="nav-icon">📝</span> Dilek Alım Formu (Jotform)
+      </a>
+      <a href="https://dernegi1-my.sharepoint.com/:w:/g/personal/mail_makeawish_org_tr/EYSRjUCXgddHsxWJe7M4854BkmLAcjp1jkyhR4OfPivnyA?e=iacnVo"
+        target="_blank" class="nav-item">
+        <span class="nav-icon">📄</span> Dilek Alım Formu (Word)
+      </a>
+      <a href="https://dernegi1-my.sharepoint.com/:f:/g/personal/mail_makeawish_org_tr/EgC_y55DcW1Ch2TY5LoJVh4BzCciIzeoyMYT-7JFKiiWFg?e=gqrcBu"
+        target="_blank" class="nav-item">
+        <span class="nav-icon">🏥</span> Hastane Başvuru Formları
+      </a>
+      <a href="https://dernegi1-my.sharepoint.com/:b:/g/personal/mail_makeawish_org_tr/EYlzt5tmD2NEmsgakFso0DEBStGcAoTK9_RndgTyDtlECw?e=2zhOtw"
+        target="_blank" class="nav-item">
+        <span class="nav-icon">🧠</span> Psikolog Sunumu
+      </a>
+      <a href="https://dernegi1-my.sharepoint.com/:b:/g/personal/mail_makeawish_org_tr/EW3SHCFc3QtMmSQGRreK04sBd-c_wLQXbSFX9Fo0-hKtEg?e=Xt7Vac"
+        target="_blank" class="nav-item">
+        <span class="nav-icon">🩺</span> Riskli Hastalıklar Sunumu
+      </a>
+      <a href="sihirli-kitap.pdf" target="_blank" class="nav-item">
+        <span class="nav-icon">📖</span> Sihirli Kitap
+      </a>
+
+      <div class="nav-label" style="margin-top:10px;">Araçlar</div>
+      <a href="mentor.html" class="nav-item amber active">
+        <span class="nav-icon">🧑‍🏫</span> Mentör Paneli
+      </a>
+      <a href="games.html" class="nav-item purple-nav">
+        <span class="nav-icon">🎮</span> Dijital Oyunlar Paneli
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">© 2025 Make-A-Wish Türkiye</div>
+  </aside>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main-wrapper">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <div class="page-title">
+          <i class="ph-fill ph-chalkboard-teacher" style="color:var(--primary);font-size:22px;"></i>
+          Mentörler
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="mentor-hero">
+        <div class="hero-text">
+          <h2>Mentor Ağı</h2>
+          <p>Çocukların hayallerini destekleyen, onlara rehberlik eden ve ilham veren mentörlerimizle tanışın.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><strong>16</strong><span>Aktif Mentor</span></div>
+          <div class="hero-stat"><strong>4</strong><span>Yaş Grubu</span></div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <i class="ph-bold ph-magnifying-glass"></i>
+          <input type="text" placeholder="Mentor ara..." id="searchInput" oninput="filterMentors()">
+        </div>
+        <div class="filter-chip active" onclick="setFilter('tumu',this)">Tümü</div>
+        <div class="filter-chip" onclick="setFilter('3-6',this)">3-6 Yaş</div>
+        <div class="filter-chip" onclick="setFilter('7-9',this)">7-9 Yaş</div>
+        <div class="filter-chip" onclick="setFilter('10-13',this)">10-13 Yaş</div>
+        <div class="filter-chip" onclick="setFilter('14-17',this)">14-17 Yaş</div>
+      </div>
+
+      <div class="mentor-grid" id="mentorGrid"></div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL ══ -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlay(event)">
+    <div class="modal-box">
+      <div class="modal-photo-area">
+        <img id="modal-img" src="" alt="">
+        <div class="modal-photo-gradient"></div>
+        <div class="modal-photo-info">
+          <h2 id="modal-name"></h2>
+          <p id="modal-degree"></p>
+        </div>
+        <button class="modal-x" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="section-lbl"><i class="ph-fill ph-calendar-blank"></i>Yaş Grupları</div>
+        <div class="age-tag-row" id="modal-ages"></div>
+        <div class="section-lbl"><i class="ph-fill ph-star"></i>Uzmanlık Alanları</div>
+        <ul class="spec-list" id="modal-specs"></ul>
+        <div class="section-lbl"><i class="ph-fill ph-heart"></i>Desteklediği Çocuk Grupları</div>
+        <div class="group-tags" id="modal-groups"></div>
+        <div class="section-lbl"><i class="ph-fill ph-phone"></i>İletişim</div>
+        <div class="contact-row">
+          <a class="contact-card wa" id="modal-wa" href="#" target="_blank">
+            <div class="contact-icon-wrap wa"><i class="ph-fill ph-whatsapp-logo"></i></div>
+            <div class="contact-info-text"><label>WhatsApp</label><strong id="modal-phone"></strong></div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Mentor Verisi ──
+    const mentors = [
+      // --- "images/..." ile başlayanlar (Lokal Fotoğraflar) ---
+      { id: 1, name: "Elnaz Kohen", degree: "Hayırseverlik (Philanthropy) Çalışmaları Yüksek Lisans", photo: "images/elnaz.jpeg", ages: ["7-9", "10-13", "14-17"], ageLabels: ["7-9 Yaş", "10-13 Yaş", "14-17 Yaş"], specs: ["Yaşa uygun iletişim yaklaşımı", "Ergenlerle güven temelli iletişim", "Dilek alım sürecinde yapılandırılmış ve doğal sohbet akışı", "Yaşa uygunluk ve içerik değerlendirmesi", "Form süreçlerinde kontrol ve geri bildirim", "Süreç planlama ve ekip içi görev koordinasyonu"], groups: ["İletişim kurmakta zorlanan çocuklar", "Ergenlik dönemindeki gençler", "Kararsız veya yönlendirme ihtiyacı olan çocuklar", "Motivasyon desteğine ihtiyaç duyan çocuklar"], phone: "05454583887" },
+      { id: 2, name: "Şevval Müftüoğlu", degree: "Dil ve Konuşma Terapisti", photo: "images/sevval.jpeg", ages: ["3-6", "7-9", "10-13", "14-17"], ageLabels: ["3-6 Yaş", "7-9 Yaş", "10-13 Yaş", "14-17 Yaş"], specs: ["Oyun terapisi", "Materyal kullanımı"], groups: ["Utangaç ve sessiz çocuklar", "Konuşma geriligi olan çocuklar", "Özel gereksinimli çocuklar"], phone: "05071217690" },
+      { id: 3, name: "Melek Seçil Aka", degree: "Dil ve Konuşma Terapisti", photo: "images/melek.jpeg", ages: ["3-6", "7-9", "10-13", "14-17"], ageLabels: ["3-6 Yaş", "7-9 Yaş", "10-13 Yaş", "14-17 Yaş"], specs: ["Oyun terapisi", "Materyal kullanımı"], groups: ["Utangaç ve sessiz çocuklar", "Konuşma geriligi olan çocuklar", "Özel gereksinimli çocuklar"], phone: "05079629148" },
+      { id: 4, name: "Hüseyin İnan Gül", degree: "Gönüllü Öğretmen", photo: "images/huseyin.jpeg", ages: ["7-9", "10-13", "14-17"], ageLabels: ["7-9 Yaş", "10-13 Yaş", "14-17 Yaş"], specs: ["7-16 yaş grubu ile sağlıklı iletişim", "Dilek alım süreçleri ve sağlıklı dilek alma", "Ekip içi görev dağılımı ve süreç yönetimi", "Aileyle etkili iletişim"], groups: ["İçine kapanık ve sessiz çocuklar", "Ailesi tarafından yönlendirilen ve kararsız çocuklar"], phone: "05423831533" },
+      { id: 10, name: "Ceyda Duran", degree: "Psikolog, Aile Danışmanı", photo: "images/ceyda.jpeg", ages: ["3-6", "7-9", "10-13", "14-17"], ageLabels: ["3-6 Yaş", "7-9 Yaş", "10-13 Yaş", "14-17 Yaş"], specs: ["Oyun terapisi", "İletişim becerileri", "Sağlıklı yaklaşım metodları", "Aileyle etkileşim"], groups: ["DEHBli çocuklar", "Utangaç ve sessiz çocuklar", "Motivasyon eksikliği yaşayan çocuklar"], phone: "05358999065" },
+      { id: 13, name: "İlker Korkmaz", degree: "Gönüllü Eğitmen", photo: "images/ilker.jpeg", ages: ["10-13", "14-17"], ageLabels: ["10-13 Yaş", "14-17 Yaş"], specs: ["Dilek sorusunu hikayeleştirme", "Çocukla sohbet", "Dilek tasarım fikirleri ve gerçekleştirme süreci", "Ekip içi iletişim ve görev dağılımı", "Uzun süreli STK gönüllülüğü ve eğitmenlik"], groups: ["Utangaç ve sessiz çocuklar", "Ergen oğlan çocukları", "Dikkati çabuk dağılan çocuklar"], phone: "05340125198" },
+      { id: 16, name: "Asude Buldu", degree: "Gönüllü Eğitmen", photo: "images/asude.jpeg", ages: ["7-9", "10-13", "14-17"], ageLabels: ["7-9 Yaş", "10-13 Yaş", "14-17 Yaş"], specs: ["Online dilek alma süreçleri", "Soruları hikayeleştirme", "Sohbet havası oluşturma ve iletişim dili", "Ergen ve ortaokul çağındaki çocuklarla iletişim", "Dilek süreçlerinde güvenli iletişim", "Ekip içinde ikinci görüş desteği"], groups: ["Utangaç ve sessiz çocuklar", "İletişim kurmakta zorlanan çocuklar", "Konuşma gerilimi yaşayan çocuklar"], phone: "05465981896" },
+
+      // --- "https://..." ile başlayanlar (Dış Bağlantılı Fotoğraflar) ---
+      { id: 5, name: "Tufan Emeksiz", degree: "Basketbol Antrenörü", photo: "https://sosyalmedya.co/wp-content/uploads/2011/06/Facebook-Profil-Resimleri.jpg", ages: ["7-9", "10-13", "14-17"], ageLabels: ["7-9 Yaş", "10-13 Yaş", "14-17 Yaş"], specs: ["Online dilek alımları", "Dilek alım formu", "Aile ile iletişim", "Ekip içi görev paylaşımı"], groups: ["Aşırı hareketli, dikkat eksikliği olan çocuklar", "7-17 yaş aralığındaki çocuklar"], phone: "05542807483" },
+      { id: 6, name: "Barış Yılmaz", degree: "Türkçe Öğretmeni", photo: "https://sosyalmedya.co/wp-content/uploads/2011/06/Facebook-Profil-Resimleri.jpg", ages: ["10-13", "14-17"], ageLabels: ["10-13 Yaş", "14-17 Yaş"], specs: ["İçine kapanık ve çekingen çocuklarla iletişim", "Çekingen çocuklar için uygun sohbet ortamı oluşturma", "Oyun tasarlama/oyunlaştırma", "Ekip içi iletişim"], groups: ["İçine kapanık ve çekingen çocuklar", "Motivasyon kaybı yaşayan çocuklar"], phone: "05364927205" },
+      { id: 7, name: "İrem Kurtuluş", degree: "Psikoloji Son Sınıf Öğrencisi", photo: "https://1cms-img.imgix.net/Momo.jpg", ages: ["3-6", "7-9"], ageLabels: ["3-6 Yaş", "7-9 Yaş"], specs: ["Gelişimsel ve psikolojik süreçler", "Zorlaştırıcı yaşam deneyimleri ve hastalık süreçleri desteği", "Duygu ifade güçlükleri", "Aile-çocuk iletişimi rehberliği"], groups: ["İçine kapanan çocuklar", "Konuşmak istemeyen çocuklar", "Duygularını ifade etmekte zorlanan çocuklar"], phone: "05307965904" },
+      { id: 8, name: "Fatma Nur Kugu", degree: "Sosyal Hizmet Öğrencisi / Gönüllü Eğitmen", photo: "https://1cms-img.imgix.net/Momo.jpg", ages: ["3-6", "7-9", "10-13"], ageLabels: ["3-6 Yaş", "7-9 Yaş", "10-13 Yaş"], specs: ["Oyun temelli ve güven odaklı iletişim", "Ailelerle çözüm odaklı iletişim", "Form ve başvuru süreci takibi"], groups: ["Sessiz ve çekingen çocuklar", "Kendini ifade etmekte zorlanan çocuklar", "Motivasyon desteği ihtiyacı duyan çocuklar"], phone: "05369171135" },
+      { id: 9, name: "Yağmur Ay", degree: "Çocuk Gelişimi ve Sosyal Hizmet Mezunu", photo: "https://1cms-img.imgix.net/Momo.jpg", ages: ["3-6", "7-9", "10-13"], ageLabels: ["3-6 Yaş", "7-9 Yaş", "10-13 Yaş"], specs: ["Hikayeleştirme", "Soru çeşitlendirme ve verimli form doldurma", "Kukla ve oyuncak kullanımı", "Kriz yönetimi ve telefon görüşmesi yaklaşımı"], groups: ["İstekli ama çekingen çocuklar", "Kararsız ve yönlendirmeye maruz kalan çocuklar", "Dikkati çabuk dağılan çocuklar"], phone: "05349790048" },
+      { id: 11, name: "Hazal Sertkaya", degree: "Psikolojik Danışman / Yüksek Lisans Öğrencisi", photo: "https://1cms-img.imgix.net/Momo.jpg", ages: ["3-6", "7-9", "10-13", "14-17"], ageLabels: ["3-6 Yaş", "7-9 Yaş", "10-13 Yaş", "14-17 Yaş"], specs: ["Ebeveynler ile iletişim", "Dilek alım formunu etkili doldurma", "Çocuk kitapları ve çocuk resimleri uzmanlığı", "Yaş grubuna göre ilgi alanlarından sohbet etme", "Gönüllüler arası çözüm odaklı iletişim ve görev paylaşımı", "Uzun süreli aktif çocuk ve ergen gönüllülüğü"], groups: ["Ebeveyn yönlendirmesine maruz kalan çocuklar", "İstekli ama çekingen çocuklar", "Dikkati çabuk dağılan çocuklar", "Otizm spektrum bozukluğuna sahip çocuklar"], phone: "05395129073" },
+      { id: 12, name: "Elif Erginyavuz", degree: "Gazeteci / Editör", photo: "https://1cms-img.imgix.net/Momo.jpg", ages: ["3-6", "7-9", "10-13"], ageLabels: ["3-6 Yaş", "7-9 Yaş", "10-13 Yaş"], specs: ["Ebeveynler ile güvene dayalı iletişim", "Etkili form doldurma", "Küçük yaştaki çocuklarla iletişim becerileri", "Gönüllüler arası kriz ve anlaşmazlık yönetimi"], groups: ["Otizm spektrumundaki çocuklar", "Dikkati çabuk dağılan çocuklar", "İletişim kurmakta zorlanan çocuklar"], phone: "05373728884" },
+      { id: 14, name: "İrem Şanlıtürk", degree: "Görsel İletişim Tasarım Öğrencisi", photo: "https://1cms-img.imgix.net/Momo.jpg", ages: ["3-6", "7-9"], ageLabels: ["3-6 Yaş", "7-9 Yaş"], specs: ["3–6 yaş grubuyla etkili iletişim ve bağ kurma", "Oyun temelli iletişim ve oyunla ilişki geliştirme", "Küçük yaş grubunda duygusal güven oluşturma", "Ailelerle sağlıklı ve açık iletişim", "İfade güçlüklerinde yapılandırma ve metinleştirme desteği", "Form doldurma süreçlerinde içerik yazımı desteği"], groups: ["Küçük yaş grubu çocuklar", "Kendini ifade etmekte zorlanan çocuklar"], phone: "05541760401" },
+      { id: 15, name: "Ahmet Atar", degree: "Girişimci / Proje Yönetim Uzmanı", photo: "https://sosyalmedya.co/wp-content/uploads/2011/06/Facebook-Profil-Resimleri.jpg", ages: ["3-6", "7-9", "10-13", "14-17"], ageLabels: ["3-6 Yaş", "7-9 Yaş", "10-13 Yaş", "14-17 Yaş"], specs: ["Etkili iletişim yöntemleri ve müzakere", "Hikayeleştirme ve oyunlaştırma (ödül mekanizmaları)", "Kareografik dilek tasarımları oluşturma", "Kaynak geliştirme / Sponsorluk süreçleri", "Ekip içi iletişim", "Kriz Yönetimi", "Sosyal Sorumluluk projelendirme ve fizibilite"], groups: ["Proje odaklı dilekleri olan çocuklar", "Girişimci ruhlu çocuklar"], phone: "05372175587" }
+    ];
+
+    let currentFilter = 'tumu';
+
+    function renderMentors(list) {
+      const grid = document.getElementById('mentorGrid');
+      grid.innerHTML = '';
+      if (!list.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--muted);font-size:14px;"><i class="ph-light ph-user-circle" style="font-size:48px;display:block;margin-bottom:12px;color:#cbd5e1;"></i>Bu yaş grubunda mentor bulunamadı.</div>';
+        return;
+      }
+      list.forEach((m, i) => {
+        const card = document.createElement('div');
+        card.className = 'mentor-card';
+        card.style.animationDelay = (i * 0.06) + 's';
+        card.onclick = () => openModal(m);
+        card.innerHTML = `
+          <div class="mentor-photo-wrap">
+            <img src="${m.photo}" alt="${m.name}" loading="lazy">
+          </div>
+          <div class="mentor-info">
+            <div class="mentor-name">${m.name}</div>
+            <div class="mentor-degree">${m.degree}</div>
+            <div class="age-chips">${m.ageLabels.map(l => `<span class="age-chip">${l}</span>`).join('')}</div>
+            <div class="card-btns">
+              <div class="card-btn wa-btn" onclick="event.stopPropagation();openWA('${m.phone}')">
+                <i class="ph-fill ph-whatsapp-logo"></i> WhatsApp
+              </div>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function setFilter(f, el) {
+      currentFilter = f;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      filterMentors();
+    }
+
+    function filterMentors() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      let list = mentors;
+      if (currentFilter !== 'tumu') list = list.filter(m => m.ages.includes(currentFilter));
+      if (q) list = list.filter(m =>
+        m.name.toLowerCase().includes(q) ||
+        m.degree.toLowerCase().includes(q) ||
+        m.specs.some(s => s.toLowerCase().includes(q)) ||
+        m.groups.some(g => g.toLowerCase().includes(q))
+      );
+      renderMentors(list);
+    }
+
+    function openModal(m) {
+      document.getElementById('modal-img').src = m.photo;
+      document.getElementById('modal-name').textContent = m.name;
+      document.getElementById('modal-degree').textContent = m.degree;
+      document.getElementById('modal-ages').innerHTML = m.ageLabels.map(l => `<span class="age-tag">${l}</span>`).join('');
+      document.getElementById('modal-specs').innerHTML = m.specs.map(s => `<li>${s}</li>`).join('');
+      document.getElementById('modal-groups').innerHTML = m.groups.map(g => `<span class="group-tag">${g}</span>`).join('');
+      const raw = m.phone.replace(/\s/g, '');
+      const display = raw.replace(/(\d{4})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+      document.getElementById('modal-phone').textContent = display;
+      const intl = raw.startsWith('0') ? '9' + raw : raw;
+      document.getElementById('modal-wa').href = 'https://wa.me/' + intl;
+      document.getElementById('modalOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function handleOverlay(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function openWA(phone) {
+      const raw = phone.replace(/\s/g, '');
+      const intl = raw.startsWith('0') ? '9' + raw : raw;
+      window.open('https://wa.me/' + intl);
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('show');
+    }
+
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    renderMentors(mentors);
+  </script>
+</body>
+
+</html>

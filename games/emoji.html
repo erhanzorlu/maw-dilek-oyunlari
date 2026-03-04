@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Taklit Ustası 🎭</title>
+    <style>
+        /* --- iOS İÇİN TEMEL AYARLAR --- */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Mavi kutuyu kaldır */
+            -webkit-user-select: none; /* Metin seçimini engelle */
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(circle, #FFF9C4, #FBC02D);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            overscroll-behavior: none; 
+        }
+
+        h1 {
+            color: #E65100;
+            text-shadow: 2px 2px 0px white;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        /* OYUN KARTI */
+        #game-card {
+            width: 85%;
+            max-width: 350px;
+            height: 400px;
+            background: white;
+            border-radius: 30px;
+            border: 8px solid #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        #emoji-display {
+            font-size: 130px;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        #task-text {
+            font-size: 1.4rem;
+            color: #555;
+            margin-top: 10px;
+            text-align: center;
+            padding: 0 15px;
+            font-weight: bold;
+        }
+
+        #category-badge {
+            position: absolute;
+            top: -15px;
+            background: #FF5722;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* --- BUTON AYARLARI --- */
+        #spin-btn {
+            margin-top: 30px;
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            background: #4CAF50;
+            color: white;
+            border: 5px solid white;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 100;
+            pointer-events: auto;
+            touch-action: manipulation;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-weight: bold;
+            transition: transform 0.1s;
+            -webkit-appearance: none;
+        }
+
+        #spin-btn:active {
+            transform: scale(0.95);
+            background: #388E3C;
+        }
+
+        #spin-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .shake { animation: shake 0.5s; }
+        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } 100% { transform: rotate(0deg); } }
+        
+        .pop-in { animation: popIn 0.5s; }
+        @keyframes popIn { from { transform: scale(0); opacity:0; } to { transform: scale(1); opacity:1; } }
+
+    </style>
+</head>
+<body>
+
+    <h1>🎭 Taklit Ustası 🕺</h1>
+
+    <div id="game-card">
+        <div id="category-badge">Hazır mısın?</div>
+        <div id="emoji-display">❓</div>
+        <div id="task-text">Butona Bas!</div>
+    </div>
+
+    <button id="spin-btn" onclick="startGame()">ÇEVİR! 🎲</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- iOS İÇİN GÜVENLİK ---
+        document.body.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // --- GÜNCELLENMİŞ EMOJİ LİSTESİ ---
+        const tasks = [
+            // KATEGORİ 1: YÜZ İFADELERİ (MİMİK)
+            { emoji: "😃", text: "Kocaman gülümse!", cat: "Yüz İfadesi" },
+            { emoji: "😁", text: "Dişlerini göstererek gül!", cat: "Yüz İfadesi" },
+            { emoji: "🙂", text: "Hafifçe tebessüm et.", cat: "Yüz İfadesi" },
+            { emoji: "🤪", text: "En komik suratını yap!", cat: "Yüz İfadesi" },
+            { emoji: "😌", text: "Rahatlamış gibi yap.", cat: "Yüz İfadesi" },
+            { emoji: "😙", text: "Islık çalıyor gibi yap!", cat: "Yüz İfadesi" },
+            { emoji: "🤭", text: "Kıkırda! Elinle ağzını kapat.", cat: "Yüz İfadesi" },
+            { emoji: "😂", text: "Gülmekten gözünden yaş gelsin!", cat: "Yüz İfadesi" },
+            { emoji: "🫣", text: "Gözlerini kapat ama aradan bak!", cat: "Yüz İfadesi" },
+            { emoji: "🤫", text: "Şşşt! Sessiz ol işareti yap.", cat: "Yüz İfadesi" },
+            { emoji: "🙄", text: "Gözlerini yukarı devir!", cat: "Yüz İfadesi" },
+            { emoji: "😬", text: "Dişlerini sıkıyor gibi yap!", cat: "Yüz İfadesi" },
+            { emoji: "😛", text: "Dil çıkar!", cat: "Yüz İfadesi" },
+            { emoji: "🥱", text: "Çok uykun gelmiş gibi esne!", cat: "Yüz İfadesi" },
+            { emoji: "😲", text: "Çok şaşırmış gibi ağzını aç!", cat: "Yüz İfadesi" },
+            { emoji: "😴", text: "Uyuyor taklidi yap.", cat: "Yüz İfadesi" },
+            { emoji: "😮", text: "Vay canına! Şaşkın bak.", cat: "Yüz İfadesi" },
+
+            // KATEGORİ 2: EL HAREKETLERİ (JEST)
+            { emoji: "🫶🏻", text: "Ellerinle kalp yap!", cat: "El Hareketi" },
+            { emoji: "🤲🏻", text: "Ellerini açıp dua eder gibi yap.", cat: "El Hareketi" },
+            { emoji: "👍🏻", text: "Başparmak yukarı! Harika!", cat: "El Hareketi" },
+            { emoji: "👎🏻", text: "Başparmak aşağı! Olmamış.", cat: "El Hareketi" },
+            { emoji: "👏🏻", text: "Kocaman alkışla!", cat: "El Hareketi" },
+            { emoji: "✌🏻", text: "Zafer işareti yap!", cat: "El Hareketi" },
+            { emoji: "🤌🏻", text: "Ne diyorsun sen? (İtalyan usulü)", cat: "El Hareketi" },
+            { emoji: "👌🏻", text: "Mükemmel işareti yap!", cat: "El Hareketi" },
+            { emoji: "🤞🏻", text: "Şans dile! Parmaklarını çapraz yap.", cat: "El Hareketi" },
+            { emoji: "💪🏻", text: "Kaslarını göster! Güçlüsün!", cat: "El Hareketi" },
+            { emoji: "🤙🏻", text: "Beni ara işareti yap!", cat: "El Hareketi" },
+            { emoji: "👋🏻", text: "El salla! Merhaba de.", cat: "El Hareketi" },
+            { emoji: "☝🏻", text: "Bir dakika bekle işareti yap.", cat: "El Hareketi" },
+
+            // KATEGORİ 3: VÜCUT DİLİ (HAREKET)
+            { emoji: "🤗", text: "Kollarını aç! Sarılalım.", cat: "Vücut Dili" },
+            { emoji: "🙆🏻‍♀️", text: "Ellerini başının üstünde birleştir!", cat: "Vücut Dili" },
+            { emoji: "🙅🏻‍♀️", text: "Hayır! Asla olmaz de.", cat: "Vücut Dili" },
+            { emoji: "🙋🏻‍♀️", text: "Ben biliyorum! El kaldır.", cat: "Vücut Dili" },
+            { emoji: "🤷🏻‍♀️", text: "Bilmem ki? Omuzlarını silk.", cat: "Vücut Dili" },
+            { emoji: "🙎🏻‍♀️", text: "Küsme taklidi yap.", cat: "Vücut Dili" }
+        ];
+
+        const card = document.getElementById('game-card');
+        const emojiDisp = document.getElementById('emoji-display');
+        const taskText = document.getElementById('task-text');
+        const catBadge = document.getElementById('category-badge');
+        const btn = document.getElementById('spin-btn');
+
+        let isSpinning = false;
+        let spinInterval;
+
+        function startGame() {
+            if (isSpinning) return;
+
+            isSpinning = true;
+            btn.disabled = true;
+            btn.innerText = "SEÇİLİYOR...";
+            
+            // Animasyon Sınıfları
+            card.classList.remove('pop-in');
+            card.classList.add('shake');
+
+            // Çark Dönme Efekti
+            let counter = 0;
+            spinInterval = setInterval(() => {
+                let randomTask = tasks[Math.floor(Math.random() * tasks.length)];
+                emojiDisp.innerText = randomTask.emoji;
+                taskText.innerText = "...";
+                catBadge.innerText = "DÖNÜYOR...";
+                
+                // Efekt
+                emojiDisp.style.transform = `scale(${0.9 + Math.random() * 0.2})`;
+                
+                counter++;
+                // 25 Tur sonra dur
+                if (counter > 25) {
+                    stopGame();
+                }
+            }, 80); // Hız (ms)
+        }
+
+        function stopGame() {
+            clearInterval(spinInterval);
+            card.classList.remove('shake');
+            
+            // Rastgele Sonuç Belirle
+            let result = tasks[Math.floor(Math.random() * tasks.length)];
+            
+            // Ekrana Yazdır
+            emojiDisp.innerText = result.emoji;
+            emojiDisp.style.transform = "scale(1)";
+            taskText.innerText = result.text;
+            catBadge.innerText = result.cat;
+
+            // Animasyonu Yeniden Tetikle
+            void card.offsetWidth; 
+            card.classList.add('pop-in');
+            
+            // Konfeti Patlat
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            }
+
+            // Butonu Geri Aç
+            isSpinning = false;
+            btn.disabled = false;
+            btn.innerText = "TEKRAR ÇEVİR 🔄";
+            
+            // Titreşim (Android için)
+            try { if(navigator.vibrate) navigator.vibrate(200); } catch(e) {}
+        }
+    </script>
+</body>
+</html>

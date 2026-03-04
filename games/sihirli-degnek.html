@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yıldızın Feneri - Isınma Turlu</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #000; 
+            font-family: 'Comic Sans MS', cursive, sans-serif; 
+            user-select: none;
+            touch-action: none; 
+        }
+        
+        canvas { display: block; }
+
+        /* Yükleniyor Yazısı */
+        #loadingMsg {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #FFD700; font-size: 20px; font-weight: bold;
+            text-align: center; width: 80%;
+            pointer-events: none; /* Tıklamaları engellemesin */
+        }
+
+        /* Diyalog Kutusu */
+        #dialogueOverlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 85%; max-width: 320px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #FFD700; border-radius: 20px; padding: 20px;
+            text-align: center; box-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
+            display: none; z-index: 100;
+        }
+        .bubble {
+            background: #e1f5fe; border-radius: 15px; padding: 12px; margin: 10px 0;
+            font-size: 16px; color: #333; display: block;
+        }
+        .friend-text { color: #d32f2f; font-weight: bold; }
+        .my-answer { background: #fff9c4; color: #1565c0; font-style: italic; display: none; }
+        
+        #continueBtn {
+            margin-top: 15px; padding: 12px 35px; background: #4CAF50; color: white;
+            border: none; border-radius: 50px; font-size: 18px; cursor: pointer;
+            display: none; transition: transform 0.2s;
+            min-height: 44px;
+        }
+        #continueBtn:active { transform: scale(0.95); background: #43A047; }
+
+        /* Bitiş Ekranı */
+        #endingScreen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #1a237e, #4a148c);
+            display: none; flex-direction: column; justify-content: center;
+            align-items: center; color: white; text-align: center;
+        }
+        .fairy { font-size: 80px; animation: float 3s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+    </style>
+</head>
+<body>
+
+    <div id="loadingMsg">
+        yildiz.png aranıyor...
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="dialogueOverlay">
+        <div class="bubble friend-text">Senin en sevdiğin renk ne?</div>
+        <div id="answerBubble" class="bubble my-answer">Benim en sevdiğim renk Mavi!</div>
+        <button id="continueBtn">Devam Et</button>
+    </div>
+
+    <div id="endingScreen">
+        <div class="fairy">🧚‍♀️ ✨</div>
+        <h1>Harika İş!</h1>
+        <p>Bütün arkadaşlarını buldun.</p>
+        <button onclick="location.reload()" style="padding:15px 30px; margin-top:20px; cursor:pointer; border-radius:15px; border:none; background:#FFD700; color:#333; font-weight:bold; font-size:18px;">Tekrar Oyna</button>
+    </div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const loadingMsg = document.getElementById('loadingMsg');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // --- AYARLAR ---
+    const flashlightRadius = window.innerWidth < 500 ? 120 : 100; 
+    const touchDistance = 60;       
+    const playerSize = 100;       
+
+    // --- OYUN DURUMLARI ---
+    // WARMUP: Isınma turu (Sayaç geriye sayıyor)
+    // PLAYING: Oyun başladı
+    // DIALOGUE: Konuşma var
+    // END: Oyun bitti
+    let gameState = "WARMUP"; 
+    
+    // Sayaç Değişkenleri
+    let warmupTimer = 5; // 5 saniye
+    let lastTime = Date.now();
+
+    // --- RESİM YÜKLEME ---
+    let playerSprite = null; 
+    const rawImg = new Image();
+    rawImg.src = 'yildiz.png'; 
+
+    rawImg.onload = function() {
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = playerSize;
+        offCanvas.height = playerSize;
+        const offCtx = offCanvas.getContext('2d');
+        offCtx.drawImage(rawImg, 0, 0, playerSize, playerSize);
+        playerSprite = offCanvas;
+        loadingMsg.style.display = 'none'; 
+    };
+
+    rawImg.onerror = function() {
+        loadingMsg.innerHTML = "HATA: yildiz.png bulunamadı!<br>Lütfen dosya adını kontrol et.";
+        loadingMsg.style.color = "red";
+    }
+
+    let mouse = { x: canvas.width/2, y: canvas.height/2 };
+    
+    // Arkadaşlar
+    const colors = ['#FF5722', '#00E676', '#2979FF', '#E91E63', '#FFC107'];
+    let friends = [];
+    let foundCount = 0;
+
+    for(let i=0; i<5; i++) {
+        friends.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6,
+            color: colors[i],
+            found: false
+        });
+    }
+
+    // --- INPUT KONTROLLERİ ---
+    window.addEventListener('mousemove', (e) => {
+        // Isınma turunda da fener hareket etsin diye WARMUP ekledik
+        if(gameState === "PLAYING" || gameState === "WARMUP") {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        }
+    });
+
+    function handleTouch(e) {
+        if(gameState !== "PLAYING" && gameState !== "WARMUP") return;
+        e.preventDefault(); 
+        const touch = e.touches[0];
+        mouse.x = touch.clientX;
+        mouse.y = touch.clientY;
+    }
+
+    window.addEventListener('touchstart', handleTouch, { passive: false });
+    window.addEventListener('touchmove', handleTouch, { passive: false });
+
+    // Yıldız çizimi
+    function drawFriendStar(cx, cy, color) {
+        let rot = Math.PI / 2 * 3;
+        let x = cx; let y = cy;
+        let step = Math.PI / 5;
+        let outerRadius = 15; let innerRadius = 7;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - outerRadius);
+        for (let i = 0; i < 5; i++) {
+            x = cx + Math.cos(rot) * outerRadius;
+            y = cy + Math.sin(rot) * outerRadius;
+            ctx.lineTo(x, y); rot += step;
+            x = cx + Math.cos(rot) * innerRadius;
+            y = cy + Math.sin(rot) * innerRadius;
+            ctx.lineTo(x, y); rot += step;
+        }
+        ctx.closePath();
+        ctx.fillStyle = color; ctx.fill();
+        ctx.shadowBlur = 10; ctx.shadowColor = color;
+    }
+
+    function update() {
+        if (gameState === "END") return;
+
+        // 1. ZAMANLAYICI MANTIĞI
+        if (gameState === "WARMUP") {
+            let now = Date.now();
+            if (now - lastTime >= 1000) { // Her 1 saniyede bir
+                warmupTimer--;
+                lastTime = now;
+                if (warmupTimer < 0) {
+                    gameState = "PLAYING"; // Süre bitti, oyun başlasın
+                }
+            }
+        }
+
+        // 2. TEMİZLİK
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 3. FENER ALANI (Clipping)
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, flashlightRadius, 0, Math.PI * 2);
+        ctx.clip(); 
+
+        // Fenerin içi
+        ctx.fillStyle = '#222'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // --- GERİ SAYIM YAZISI ---
+        // Sadece fenerin içinde görünür
+        if (gameState === "WARMUP") {
+            ctx.fillStyle = "white";
+            ctx.font = "bold 30px 'Comic Sans MS'";
+            ctx.textAlign = "center";
+            
+            // Yazıyı fenerin tam ortasına yaz
+            let text = warmupTimer > 0 ? "Saklanıyorlar... " + warmupTimer : "BUL ONLARI!";
+            ctx.fillText(text, mouse.x, mouse.y - 60); // Fenerin biraz üstüne
+            ctx.font = "16px Arial";
+            ctx.fillText("(Feneri hareket ettir)", mouse.x, mouse.y + 70);
+        }
+
+        // Oyuncu Resmi
+        if (playerSprite) {
+            ctx.drawImage(playerSprite, mouse.x - (playerSize/2), mouse.y - (playerSize/2));
+        }
+
+        // --- ARKADAŞLARI ÇİZ ---
+        // SADECE "PLAYING" modundaysak çiziyoruz. WARMUP modunda görünmezler.
+        if (gameState === "PLAYING" || gameState === "DIALOGUE") {
+            friends.forEach(friend => {
+                if (!friend.found) {
+                    if (gameState === "PLAYING") {
+                        friend.x += friend.vx; friend.y += friend.vy;
+                        if(friend.x < 0 || friend.x > canvas.width) friend.vx *= -1;
+                        if(friend.y < 0 || friend.y > canvas.height) friend.vy *= -1;
+
+                        let dx = mouse.x - friend.x;
+                        let dy = mouse.y - friend.y;
+                        let dist = Math.sqrt(dx*dx + dy*dy);
+
+                        if (dist < touchDistance) {
+                            startDialogue(friend);
+                        }
+                    }
+                    
+                    // Görünürlük kontrolü
+                    let distToLight = Math.sqrt((mouse.x - friend.x)**2 + (mouse.y - friend.y)**2);
+                    if(distToLight < flashlightRadius + 20) {
+                        drawFriendStar(friend.x, friend.y, friend.color);
+                    }
+                }
+            });
+        }
+
+        ctx.restore(); 
+        requestAnimationFrame(update);
+    }
+
+    let activeFriend = null;
+
+    function startDialogue(friend) {
+        gameState = "DIALOGUE";
+        activeFriend = friend;
+
+        const overlay = document.getElementById('dialogueOverlay');
+        const answerBubble = document.getElementById('answerBubble');
+        const btn = document.getElementById('continueBtn');
+
+        overlay.style.display = 'block';
+        answerBubble.style.display = 'none';
+        btn.style.display = 'none';
+
+        setTimeout(() => {
+            answerBubble.style.display = 'block';
+            btn.style.display = 'block';
+        }, 1500); 
+    }
+
+    const continueBtn = document.getElementById('continueBtn');
+    
+    continueBtn.addEventListener('click', () => {
+        document.getElementById('dialogueOverlay').style.display = 'none';
+        activeFriend.found = true;
+        foundCount++;
+
+        if (foundCount === 5) {
+            gameState = "END";
+            canvas.style.display = 'none';
+            document.getElementById('endingScreen').style.display = 'flex';
+        } else {
+            gameState = "PLAYING";
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        mouse.x = Math.min(mouse.x, canvas.width);
+        mouse.y = Math.min(mouse.y, canvas.height);
+    });
+
+    update(); 
+
+</script>
+</body>
+</html>

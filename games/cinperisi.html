@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sihirli Lamba</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+:root{--gold:#F4A829;--dg:#C07B0A;--am:#FF8C00;--night:#070415;--pur:#1A0A3A;--cin:#4A90D9;--smk:rgba(255,240,200,.92);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Amiri',serif;background:var(--night);overflow:hidden;width:100vw;height:100vh;}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle linear infinite;}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+#moon{position:fixed;top:40px;left:60px;z-index:2;font-size:3.5rem;opacity:.55;animation:mfloat 8s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(255,240,180,.5));}
+@keyframes mfloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-12px) rotate(5deg)}}
+#mountains{position:fixed;bottom:0;left:0;right:0;z-index:1;pointer-events:none;}
+#lamp-scene{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;transition:opacity .8s ease;}
+.scene-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(1.1rem,3vw,1.9rem);color:var(--gold);text-shadow:0 0 30px rgba(244,168,41,.9),0 0 70px rgba(244,168,41,.4);letter-spacing:3px;animation:tpulse 3s ease-in-out infinite;text-align:center;margin-bottom:8px;}
+@keyframes tpulse{0%,100%{text-shadow:0 0 30px rgba(244,168,41,.8),0 0 60px rgba(244,168,41,.3)}50%{text-shadow:0 0 55px rgba(244,168,41,1),0 0 110px rgba(244,168,41,.6)}}
+.rub-hint{font-size:clamp(.75rem,1.8vw,1rem);color:rgba(244,168,41,.65);margin-bottom:28px;letter-spacing:1px;animation:fhint 2.5s ease-in-out infinite;text-align:center;}
+@keyframes fhint{0%,100%{opacity:.4}50%{opacity:1}}
+#lamp-wrap{position:relative;width:280px;height:240px;cursor:grab;touch-action:none;filter:drop-shadow(0 0 35px rgba(244,168,41,.45));transition:filter .3s;}
+#lamp-wrap:active{cursor:grabbing;}
+#lamp-wrap.rubbing{filter:drop-shadow(0 0 90px rgba(244,168,41,1)) drop-shadow(0 0 40px rgba(255,140,0,.8));animation:lshake .12s ease-in-out infinite;}
+@keyframes lshake{0%,100%{transform:rotate(-1.5deg) scale(1.03)}50%{transform:rotate(1.5deg) scale(1.04)}}
+#rub-wrap{margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:7px;}
+.rub-lbl{font-family:'Cinzel Decorative',cursive;font-size:.7rem;color:var(--gold);letter-spacing:3px;opacity:.8;}
+#rub-bg{width:250px;height:16px;background:rgba(255,255,255,.07);border-radius:8px;border:1px solid rgba(244,168,41,.3);overflow:hidden;}
+#rub-fill{height:100%;width:0%;background:linear-gradient(90deg,#A06008,#F4A829,#FFD700,#F4A829);border-radius:8px;transition:width .08s;position:relative;overflow:hidden;}
+#rub-fill::after{content:'';position:absolute;inset:0 -100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:shine 1s linear infinite;}
+@keyframes shine{0%{transform:translateX(0)}100%{transform:translateX(200%)}}
+#smoke-wrap{position:absolute;top:-90px;left:50%;transform:translateX(-50%);pointer-events:none;display:none;}
+.sp{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,235,160,.85) 0%,rgba(255,150,40,.3) 60%,transparent 100%);animation:smkup 2s ease-out forwards;}
+@keyframes smkup{0%{transform:translateY(0) scale(.25);opacity:1}60%{transform:translateY(-90px) scale(1.8) rotate(25deg);opacity:.5}100%{transform:translateY(-170px) scale(3) rotate(-15deg);opacity:0}}
+#genie{position:fixed;bottom:-420px;right:4%;width:190px;z-index:20;transition:bottom .9s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 0 25px rgba(90,160,255,.7));}
+#genie.up{bottom:10px;}
+#q-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:30;width:min(92vw,580px);background:linear-gradient(145deg,#15082E,#0A0420,#15082E);border:2px solid var(--gold);border-radius:22px;padding:32px 30px;text-align:center;box-shadow:0 0 70px rgba(244,168,41,.25),inset 0 0 50px rgba(244,168,41,.04);transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
+#q-panel.open{transform:translate(-50%,-50%) scale(1);}
+#q-panel::before{content:'';position:absolute;inset:5px;border:1px solid rgba(244,168,41,.15);border-radius:17px;pointer-events:none;}
+.q-orn{font-size:1.8rem;margin-bottom:8px;}
+.q-cat{font-family:'Cinzel Decorative',cursive;font-size:.65rem;color:var(--am);letter-spacing:3px;margin-bottom:12px;opacity:.85;}
+.qdiv{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(244,168,41,.5),transparent);margin:10px 0 18px;}
+.q-txt{font-size:clamp(1.05rem,2.5vw,1.45rem);color:var(--smk);line-height:1.65;margin-bottom:22px;font-style:italic;}
+#ans-input{width:100%;padding:14px 18px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(244,168,41,.35);color:var(--smk);font-family:'Amiri',serif;font-size:1.05rem;outline:none;transition:border-color .25s,box-shadow .25s;resize:none;min-height:90px;caret-color:var(--gold);margin-bottom:16px;display:block;}
+#ans-input:focus{border-color:var(--gold);box-shadow:0 0 20px rgba(244,168,41,.2);}
+#ans-input::placeholder{color:rgba(244,168,41,.4);font-style:italic;}
+.send-btn{background:linear-gradient(135deg,var(--dg),var(--gold));border:none;border-radius:50px;padding:11px 36px;color:var(--night);font-family:'Cinzel Decorative',cursive;font-size:.8rem;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all .3s;box-shadow:0 4px 22px rgba(244,168,41,.4);}
+.send-btn:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(244,168,41,.6);}
+.send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+#genie-bubble{margin-top:16px;padding:16px 20px;border-radius:16px;background:rgba(74,144,217,.1);border:1px solid rgba(74,144,217,.35);color:rgba(180,220,255,.95);font-size:clamp(.9rem,2vw,1.05rem);line-height:1.7;text-align:left;min-height:60px;display:none;position:relative;overflow:hidden;}
+#genie-bubble::before{content:'🧞';position:absolute;top:-14px;left:12px;font-size:1.4rem;background:var(--night);padding:2px 4px;border-radius:50%;}
+.dots{display:inline-flex;gap:5px;align-items:center;padding:6px 0;}
+.dots span{width:8px;height:8px;border-radius:50%;background:rgba(74,144,217,.8);animation:dot 1.2s ease-in-out infinite;}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.next-btn{margin-top:14px;background:transparent;border:1px solid rgba(244,168,41,.5);border-radius:50px;padding:9px 30px;color:var(--gold);font-family:'Cinzel Decorative',cursive;font-size:.72rem;cursor:pointer;letter-spacing:1px;transition:all .3s;display:none;}
+.next-btn:hover{background:rgba(244,168,41,.1);transform:translateY(-2px);}
+.q-count{font-family:'Cinzel Decorative',cursive;font-size:.65rem;color:rgba(244,168,41,.5);margin-top:12px;letter-spacing:2px;}
+#carpet-btn{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(120px);z-index:25;background:linear-gradient(135deg,#6B1010,#3A0505);border:2px solid #DAA520;border-radius:50px;padding:13px 32px;color:#DAA520;font-family:'Cinzel Decorative',cursive;font-size:.85rem;cursor:pointer;letter-spacing:1px;transition:all .6s cubic-bezier(.34,1.56,.64,1);box-shadow:0 4px 30px rgba(107,16,16,.6);display:flex;align-items:center;gap:10px;}
+#carpet-btn.show{transform:translateX(-50%) translateY(0);}
+#carpet-btn:hover{transform:translateX(-50%) translateY(-5px);box-shadow:0 12px 40px rgba(218,165,32,.4);}
+#badge{position:fixed;top:18px;right:18px;z-index:15;background:rgba(7,4,21,.85);border:1px solid rgba(244,168,41,.4);border-radius:50px;padding:7px 18px;font-family:'Cinzel Decorative',cursive;font-size:.7rem;color:var(--gold);letter-spacing:1px;backdrop-filter:blur(10px);}
+#flight-scene{position:fixed;inset:0;z-index:50;opacity:0;pointer-events:none;transition:opacity .8s;overflow:hidden;background:linear-gradient(180deg,#020810 0%,#040D24 40%,#081840 100%);}
+#flight-scene.on{opacity:1;pointer-events:all;}
+#flying-carpet{position:absolute;bottom:28%;left:-320px;width:270px;filter:drop-shadow(0 20px 40px rgba(0,0,0,.9));animation:flyAcross 4.2s ease-in-out forwards;}
+@keyframes flyAcross{0%{left:-320px;transform:rotate(-3deg)}25%{transform:rotate(3deg) translateY(-18px)}50%{transform:rotate(-2deg) translateY(12px)}75%{transform:rotate(2deg) translateY(-12px)}85%,100%{left:58%;transform:rotate(0deg)}}
+#fly-pass{position:absolute;bottom:35%;left:-300px;width:75px;animation:flyPass 4.2s ease-in-out forwards;filter:drop-shadow(0 4px 12px rgba(0,0,0,.7));}
+@keyframes flyPass{0%{left:-300px}85%,100%{left:70%}}
+.sspeed{position:absolute;width:2px;background:#fff;border-radius:1px;animation:spLine linear infinite;}
+@keyframes spLine{0%{transform:scaleX(1);opacity:.9}100%{transform:scaleX(60);opacity:0;left:-20%}}
+#dest-panel{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;opacity:0;transition:opacity .6s ease 4s;}
+#dest-panel.show{opacity:1;}
+.dest-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(1rem,3vw,1.7rem);color:var(--gold);margin-bottom:28px;text-shadow:0 0 40px rgba(244,168,41,.9);}
+.dest-grid{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+.dest-card{background:rgba(255,255,255,.05);border:1px solid rgba(244,168,41,.4);border-radius:16px;padding:18px 22px;cursor:pointer;transition:all .3s;width:130px;text-align:center;}
+.dest-card:hover{border-color:var(--gold);background:rgba(244,168,41,.1);transform:translateY(-8px) scale(1.06);box-shadow:0 15px 35px rgba(244,168,41,.25);}
+.dest-ico{font-size:2.2rem;margin-bottom:6px;display:block;}
+.dest-nm{font-family:'Cinzel Decorative',cursive;font-size:.62rem;color:var(--gold);letter-spacing:1px;}
+#dest-scene{position:fixed;inset:0;z-index:60;opacity:0;pointer-events:none;transition:opacity .9s;display:flex;align-items:center;justify-content:center;}
+#dest-scene.on{opacity:1;pointer-events:all;}
+#dest-bg{position:absolute;inset:0;}
+.dest-cnt{position:relative;z-index:2;text-align:center;padding:20px;max-width:560px;}
+.dest-big{font-size:clamp(3.5rem,12vw,7rem);animation:dfloat 3s ease-in-out infinite;margin-bottom:14px;display:block;}
+@keyframes dfloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+.dest-head{font-family:'Cinzel Decorative',cursive;font-size:clamp(1.3rem,4vw,2.4rem);color:var(--gold);text-shadow:0 0 50px rgba(244,168,41,.9);margin-bottom:16px;animation:dapp 1s ease .4s both;}
+.dest-desc{font-size:clamp(.9rem,2vw,1.15rem);color:rgba(255,240,200,.88);line-height:1.75;margin-bottom:28px;animation:dapp 1s ease .7s both;}
+@keyframes dapp{0%{transform:translateY(28px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.back-btn{background:rgba(244,168,41,.12);border:1px solid var(--gold);border-radius:50px;padding:11px 32px;color:var(--gold);font-family:'Cinzel Decorative',cursive;font-size:.75rem;cursor:pointer;letter-spacing:1px;transition:all .3s;animation:dapp 1s ease .9s both;}
+.back-btn:hover{background:rgba(244,168,41,.22);transform:translateY(-3px);}
+#ov{position:fixed;inset:0;background:#000;z-index:200;opacity:0;pointer-events:none;transition:opacity .55s;}
+#ov.on{opacity:1;pointer-events:all;}
+</style>
+</head>
+<body>
+<div id="ov"></div>
+<div id="stars"></div>
+<div id="moon">🌙</div>
+
+<svg id="mountains" viewBox="0 0 1440 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" height="280">
+  <path d="M0 280 L0 180 L120 80 L240 160 L380 40 L500 140 L620 70 L740 160 L860 30 L980 130 L1100 60 L1220 150 L1360 50 L1440 120 L1440 280Z" fill="rgba(20,8,50,0.8)"/>
+  <path d="M0 280 L0 210 L80 150 L180 200 L300 120 L420 180 L540 130 L660 190 L780 110 L900 170 L1020 100 L1140 165 L1260 110 L1380 155 L1440 130 L1440 280Z" fill="rgba(12,4,28,0.92)"/>
+  <ellipse cx="860" cy="32" rx="38" ry="32" fill="rgba(25,10,55,0.7)"/>
+  <rect x="855" y="30" width="10" height="30" fill="rgba(25,10,55,0.7)"/>
+  <path d="M820 62 L900 62 L910 75 L810 75Z" fill="rgba(25,10,55,0.7)"/>
+  <rect x="950" y="50" width="8" height="80" fill="rgba(20,8,45,0.7)"/>
+  <path d="M946 50 L962 50 L958 38 L950 34Z" fill="rgba(20,8,45,0.7)"/>
+  <ellipse cx="380" cy="42" rx="28" ry="24" fill="rgba(18,6,40,0.6)"/>
+  <rect x="376" y="40" width="8" height="25" fill="rgba(18,6,40,0.6)"/>
+  <path d="M350 65 L410 65 L418 76 L342 76Z" fill="rgba(18,6,40,0.6)"/>
+</svg>
+
+<div id="badge">✨ <span id="sv">0</span> soru cevaplanandı</div>
+
+<div id="lamp-scene">
+  <div class="scene-title">⋆ Sihirli Lamba ⋆</div>
+  <div class="rub-hint">≋ Fareyi basılı tutup lambayı ov ≋</div>
+  <div id="lamp-wrap">
+    <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg" width="280" height="240">
+      <defs>
+        <radialGradient id="lg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFE88A" stop-opacity=".55"/><stop offset="100%" stop-color="#F4A829" stop-opacity="0"/></radialGradient>
+        <linearGradient id="lb" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#D4A017"/><stop offset="28%" stop-color="#F4C842"/><stop offset="62%" stop-color="#C07B0A"/><stop offset="100%" stop-color="#8B5E08"/></linearGradient>
+        <linearGradient id="lt" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFE070"/><stop offset="50%" stop-color="#D4A017"/><stop offset="100%" stop-color="#8B5E08"/></linearGradient>
+        <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F4C842"/><stop offset="100%" stop-color="#7A4E05"/></linearGradient>
+        <filter id="fw"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <radialGradient id="sg" cx="28%" cy="28%" r="50%"><stop offset="0%" stop-color="rgba(255,255,220,.85)"/><stop offset="100%" stop-color="rgba(255,200,50,0)"/></radialGradient>
+      </defs>
+      <ellipse cx="140" cy="140" rx="115" ry="75" fill="url(#lg)" opacity=".35"/>
+      <path d="M55 140 Q25 106 35 76 Q46 51 66 62 Q76 67 74 82" fill="none" stroke="url(#hg)" stroke-width="11" stroke-linecap="round"/>
+      <path d="M55 140 Q25 106 35 76 Q46 51 66 62 Q76 67 74 82" fill="none" stroke="rgba(255,230,90,.25)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M228 130 Q248 120 258 110 Q268 100 261 93 Q255 87 243 93 Q235 98 231 110" fill="none" stroke="url(#hg)" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="259" cy="91" r="7.5" fill="url(#lt)" stroke="#D4A017" stroke-width="1.5"/>
+      <ellipse cx="140" cy="178" rx="65" ry="13" fill="url(#lb)" stroke="#8B5E08" stroke-width="1"/>
+      <path d="M76 160 Q71 136 76 116 Q91 86 140 84 Q189 84 204 116 Q209 136 204 160 Z" fill="url(#lb)"/>
+      <path d="M84 116 Q112 91 140 88 Q168 91 196 116" fill="none" stroke="rgba(255,215,0,.4)" stroke-width="2.5"/>
+      <path d="M79 148 Q140 138 201 148" fill="none" stroke="rgba(255,215,0,.38)" stroke-width="1.8"/>
+      <path d="M76 158 Q140 149 204 158" fill="none" stroke="rgba(255,215,0,.25)" stroke-width="1.2"/>
+      <g opacity=".3" stroke="#FFE070" stroke-width="1.2" fill="none">
+        <path d="M114 126 Q140 116 166 126 Q155 138 140 141 Q125 138 114 126Z"/>
+        <path d="M122 126 Q140 119 158 126"/>
+        <circle cx="140" cy="126" r="5.5"/>
+        <path d="M104 146 Q122 139 140 141 Q158 139 176 146"/>
+      </g>
+      <ellipse cx="106" cy="112" rx="17" ry="11" fill="url(#sg)" opacity=".75" transform="rotate(-14,106,112)"/>
+      <path d="M120 84 Q126 68 140 62 Q154 68 160 84" fill="url(#lt)" stroke="#8B5E08" stroke-width="1"/>
+      <g filter="url(#fw)">
+        <ellipse cx="140" cy="55" rx="7.5" ry="11" fill="#FF8C00" opacity=".85"/>
+        <ellipse cx="140" cy="51" rx="5" ry="7.5" fill="#FFD700" opacity=".9"/>
+        <ellipse cx="140" cy="47" rx="3" ry="5" fill="#FFFBE0"/>
+      </g>
+      <ellipse cx="140" cy="193" rx="85" ry="11" fill="rgba(0,0,0,.38)"/>
+    </svg>
+    <div id="smoke-wrap"></div>
+  </div>
+  <div id="rub-wrap">
+    <div class="rub-lbl">✦ OVA GÜCÜ ✦</div>
+    <div id="rub-bg"><div id="rub-fill"></div></div>
+  </div>
+</div>
+
+<div id="genie">
+  <svg viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg" width="190" height="380">
+    <defs>
+      <radialGradient id="gb" cx="50%" cy="38%" r="60%"><stop offset="0%" stop-color="#70BAFF"/><stop offset="58%" stop-color="#2262C2"/><stop offset="100%" stop-color="#0C2288"/></radialGradient>
+      <radialGradient id="gf" cx="38%" cy="33%" r="55%"><stop offset="0%" stop-color="#80CCFF"/><stop offset="100%" stop-color="#3A82D2"/></radialGradient>
+      <linearGradient id="gs" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#4A90D9" stop-opacity=".9"/><stop offset="100%" stop-color="#4A90D9" stop-opacity="0"/></linearGradient>
+      <filter id="gg"><feGaussianBlur stdDeviation="5" result="bl"/><feMerge><feMergeNode in="bl"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <path d="M100 390 Q78 355 88 322 Q110 290 93 258 Q76 226 100 208" fill="none" stroke="url(#gs)" stroke-width="38" stroke-linecap="round" opacity=".75"/>
+    <path d="M100 390 Q122 355 112 322 Q90 290 107 258 Q124 226 100 208" fill="none" stroke="url(#gs)" stroke-width="22" stroke-linecap="round" opacity=".4"/>
+    <circle cx="68" cy="340" r="3" fill="#6AF" opacity=".7"><animate attributeName="opacity" values=".7;0;.7" dur="1.8s" repeatCount="indefinite"/></circle>
+    <circle cx="132" cy="310" r="2.5" fill="#8CF" opacity=".6"><animate attributeName="opacity" values=".6;0;.6" dur="2.2s" repeatCount="indefinite"/></circle>
+    <circle cx="85" cy="278" r="2" fill="#ACF" opacity=".5"><animate attributeName="opacity" values=".5;0;.5" dur="1.5s" repeatCount="indefinite"/></circle>
+    <ellipse cx="100" cy="178" rx="52" ry="68" fill="url(#gb)" filter="url(#gg)"/>
+    <path d="M54 193 Q100 204 146 193" fill="none" stroke="#FFD700" stroke-width="4"/>
+    <circle cx="100" cy="194" r="7" fill="#FFD700"/>
+    <circle cx="100" cy="194" r="4.5" fill="#FF8C00"/>
+    <circle cx="100" cy="194" r="2" fill="#FFD700"/>
+    <path d="M74 153 Q100 146 126 153" fill="none" stroke="rgba(150,210,255,.35)" stroke-width="2"/>
+    <path d="M68 165 Q100 158 132 165" fill="none" stroke="rgba(150,210,255,.25)" stroke-width="1.5"/>
+    <path d="M52 163 Q18 143 13 122 Q10 107 24 106" fill="none" stroke="#2060C0" stroke-width="22" stroke-linecap="round"/>
+    <path d="M52 163 Q18 143 13 122 Q10 107 24 106" fill="none" stroke="#60A8F0" stroke-width="14" stroke-linecap="round" opacity=".45"/>
+    <ellipse cx="26" cy="106" rx="13" ry="9.5" fill="#3A70C2" transform="rotate(-22,26,106)"/>
+    <line x1="17" y1="101" x2="11" y2="93" stroke="#2050A8" stroke-width="4" stroke-linecap="round"/>
+    <line x1="23" y1="98" x2="19" y2="89" stroke="#2050A8" stroke-width="4" stroke-linecap="round"/>
+    <line x1="29" y1="98" x2="28" y2="88" stroke="#2050A8" stroke-width="4" stroke-linecap="round"/>
+    <line x1="35" y1="101" x2="37" y2="91" stroke="#2050A8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M148 163 Q182 143 187 122 Q190 107 176 106" fill="none" stroke="#2060C0" stroke-width="22" stroke-linecap="round"/>
+    <path d="M148 163 Q182 143 187 122 Q190 107 176 106" fill="none" stroke="#60A8F0" stroke-width="14" stroke-linecap="round" opacity=".45"/>
+    <ellipse cx="174" cy="106" rx="13" ry="9.5" fill="#3A70C2" transform="rotate(22,174,106)"/>
+    <line x1="183" y1="101" x2="189" y2="93" stroke="#2050A8" stroke-width="4" stroke-linecap="round"/>
+    <line x1="177" y1="98" x2="181" y2="89" stroke="#2050A8" stroke-width="4" stroke-linecap="round"/>
+    <line x1="171" y1="98" x2="172" y2="88" stroke="#2050A8" stroke-width="4" stroke-linecap="round"/>
+    <line x1="165" y1="101" x2="163" y2="91" stroke="#2050A8" stroke-width="4" stroke-linecap="round"/>
+    <rect x="88" y="108" width="24" height="18" rx="8" fill="#3A82D2"/>
+    <ellipse cx="100" cy="86" rx="43" ry="44" fill="url(#gf)"/>
+    <ellipse cx="108" cy="90" rx="36" ry="37" fill="rgba(255,255,255,.06)"/>
+    <path d="M61 76 Q59 48 80 33 Q100 20 120 33 Q141 48 139 76" fill="#8B1520"/>
+    <path d="M65 75 Q64 50 82 36 Q100 24 118 36 Q136 50 135 75" fill="#A81C28"/>
+    <path d="M67 71 Q100 57 133 71" fill="none" stroke="#DAA520" stroke-width="2.5"/>
+    <circle cx="100" cy="28" r="9.5" fill="#DAA520"/>
+    <circle cx="100" cy="28" r="6.5" fill="#FF5500"/>
+    <circle cx="100" cy="28" r="3.5" fill="#FFD700"/>
+    <circle cx="98" cy="26" r="1.5" fill="rgba(255,255,255,.7)"/>
+    <path d="M60 68 Q44 58 41 46 Q44 40 49 44" fill="none" stroke="#DAA520" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="40" cy="46" r="5.5" fill="#DAA520"/>
+    <circle cx="40" cy="46" r="3" fill="#FF8C00"/>
+    <path d="M71 74 Q81 69 89 73" fill="none" stroke="#1A2E80" stroke-width="2.8" stroke-linecap="round"/>
+    <path d="M111 73 Q119 69 129 74" fill="none" stroke="#1A2E80" stroke-width="2.8" stroke-linecap="round"/>
+    <ellipse cx="81" cy="83" rx="11" ry="10.5" fill="white"/>
+    <ellipse cx="119" cy="83" rx="11" ry="10.5" fill="white"/>
+    <circle cx="84" cy="84" r="7.5" fill="#1A2080"/>
+    <circle cx="122" cy="84" r="7.5" fill="#1A2080"/>
+    <circle cx="84" cy="84" r="4.5" fill="#080820"/>
+    <circle cx="122" cy="84" r="4.5" fill="#080820"/>
+    <circle cx="82" cy="81.5" r="2.2" fill="white"/>
+    <circle cx="120" cy="81.5" r="2.2" fill="white"/>
+    <path d="M97 92 Q93 100 97 103 Q100 104 103 103 Q107 100 103 92" fill="#2A6AB2" opacity=".6"/>
+    <path d="M83 109 Q100 123 117 109" fill="none" stroke="#1A2E80" stroke-width="3" stroke-linecap="round"/>
+    <path d="M87 111 Q100 121 113 111" fill="rgba(100,180,255,.25)"/>
+    <circle cx="59" cy="91" r="5.5" fill="#DAA520"/><circle cx="59" cy="91" r="3.2" fill="#FF8000"/><circle cx="59" cy="91" r="1.4" fill="#FFD700"/>
+    <circle cx="141" cy="91" r="5.5" fill="#DAA520"/><circle cx="141" cy="91" r="3.2" fill="#FF8000"/><circle cx="141" cy="91" r="1.4" fill="#FFD700"/>
+    <path d="M88 104 Q94 108 100 106 Q106 108 112 104" fill="none" stroke="#1A2080" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+  </svg>
+</div>
+
+<div id="q-panel">
+  <div class="q-orn">🌟</div>
+  <div class="q-cat" id="q-cat">Kişisel</div>
+  <div class="qdiv"></div>
+  <div class="q-txt" id="q-txt">Soru yükleniyor...</div>
+  <textarea id="ans-input" placeholder="Cevabını buraya yaz... ✍️" rows="3"></textarea>
+  <button class="send-btn" id="send-btn" onclick="sendAnswer()">✦ Cine Gönder</button>
+  <div id="genie-bubble">
+    <div class="dots"><span></span><span></span><span></span></div>
+  </div>
+  <button class="next-btn" id="next-btn" onclick="nextQ()">Sonraki Soru ✦</button>
+  <div class="q-count">Soru <span id="qi">1</span> / <span id="qt">8</span></div>
+</div>
+
+<button id="carpet-btn" onclick="startFlight()">🪄 Uçan Halıya Bin</button>
+
+<div id="flight-scene">
+  <div id="speed-stars"></div>
+  <div style="position:absolute;top:12%;right:12%;font-size:4.5rem;opacity:.65;animation:dfloat 5s ease-in-out infinite">🌙</div>
+  <div style="position:absolute;top:20%;left:10%;font-size:2rem;opacity:.4;animation:dfloat 7s ease-in-out infinite reverse">⭐</div>
+  <svg id="flying-carpet" viewBox="0 0 270 75" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7A1515"/><stop offset="35%" stop-color="#962020"/><stop offset="65%" stop-color="#7A1515"/><stop offset="100%" stop-color="#520808"/></linearGradient></defs>
+    <path d="M4 24 Q135 14 266 24 L269 52 Q135 62 1 52Z" fill="url(#cg)"/>
+    <path d="M4 24 Q135 14 266 24" fill="none" stroke="#DAA520" stroke-width="2.5"/>
+    <path d="M1 52 Q135 62 269 52" fill="none" stroke="#DAA520" stroke-width="2.5"/>
+    <line x1="4" y1="24" x2="1" y2="52" stroke="#DAA520" stroke-width="2"/><line x1="266" y1="24" x2="269" y2="52" stroke="#DAA520" stroke-width="2"/>
+    <ellipse cx="135" cy="38" rx="48" ry="14" fill="none" stroke="#DAA520" stroke-width="1.8" opacity=".7"/>
+    <ellipse cx="135" cy="38" rx="28" ry="8" fill="none" stroke="#DAA520" stroke-width="1.3" opacity=".55"/>
+    <path d="M38 27 Q58 20 78 27 Q58 33 38 27Z" fill="#1A7878" opacity=".65"/>
+    <path d="M192 27 Q212 20 232 27 Q212 33 192 27Z" fill="#1A7878" opacity=".65"/>
+    <path d="M38 49 Q58 43 78 49 Q58 55 38 49Z" fill="#1A7878" opacity=".65"/>
+    <path d="M192 49 Q212 43 232 49 Q212 55 192 49Z" fill="#1A7878" opacity=".65"/>
+    <g stroke="#DAA520" stroke-width="1.5"><line x1="8" y1="24" x2="3" y2="11"/><line x1="18" y1="21" x2="14" y2="8"/><line x1="28" y1="19" x2="25" y2="6"/><line x1="258" y1="24" x2="263" y2="11"/><line x1="248" y1="21" x2="252" y2="8"/><line x1="238" y1="19" x2="241" y2="6"/></g>
+    <ellipse cx="135" cy="71" rx="115" ry="7" fill="rgba(0,0,0,.45)"/>
+  </svg>
+  <svg id="fly-pass" viewBox="0 0 75 95" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="37" cy="68" rx="20" ry="22" fill="#2060C0"/>
+    <circle cx="37" cy="36" r="20" fill="#3A82D2"/>
+    <path d="M20 30 Q18 16 37 10 Q56 16 54 30" fill="#8B1520"/>
+    <path d="M23 29 Q22 17 37 12 Q52 17 51 29" fill="#A81C28"/>
+    <circle cx="37" cy="11" r="4.5" fill="#DAA520"/>
+    <circle cx="30" cy="36" r="4.5" fill="white"/><circle cx="44" cy="36" r="4.5" fill="white"/>
+    <circle cx="31" cy="36" r="2.8" fill="#1A2080"/><circle cx="45" cy="36" r="2.8" fill="#1A2080"/>
+    <path d="M31 46 Q37 52 43 46" fill="none" stroke="#1A2080" stroke-width="2" stroke-linecap="round"/>
+    <path d="M17 58 Q4 44 9 33" fill="none" stroke="#2060C0" stroke-width="9" stroke-linecap="round"/>
+    <path d="M57 58 Q70 44 65 33" fill="none" stroke="#2060C0" stroke-width="9" stroke-linecap="round"/>
+    <path d="M54 28 Q62 22 72 18 Q78 20 75 26 Q68 30 60 36" fill="none" stroke="#DAA520" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+  <div id="dest-panel">
+    <div class="dest-title">✦ Nereye Gitmek İstersin? ✦</div>
+    <div class="dest-grid" id="dest-grid"></div>
+  </div>
+</div>
+
+<div id="dest-scene">
+  <div id="dest-bg"></div>
+  <div class="dest-cnt">
+    <span class="dest-big" id="dest-big">🏛️</span>
+    <div class="dest-head" id="dest-head">Başlık</div>
+    <div class="dest-desc" id="dest-desc">Açıklama</div>
+    <button class="back-btn" onclick="goBack()">↩ Lambaya Dön</button>
+  </div>
+</div>
+
+<style>
+@keyframes dfloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+</style>
+
+<script>
+const questions=[
+  {cat:"🎮 Oyun & Eğlence",q:"Serbest zamanlarında en çok hangi oyunları oynarsın? Dijital mi, masa oyunu mu, başka bir şey mi? Biraz anlat!"},
+  {cat:"💫 Hobiler",q:"Hayatında en çok zevk aldığın hobi nedir? Bu hobi sana ne hissettiriyor?"},
+  {cat:"🍕 Yemek & Lezzet",q:"Sonsuza dek sadece bir yemek yemek zorunda olsaydın ne seçerdin? Neden o yemek seni bu kadar çekiyor?"},
+  {cat:"🌍 Seyahat & Macera",q:"Henüz gidemediğin ama çok gitmek istediğin bir yer var mı? O yer seni neden çekiyor?"},
+  {cat:"📺 Dizi & Film",q:"Son zamanlarda izlediğin en etkileyici ya da en sevdiğin yapım hangisiydi? Neden öyle hissettirdi?"},
+  {cat:"🎵 Müzik & Ritim",q:"Müzik hayatında ne kadar yer tutuyor? En çok hangi müzik türünü ya da sanatçıyı dinlersin?"},
+  {cat:"🦸 Süper Güç",q:"Gerçekten bir süper güce sahip olabilseydin hangisini seçerdin ve onu nasıl kullanırdın?"},
+  {cat:"🌟 Hayaller",q:"Beş yıl sonra kendini nerede hayal ediyorsun? En büyük hayalin nedir?"},
+];
+
+const destinations=[
+  {i:"🏛️",n:"Antik Atina",bg:"linear-gradient(180deg,#6B9EC4,#9ABCD0 35%,#C8B89A 65%,#D2A67A)",d:"Felsefenin doğduğu, demokrasinin filizlendiği kadim şehir. Sokrates'in adımladığı taşlar hâlâ burada, Parthenon bulutlara meydan okuyor."},
+  {i:"🐫",n:"Çöl Sarayı",bg:"linear-gradient(180deg,#D45000,#F48020 30%,#FFD060 65%,#C8900A)",d:"Sonsuz altın kumlar ortasında yükselen gizemli bir saray. Deve kervanları uzaktan yaklaşıyor, baharat kokuları seni kucaklıyor."},
+  {i:"🌊",n:"Denizaltı Krallığı",bg:"linear-gradient(180deg,#000C1A,#002848 30%,#004878 60%,#0068A0)",d:"Okyanus derinliklerinde parlayan sihirli bir dünya. Mercan sarayları, ışıldayan yaratıklar ve su perilerinin ezgisi seni karşılıyor."},
+  {i:"☁️",n:"Bulut Kalesi",bg:"linear-gradient(180deg,#4A90D9,#87CEEB 35%,#C8E8F5 65%,#EEF6FF)",d:"Pamuk bulutların üzerinde süzülen beyaz bir kale. Rüzgar türkü söylüyor, ufukta gökkuşakları dans ediyor."},
+  {i:"🔮",n:"Sihir Akademisi",bg:"linear-gradient(180deg,#0A0420,#180838 35%,#2A1060 65%,#3A1880)",d:"Büyücülerin ders gördüğü kadim bir okul. Kitaplar uçuyor, kazanlar kaynıyor, her koridorda yeni bir sır seni bekliyor."},
+  {i:"🌺",n:"Sonsuz Bahçe",bg:"linear-gradient(180deg,#87CEEB,#68C468 35%,#2E8B2E 70%,#1A5A1A)",d:"Her çiçeğin konuştuğu, kelebeklerin dans ettiği, kristal derelerin aktığı sonsuz bir cennet bahçesi."},
+];
+
+let rubP=0,mDown=false,lx=0,ly=0;
+let qIdx=0,answered=0,genieOut=false,shuffledQ=[];
+
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<200;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2.8+.4;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${2+Math.random()*5}s;animation-delay:${Math.random()*5}s`;
+    c.appendChild(s);
+  }
+})();
+
+const lw=document.getElementById('lamp-wrap'),rf=document.getElementById('rub-fill');
+
+function move(x,y){
+  if(!mDown)return;
+  const dx=x-lx,dy=y-ly,d=Math.sqrt(dx*dx+dy*dy);
+  lx=x;ly=y;
+  if(d>2){
+    rubP=Math.min(100,rubP+d*.95);rf.style.width=rubP+'%';
+    lw.classList.add('rubbing');spawnSmoke();
+    clearTimeout(window._rst);window._rst=setTimeout(()=>lw.classList.remove('rubbing'),180);
+    if(rubP>=100){mDown=false;lw.classList.remove('rubbing');summonGenie();}
+  }
+}
+lw.addEventListener('mousedown',e=>{mDown=true;lx=e.clientX;ly=e.clientY;});
+document.addEventListener('mousemove',e=>move(e.clientX,e.clientY));
+document.addEventListener('mouseup',()=>{mDown=false;lw.classList.remove('rubbing');});
+lw.addEventListener('touchstart',e=>{e.preventDefault();mDown=true;lx=e.touches[0].clientX;ly=e.touches[0].clientY;},{passive:false});
+lw.addEventListener('touchmove',e=>{e.preventDefault();move(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+lw.addEventListener('touchend',()=>{mDown=false;lw.classList.remove('rubbing');});
+setInterval(()=>{if(!mDown&&rubP>0){rubP=Math.max(0,rubP-1.8);rf.style.width=rubP+'%';}},50);
+
+function spawnSmoke(){
+  const sw=document.getElementById('smoke-wrap');sw.style.display='block';
+  const p=document.createElement('div');p.className='sp';
+  const sz=18+Math.random()*28;
+  p.style.cssText=`width:${sz}px;height:${sz}px;left:${38+Math.random()*22}px;top:${Math.random()*8}px`;
+  sw.appendChild(p);setTimeout(()=>p.remove(),2000);
+}
+
+function summonGenie(){
+  if(genieOut)return;genieOut=true;
+  for(let i=0;i<18;i++)setTimeout(spawnSmoke,i*70);
+  setTimeout(()=>{
+    document.getElementById('genie').classList.add('up');
+    setTimeout(showFirstQ,900);
+  },500);
+}
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function showFirstQ(){
+  shuffledQ=shuffle(questions);qIdx=0;answered=0;
+  document.getElementById('qt').textContent=shuffledQ.length;
+  renderQ();document.getElementById('q-panel').classList.add('open');
+}
+
+function renderQ(){
+  const q=shuffledQ[qIdx];
+  document.getElementById('q-cat').textContent=q.cat;
+  document.getElementById('q-txt').textContent=q.q;
+  const inp=document.getElementById('ans-input');inp.value='';inp.disabled=false;
+  const sb=document.getElementById('send-btn');sb.disabled=false;sb.style.display='inline-block';
+  const gb=document.getElementById('genie-bubble');
+  gb.style.display='none';gb.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('qi').textContent=qIdx+1;
+}
+
+async function sendAnswer(){
+  const inp=document.getElementById('ans-input');
+  const val=inp.value.trim();
+  if(!val){inp.style.boxShadow='0 0 0 2px rgba(255,80,80,.5)';setTimeout(()=>inp.style.boxShadow='',800);return;}
+  inp.disabled=true;
+  const sb=document.getElementById('send-btn');sb.disabled=true;
+  const gb=document.getElementById('genie-bubble');
+  gb.style.display='block';
+  gb.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  const q=shuffledQ[qIdx];
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:200,
+        system:"Sen Bin Bir Gece Masalları'ndan çıkmış bilge ve neşeli bir cinsin. Kullanıcının kişisel bir soruya verdiği cevabı okuyup ona özel, sıcak, eğlenceli ve biraz büyülü 2-3 cümlelik bir yorum yap. Türkçe yaz. Resmi olma, samimi ve renkli ol. Her cevabın başında farklı bir emoji koy.",
+        messages:[{role:"user",content:`Soru: "${q.q}"\nKullanıcı cevabı: "${val}"\nBu cevaba özel bir yorum yap.`}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||"✨ Ne büyüleyici bir cevap! Kaderinizde muhteşem şeyler var...";
+    typeText(gb,text);
+  }catch(e){
+    typeText(gb,"✨ Harika bir cevap! Ruhunuzun derinliklerini hissedebiliyorum, önünüzde büyük şeyler var...");
+  }
+  answered++;
+  document.getElementById('sv').textContent=answered;
+  document.getElementById('next-btn').style.display='inline-block';
+  if(answered>=3)document.getElementById('carpet-btn').classList.add('show');
+}
+
+function typeText(el,text){
+  el.textContent='';let i=0;
+  const iv=setInterval(()=>{el.textContent+=text[i];i++;if(i>=text.length)clearInterval(iv);},25);
+}
+
+function nextQ(){qIdx=(qIdx+1)%shuffledQ.length;renderQ();}
+
+document.getElementById('ans-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAnswer();}
+});
+
+function startFlight(){
+  fade(()=>{
+    const ls=document.getElementById('lamp-scene');ls.style.opacity='0';ls.style.pointerEvents='none';
+    document.getElementById('q-panel').classList.remove('open');
+    document.getElementById('genie').style.display='none';
+    document.getElementById('carpet-btn').style.display='none';
+    document.getElementById('flight-scene').classList.add('on');
+    createSpeedStars();buildDests();
+    setTimeout(()=>document.getElementById('dest-panel').classList.add('show'),4200);
+  });
+}
+
+function createSpeedStars(){
+  const c=document.getElementById('speed-stars');
+  for(let i=0;i<70;i++){
+    const s=document.createElement('div');s.className='sspeed';
+    const h=1+Math.random()*2;
+    s.style.cssText=`top:${Math.random()*100}%;right:${Math.random()*100}%;height:${h}px;animation-duration:${.35+Math.random()*.5}s;animation-delay:${Math.random()}s`;
+    c.appendChild(s);
+  }
+}
+
+function buildDests(){
+  const g=document.getElementById('dest-grid');g.innerHTML='';
+  destinations.forEach((d,i)=>{
+    const c=document.createElement('div');c.className='dest-card';
+    c.innerHTML=`<span class="dest-ico">${d.i}</span><div class="dest-nm">${d.n}</div>`;
+    c.onclick=()=>goTo(i);g.appendChild(c);
+  });
+}
+
+function goTo(i){
+  const d=destinations[i];
+  fade(()=>{
+    document.getElementById('flight-scene').classList.remove('on');
+    document.getElementById('dest-bg').style.background=d.bg;
+    document.getElementById('dest-big').textContent=d.i;
+    document.getElementById('dest-head').textContent=d.n+"'e Hoş Geldin!";
+    document.getElementById('dest-desc').textContent=d.d;
+    document.getElementById('dest-scene').classList.add('on');
+  });
+}
+
+function goBack(){
+  fade(()=>{
+    document.getElementById('dest-scene').classList.remove('on');
+    const ls=document.getElementById('lamp-scene');ls.style.opacity='1';ls.style.pointerEvents='all';
+    document.getElementById('genie').style.display='block';
+    const cb=document.getElementById('carpet-btn');cb.style.display='flex';cb.classList.add('show');
+    document.getElementById('q-panel').classList.add('open');
+    const fc=document.getElementById('flying-carpet'),fp=document.getElementById('fly-pass');
+    fc.style.animation='none';fp.style.animation='none';
+    setTimeout(()=>{fc.style.animation='';fp.style.animation='';},30);
+    document.getElementById('dest-panel').classList.remove('show');
+  });
+}
+
+function fade(cb){
+  const ov=document.getElementById('ov');ov.classList.add('on');
+  setTimeout(()=>{cb();setTimeout(()=>ov.classList.remove('on'),100);},560);
+}
+</script>
+</body>
+</html>

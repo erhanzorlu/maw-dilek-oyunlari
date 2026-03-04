@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Dilek Çarkı – Hayalini Paylaş! | Make-A-Wish® Türkiye</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+
+    :root {
+      --pink:       #FF6FB8;
+      --pink-light: #FFB3D9;
+      --blue:       #4A9EFF;
+      --blue-light: #A8D4FF;
+      --yellow:     #FFD93D;
+      --green:      #6BCBA5;
+      --purple:     #B57BFF;
+      --orange:     #FF9A56;
+      --teal:       #42C8C8;
+      --red:        #FF6B6B;
+      --sky:        #7EC8E3;
+      --mint:       #A8E6CF;
+
+      --bg-from:    #FFDEE9;
+      --bg-to:      #B5D7FF;
+      --card-bg:    rgba(255,255,255,0.92);
+      --shadow:     0 8px 40px rgba(100,120,200,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100dvh;
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, var(--bg-from) 0%, var(--bg-to) 100%);
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 12px 32px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── Floating bubbles bg ── */
+    .bg-bubble {
+      position: fixed;
+      border-radius: 50%;
+      opacity: 0.18;
+      pointer-events: none;
+      animation: floatBubble linear infinite;
+    }
+
+    @keyframes floatBubble {
+      0%   { transform: translateY(0) scale(1); }
+      50%  { transform: translateY(-30px) scale(1.06); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 12px;
+      animation: fadeDown 0.7s ease both;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .star-logo {
+      font-size: 2rem;
+      animation: starPulse 2s ease-in-out infinite;
+    }
+    @keyframes starPulse {
+      0%,100% { transform: scale(1) rotate(-5deg); }
+      50%       { transform: scale(1.2) rotate(5deg); }
+    }
+
+    .org-name {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+      color: var(--pink);
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 8px rgba(255,111,184,0.25);
+    }
+
+    .title {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.8rem, 6vw, 2.8rem);
+      background: linear-gradient(90deg, var(--pink), var(--blue), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+      text-shadow: none;
+    }
+
+    .subtitle {
+      font-size: clamp(0.85rem, 2.5vw, 1rem);
+      color: #7a90b0;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* ── Wheel Container ── */
+    .wheel-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 8px 0;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* canvas is sized dynamically */
+    #wheelCanvas {
+      touch-action: none;
+      cursor: pointer;
+      filter: drop-shadow(0 10px 30px rgba(100,140,255,0.25));
+      transition: filter 0.3s;
+      border-radius: 50%;
+    }
+    #wheelCanvas:hover { filter: drop-shadow(0 14px 40px rgba(100,140,255,0.38)); }
+
+    /* pointer arrow */
+    .pointer-wrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* ── Spin button ── */
+    .btn-spin {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.2rem, 4vw, 1.7rem);
+      letter-spacing: 1px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 60%, var(--blue) 100%);
+      border: none;
+      border-radius: 60px;
+      padding: 16px 52px;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(180,100,255,0.35), 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+      margin: 10px auto 0;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.8s 0.5s ease both;
+    }
+
+    .btn-spin::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+    .btn-spin:not(:disabled):hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 10px 32px rgba(180,100,255,0.45); }
+    .btn-spin:not(:disabled):hover::before { background: rgba(255,255,255,0.08); }
+    .btn-spin:not(:disabled):active { transform: translateY(1px) scale(0.97); }
+    .btn-spin:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* sparkle on button */
+    .btn-spark {
+      position: absolute;
+      top: 6px; right: 14px;
+      font-size: 1.1rem;
+      animation: sparkle 1.5s ease-in-out infinite;
+    }
+    @keyframes sparkle {
+      0%,100% { opacity:1; transform: scale(1) rotate(0); }
+      50%       { opacity:0.5; transform: scale(1.4) rotate(20deg); }
+    }
+
+    /* ── Result card ── */
+    .result-card {
+      background: var(--card-bg);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 22px 26px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      margin: 14px auto 0;
+      transform: scale(0) rotate(-6deg);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
+      border: 3px solid transparent;
+      position: relative;
+      overflow: hidden;
+      display: none; /* Başlangıçta gizli */
+    }
+    .result-card.visible {
+      display: block;
+      transform: scale(1) rotate(0);
+      opacity: 1;
+    }
+    .result-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      padding: 3px;
+      background: linear-gradient(135deg, var(--pink), var(--purple), var(--blue), var(--yellow));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .result-emoji { font-size: 2.4rem; margin-bottom: 6px; display: block; }
+    .result-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+      color: var(--pink);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+    .result-question {
+      font-size: clamp(1rem, 3.2vw, 1.25rem);
+      font-weight: 800;
+      color: #3a4a6b;
+      line-height: 1.45;
+    }
+    .result-hint {
+      font-size: 0.82rem;
+      color: #9ab0c8;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    /* ── Confetti canvas ── */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #a0b8d0;
+      font-weight: 600;
+      animation: fadeUp 0.8s 0.8s ease both;
+    }
+    .footer a { color: var(--blue); text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 420px) {
+      .btn-spin { padding: 14px 36px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confettiCanvas"></canvas>
+
+<header class="header">
+  <div class="logo-wrap">
+    <span class="star-logo">⭐</span>
+    <span class="org-name">Make-A-Wish® Türkiye – Bir Dilek Tut Derneği</span>
+    <span class="star-logo">⭐</span>
+  </div>
+  <h1 class="title">Dilek Çarkı</h1>
+  <p class="subtitle">✨ Hayalini Paylaş! ✨</p>
+</header>
+
+<div class="wheel-wrap" id="wheelWrap">
+  <canvas id="wheelCanvas"></canvas>
+  <div class="pointer-wrap" id="pointerWrap" aria-hidden="true"></div>
+</div>
+
+<button class="btn-spin" id="btnSpin" aria-label="Çarkı döndür">
+  <span class="btn-spark">✨</span>
+  🎡 DÖNDÜR!
+</button>
+
+<div class="result-card" id="resultCard" role="status" aria-live="polite">
+  <span class="result-emoji" id="resultEmoji">🌟</span>
+  <p class="result-label" id="resultLabel">Senin için seçilen soru:</p>
+  <p class="result-question" id="resultQuestion"></p>
+  <p class="result-hint" id="resultHint">Aklındaki ilk şeyi söyle – hiç yanlış cevap yok! 💛</p>
+</div>
+
+<footer class="footer">
+  <p>Make-A-Wish® Türkiye &mdash; <a href="https://makeawish.org.tr" target="_blank" rel="noopener">makeawish.org.tr</a></p>
+  <p style="margin-top:3px;">Her çocuğun bir dileği vardır 🌈</p>
+</footer>
+
+<script>
+"use strict";
+
+/* ═══════════════════════════════════════════════
+   DATA — Questions List
+   ════════════════════════════════════════════════ */
+const questions = [
+  {
+    text: "Boş zamanlarında neler yapmayı seversin? (Hobiler, ilgi alanları…)",
+    emoji: "🎨",
+    color: "#FF6FB8"
+  },
+  {
+    text: "Büyüyünce ne olmak / ne yapmak istiyorsun?",
+    emoji: "🚀",
+    color: "#4A9EFF"
+  },
+  {
+    text: "Olmaktan mutlu olduğun, gitmeyi sevdiğin bir yer var mı?",
+    emoji: "🌈",
+    color: "#6BCBA5"
+  },
+  {
+    text: "Oyun oynuyor musun? Hangi oyunları seviyorsun? (Kutu oyunu, sokak, mobil, konsol / bilgisayar…)",
+    emoji: "🎮",
+    color: "#B57BFF"
+  },
+  {
+    text: "Uyumadan önce ne hayal edersin?",
+    emoji: "🌙",
+    color: "#FFD93D"
+  }
+];
+
+// Bu dizi, henüz sorulmamış soruların indekslerini tutar.
+// Sayfa ilk açıldığında 0'dan questions.length'e kadar doldurulur.
+let availableIndices = questions.map((_, i) => i);
+
+/* ═══════════════════════════════════════════════
+   VISUAL WHEEL CONFIG
+   ════════════════════════════════════════════════ */
+const SEGMENT_COUNT = 16;
+
+const PALETTE = [
+  "#FF9AB8","#FFB3D9","#FF6FB8","#F9A8D4",
+  "#4A9EFF","#7EC8E3","#A8D4FF","#42C8C8",
+  "#B57BFF","#D4A8FF","#A78BFA","#C4B5FD",
+  "#6BCBA5","#A8E6CF","#FFD93D","#FFBB56"
+];
+
+/* ═══════════════════════════════════════════════
+   CANVAS & SIZE
+   ════════════════════════════════════════════════ */
+const canvas    = document.getElementById('wheelCanvas');
+const ctx       = canvas.getContext('2d');
+const confCvs   = document.getElementById('confettiCanvas');
+const confCtx   = confCvs.getContext('2d');
+
+function calcSize() {
+  const vw = Math.min(window.innerWidth, 600);
+  return Math.floor(Math.min(vw - 24, window.innerHeight * 0.46, 420));
+}
+
+let SIZE = calcSize();
+let RADIUS, CX, CY, CENTER_R;
+
+function applySize() {
+  SIZE    = calcSize();
+  RADIUS  = SIZE / 2 - 6;
+  CX = CY = SIZE / 2;
+  CENTER_R = SIZE * 0.09;
+
+  canvas.width  = SIZE;
+  canvas.height = SIZE;
+  canvas.style.width  = SIZE + 'px';
+  canvas.style.height = SIZE + 'px';
+
+  confCvs.width  = window.innerWidth;
+  confCvs.height = window.innerHeight;
+
+  const pw = Math.round(SIZE * 0.085);
+  const ph = Math.round(SIZE * 0.14);
+  pointerWrap.innerHTML = '';
+  const ps = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  ps.setAttribute('width', pw);
+  ps.setAttribute('height', ph);
+  ps.setAttribute('viewBox','0 0 36 56');
+  ps.innerHTML = `
+    <filter id="ds"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#b03080" flood-opacity="0.4"/></filter>
+    <polygon points="18,2 34,54 18,44 2,54" fill="#FF2D78" filter="url(#ds)"/>
+    <polygon points="18,2 34,54 18,44 2,54" fill="url(#pg)"/>
+    <defs>
+      <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FF6FB8"/>
+        <stop offset="100%" stop-color="#FF2D78"/>
+      </linearGradient>
+    </defs>
+    <circle cx="18" cy="10" r="5" fill="white" opacity="0.7"/>
+  `;
+  pointerWrap.appendChild(ps);
+}
+
+const pointerWrap = document.getElementById('pointerWrap');
+applySize();
+
+/* ═══════════════════════════════════════════════
+   SEGMENT MAP
+   ════════════════════════════════════════════════ */
+function buildSegmentMap(segCount, qCount) {
+  const map = [];
+  for (let i = 0; i < segCount; i++) {
+    map.push(i % qCount);
+  }
+  const shuffled = [...map];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.LN2 * (i + 1) * 7919) % (i + 1); 
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+const segmentMap = buildSegmentMap(SEGMENT_COUNT, questions.length);
+
+/* ═══════════════════════════════════════════════
+   DRAW WHEEL
+   ════════════════════════════════════════════════ */
+const ICONS = ["⭐","🌟","💫","✨","🌈","🎈","🎀","🦋","🌸","🎯","🎪","💎","🏆","🎭","🎨","🌙"];
+
+function drawWheel(rotation) {
+  ctx.clearRect(0, 0, SIZE, SIZE);
+  const arc = (Math.PI * 2) / SEGMENT_COUNT;
+
+  // Outer glow ring
+  const grd = ctx.createRadialGradient(CX, CY, RADIUS - 8, CX, CY, RADIUS + 10);
+  grd.addColorStop(0, 'rgba(255,150,200,0)');
+  grd.addColorStop(1, 'rgba(180,120,255,0.18)');
+  ctx.beginPath();
+  ctx.arc(CX, CY, RADIUS + 10, 0, Math.PI * 2);
+  ctx.fillStyle = grd;
+  ctx.fill();
+
+  for (let i = 0; i < SEGMENT_COUNT; i++) {
+    const startAngle = rotation + i * arc;
+    const endAngle   = startAngle + arc;
+    const midAngle   = startAngle + arc / 2;
+    const baseColor  = PALETTE[i % PALETTE.length];
+
+    const gSlice = ctx.createRadialGradient(CX, CY, CENTER_R, CX, CY, RADIUS);
+    gSlice.addColorStop(0, lighten(baseColor, 0.25));
+    gSlice.addColorStop(1, baseColor);
+
+    ctx.beginPath();
+    ctx.moveTo(CX, CY);
+    ctx.arc(CX, CY, RADIUS, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fillStyle = gSlice;
+    ctx.fill();
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth   = 2.5;
+    ctx.stroke();
+
+    const iconR = RADIUS * 0.72;
+    const ix    = CX + iconR * Math.cos(midAngle);
+    const iy    = CY + iconR * Math.sin(midAngle);
+    const fontSize = Math.max(12, Math.round(SIZE * 0.048));
+
+    ctx.save();
+    ctx.translate(ix, iy);
+    ctx.rotate(midAngle + Math.PI / 2);
+    ctx.font = fontSize + 'px serif';
+    ctx.textAlign     = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ICONS[i % ICONS.length], 0, 0);
+    ctx.restore();
+
+    const dotR    = CENTER_R + RADIUS * 0.16;
+    const dotX    = CX + dotR * Math.cos(midAngle);
+    const dotY    = CY + dotR * Math.sin(midAngle);
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, SIZE * 0.016, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Rings
+  ctx.beginPath();
+  ctx.arc(CX, CY, RADIUS, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+  ctx.lineWidth   = 5;
+  ctx.stroke();
+
+  const ringGrd = ctx.createLinearGradient(0, 0, SIZE, SIZE);
+  ringGrd.addColorStop(0,   '#FFB3D9');
+  ringGrd.addColorStop(0.5, '#A8D4FF');
+  ringGrd.addColorStop(1,   '#D4A8FF');
+  ctx.beginPath();
+  ctx.arc(CX, CY, RADIUS + 5, 0, Math.PI * 2);
+  ctx.strokeStyle = ringGrd;
+  ctx.lineWidth   = 7;
+  ctx.stroke();
+
+  const hubGrd = ctx.createRadialGradient(CX - 4, CY - 4, 2, CX, CY, CENTER_R);
+  hubGrd.addColorStop(0, '#FFFFFF');
+  hubGrd.addColorStop(1, '#FFB3D9');
+  ctx.beginPath();
+  ctx.arc(CX, CY, CENTER_R, 0, Math.PI * 2);
+  ctx.fillStyle = hubGrd;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,110,184,0.6)';
+  ctx.lineWidth   = 3;
+  ctx.stroke();
+
+  ctx.font = `${Math.round(CENTER_R * 1.1)}px serif`;
+  ctx.textAlign     = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('⭐', CX, CY);
+}
+
+function lighten(hex, amt) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  const blend = c => Math.round(c + (255 - c) * amt);
+  return `rgb(${blend(r)},${blend(g)},${blend(b)})`;
+}
+
+/* ═══════════════════════════════════════════════
+   SPIN LOGIC
+   ════════════════════════════════════════════════ */
+let currentAngle   = 0;
+let isSpinning     = false;
+let animId         = null;
+
+const btnSpin      = document.getElementById('btnSpin');
+const resultCard   = document.getElementById('resultCard');
+const resultEmoji  = document.getElementById('resultEmoji');
+const resultQ      = document.getElementById('resultQuestion');
+const resultLabel  = document.getElementById('resultLabel');
+const resultHint   = document.getElementById('resultHint');
+
+function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+function getSelectedIndex(angle) {
+  const arc = (Math.PI * 2) / SEGMENT_COUNT;
+  let a = ((-angle - Math.PI / 2) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+  return Math.floor(a / arc) % SEGMENT_COUNT;
+}
+
+function spin() {
+  if (isSpinning) return;
+
+  // 1. KONTROL: Eğer hiç soru kalmadıysa oyun bitti mesajını göster
+  if (availableIndices.length === 0) {
+    showGameOver();
+    return;
+  }
+
+  isSpinning = true;
+  btnSpin.disabled = true;
+  resultCard.classList.remove('visible');
+
+  // 2. ADIM: Müsait olanlardan rastgele bir soru seç
+  const randPoolIdx = Math.floor(Math.random() * availableIndices.length);
+  const targetQIdx  = availableIndices[randPoolIdx];
+  
+  // Seçilen soruyu havuzdan çıkar (Bir daha çıkmasın)
+  availableIndices.splice(randPoolIdx, 1);
+
+  // 3. ADIM: Çarkta bu soruya denk gelen dilimleri bul
+  const targetSegs = segmentMap
+    .map((q, i) => q === targetQIdx ? i : -1)
+    .filter(i => i !== -1);
+  
+  // Bu dilimlerden rastgele birini hedefle
+  const targetSeg  = targetSegs[Math.floor(Math.random() * targetSegs.length)];
+
+  const arc = (Math.PI * 2) / SEGMENT_COUNT;
+  const midAngle = arc * targetSeg + arc / 2;
+  const desiredBase = -midAngle - Math.PI / 2;
+  const extraSpins  = (5 + Math.floor(Math.random() * 5)) * Math.PI * 2;
+  const jitter      = (Math.random() - 0.5) * arc * 0.55;
+
+  let targetAngle = desiredBase + jitter;
+  while (targetAngle <= currentAngle + extraSpins) targetAngle += Math.PI * 2;
+  targetAngle = currentAngle + extraSpins + ((targetAngle - currentAngle - extraSpins + Math.PI * 2 * 4) % (Math.PI * 2));
+
+  const duration  = 3000 + Math.random() * 800;
+  const startAngle = currentAngle;
+  const delta      = targetAngle - startAngle;
+  let   startTime  = null;
+
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    const t       = Math.min(elapsed / duration, 1);
+    const eased   = easeOut(t);
+
+    currentAngle = startAngle + delta * eased;
+    drawWheel(currentAngle);
+
+    if (t < 1) {
+      animId = requestAnimationFrame(step);
+    } else {
+      currentAngle = targetAngle;
+      drawWheel(currentAngle);
+      isSpinning = false;
+      btnSpin.disabled = false;
+
+      // Çark durdu, soruyu göster
+      showResult(questions[targetQIdx]);
+      playDing();
+      launchConfetti();
+    }
+  }
+
+  animId = requestAnimationFrame(step);
+}
+
+/* ═══════════════════════════════════════════════
+   GAME OVER STATE
+   ════════════════════════════════════════════════ */
+function showGameOver() {
+  resultEmoji.textContent = "🧚‍♀️💤";
+  resultLabel.textContent = "OYUN BİTTİ";
+  resultQ.textContent     = "Dilek perisi yoruldu, istersen başka oyuna geçelim.";
+  resultHint.textContent  = "Harika cevaplar verdin! 🌟";
+  
+  resultCard.style.setProperty('--card-accent', '#B57BFF');
+  resultCard.style.display = 'block';
+  void resultCard.offsetWidth; 
+  resultCard.classList.add('visible');
+  
+  btnSpin.disabled = true;
+  btnSpin.style.opacity = "0.5";
+  btnSpin.textContent = "Görüşürüz! 👋";
+}
+
+/* ═══════════════════════════════════════════════
+   RESULT CARD
+   ════════════════════════════════════════════════ */
+function showResult(question) {
+  resultEmoji.textContent = question.emoji;
+  resultLabel.textContent = "Senin için seçilen soru:";
+  resultQ.textContent     = question.text;
+  resultHint.textContent  = "Aklındaki ilk şeyi söyle – hiç yanlış cevap yok! 💛";
+  
+  resultCard.style.setProperty('--card-accent', question.color);
+  resultCard.style.display = 'block';
+  void resultCard.offsetWidth; 
+  resultCard.classList.add('visible');
+  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ═══════════════════════════════════════════════
+   WEB AUDIO 
+   ════════════════════════════════════════════════ */
+let audioCtx = null;
+function ensureAudio() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+  }
+}
+
+function playDing() {
+  ensureAudio();
+  if (!audioCtx) return;
+  try {
+    [[523.25, 0], [783.99, 0.12], [1046.5, 0.22]].forEach(([freq, delay]) => {
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t = audioCtx.currentTime + delay;
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.exponentialRampToValueAtTime(0.35, t + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+      osc.start(t);
+      osc.stop(t + 0.65);
+    });
+  } catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   CONFETTI
+   ════════════════════════════════════════════════ */
+const CONF_COLORS = ['#FF6FB8','#4A9EFF','#FFD93D','#B57BFF','#6BCBA5','#FF9A56','#42C8C8','#FF6B6B'];
+let confettiPieces = [];
+let confAnimId = null;
+
+function launchConfetti() {
+  if (confAnimId) cancelAnimationFrame(confAnimId);
+  confettiPieces = [];
+  const W = confCvs.width;
+  const H = confCvs.height;
+  for (let i = 0; i < 90; i++) {
+    confettiPieces.push({
+      x:   Math.random() * W,
+      y:   -Math.random() * 120,
+      vx:  (Math.random() - 0.5) * 4.5,
+      vy:  2.5 + Math.random() * 4,
+      rot: Math.random() * Math.PI * 2,
+      vr:  (Math.random() - 0.5) * 0.25,
+      w:   7 + Math.random() * 8,
+      h:   4 + Math.random() * 5,
+      col: CONF_COLORS[Math.floor(Math.random() * CONF_COLORS.length)],
+      life: 1
+    });
+  }
+
+  function animConf() {
+    confCtx.clearRect(0, 0, confCvs.width, confCvs.height);
+    let alive = false;
+    confettiPieces.forEach(p => {
+      p.x  += p.vx;
+      p.y  += p.vy;
+      p.vy += 0.08;
+      p.rot += p.vr;
+      p.vx *= 0.99;
+      if (p.y < confCvs.height + 30) {
+        alive = true;
+        p.life = Math.max(0, 1 - p.y / (confCvs.height * 1.1));
+        confCtx.save();
+        confCtx.globalAlpha = Math.min(1, p.life * 2);
+        confCtx.translate(p.x, p.y);
+        confCtx.rotate(p.rot);
+        confCtx.fillStyle = p.col;
+        confCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        confCtx.restore();
+      }
+    });
+    if (alive) confAnimId = requestAnimationFrame(animConf);
+    else confCtx.clearRect(0, 0, confCvs.width, confCvs.height);
+  }
+  confAnimId = requestAnimationFrame(animConf);
+}
+
+/* ═══════════════════════════════════════════════
+   EVENTS & INIT
+   ════════════════════════════════════════════════ */
+btnSpin.addEventListener('click', () => { ensureAudio(); spin(); });
+canvas.addEventListener('click', () => { if (!isSpinning && !btnSpin.disabled) { ensureAudio(); spin(); } });
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  if (!isSpinning && !btnSpin.disabled) { ensureAudio(); spin(); }
+}, { passive: false });
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    applySize();
+    confCvs.width  = window.innerWidth;
+    confCvs.height = window.innerHeight;
+    drawWheel(currentAngle);
+  }, 120);
+});
+
+function createBubbles() {
+  const colors = ['#FF9AB8','#A8D4FF','#D4A8FF','#A8E6CF','#FFE0A0'];
+  for (let i = 0; i < 8; i++) {
+    const d = document.createElement('div');
+    d.className = 'bg-bubble';
+    const size = 60 + Math.random() * 120;
+    d.style.cssText = `
+      width:${size}px; height:${size}px;
+      background:${colors[i % colors.length]};
+      left:${Math.random()*95}%;
+      top:${Math.random()*100}%;
+      animation-duration:${5 + Math.random()*6}s;
+      animation-delay:${Math.random()*4}s;
+    `;
+    document.body.appendChild(d);
+  }
+}
+createBubbles();
+
+// İlk çizim
+drawWheel(currentAngle);
+</script>
+</body>
+</html>

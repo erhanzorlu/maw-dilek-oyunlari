@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neden Oyun Oynuyoruz? | Make-A-Wish Türkiye</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+        :root {
+            --maw-blue: #0057B8;
+            --maw-light-blue: #41B6E6;
+            --maw-gold: #FFD700;
+            --text-dark: #2c3e50;
+            --text-light: #546e7a;
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#e1e8f0 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(135deg, var(--maw-blue) 0%, #1a2a4a 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 6px solid var(--maw-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '✨';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: -20px;
+            right: 10%;
+            transform: rotate(15deg);
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin: 0;
+            font-weight: 900;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #e1f5fe;
+            margin-top: 15px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- CONTAINER & CARDS --- */
+        .container {
+            max-width: 900px;
+            margin: -40px auto 50px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 87, 184, 0.08);
+            margin-bottom: 30px;
+            border-top: 4px solid transparent;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card.blue-top { border-top-color: var(--maw-blue); }
+        .card.gold-top { border-top-color: var(--maw-gold); }
+        .card.light-top { border-top-color: var(--maw-light-blue); }
+        .card.purple-top { border-top-color: #7B1FA2; } /* YENİ: VGT bölümü için */
+
+        h2 {
+            color: var(--maw-blue);
+            font-size: 1.8rem;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        strong {
+            color: var(--maw-blue);
+        }
+
+        /* --- HIGHLIGHT BOX (GERÇEK HAYAT ÖRNEĞİ) --- */
+        .highlight-box {
+            background: linear-gradient(135deg, #FFF9C4, #FFF59D);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            color: #5D4037;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .highlight-box h3 {
+            margin: 0 0 10px 0;
+            color: #F57F17;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- GRID LAYOUT --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .info-block {
+            background: #f8fbff;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e1e8f0;
+        }
+
+        .info-block h4 {
+            color: var(--maw-blue);
+            margin-top: 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-block p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* --- ADDED ACTUAL IMAGE STYLE --- */
+        .content-image {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2rem; }
+            .card { padding: 25px; }
+            h2 { font-size: 1.5rem; }
+            .info-grid { grid-template-columns: 1fr; } /* Mobilde tek kolon olsun */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>Neden Oyun Oynuyoruz?</h1>
+        <p>Dijital Oyun Temelli Dilek Alma Modelinin Pedagojik ve Nörobilimsel Temelleri</p>
+    </div>
+
+    <div class="container">
+        
+        <div class="card blue-top">
+            <h2>🛑 Mülakat Baskısını Kırmak</h2>
+            <p>Riskli hastalıklarla mücadele eden çocuklarda dilek alma süreci yalnızca bir "bilgi toplama" işi değildir; bu, güvenli bir ilişki ve duygusal alan oluşturma sürecidir.</p>
+            <p>Hastane odasında bir çocuğun karşısına geçip elinizde not defteriyle <strong>"En büyük hayalin ne?"</strong> diye sormak, geleneksel bir soru-cevap formatıdır. Bu format, çoğu çocukta <strong>performans kaygısı</strong> yaratır.</p>
+            
+            <img src="image1.jpeg" alt="Hastane yatağında çekingen duran bir çocuğa soru soran yetişkin" class="content-image">
+            
+            <p>Çocuk bu baskı altında susabilir, çekinebilir veya aklına gelen ilk basit şeyi söyleyerek konuyu kapatmak isteyebilir. Bizim amacımız; dijital oyunlarla bu süreci doğal, çocuk merkezli ve gelişimsel olarak uygun bir hale getirmektir.</p>
+        </div>
+
+        <div class="card gold-top">
+            <h2>🔥 Ortak Dikkat: Kamp Ateşi Etkisi</h2>
+            
+            <div class="highlight-box">
+                <h3>💡 Gerçek Hayattan Bir Örnek</h3>
+                <p>Biriyle yüz yüze, gözlerinin içine bakarak derin bir sohbet etmek yetişkinler için bile zordur. Ancak yan yana oturup bir <strong>kamp ateşine</strong> veya bir manzaraya bakarken insanlar en derin sırlarını, hayallerini çok daha rahat anlatır. Çünkü "doğrudan hedeflenme" baskısı ortadan kalkmıştır.</p>
+            </div>
+
+            <p>İşte tasarladığımız dijital oyunlar, bu kamp ateşinin ta kendisidir. Literatürde buna <strong>Ortak Dikkat (Joint Attention)</strong> denir. Oyun sırasında gönüllü ve çocuğun dikkati ekrandaki uçan bir balona veya sallanan bir kancaya odaklandığında, aradaki soğuk duvar yıkılır. İletişim kendiliğinden, su gibi akmaya başlar.</p>
+            
+            <img src="image2.jpeg" alt="Tablette oyun oynayan gönüllü ve dilek çocuğu" class="content-image">
+        </div>
+
+        <div class="card purple-top">
+            <h2>🎮 Video Oyun Terapisi (VGT) Yaklaşımı</h2>
+            <p>Video oyunları sadece eğlence aracı değildir; çocukların duygusal, bilişsel ve sosyal gelişimlerini güvenli bir ortamda destekleyen yenilikçi bir klinik yöntemdir.</p>
+
+            <img src="image5.png" alt="Gerçek dünyadan sanal oyun dünyasına geçişi ve duygusal iyileşmeyi simgeleyen illüstrasyon" class="content-image">
+
+            <div class="info-grid">
+                <div class="info-block">
+                    <h4>🛡️ Güvenli Alan ve İfade</h4>
+                    <p>Sanal dünyanın korunaklı yapısı, gerçek hayattaki savunma mekanizmalarını azaltır. Çocuklar, sosyal yargılardan uzak bu alanda duygu ve düşüncelerini çok daha özgürce ifade edebilirler.</p>
+                </div>
+                <div class="info-block">
+                    <h4>🧠 Duygusal Okuryazarlık</h4>
+                    <p>Oyunun sağladığı güvenli alanda çocuklar korku veya hayal kırıklığı gibi duygularla yüzleşir. Bu süreç, kendi içsel durumlarını tanımalarına ve duygusal zekalarını eğitmelerine yardımcı olur.</p>
+                </div>
+                <div class="info-block">
+                    <h4>🎭 Travmanın Dışa Vurumu</h4>
+                    <p>İfade edilmesi zor deneyimler, oyun karakterleri ve senaryoları üzerinden hikayeleştirilir. Avatarlar birer iletişim arayüzü haline gelerek çocuğun iç dünyasındaki karmaşayı dışa vurmasını sağlar.</p>
+                </div>
+                <div class="info-block">
+                    <h4>💪 Başarısızlığı Tolere Etme</h4>
+                    <p>Oyunların doğasındaki "deneme-yanılma" döngüsü, hata yapmanın kabul edilebilir olduğunu öğretir. Bu durum, çocuğun pes etmeme becerisini ve genel özgüvenini artırır.</p>
+                </div>
+                <div class="info-block">
+                    <h4>🌊 Akış (Flow) Durumu ve Özdenetim</h4>
+                    <p>Oyuna tam odaklanma (akış) hali, kaygıyı hafifletir. Bu yüksek konsantrasyon, problem çözme becerilerini iyileştirir ve güçlü bir duygusal özdenetim mekanizması oluşturur.</p>
+                </div>
+                <div class="info-block">
+                    <h4>🤝 Empati ve İşbirliği</h4>
+                    <p>Gönüllü ile oyun sırasında kurulan işbirliği, "sosyal hissi" geliştirir. Kendi yönettikleri avatarların rolleri arasında bağ kurmak, yeni bakış açıları kazanmalarına fırsat tanır.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card light-top">
+            <h2>🧠 Oyun Sırasında Beyinde Neler Oluyor?</h2>
+            <p>Bu yaklaşımın arkasında sadece eğlence değil, kanıta dayalı bir <strong>nörobilimsel ve dilsel altyapı</strong> yatmaktadır.</p>
+
+            <img src="image4.png" alt="Oyunun beyin üzerindeki etkilerini gösteren illüstrasyon" class="content-image">
+
+            <div class="info-grid">
+                <div class="info-block">
+                    <h4>🛡️ Limbik Sistem (Duygusal Merkez)</h4>
+                    <p>Çocuk oyun oynamaya başladığında beynin duygusal işlemleme merkezi rahatlar. Çocuk kendini güvende hisseder ve kaygı seviyesi düşer.</p>
+                </div>
+                <div class="info-block">
+                    <h4>✨ Default Mode Network (Hayal Gücü)</h4>
+                    <p>Güven sağlandığında, beynin hayal kurma ve zihinsel simülasyon motoru (DMN) devreye girer. Çocuk dileğini sadece söylemez, zihninde detaylandırır.</p>
+                </div>
+                <div class="info-block">
+                    <h4>🗣️ İfade Kapasitesi (Aktif Özne)</h4>
+                    <p>Oyun, çocuğu sorguya çekilen bir "cevaplayıcı" konumundan çıkarır; hikaye anlatan, tasarlayan ve sembolik dil kullanan aktif bir özneye dönüştürür.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card blue-top" style="text-align: center;">
+            <h2 style="justify-content: center; border: none; margin-bottom: 10px;">⭐ Özetle</h2>
+            <p style="font-size: 1.2rem; color: var(--maw-blue); font-weight: 600;">
+                Oyun bizim için bir amaç değil, çocuğun iç dünyasının kapılarını aralayan sihirli bir araçtır.
+            </p>
+            <p>
+                Dijital oyunlar aracılığıyla; ortak dikkat, motivasyon ve duygusal güvenlik sağlayarak çok daha özgün, detaylı ve <strong>çocuğun gerçek iç dünyasını yansıtan</strong> dilekler ortaya çıkarıyoruz.
+            </p>
+            
+            <img src="image3.png" alt="Dilek çocuğu ve gönüllünün mutlu anı" class="content-image">
+        </div>
+
+    </div>
+
+</body>
+</html>

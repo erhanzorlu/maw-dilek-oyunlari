@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Make-A-Wish: Sihirli Gökyüzü 🌈</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+
+        /* --- MASALSI GÖKYÜZÜ --- */
+        body {
+            /* Pastel Gökkuşağı Geçişi */
+            background: linear-gradient(180deg, #A9C9FF 0%, #FFBBEC 100%);
+            color: #333;
+            font-family: 'Fredoka', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* --- HAREKETLİ BULUTLAR --- */
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50px;
+            z-index: 1;
+            animation: floatCloud linear infinite;
+        }
+        /* Bulutların şekli */
+        .cloud::after, .cloud::before {
+            content: ''; position: absolute; background: inherit; border-radius: 50%;
+        }
+        .cloud::after { width: 30px; height: 30px; top: -15px; left: 10px; }
+        .cloud::before { width: 40px; height: 40px; top: -20px; right: 10px; }
+
+        @keyframes floatCloud {
+            from { transform: translateX(-150px); }
+            to { transform: translateX(110vw); }
+        }
+
+        /* --- OYUN ALANI --- */
+        #game-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100vw; height: 100vh;
+            display: flex; justify-content: center;
+        }
+
+        canvas { display: block; }
+
+        /* --- UI KATMANI --- */
+        #ui-layer {
+            position: absolute; top: 20px; width: 100%;
+            text-align: center; pointer-events: none; z-index: 20;
+        }
+
+        h1 {
+            font-size: 2.8rem; margin: 0;
+            color: #fff;
+            text-shadow: 2px 2px 0px #FF9A9E, 4px 4px 0px #a18cd1;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        p.instruction {
+            color: #0057B8;
+            font-size: 1.3rem; font-weight: 600;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 30px; border-radius: 30px;
+            display: inline-block; 
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 3px solid #fff;
+        }
+
+        /* --- SORU PENCERESİ (MODAL) --- */
+        #magic-modal {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.6); /* Açık renk perde */
+            z-index: 100;
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .scroll-content {
+            background: #fff;
+            width: 85%; max-width: 400px;
+            padding: 30px;
+            border-radius: 40px;
+            border: 8px solid #A0E7E5; /* Tatlı Turkuaz Çerçeve */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            transform: scale(0.8);
+            animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            position: relative;
+        }
+
+        @keyframes modalPop { to { transform: scale(1); } }
+
+        .category-badge {
+            background: #FF9A9E; color: white;
+            padding: 8px 20px; border-radius: 20px;
+            font-weight: 700; font-size: 1.2rem;
+            display: inline-block; margin-bottom: 10px;
+            box-shadow: 0 3px 0 #E57373;
+        }
+
+        h2#modal-question {
+            color: #555; font-size: 1.6rem; line-height: 1.3; margin: 15px 0 30px; font-weight: 700;
+        }
+
+        /* BUTON (SAYAÇLI) */
+        button.magic-btn {
+            background: linear-gradient(to bottom, #42e695, #3bb2b8);
+            color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,0.1);
+            border: none; padding: 20px 40px;
+            font-size: 1.5rem; border-radius: 50px; font-weight: 700;
+            cursor: pointer; box-shadow: 0 6px 0 #2E8B57;
+            transition: all 0.2s; font-family: 'Fredoka', sans-serif;
+            width: 100%;
+        }
+        button.magic-btn:active { transform: translateY(6px); box-shadow: none; }
+        
+        /* Pasif Buton */
+        button.magic-btn:disabled {
+            background: #e0e0e0;
+            cursor: wait;
+            box-shadow: none;
+            color: #999;
+            text-shadow: none;
+            transform: none;
+        }
+
+        /* --- MOTİVASYON YAZISI --- */
+        #praise-text {
+            position: absolute; top: 40%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 4rem; font-weight: 900;
+            color: #FF69B4; /* Canlı Pembe */
+            -webkit-text-stroke: 3px #fff;
+            text-shadow: 5px 5px 0px rgba(0,0,0,0.1);
+            pointer-events: none; z-index: 200;
+            white-space: nowrap; opacity: 0;
+        }
+        
+        @keyframes praiseAnim {
+            0% { transform: translate(-50%, -50%) scale(0.5) rotate(-10deg); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2) rotate(5deg); opacity: 1; }
+            70% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-50%, -80%) scale(1.1); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <script>
+        for(let i=0; i<8; i++) {
+            let cloud = document.createElement('div');
+            cloud.className = 'cloud';
+            let w = 60 + Math.random() * 80;
+            cloud.style.width = w + 'px';
+            cloud.style.height = (w * 0.4) + 'px';
+            cloud.style.top = Math.random() * 80 + '%';
+            cloud.style.left = -150 + 'px';
+            cloud.style.opacity = 0.4 + Math.random() * 0.4;
+            cloud.style.animationDuration = (15 + Math.random() * 20) + 's';
+            cloud.style.animationDelay = (Math.random() * -20) + 's';
+            document.body.appendChild(cloud);
+        }
+    </script>
+
+    <div id="ui-layer">
+        <h1>🎈 Sihirli Gökler 🎈</h1>
+        <p class="instruction">Uçan daireyi kullan, yıldızları kap!</p>
+    </div>
+
+    <div id="game-wrapper">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div id="magic-modal">
+        <div class="scroll-content">
+            <div id="modal-badge" class="category-badge">Kategori</div>
+            <h2 id="modal-question">Soru...</h2>
+            
+            <button id="modal-btn" class="magic-btn" onclick="submitAnswer()" disabled>
+                ⏳ <span id="countdown">10</span>
+            </button>
+            <p style="color:#aaa; font-size: 1rem; margin-top: 15px; font-weight: 600;">(Düşünmek için zamanın var...)</p>
+        </div>
+    </div>
+
+    <div id="praise-text">HARİKASIN!</div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resize() {
+            canvas.width = window.innerWidth > 800 ? 800 : window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // --- KONFİGÜRASYON ---
+        const praises = [ "SÜPERSİN! 🌟", "ÇOK GÜZEL! 💖", "HARİKA! 🚀", "MÜKEMMEL! ✨", "BRAVO! 👏" ];
+        const colors = { 
+            rope: "#FF9A9E", // Tatlı Pembe İp
+            hook: "#FFD700"  // Altın Kanca
+        };
+
+        const targets = [
+            { id: 1, label: "Yemek", icon: "🍕", question: "En sevdiğin yemek nedir?", x: 0.15, y: 0.45 },
+            { id: 2, label: "Tatlı", icon: "🍦", question: "Dondurma mı Çikolata mı?", x: 0.85, y: 0.5 },
+            { id: 3, label: "Renk", icon: "🎨", question: "En sevdiğin renk hangisi?", x: 0.5, y: 0.65 },
+            { id: 4, label: "Hayvan", icon: "🐰", question: "En sevdiğin hayvan hangisi?", x: 0.25, y: 0.75 },
+            { id: 5, label: "Çizgi Film", icon: "🦄", question: "Hangi çizgi filmi çok seversin?", x: 0.75, y: 0.35 },
+            { id: 6, label: "Oyun", icon: "🎮", question: "En sevdiğin oyun nedir?", x: 0.35, y: 0.25 },
+            { id: 7, label: "Süper Güç", icon: "🦸", question: "Bir süper gücün olsa ne olsun isterdin?", x: 0.65, y: 0.8 }
+        ];
+
+        targets.forEach(t => {
+            t.realX = t.x * canvas.width;
+            t.realY = t.y * canvas.height;
+            t.radius = 45; 
+            t.floatOffset = Math.random() * 100;
+        });
+
+        const origin = { x: canvas.width / 2, y: 90 }; 
+        let angle = 0;
+        let angleSpeed = 0.015; // Yavaş ve sakin
+        let angleDir = 1;
+        let ropeLength = 80;
+        const minRope = 80;
+        let state = "swing";
+        let caughtTarget = null;
+        let isPaused = false;
+        let confettiParticles = []; 
+
+        // --- KONFETİ MOTORU ---
+        class Confetti {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = -10;
+                this.w = Math.random() * 15 + 10;
+                this.h = Math.random() * 10 + 5;
+                this.color = ["#FF9A9E", "#FECFEF", "#A0E7E5", "#FFD700"][Math.floor(Math.random() * 4)];
+                this.vy = Math.random() * 5 + 2;
+                this.vx = Math.random() * 4 - 2;
+                this.rotation = Math.random() * 360;
+            }
+            update() { this.y += this.vy; this.x += this.vx; this.rotation += 5; }
+            draw(ctx) {
+                ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.fillStyle = this.color; 
+                ctx.beginPath(); ctx.roundRect(-this.w/2, -this.h/2, this.w, this.h, 5); ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function triggerConfetti() {
+            for(let i=0; i<60; i++) confettiParticles.push(new Confetti());
+        }
+
+        // --- YILDIZ (ÇİÇEK GİBİ YUMUŞAK) ÇİZME ---
+        function drawStar(cx, cy, spikes, outerRadius, innerRadius, color) {
+            let rot = Math.PI / 2 * 3;
+            let x = cx;
+            let y = cy;
+            let step = Math.PI / spikes;
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - outerRadius);
+            for (let i = 0; i < spikes; i++) {
+                x = cx + Math.cos(rot) * outerRadius;
+                y = cy + Math.sin(rot) * outerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+
+                x = cx + Math.cos(rot) * innerRadius;
+                y = cy + Math.sin(rot) * innerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+            }
+            ctx.lineTo(cx, cy - outerRadius);
+            ctx.closePath();
+            
+            // Gölge ve Renk
+            ctx.fillStyle = color;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "rgba(255, 215, 0, 0.6)";
+            ctx.fill();
+            
+            // İçine Beyaz Parlaklık
+            ctx.fillStyle = "rgba(255,255,255,0.4)";
+            ctx.fill();
+            
+            ctx.shadowBlur = 0;
+        }
+
+        // --- OYUN DÖNGÜSÜ ---
+        function update() {
+            if (isPaused) return;
+
+            const time = Date.now() * 0.002;
+            targets.forEach(t => {
+                if (!t.caught) {
+                    t.currentY = t.realY + Math.sin(time + t.floatOffset) * 12; // Yumuşak salınım
+                }
+            });
+
+            if (state === "swing") {
+                angle += angleSpeed * angleDir;
+                if (angle > 1.1 || angle < -1.1) angleDir *= -1;
+            } 
+            else if (state === "shoot") {
+                ropeLength += 12; 
+                let hookX = origin.x + Math.sin(angle) * ropeLength;
+                let hookY = origin.y + Math.cos(angle) * ropeLength;
+
+                targets.forEach(t => {
+                    if (!t.caught && !t.answered && !caughtTarget) {
+                        let dist = Math.hypot(hookX - t.realX, hookY - t.currentY);
+                        if (dist < t.radius + 10) {
+                            caughtTarget = t;
+                            t.caught = true;
+                            state = "rewind";
+                        }
+                    }
+                });
+                if (ropeLength > canvas.height + 50) state = "rewind";
+            } 
+            else if (state === "rewind") {
+                ropeLength -= 10; 
+                if (ropeLength <= minRope) {
+                    ropeLength = minRope;
+                    state = "swing";
+                    if (caughtTarget) openModal(caughtTarget);
+                }
+            }
+
+            confettiParticles.forEach((p, i) => {
+                p.update();
+                if(p.y > canvas.height) confettiParticles.splice(i, 1);
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let hookX = origin.x + Math.sin(angle) * ropeLength;
+            let hookY = origin.y + Math.cos(angle) * ropeLength;
+
+            // İp (Kesik Çizgili - Şeker Gibi)
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(hookX, hookY);
+            ctx.strokeStyle = colors.rope;
+            ctx.lineWidth = 6;
+            ctx.setLineDash([10, 10]); // Kesik çizgi
+            ctx.stroke();
+            ctx.setLineDash([]); // Normale dön
+
+            // Kanca
+            ctx.save();
+            ctx.translate(hookX, hookY);
+            ctx.rotate(-angle);
+            ctx.fillStyle = colors.hook;
+            // Daire yerine daha yumuşak bir tutucu
+            ctx.beginPath();
+            ctx.arc(0, 5, 15, 0, Math.PI, false);
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "#FFA000";
+            ctx.stroke();
+            ctx.restore();
+
+            // Hedefler
+            targets.forEach(t => {
+                if (!t.answered) {
+                    let drawX = t.realX;
+                    let drawY = t.currentY;
+
+                    if (caughtTarget === t) {
+                        drawX = hookX;
+                        drawY = hookY + 25;
+                    }
+
+                    // Yıldız Çizimi (Daha tombul yıldızlar)
+                    drawStar(drawX, drawY, 5, 50, 25, "#FFD700");
+
+                    // Emoji
+                    ctx.font = "35px Fredoka";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillStyle = "#333";
+                    ctx.fillText(t.icon, drawX, drawY + 4); 
+                    
+                    if(caughtTarget !== t) {
+                        // Etiket (Daha şık)
+                        let labelW = ctx.measureText(t.label).width + 30;
+                        ctx.fillStyle = "rgba(255,255,255,0.95)";
+                        ctx.beginPath();
+                        ctx.roundRect(drawX - labelW/2, drawY + 55, labelW, 28, 15);
+                        ctx.fill();
+                        
+                        ctx.font = "bold 15px Fredoka";
+                        ctx.fillStyle = "#0057B8";
+                        ctx.fillText(t.label, drawX, drawY + 69);
+                    }
+                }
+            });
+
+            confettiParticles.forEach(p => p.draw(ctx));
+
+            // KARAKTER (UÇAN DAİRE 🛸)
+            ctx.font = "70px Arial";
+            ctx.textAlign = "center";
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = "rgba(255,255,255,0.8)";
+            ctx.fillText("🛸", origin.x, origin.y);
+            ctx.shadowBlur = 0;
+
+            update();
+            requestAnimationFrame(draw);
+        }
+
+        // --- UI MANTIĞI ---
+        const modal = document.getElementById("magic-modal");
+        const modalBtn = document.getElementById("modal-btn");
+        const praiseEl = document.getElementById("praise-text");
+        let countdownTimer = null;
+
+        function openModal(target) {
+            isPaused = true;
+            modal.style.display = "flex";
+            document.getElementById("modal-badge").innerText = target.icon + " " + target.label;
+            document.getElementById("modal-question").innerText = target.question;
+            
+            // Butonu sıfırla
+            let timeLeft = 10;
+            modalBtn.disabled = true;
+            modalBtn.innerHTML = `⏳ <span id="countdown">${timeLeft}</span>`;
+            
+            if(countdownTimer) clearInterval(countdownTimer);
+            
+            countdownTimer = setInterval(() => {
+                timeLeft--;
+                const span = document.getElementById("countdown");
+                if(span) span.innerText = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    modalBtn.disabled = false;
+                    modalBtn.innerHTML = "Cevapladım! 🚀";
+                }
+            }, 1000);
+        }
+
+        function submitAnswer() {
+            modal.style.display = "none";
+            const randomPraise = praises[Math.floor(Math.random() * praises.length)];
+            praiseEl.innerText = randomPraise;
+            praiseEl.style.animation = "none";
+            praiseEl.offsetHeight;
+            praiseEl.style.animation = "praiseAnim 2s forwards";
+            triggerConfetti();
+
+            setTimeout(() => {
+                if(caughtTarget) caughtTarget.answered = true;
+                caughtTarget = null;
+                isPaused = false;
+            }, 1000);
+        }
+
+        function action() { if (state === "swing" && !isPaused) state = "shoot"; }
+        
+        window.addEventListener("keydown", (e) => { if(e.code==="Space") action(); });
+        
+        window.addEventListener("touchstart", (e) => { 
+            if(e.target.closest('#magic-modal')) return;
+            e.preventDefault(); 
+            action(); 
+        }, {passive: false});
+        
+        canvas.addEventListener("click", action);
+
+        draw();
+
+    </script>
+</body>
+</html>
