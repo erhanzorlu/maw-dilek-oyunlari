@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make-A-Wish | Haftalık Takvim</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --primary: #005596;
+            --primary-dark: #003d73;
+            --primary-light: #e8f3ff;
+            --sidebar-bg: #0a1628;
+            --sidebar-hover: #1a2d4a;
+            --sidebar-active: #005596;
+            --sidebar-text: #94a3b8;
+            --sidebar-width: 270px;
+            --bg: #f0f5fb;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --muted: #64748b;
+            --radius: 12px;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.13);
+            /* Status colors */
+            --s-none: #94a3b8;
+            --s-none-bg: #f8fafc;
+            --s-none-border: #e2e8f0;
+            --s-green: #16a34a;
+            --s-green-bg: #f0fdf4;
+            --s-green-border: #86efac;
+            --s-yellow: #ca8a04;
+            --s-yellow-bg: #fefce8;
+            --s-yellow-border: #fde047;
+            --s-red: #dc2626;
+            --s-red-bg: #fef2f2;
+            --s-red-border: #fca5a5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo {
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transition: background 0.2s;
+            display: block;
+            text-decoration: none;
+        }
+
+        .sidebar-logo:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .sidebar-logo .logo-star {
+            font-size: 26px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-logo h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.3px;
+            line-height: 1.3;
+        }
+
+        .sidebar-logo p {
+            font-size: 11px;
+            color: var(--sidebar-text);
+            margin-top: 3px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: rgba(148, 163, 184, 0.5);
+            padding: 12px 12px 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--sidebar-text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--sidebar-hover);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .nav-item .nav-icon {
+            font-size: 16px;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav-item.amber:hover,
+        .nav-item.amber.active {
+            background: #78350f;
+            color: #fff;
+        }
+
+        .nav-item.purple-nav:hover,
+        .nav-item.purple-nav.active {
+            background: #4c1d95;
+            color: #fff;
+        }
+
+        .sidebar-footer {
+            padding: 16px 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 11px;
+            color: rgba(148, 163, 184, 0.4);
+            text-align: center;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 190;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            color: var(--text);
+            font-size: 22px;
+        }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .topbar-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.4px;
+        }
+
+        /* ── WEEK NAV ── */
+        .week-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 32px;
+            flex-shrink: 0;
+        }
+
+        .week-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.18s;
+        }
+
+        .week-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: #bbd8ff;
+        }
+
+        .week-label {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .today-btn {
+            padding: 7px 16px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--muted);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .today-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: #bbd8ff;
+        }
+
+        .week-legend {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* ── CALENDAR GRID ── */
+        .calendar-wrap {
+            flex: 1;
+            overflow-x: auto;
+            padding: 24px 32px 40px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(160px, 1fr));
+            gap: 14px;
+            min-width: 1120px;
+        }
+
+        /* Day Header */
+        .day-col {}
+
+        .day-header {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .day-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .day-date {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .day-header.today {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .day-header.today .day-name {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .day-header.today .day-date {
+            color: #fff;
+        }
+
+        /* Slot Card */
+        .slot-card {
+            background: var(--card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 13px 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border-left-width: 4px;
+            border-left-color: var(--s-none);
+            min-height: 88px;
+        }
+
+        .slot-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: #bbd8ff;
+            border-left-color: var(--primary);
+        }
+
+        /* Status border colors */
+        .slot-card.status-none {
+            border-left-color: var(--s-none);
+            background: var(--s-none-bg);
+        }
+
+        .slot-card.status-green {
+            border-left-color: var(--s-green);
+            background: var(--s-green-bg);
+        }
+
+        .slot-card.status-yellow {
+            border-left-color: var(--s-yellow);
+            background: var(--s-yellow-bg);
+        }
+
+        .slot-card.status-red {
+            border-left-color: var(--s-red);
+            background: var(--s-red-bg);
+        }
+
+        .slot-card.empty {
+            border-style: dashed;
+            border-left-style: dashed;
+            background: #fafbfc;
+            opacity: 0.7;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+        }
+
+        .slot-card.empty:hover {
+            opacity: 1;
+            border-color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .slot-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+
+        .slot-num {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--s-none);
+            flex-shrink: 0;
+        }
+
+        .status-green .status-dot {
+            background: var(--s-green);
+        }
+
+        .status-yellow .status-dot {
+            background: var(--s-yellow);
+        }
+
+        .status-red .status-dot {
+            background: var(--s-red);
+        }
+
+        .slot-child {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .slot-empty-label {
+            font-size: 12px;
+            color: #cbd5e1;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .slot-vols {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 6px;
+        }
+
+        .slot-vol-chip {
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid #bbd8ff;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .slot-vol-chip:hover {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #86efac;
+        }
+
+        .slot-vol-chip svg {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .slot-vol-chip:hover svg {
+            opacity: 1;
+        }
+
+        /* Caller strip at bottom of card */
+        .slot-caller-strip {
+            margin-top: 9px;
+            margin-left: -14px;
+            margin-right: -14px;
+            margin-bottom: -13px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 0 0 10px 10px;
+            background: #fdf2f8;
+            padding: 7px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .slot-caller-label {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #be185d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .slot-caller-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #be185d;
+            text-decoration: none;
+            background: rgba(190, 24, 93, 0.08);
+            border: 1px solid rgba(190, 24, 93, 0.2);
+            border-radius: 20px;
+            padding: 3px 10px;
+            transition: all 0.15s;
+        }
+
+        .slot-caller-link:hover {
+            background: #fce7f3;
+            border-color: #f9a8d4;
+            color: #9d174d;
+        }
+
+        .slot-caller-link svg {
+            width: 11px;
+            height: 11px;
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .slot-caller-link:hover svg {
+            opacity: 1;
+        }
+
+        .slot-time {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Date badge - prominent */
+        .slot-date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--primary-dark);
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 9px;
+            border-radius: 6px;
+            margin-top: 7px;
+        }
+
+        .status-yellow .slot-date-badge {
+            background: #92400e;
+        }
+
+        .status-red .slot-date-badge {
+            background: #991b1b;
+        }
+
+        .status-green .slot-date-badge {
+            background: #14532d;
+        }
+
+        /* Contact rows on card */
+        .slot-contacts {
+            margin-top: 7px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .slot-contact-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text);
+            text-decoration: none;
+            padding: 4px 7px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+
+        .slot-contact-link:hover {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #86efac;
+        }
+
+        .slot-contact-link .wp-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            color: #16a34a;
+        }
+
+        .slot-contact-name {
+            color: var(--muted);
+            font-size: 10.5px;
+            margin-right: 2px;
+        }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(6px);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-box {
+            background: var(--card);
+            width: 100%;
+            max-width: 620px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.28s cubic-bezier(0.34, 1.4, 0.64, 1);
+            max-height: 92vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.open .modal-box {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            padding: 22px 24px 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            background: var(--card);
+            z-index: 10;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-header-left {}
+
+        .modal-slot-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .modal-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--muted);
+            flex-shrink: 0;
+            transition: all 0.18s;
+        }
+
+        .modal-close:hover {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        .modal-body {
+            padding: 22px 24px;
+            flex: 1;
+        }
+
+        .form-section {
+            margin-bottom: 22px;
+        }
+
+        .form-section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            color: var(--muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .form-section-title i {
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            padding: 9px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13.5px;
+            color: var(--text);
+            background: var(--card);
+            outline: none;
+            transition: border-color 0.18s, box-shadow 0.18s;
+            width: 100%;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 85, 150, 0.08);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.55;
+        }
+
+        /* Volunteer tags */
+        .vol-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+            min-height: 10px;
+        }
+
+        .vol-tag {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid #bbd8ff;
+            border-radius: 20px;
+            padding: 4px 10px 4px 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .vol-tag-remove {
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            color: #93b4d4;
+            transition: color 0.15s;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .vol-tag-remove:hover {
+            color: #dc2626;
+        }
+
+        .vol-add-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .vol-add-row .form-select {
+            flex: 1;
+        }
+
+        .btn-add-vol {
+            padding: 9px 16px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.18s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-add-vol:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Status selector */
+        .status-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .status-opt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 8px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.18s;
+            text-align: center;
+        }
+
+        .status-opt:hover {
+            border-color: #94a3b8;
+            background: var(--bg);
+        }
+
+        .status-opt.selected-none {
+            border-color: var(--s-none);
+            background: var(--s-none-bg);
+        }
+
+        .status-opt.selected-green {
+            border-color: var(--s-green);
+            background: var(--s-green-bg);
+        }
+
+        .status-opt.selected-yellow {
+            border-color: var(--s-yellow);
+            background: var(--s-yellow-bg);
+        }
+
+        .status-opt.selected-red {
+            border-color: var(--s-red);
+            background: var(--s-red-bg);
+        }
+
+        .status-opt-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+        }
+
+        .status-opt-dot.none {
+            background: var(--s-none);
+        }
+
+        .status-opt-dot.green {
+            background: var(--s-green);
+        }
+
+        .status-opt-dot.yellow {
+            background: var(--s-yellow);
+        }
+
+        .status-opt-dot.red {
+            background: var(--s-red);
+        }
+
+        .status-opt-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .selected-none .status-opt-label {
+            color: var(--s-none);
+        }
+
+        .selected-green .status-opt-label {
+            color: var(--s-green);
+        }
+
+        .selected-yellow .status-opt-label {
+            color: var(--s-yellow);
+        }
+
+        .selected-red .status-opt-label {
+            color: var(--s-red);
+        }
+
+        /* Caller section — pink tinted */
+        .caller-section {
+            background: #fdf2f8;
+            border: 1.5px solid #f9a8d4;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 22px;
+        }
+
+        .caller-section .form-section-title {
+            color: #be185d;
+        }
+
+        .caller-section .form-section-title i {
+            color: #be185d;
+        }
+
+        /* Modal footer */
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            background: var(--card);
+            border-radius: 0 0 16px 16px;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .btn-cancel {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--muted);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .btn-cancel:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-save {
+            padding: 10px 24px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.18s;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .btn-save:hover {
+            background: var(--primary-dark);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .week-nav {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+            }
+
+            .week-legend {
+                display: none;
+            }
+
+            .calendar-wrap {
+                padding: 16px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .status-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar" id="sidebar">
+        <a href="index.html" class="sidebar-logo">
+            <span class="logo-star">⭐</span>
+            <h2>Make-A-Wish<br>Türkiye</h2>
+            <p>Operasyon Paneli</p>
+        </a>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Dilek Alımları</div>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">📅</span> Haftalık &amp; Aylık Takvimler
+            </a>
+            <a href="https://form.jotform.com/242213350145039" target="_blank" class="nav-item">
+                <span class="nav-icon">📝</span> Dilek Alım Formu (Jotform)
+            </a>
+            <a href="https://dernegi1-my.sharepoint.com/:w:/g/personal/mail_makeawish_org_tr/EYSRjUCXgddHsxWJe7M4854BkmLAcjp1jkyhR4OfPivnyA?e=iacnVo"
+                target="_blank" class="nav-item">
+                <span class="nav-icon">📄</span> Dilek Alım Formu (Word)
+            </a>
+            <a href="https://dernegi1-my.sharepoint.com/:f:/g/personal/mail_makeawish_org_tr/EgC_y55DcW1Ch2TY5LoJVh4BzCciIzeoyMYT-7JFKiiWFg?e=gqrcBu"
+                target="_blank" class="nav-item">
+                <span class="nav-icon">🏥</span> Hastane Başvuru Formları
+            </a>
+            <a href="https://dernegi1-my.sharepoint.com/:b:/g/personal/mail_makeawish_org_tr/EYlzt5tmD2NEmsgakFso0DEBStGcAoTK9_RndgTyDtlECw?e=2zhOtw"
+                target="_blank" class="nav-item">
+                <span class="nav-icon">🧠</span> Psikolog Sunumu
+            </a>
+            <a href="https://dernegi1-my.sharepoint.com/:b:/g/personal/mail_makeawish_org_tr/EW3SHCFc3QtMmSQGRreK04sBd-c_wLQXbSFX9Fo0-hKtEg?e=Xt7Vac"
+                target="_blank" class="nav-item">
+                <span class="nav-icon">🩺</span> Riskli Hastalıklar Sunumu
+            </a>
+            <a href="sihirli-kitap.pdf" target="_blank" class="nav-item">
+                <span class="nav-icon">📖</span> Sihirli Kitap
+            </a>
+            <div class="nav-label" style="margin-top:10px;">Araçlar</div>
+            <a href="mentor.html" class="nav-item amber">
+                <span class="nav-icon">🧑‍🏫</span> Mentör Paneli
+            </a>
+            <a href="games.html" class="nav-item purple-nav">
+                <span class="nav-icon">🎮</span> Dijital Oyunlar Paneli
+            </a>
+            <a href="fun.html" class="nav-item purple-nav">
+                <span class="nav-icon">🎉</span> Dijital Eğlence Köşesi
+            </a>
+        </nav>
+        <div class="sidebar-footer">© 2025 Make-A-Wish Türkiye</div>
+    </aside>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- ── MAIN ── -->
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="hamburger" onclick="toggleSidebar()">☰</button>
+                <div class="topbar-title">📅 Haftalık Takvim</div>
+            </div>
+        </div>
+
+        <!-- Week Navigation -->
+        <div class="week-nav">
+            <button class="week-btn" onclick="changeWeek(-1)"><i class="ph-bold ph-caret-left"></i></button>
+            <button class="week-btn" onclick="changeWeek(1)"><i class="ph-bold ph-caret-right"></i></button>
+            <span class="week-label" id="weekLabel">—</span>
+            <button class="today-btn" onclick="goToday()">Bu Hafta</button>
+            <div class="week-legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:var(--s-none)"></div>Aranmadı
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:var(--s-green)"></div>Aile Arandı
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:var(--s-yellow)"></div>Ulaşılamadı
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:var(--s-red)"></div>İptal
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="calendar-wrap">
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+    </div>
+
+    <!-- ── MODAL ── -->
+    <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+        <div class="modal-box" id="modalBox">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <div class="modal-slot-label" id="modalSlotLabel">Slot</div>
+                    <div class="modal-title" id="modalTitle">Dilek Alım Detayı</div>
+                </div>
+                <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- Gönüllüler -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="ph-fill ph-users"></i>Gönüllüler</div>
+                    <div class="vol-tags" id="volTags"></div>
+                    <div class="vol-add-row">
+                        <select class="form-select" id="volSelect">
+                            <option value="">— Gönüllü seç —</option>
+                        </select>
+                        <button class="btn-add-vol" onclick="addVolunteer()"><i class="ph-bold ph-plus"></i>
+                            Ekle</button>
+                    </div>
+                </div>
+
+                <!-- Çocuk Bilgileri -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="ph-fill ph-star"></i>Çocuk Bilgileri</div>
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label class="form-label">Ad Soyad, Yaş, Hastalık, Şehir</label>
+                            <textarea class="form-textarea" id="childInfo"
+                                placeholder="Örn: Ahmet Yılmaz, 9 yaş, ALL, İstanbul"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aile İletişim -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="ph-fill ph-phone"></i>Aile İletişim</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Anne Adı</label>
+                            <input type="text" class="form-input" id="momName" placeholder="Anne adı">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Anne Numarası</label>
+                            <input type="tel" class="form-input" id="momPhone" placeholder="05__ ___ __ __">
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-top:10px;">
+                        <div class="form-group">
+                            <label class="form-label">Baba Adı</label>
+                            <input type="text" class="form-input" id="dadName" placeholder="Baba adı">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Baba Numarası</label>
+                            <input type="tel" class="form-input" id="dadPhone" placeholder="05__ ___ __ __">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dilek Alım Saati -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="ph-fill ph-calendar-blank"></i>Dilek Alım Saati</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Tarih (otomatik)</label>
+                            <div class="form-input" id="wishDateDisplay"
+                                style="background:#f8fafc;color:var(--muted);cursor:default;display:flex;align-items:center;gap:6px;">
+                                <i class="ph-fill ph-calendar-check" style="font-size:14px;color:var(--primary);"></i>
+                                <span id="wishDateText">—</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Saat</label>
+                            <input type="time" class="form-input" id="wishTime">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aile Araması (pembe) -->
+                <div class="caller-section">
+                    <div class="form-section-title"><i class="ph-fill ph-phone-call"></i>Aile Araması — Kim Aradı?</div>
+                    <div class="vol-tags" id="callerTags"></div>
+                    <div class="vol-add-row">
+                        <select class="form-select" id="callerSelect">
+                            <option value="">— Arayan gönüllüyü seç —</option>
+                        </select>
+                        <button class="btn-add-vol" onclick="addCaller()" style="background:#be185d;">
+                            <i class="ph-bold ph-plus"></i> Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Durum -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="ph-fill ph-circle-half-tilt"></i>Aile Arama Durumu</div>
+                    <div class="status-selector">
+                        <div class="status-opt" data-status="none" onclick="selectStatus('none', this)">
+                            <div class="status-opt-dot none"></div>
+                            <div class="status-opt-label">Aranmadı</div>
+                        </div>
+                        <div class="status-opt" data-status="green" onclick="selectStatus('green', this)">
+                            <div class="status-opt-dot green"></div>
+                            <div class="status-opt-label">Aile Arandı</div>
+                        </div>
+                        <div class="status-opt" data-status="yellow" onclick="selectStatus('yellow', this)">
+                            <div class="status-opt-dot yellow"></div>
+                            <div class="status-opt-label">Ulaşılamadı</div>
+                        </div>
+                        <div class="status-opt" data-status="red" onclick="selectStatus('red', this)">
+                            <div class="status-opt-dot red"></div>
+                            <div class="status-opt-label">İptal</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dilek Açıklaması -->
+                <div class="form-section" style="margin-bottom:0;">
+                    <div class="form-section-title"><i class="ph-fill ph-magic-wand"></i>Dilek Notları &amp; Açıklama
+                    </div>
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <textarea class="form-textarea" id="wishNotes" style="min-height:100px;"
+                                placeholder="Örn: Aile arandı, çocuk dinozorları çok seviyor, özellikle T-Rex. Minecraft da oynuyor, bilgisayar isteyebilir..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">Vazgeç</button>
+                <button class="btn-save" onclick="saveSlot()"><i class="ph-bold ph-floppy-disk"></i> Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Mentor / Gönüllü Listesi ──
+        const VOLUNTEERS = {
+            "Elnaz Kohen": "05454583887",
+            "Şevval Müftüoğlu": "05071217690",
+            "Melek Seçil Aka": "05079629148",
+            "Hüseyin İnan Gül": "05423831533",
+            "Tufan Emeksiz": "05542807483",
+            "Barış Yılmaz": "05364927205",
+            "İrem Kurtuluş": "05307965904",
+            "Fatma Nur Kugu": "05369171135",
+            "Yağmur Ay": "05349790048",
+            "Ceyda Duran": "05358999065",
+            "Hazal Sertkaya": "05395129073",
+            "Elif Erginyavuz": "05373728884",
+            "İlker Korkmaz": "05340125198",
+            "İrem Şanlıtürk": "05541760401",
+            "Ahmet Atar": "05372175587",
+            "Asude Buldu": "05465981896"
+        };
+        const VOL_NAMES = Object.keys(VOLUNTEERS);
+
+        const DAYS_TR = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+        const MONTHS_TR = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+
+        // ── State ──
+        let weekOffset = 0; // 0 = current week
+        // slotData: key = "weekOffset_dayIndex_slotIndex"
+        let slotData = {};
+
+        // Currently open modal
+        let activeKey = null;
+        let activeVolunteers = [];
+        let activeCallers = [];
+        let activeStatus = 'none';
+
+        // ── Helpers ──
+        function getMondayOfWeek(offset) {
+            const now = new Date();
+            const day = now.getDay(); // 0=sun
+            const diff = (day === 0 ? -6 : 1 - day);
+            const monday = new Date(now);
+            monday.setDate(now.getDate() + diff + offset * 7);
+            monday.setHours(0, 0, 0, 0);
+            return monday;
+        }
+
+        function formatDate(d) {
+            return `${d.getDate()} ${MONTHS_TR[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function isToday(d) {
+            const t = new Date();
+            return d.getDate() === t.getDate() && d.getMonth() === t.getMonth() && d.getFullYear() === t.getFullYear();
+        }
+
+        function slotKey(dayIdx, slotIdx) {
+            return `${weekOffset}_${dayIdx}_${slotIdx}`;
+        }
+
+        // ── Render Calendar ──
+        function renderCalendar() {
+            const monday = getMondayOfWeek(weekOffset);
+            const friday = new Date(monday); friday.setDate(monday.getDate() + 6);
+            document.getElementById('weekLabel').textContent =
+                `${formatDate(monday)} — ${formatDate(friday)}`;
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            for (let d = 0; d < 7; d++) {
+                const dayDate = new Date(monday);
+                dayDate.setDate(monday.getDate() + d);
+
+                const col = document.createElement('div');
+                col.className = 'day-col';
+
+                // Day header
+                const hdr = document.createElement('div');
+                hdr.className = 'day-header' + (isToday(dayDate) ? ' today' : '');
+                hdr.innerHTML = `
+          <div class="day-name">${DAYS_TR[d]}</div>
+          <div class="day-date">${dayDate.getDate()}</div>`;
+                col.appendChild(hdr);
+
+                // Dynamic slots: only show filled slots + 1 trailing empty
+                let filledCount = 0;
+                for (let s = 0; s < 50; s++) {
+                    const k = slotKey(d, s);
+                    if (slotData[k] && (slotData[k].childInfo || slotData[k].volunteers?.length)) {
+                        filledCount = s + 1;
+                    }
+                }
+                const totalSlots = filledCount + 1; // filled slots + exactly 1 empty at end
+
+                for (let s = 0; s < totalSlots; s++) {
+                    const key = slotKey(d, s);
+                    const data = slotData[key];
+                    const card = document.createElement('div');
+                    const isEmpty = !data || (!data.childInfo && !data.volunteers?.length);
+
+                    if (isEmpty) {
+                        card.className = 'slot-card empty status-none';
+                        card.innerHTML = `<div class="slot-empty-label"><i class="ph-bold ph-plus-circle"></i> Yeni dilek alımı ekle</div>`;
+                    } else {
+                        const status = data.status || 'none';
+                        card.className = `slot-card status-${status}`;
+
+                        // Date badge
+                        let dateBadge = '';
+                        if (data.wishDate) {
+                            const dp = data.wishDate.split('-');
+                            const dateDisp = `${dp[2]}.${dp[1]}.${dp[0]}`;
+                            const timeDisp = data.wishTime ? ` · ${data.wishTime}` : '';
+                            dateBadge = `<div class="slot-date-badge"><i class="ph-fill ph-clock" style="font-size:11px;"></i>${dateDisp}${timeDisp}</div>`;
+                        }
+
+                        // Contacts
+                        let contactsHtml = '';
+                        const contacts = [];
+                        if (data.momName || data.momPhone) contacts.push({ label: 'Anne', name: data.momName, phone: data.momPhone });
+                        if (data.dadName || data.dadPhone) contacts.push({ label: 'Baba', name: data.dadName, phone: data.dadPhone });
+                        if (contacts.length) {
+                            const wpSVG = `<svg class="wp-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+                            contactsHtml = `<div class="slot-contacts">${contacts.map(c => {
+                                const raw = (c.phone || '').replace(/\s/g, '');
+                                const intl = raw.startsWith('0') ? '9' + raw : raw;
+                                const href = raw ? `https://wa.me/${intl}` : '#';
+                                return `<a class="slot-contact-link" href="${href}" target="_blank" onclick="event.stopPropagation()">
+                  ${wpSVG}<span class="slot-contact-name">${c.label}:</span>${c.name || ''}${raw ? ' · ' + c.phone : ''}
+                </a>`;
+                            }).join('')}</div>`;
+                        }
+
+                        card.innerHTML = `
+              <div class="slot-card-header">
+                <div class="slot-child">${data.childInfo ? data.childInfo.split('\n')[0].substring(0, 42) : '—'}</div>
+                <div class="status-dot"></div>
+              </div>
+              ${(data.volunteers || []).length ? `<div class="slot-vols">${(data.volunteers || []).map(v => {
+                            const phone = VOLUNTEERS[v] || '';
+                            const intl = phone.startsWith('0') ? '9' + phone : phone;
+                            const href = phone ? `https://wa.me/${intl}` : '#';
+                            const wpIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+                            return `<a class="slot-vol-chip" href="${href}" target="_blank" onclick="event.stopPropagation()">${v}${wpIcon}</a>`;
+                        }).join('')}</div>` : ''}
+              ${dateBadge}
+              ${contactsHtml}
+              ${(() => {
+                                const callers = data.callers || [];
+                                if (!callers.length) return '';
+                                const wpSVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+                                const chips = callers.map(c => {
+                                    const phone = VOLUNTEERS[c] || '';
+                                    const intl = phone.startsWith('0') ? '9' + phone : phone;
+                                    const href = phone ? `https://wa.me/${intl}` : '#';
+                                    return `<a class="slot-caller-link" href="${href}" target="_blank" onclick="event.stopPropagation()">${c}${wpSVG}</a>`;
+                                }).join('');
+                                return `<div class="slot-caller-strip"><span class="slot-caller-label">📞 Arayan</span>${chips}</div>`;
+                            })()}`;
+                    }
+
+                    card.addEventListener('click', () => openModal(d, s, dayDate));
+                    col.appendChild(card);
+                }
+
+                grid.appendChild(col);
+            }
+        }
+
+        // ── Week navigation ──
+        function changeWeek(dir) {
+            weekOffset += dir;
+            renderCalendar();
+        }
+
+        function goToday() {
+            weekOffset = 0;
+            renderCalendar();
+        }
+
+        // ── Modal ──
+        function populateVolSelect() {
+            ['volSelect', 'callerSelect'].forEach(id => {
+                const sel = document.getElementById(id);
+                sel.innerHTML = `<option value="">— Gönüllü seç —</option>`;
+                VOL_NAMES.forEach(v => {
+                    const opt = document.createElement('option');
+                    opt.value = v; opt.textContent = v;
+                    sel.appendChild(opt);
+                });
+            });
+        }
+
+        function renderVolTags(list, containerId, removeCallback) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            list.forEach((v, i) => {
+                const tag = document.createElement('div');
+                tag.className = 'vol-tag';
+                tag.innerHTML = `${v}<button class="vol-tag-remove" onclick="${removeCallback}(${i})">×</button>`;
+                container.appendChild(tag);
+            });
+        }
+
+        function addVolunteer() {
+            const sel = document.getElementById('volSelect');
+            const val = sel.value;
+            if (!val || activeVolunteers.includes(val)) return;
+            activeVolunteers.push(val);
+            renderVolTags(activeVolunteers, 'volTags', 'removeVol');
+            sel.value = '';
+        }
+
+        function removeVol(i) {
+            activeVolunteers.splice(i, 1);
+            renderVolTags(activeVolunteers, 'volTags', 'removeVol');
+        }
+
+        function addCaller() {
+            const sel = document.getElementById('callerSelect');
+            const val = sel.value;
+            if (!val || activeCallers.includes(val)) return;
+            activeCallers.push(val);
+            renderVolTags(activeCallers, 'callerTags', 'removeCaller');
+            sel.value = '';
+        }
+
+        function removeCaller(i) {
+            activeCallers.splice(i, 1);
+            renderVolTags(activeCallers, 'callerTags', 'removeCaller');
+        }
+
+        function selectStatus(status, el) {
+            activeStatus = status;
+            document.querySelectorAll('.status-opt').forEach(o => {
+                o.className = 'status-opt';
+            });
+            el.classList.add(`selected-${status}`);
+        }
+
+        let activeDayDate = null;
+
+        function openModal(dayIdx, slotIdx, dayDate) {
+            activeKey = slotKey(dayIdx, slotIdx);
+            activeDayDate = dayDate;
+            const data = slotData[activeKey] || {};
+
+            // Labels
+            document.getElementById('modalSlotLabel').textContent =
+                `${DAYS_TR[dayIdx]}, ${formatDate(dayDate)}`;
+            document.getElementById('modalTitle').textContent =
+                data.childInfo ? data.childInfo.split('\n')[0].substring(0, 40) : 'Yeni Dilek Alımı';
+
+            // Auto-fill date display
+            const dd = String(dayDate.getDate()).padStart(2, '0');
+            const mm = String(dayDate.getMonth() + 1).padStart(2, '0');
+            const yyyy = dayDate.getFullYear();
+            document.getElementById('wishDateText').textContent =
+                `${DAYS_TR[dayIdx]}, ${dd}.${mm}.${yyyy}`;
+            // Store ISO for data
+            activeDayDate._isoStr = `${yyyy}-${mm}-${dd}`;
+
+            // Volunteers
+            activeVolunteers = [...(data.volunteers || [])];
+            renderVolTags(activeVolunteers, 'volTags', 'removeVol');
+
+            // Fields
+            document.getElementById('childInfo').value = data.childInfo || '';
+            document.getElementById('momName').value = data.momName || '';
+            document.getElementById('momPhone').value = data.momPhone || '';
+            document.getElementById('dadName').value = data.dadName || '';
+            document.getElementById('dadPhone').value = data.dadPhone || '';
+            document.getElementById('wishTime').value = data.wishTime || '';
+            document.getElementById('wishNotes').value = data.wishNotes || '';
+
+            // Callers
+            activeCallers = [...(data.callers || [])];
+            renderVolTags(activeCallers, 'callerTags', 'removeCaller');
+
+            // Status
+            activeStatus = data.status || 'none';
+            document.querySelectorAll('.status-opt').forEach(o => {
+                o.className = 'status-opt';
+                if (o.dataset.status === activeStatus) o.classList.add(`selected-${activeStatus}`);
+            });
+
+            populateVolSelect();
+            document.getElementById('modalOverlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function saveSlot() {
+            if (!activeKey) return;
+            slotData[activeKey] = {
+                volunteers: [...activeVolunteers],
+                childInfo: document.getElementById('childInfo').value.trim(),
+                momName: document.getElementById('momName').value.trim(),
+                momPhone: document.getElementById('momPhone').value.trim(),
+                dadName: document.getElementById('dadName').value.trim(),
+                dadPhone: document.getElementById('dadPhone').value.trim(),
+                wishDate: activeDayDate._isoStr,
+                wishTime: document.getElementById('wishTime').value,
+                callers: [...activeCallers],
+                status: activeStatus,
+                wishNotes: document.getElementById('wishNotes').value.trim(),
+            };
+            closeModal();
+            localStorage.setItem('slotData', JSON.stringify(slotData));
+            renderCalendar();
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+            activeKey = null;
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target === document.getElementById('modalOverlay')) closeModal();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
+
+        window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        // ── Init ──
+        const _saved = localStorage.getItem('slotData');
+        if (_saved) {
+            slotData = JSON.parse(_saved);
+        } else {
+            // Örnek veriler (sadece ilk açılışta)
+            slotData['0_2_0'] = {
+                volunteers: ["Elnaz Kohen", "Şevval Müftüoğlu"],
+                childInfo: "Zeynep Arslan\n9 yaş, ALL, İstanbul",
+                momName: "Sevgi", momPhone: "0532 411 22 33",
+                dadName: "Kemal", dadPhone: "0535 211 44 55",
+                wishDate: "2026-03-11", wishTime: "15:00",
+                callers: ["Elnaz Kohen"], status: 'green',
+                wishNotes: "Zeynep çizgi film karakterlerini çok seviyor. Disney temalı bir dilek olabilir."
+            };
+            slotData['0_2_1'] = {
+                volunteers: ["Melek Seçil Aka", "Barış Yılmaz"],
+                childInfo: "Ömer Faruk Demir\n12 yaş, Lenfoma, Ankara",
+                momName: "Hatice", momPhone: "0542 311 66 77",
+                dadName: "Yusuf", dadPhone: "0537 911 88 99",
+                wishDate: "2026-03-11", wishTime: "20:00",
+                callers: ["Barış Yılmaz"], status: 'yellow',
+                wishNotes: "Baba ulaşılamıyor. Anne ile görüşüldü, tekrar aranacak."
+            };
+            slotData['0_3_0'] = {
+                volunteers: ["İrem Kurtuluş", "Fatma Nur Kugu"],
+                childInfo: "Elif Yıldız\n8 yaş, Beyin Tümörü, İzmir",
+                momName: "Nurcan", momPhone: "0533 512 33 44",
+                dadName: "Bülent", dadPhone: "0544 612 55 66",
+                wishDate: "2026-03-12", wishTime: "15:00",
+                callers: ["Fatma Nur Kugu"], status: 'green',
+                wishNotes: "Elif hayvan çok seviyor. Zoo veya hayvanat bahçesi ziyareti düşünülebilir."
+            };
+            slotData['0_3_1'] = {
+                volunteers: ["Yağmur Ay", "Ceyda Duran"],
+                childInfo: "Berkay Şahin\n14 yaş, Kemik Kanseri, Bursa",
+                momName: "Filiz", momPhone: "0552 713 44 55",
+                dadName: "Orhan", dadPhone: "0507 813 66 77",
+                wishDate: "2026-03-12", wishTime: "20:00",
+                callers: ["Yağmur Ay"], status: 'none',
+                wishNotes: ""
+            };
+            slotData['0_4_0'] = {
+                volunteers: ["Güneş Korkmaz", "Emrullah Uslu", "Göksu Gökçesu"],
+                childInfo: "Ahmet Tuna Kızılhan",
+                momName: "İkbal Şule", momPhone: "0532 335 02 39",
+                dadName: "Mehmet", dadPhone: "0533 455 02 39",
+                wishDate: "2026-03-13", wishTime: "20:00",
+                callers: ["İsra Zengin"], status: 'green',
+                wishNotes: "Aile arandı. Ahmet çok enerjik, Minecraft'ı seviyor."
+            };
+            slotData['0_4_1'] = {
+                volunteers: ["Hazal Sertkaya", "Elif Erginyavuz"],
+                childInfo: "Sude Karahan\n11 yaş, ALL, Konya",
+                momName: "Meral", momPhone: "0537 214 77 88",
+                dadName: "Hasan", dadPhone: "0532 314 99 00",
+                wishDate: "2026-03-13", wishTime: "15:00",
+                callers: ["Hazal Sertkaya"], status: 'green',
+                wishNotes: "Sude müzik aleti istiyor. Piyano veya gitar düşünülüyor."
+            };
+            slotData['0_5_0'] = {
+                volunteers: ["Metehan Yıldız", "Atahan Davut Polat", "Ahmet Atar"],
+                childInfo: "İsmail Ekşi\n17 yaş, Lenfoma, Bursa",
+                momName: "Esra", momPhone: "0537 707 73 95",
+                dadName: "Gürbüz", dadPhone: "0535 716 06 03",
+                wishDate: "2026-03-14", wishTime: "15:00",
+                callers: ["Erhan Zorlu"], status: 'green',
+                wishNotes: "İsmail müzikle çok ilgili. Profesyonel kulaklık veya müzik aleti isteyebilir."
+            };
+            slotData['0_5_1'] = {
+                volunteers: ["Melike Batur", "Nehir Bozbıyık", "Özge Yılmaz", "Sude Bulut"],
+                childInfo: "Muhammed Seyit Taykaya\n7 yaş, B-ALL, Konya",
+                momName: "Fadime", momPhone: "0553 020 45 83",
+                dadName: "Halis", dadPhone: "0507 278 33 80",
+                wishDate: "2026-03-14", wishTime: "20:00",
+                callers: [], status: 'none',
+                wishNotes: ""
+            };
+            slotData['0_5_2'] = {
+                volunteers: ["İremnur Şanlıtürk", "Feyza Bayram", "Lorin Güçlü"],
+                childInfo: "Eliz Ciğerci\n10 yaş, Nöroblastom, İstanbul",
+                momName: "Özge", momPhone: "0532 063 45 89",
+                dadName: "Murat", dadPhone: "0532 560 19 15",
+                wishDate: "2026-03-14", wishTime: "15:00",
+                callers: [], status: 'red',
+                wishNotes: "Gönüllü bulunamadı. İptal edildi."
+            };
+            slotData['0_6_0'] = {
+                volunteers: ["Delfin Özaker", "Doğa Bozbıyık", "Ece Ceren Çetiner"],
+                childInfo: "Umut Eren Aydoğan\n6 yaş, Mardin, B-ALL",
+                momName: "Gülistan", momPhone: "0552 462 40 77",
+                dadName: "—", dadPhone: "",
+                wishDate: "2026-03-15", wishTime: "15:00",
+                callers: ["Güneş Sima Korkmaz"], status: 'yellow',
+                wishNotes: "Umut çok küçük. Anne ile iletişim kuruldu ama bir kez daha aranması gerekiyor."
+            };
+            slotData['0_6_1'] = {
+                volunteers: ["İlker Korkmaz", "İrem Şanlıtürk"],
+                childInfo: "Arda Demirci\n13 yaş, Lösemi, Ankara",
+                momName: "Sibel", momPhone: "0542 815 33 44",
+                dadName: "Taner", dadPhone: "0533 915 55 66",
+                wishDate: "2026-03-15", wishTime: "15:00",
+                callers: ["İlker Korkmaz"], status: 'green',
+                wishNotes: "Arda futbolu çok seviyor. Galatasaray taraftarı, forma veya maç bileti isteyebilir."
+            };
+            slotData['0_6_2'] = {
+                volunteers: ["Asude Buldu", "Ahmet Atar"],
+                childInfo: "Miray Kaya\n5 yaş, Beyin Tümörü, Samsun",
+                momName: "Ayşe", momPhone: "0537 016 77 88",
+                dadName: "Ercan", dadPhone: "0544 116 99 00",
+                wishDate: "2026-03-15", wishTime: "20:00",
+                callers: ["Asude Buldu"], status: 'green',
+                wishNotes: "Miray bebek araba ve oyuncak seti istiyor. Anne çok sıcak kanlı, iletişim kolay."
+            };
+            localStorage.setItem('slotData', JSON.stringify(slotData));
+        }
+        renderCalendar();
+    </script>
+</body>
+
+</html>

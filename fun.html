@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make-A-Wish | 🎉 Eğlence Köşesi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    :root {
+      --primary: #005596;
+      --primary-dark: #003d73;
+      --primary-light: #e8f3ff;
+      --sidebar-bg: #0a1628;
+      --sidebar-hover: #1a2d4a;
+      --sidebar-active: #005596;
+      --sidebar-text: #94a3b8;
+      --sidebar-width: 270px;
+      --bg: #f0f5fb;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --radius: 12px;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.13);
+      --fun-1: #f97316;
+      --fun-2: #ec4899;
+      --fun-3: #8b5cf6;
+      --fun-4: #06b6d4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 200;
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px 22px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      text-decoration: none;
+      transition: background 0.18s;
+    }
+
+    .sidebar-logo:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .logo-star {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-logo h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.35;
+      letter-spacing: -0.2px;
+    }
+
+    .sidebar-logo p {
+      font-size: 10.5px;
+      color: #475569;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 14px 12px;
+    }
+
+    .nav-label {
+      font-size: 9.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #334155;
+      padding: 0 10px;
+      margin: 10px 0 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 9px;
+      color: var(--sidebar-text);
+      font-size: 12.5px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.18s;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: var(--sidebar-hover);
+      color: #e2e8f0;
+    }
+
+    .nav-item.active {
+      background: var(--sidebar-active);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .nav-item.amber {
+      color: #fbbf24;
+    }
+
+    .nav-item.amber:hover {
+      background: rgba(251, 191, 36, 0.1);
+      color: #fbbf24;
+    }
+
+    .nav-item.purple-nav {
+      color: #c084fc;
+    }
+
+    .nav-item.purple-nav:hover {
+      background: rgba(192, 132, 252, 0.1);
+      color: #c084fc;
+    }
+
+    .nav-item.fun-active {
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .nav-item.fun-active:hover {
+      opacity: 0.92;
+    }
+
+    .nav-icon {
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 14px 22px;
+      font-size: 10.5px;
+      color: #1e3a5f;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 58px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text);
+      padding: 4px 8px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #0a1628 0%, #1a1035 50%, #0d1f3c 100%);
+      padding: 36px 32px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      left: 30%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      color: #fb923c;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .hero h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #f97316, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 14px;
+      color: #64748b;
+      max-width: 500px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .hero-stat {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 12px 18px;
+      text-align: center;
+    }
+
+    .hero-stat-num {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      display: block;
+    }
+
+    .hero-stat-label {
+      font-size: 11px;
+      color: #475569;
+      margin-top: 2px;
+    }
+
+    /* ── ADD SECTION ── */
+    .add-section {
+      padding: 24px 32px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .add-box {
+      background: var(--bg);
+      border: 2px dashed var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      transition: border-color 0.2s;
+    }
+
+    .add-box:focus-within {
+      border-color: var(--fun-1);
+      background: #fff7f0;
+    }
+
+    .add-fields {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 10px;
+    }
+
+    .add-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .add-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .add-input {
+      padding: 10px 14px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      color: var(--text);
+      transition: border-color 0.18s;
+      width: 100%;
+    }
+
+    .add-input:focus {
+      outline: none;
+      border-color: var(--fun-1);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+
+    .add-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .add-note-field {
+      grid-column: 1 / -1;
+    }
+
+    .btn-add {
+      padding: 11px 22px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: #fff;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: opacity 0.18s, transform 0.18s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      align-self: flex-end;
+      flex-shrink: 0;
+    }
+
+    .btn-add:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .btn-add:active {
+      transform: translateY(0);
+    }
+
+    /* ── FILTERS ── */
+    .filters-bar {
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+    }
+
+    .filter-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .filter-chip:hover {
+      border-color: #94a3b8;
+      color: var(--text);
+    }
+
+    .filter-chip.active {
+      background: var(--text);
+      color: #fff;
+      border-color: var(--text);
+    }
+
+    .filter-chip.yt.active {
+      background: #dc2626;
+      border-color: #dc2626;
+      color: #fff;
+    }
+
+    .filter-chip.tw.active {
+      background: #1d9bf0;
+      border-color: #1d9bf0;
+      color: #fff;
+    }
+
+    .filter-chip.ig.active {
+      background: linear-gradient(135deg, #f97316, #ec4899, #8b5cf6);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .filter-chip.tt.active {
+      background: #0f172a;
+      border-color: #0f172a;
+      color: #fff;
+    }
+
+    .filter-chip.other.active {
+      background: #16a34a;
+      border-color: #16a34a;
+      color: #fff;
+    }
+
+    .filter-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* ── GRID ── */
+    .content {
+      padding: 28px 32px;
+      flex: 1;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state .emoji {
+      font-size: 52px;
+      margin-bottom: 14px;
+    }
+
+    .empty-state h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .media-card {
+      background: var(--card);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .media-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Thumbnail area */
+    .media-thumb {
+      position: relative;
+      padding-top: 56.25%;
+      /* 16:9 */
+      background: #0f172a;
+      overflow: hidden;
+    }
+
+    .media-thumb img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .media-card:hover .media-thumb img {
+      transform: scale(1.04);
+    }
+
+    .media-thumb-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+    }
+
+    .media-thumb-placeholder .ph-icon {
+      font-size: 42px;
+      opacity: 0.3;
+      color: #fff;
+    }
+
+    /* Platform badge on thumb */
+    .platform-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(8px);
+    }
+
+    .platform-badge.youtube {
+      background: rgba(220, 38, 38, 0.9);
+      color: #fff;
+    }
+
+    .platform-badge.twitter {
+      background: rgba(29, 155, 240, 0.9);
+      color: #fff;
+    }
+
+    .platform-badge.instagram {
+      background: rgba(236, 72, 153, 0.9);
+      color: #fff;
+    }
+
+    .platform-badge.tiktok {
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+    }
+
+    .platform-badge.other {
+      background: rgba(22, 163, 74, 0.9);
+      color: #fff;
+    }
+
+    /* Play button overlay */
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.85);
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all 0.2s;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .media-card:hover .play-overlay {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .play-overlay i {
+      font-size: 22px;
+      color: #fff;
+    }
+
+    /* Card body */
+    .media-body {
+      padding: 14px 16px;
+    }
+
+    .media-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 5px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .media-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.45;
+    }
+
+    .media-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .media-url {
+      font-size: 11px;
+      color: #94a3b8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    .media-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--muted);
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+
+    .btn-icon:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: #bbd8ff;
+    }
+
+    .btn-icon.copy-btn:hover {
+      background: #f0fdf4;
+      color: #16a34a;
+      border-color: #86efac;
+    }
+
+    .btn-icon.copied {
+      background: #f0fdf4 !important;
+      color: #16a34a !important;
+      border-color: #86efac !important;
+    }
+
+    /* ── OVERLAY ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 150;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      z-index: 9999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+
+      .hero {
+        padding: 24px 20px;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+      }
+
+      .hero-stats {
+        display: none;
+      }
+
+      .add-section {
+        padding: 16px 20px;
+      }
+
+      .add-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .add-note-field {
+        grid-column: 1;
+      }
+
+      .filters-bar {
+        padding: 12px 20px;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .media-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo">
+      <span class="logo-star">⭐</span>
+      <h2>Make-A-Wish<br>Türkiye</h2>
+      <p>Operasyon Paneli</p>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Dilek Alımları</div>
+      <a href="takvim.html" class="nav-item">
+        <span class="nav-icon">📅</span> Haftalık &amp; Aylık Takvimler
+      </a>
+      <a href="https://form.jotform.com/242213350145039" target="_blank" class="nav-item">
+        <span class="nav-icon">📝</span> Dilek Alım Formu (Jotform)
+      </a>
+      <a href="https://dernegi1-my.sharepoint.com/:w:/g/personal/mail_makeawish_org_tr/EYSRjUCXgddHsxWJe7M4854BkmLAcjp1jkyhR4OfPivnyA?e=iacnVo"
+        target="_blank" class="nav-item">
+        <span class="nav-icon">📄</span> Dilek Alım Formu (Word)
+      </a>
+      <a href="https://dernegi1-my.sharepoint.com/:f:/g/personal/mail_makeawish_org_tr/EgC_y55DcW1Ch2TY5LoJVh4BzCciIzeoyMYT-7JFKiiWFg?e=gqrcBu"
+        target="_blank" class="nav-item">
+        <span class="nav-icon">🏥</span> Hastane Başvuru Formları
+      </a>
+      <a href="https://dernegi1-my.sharepoint.com/:b:/g/personal/mail_makeawish_org_tr/EYlzt5tmD2NEmsgakFso0DEBStGcAoTK9_RndgTyDtlECw?e=2zhOtw"
+        target="_blank" class="nav-item">
+        <span class="nav-icon">🧠</span> Psikolog Sunumu
+      </a>
+      <a href="https://dernegi1-my.sharepoint.com/:b:/g/personal/mail_makeawish_org_tr/EW3SHCFc3QtMmSQGRreK04sBd-c_wLQXbSFX9Fo0-hKtEg?e=Xt7Vac"
+        target="_blank" class="nav-item">
+        <span class="nav-icon">🩺</span> Riskli Hastalıklar Sunumu
+      </a>
+      <a href="sihirli-kitap.pdf" target="_blank" class="nav-item">
+        <span class="nav-icon">📖</span> Sihirli Kitap
+      </a>
+      <div class="nav-label" style="margin-top:10px;">Araçlar</div>
+      <a href="mentor.html" class="nav-item amber">
+        <span class="nav-icon">🧑‍🏫</span> Mentör Paneli
+      </a>
+      <a href="games.html" class="nav-item purple-nav">
+        <span class="nav-icon">🎮</span> Dijital Oyunlar Paneli
+      </a>
+      <a href="eglence.html" class="nav-item fun-active">
+        <span class="nav-icon">🎉</span> Eğlence Köşesi
+      </a>
+    </nav>
+    <div class="sidebar-footer">© 2025 Make-A-Wish Türkiye</div>
+  </aside>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title">🎉 Eğlence Köşesi</div>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-badge">🔥 Gönüllü Arşivi</div>
+        <h1>Eğlence <span>Köşesi</span></h1>
+        <p class="hero-sub">Bulduğun komik videolar, memeler ve içerikler burada kaybolmayacak. Paylaş, güldür, moral
+          ver! 😄</p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-num" id="totalCount">0</span>
+            <div class="hero-stat-label">Toplam İçerik</div>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num" id="ytCount">0</span>
+            <div class="hero-stat-label">YouTube</div>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num" id="otherCount">0</span>
+            <div class="hero-stat-label">Diğer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add section -->
+    <div class="add-section">
+      <div class="add-box">
+        <div class="add-fields">
+          <div class="add-field">
+            <label class="add-label">🔗 Link</label>
+            <input class="add-input" id="inputUrl" type="url"
+              placeholder="https://youtube.com/watch?v=... veya herhangi bir link">
+          </div>
+          <div class="add-field">
+            <label class="add-label">✏️ Başlık (opsiyonel)</label>
+            <input class="add-input" id="inputTitle" type="text" placeholder="Açıklayıcı bir başlık">
+          </div>
+          <div class="add-field add-note-field">
+            <label class="add-label">💬 Not (opsiyonel)</label>
+            <input class="add-input" id="inputNote" type="text" placeholder="Neden ekledin? Kısaca anlat 😄">
+          </div>
+        </div>
+        <button class="btn-add" onclick="addMedia()">
+          <i class="ph-bold ph-plus-circle"></i> Ekle
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+      <span class="filter-label">Filtre:</span>
+      <div class="filter-chip active" data-filter="all" onclick="setFilter('all', this)">Tümü</div>
+      <div class="filter-chip yt" data-filter="youtube" onclick="setFilter('youtube', this)">▶ YouTube</div>
+      <div class="filter-chip tw" data-filter="twitter" onclick="setFilter('twitter', this)">𝕏 Twitter/X</div>
+      <div class="filter-chip ig" data-filter="instagram" onclick="setFilter('instagram', this)">📸 Instagram</div>
+      <div class="filter-chip tt" data-filter="tiktok" onclick="setFilter('tiktok', this)">♪ TikTok</div>
+      <div class="filter-chip other" data-filter="other" onclick="setFilter('other', this)">🔗 Diğer</div>
+      <span class="filter-count" id="filterCount"></span>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content">
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <div class="emoji">🎭</div>
+        <h3>Henüz içerik yok!</h3>
+        <p>Yukarıdan bir link ekleyerek başla. YouTube, TikTok, Instagram — hepsi olur!</p>
+      </div>
+      <div class="media-grid" id="mediaGrid"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let mediaList = [];
+    let activeFilter = 'all';
+
+    // ── Load from localStorage ──
+    const _saved = localStorage.getItem('eglenceData');
+
+    if (_saved) {
+      mediaList = JSON.parse(_saved);
+    } else {
+      // LocalStorage boşsa, senin seçtiğin örnek içeriklerle dolduruyoruz
+      mediaList = [
+        {
+          id: Date.now() - 4000,
+          url: 'https://www.youtube.com/watch?v=qyczHCg2zhw',
+          title: 'Eğlenceli Video 1',
+          note: 'Listeye eklenen yeni video 🚀',
+          platform: 'youtube',
+          addedAt: new Date().toISOString()
+        },
+        {
+          id: Date.now() - 3000,
+          url: 'https://www.youtube.com/watch?v=60MdbTIgRbA',
+          title: 'Komik Video',
+          note: 'İlk eklenen 😄',
+          platform: 'youtube',
+          addedAt: new Date().toISOString()
+        },
+        {
+          id: Date.now() - 2000,
+          url: 'https://www.youtube.com/watch?v=fD4w3RYvqkM&pp=ygURYmVuaW0gYWTEsW0gY2FmZXI%3D',
+          title: 'Benim Adım Cafer',
+          note: 'Klasiklerden 😂',
+          platform: 'youtube',
+          addedAt: new Date().toISOString()
+        },
+        {
+          id: Date.now() - 1000,
+          url: 'https://www.youtube.com/watch?v=8EFKSY3A5Y8&list=PLqKr1otF2iNhzvbky8xL1uGOk2rM9jRUH&index=19&pp=iAQB',
+          title: 'Oynatma Listesi Videosu',
+          note: 'Karışık eğlence 🎧',
+          platform: 'youtube',
+          addedAt: new Date().toISOString()
+        }
+      ];
+
+      // Oluşturulan bu yeni listeyi localStorage'a kaydet
+      save();
+    }
+
+    // Kaydetme Fonksiyonu
+    function save() {
+      localStorage.setItem('eglenceData', JSON.stringify(mediaList));
+    }
+
+    // ── Platform detection ──
+    function detectPlatform(url) {
+      try {
+        const u = new URL(url);
+        const h = u.hostname.replace('www.', '');
+        if (h.includes('youtube.com') || h.includes('youtu.be')) return 'youtube';
+        if (h.includes('twitter.com') || h.includes('x.com')) return 'twitter';
+        if (h.includes('instagram.com')) return 'instagram';
+        if (h.includes('tiktok.com')) return 'tiktok';
+      } catch { }
+      return 'other';
+    }
+
+    function platformLabel(p) {
+      return { youtube: 'YouTube', twitter: 'X/Twitter', instagram: 'Instagram', tiktok: 'TikTok', other: 'Link' }[p] || 'Link';
+    }
+
+    // ── YouTube thumbnail ──
+    function getYtId(url) {
+      try {
+        const u = new URL(url);
+        if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
+        return u.searchParams.get('v');
+      } catch { }
+      return null;
+    }
+
+    function getThumbnail(item) {
+      if (item.platform === 'youtube') {
+        const id = getYtId(item.url);
+        if (id) return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+      }
+      return null;
+    }
+
+    // ── Platform icons ──
+    const PLATFORM_ICONS = {
+      youtube: 'ph-youtube-logo',
+      twitter: 'ph-x-logo',
+      instagram: 'ph-instagram-logo',
+      tiktok: 'ph-tiktok-logo',
+      other: 'ph-link'
+    };
+
+    // ── Render ──
+    function render() {
+      const filtered = activeFilter === 'all'
+        ? mediaList
+        : mediaList.filter(m => m.platform === activeFilter);
+
+      // Update stats
+      document.getElementById('totalCount').textContent = mediaList.length;
+      document.getElementById('ytCount').textContent = mediaList.filter(m => m.platform === 'youtube').length;
+      document.getElementById('otherCount').textContent = mediaList.filter(m => !['youtube'].includes(m.platform)).length;
+      document.getElementById('filterCount').textContent = filtered.length + ' içerik';
+
+      const grid = document.getElementById('mediaGrid');
+      const empty = document.getElementById('emptyState');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      grid.innerHTML = filtered.map(item => {
+        const thumb = getThumbnail(item);
+        const icon = PLATFORM_ICONS[item.platform] || 'ph-link';
+        const shortUrl = item.url.replace(/^https?:\/\/(www\.)?/, '').substring(0, 40) + (item.url.length > 45 ? '…' : '');
+        const displayTitle = item.title || shortUrl;
+
+        return `
+          <div class="media-card" onclick="openLink('${encodeURIComponent(item.url)}')">
+            <div class="media-thumb">
+              ${thumb
+            ? `<img src="${thumb}" alt="${displayTitle}" onerror="this.parentElement.innerHTML='<div class=media-thumb-placeholder><i class=ph-fill\\ ${icon}\\ ph-icon></i></div>'">`
+            : `<div class="media-thumb-placeholder"><i class="ph-fill ${icon} ph-icon"></i></div>`
+          }
+              <div class="platform-badge ${item.platform}">${platformLabel(item.platform)}</div>
+              <div class="play-overlay"><i class="ph-bold ph-arrow-square-out"></i></div>
+            </div>
+            <div class="media-body">
+              <div class="media-title">${displayTitle}</div>
+              ${item.note ? `<div class="media-note">${item.note}</div>` : ''}
+              <div class="media-footer">
+                <span class="media-url">${shortUrl}</span>
+                <div class="media-actions">
+                  <button class="btn-icon copy-btn" onclick="copyLink(event, '${encodeURIComponent(item.url)}')" title="Linki Kopyala">
+                    <i class="ph-bold ph-copy"></i>
+                  </button>
+                  <a class="btn-icon" href="${item.url}" target="_blank" onclick="event.stopPropagation()" title="Aç">
+                    <i class="ph-bold ph-arrow-square-out"></i>
+                  </a>
+                  <button class="btn-icon delete" onclick="deleteItem(event, ${item.id})" title="Sil">
+                    <i class="ph-bold ph-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function openLink(encoded) {
+      window.open(decodeURIComponent(encoded), '_blank');
+    }
+
+    // ── Add ──
+    function addMedia() {
+      const url = document.getElementById('inputUrl').value.trim();
+      if (!url) { showToast('⚠️ Bir link girmelisin!'); return; }
+
+      let fullUrl = url;
+      if (!fullUrl.startsWith('http')) fullUrl = 'https://' + fullUrl;
+
+      const platform = detectPlatform(fullUrl);
+      const title = document.getElementById('inputTitle').value.trim();
+      const note = document.getElementById('inputNote').value.trim();
+
+      mediaList.unshift({
+        id: Date.now(),
+        url: fullUrl,
+        title,
+        note,
+        platform,
+        addedAt: new Date().toISOString()
+      });
+
+      save();
+      render();
+
+      document.getElementById('inputUrl').value = '';
+      document.getElementById('inputTitle').value = '';
+      document.getElementById('inputNote').value = '';
+
+      showToast('🎉 İçerik eklendi!');
+    }
+
+    // ── Copy link ──
+    function copyLink(e, encoded) {
+      e.stopPropagation();
+      const url = decodeURIComponent(encoded);
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = e.currentTarget;
+        btn.classList.add('copied');
+        btn.innerHTML = '<i class="ph-bold ph-check"></i>';
+        showToast('📋 Link kopyalandı!');
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<i class="ph-bold ph-copy"></i>';
+        }, 2000);
+      });
+    }
+
+    // ── Delete ──
+    function deleteItem(e, id) {
+      e.stopPropagation();
+      if (!confirm('Bu içeriği silmek istediğine emin misin?')) return;
+      mediaList = mediaList.filter(m => m.id !== id);
+      save();
+      render();
+      showToast('🗑️ Silindi.');
+    }
+
+    // ── Filter ──
+    function setFilter(f, el) {
+      activeFilter = f;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      render();
+    }
+
+    // ── Toast ──
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ── Sidebar ──
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('show');
+    }
+
+    // Enter key on inputs
+    ['inputUrl', 'inputTitle', 'inputNote'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') addMedia();
+      });
+    });
+
+    // ── Init ──
+    render();
+  </script>
+</body>
+
+</html>
