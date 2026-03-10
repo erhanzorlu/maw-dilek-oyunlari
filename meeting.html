@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make-A-Wish | Mentör Görüşmeleri</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --primary: #005596;
+            --primary-dark: #003d73;
+            --primary-light: #e8f3ff;
+            --bg: #f0f5fb;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --muted: #64748b;
+            --sidebar-bg: #0a1628;
+            --sidebar-hover: #1a2d4a;
+            --sidebar-active: #005596;
+            --sidebar-text: #94a3b8;
+            --sidebar-width: 270px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 200;
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 24px 22px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            text-decoration: none;
+            transition: background 0.18s;
+        }
+
+        .sidebar-logo:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .sidebar-logo .logo-star {
+            font-size: 22px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-logo h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.2px;
+            line-height: 1.35;
+        }
+
+        .sidebar-logo p {
+            font-size: 10.5px;
+            color: #475569;
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 14px 12px;
+        }
+
+        .nav-label {
+            font-size: 9.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #334155;
+            padding: 0 10px;
+            margin: 10px 0 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 9px;
+            color: var(--sidebar-text);
+            font-size: 12.5px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.18s;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--sidebar-hover);
+            color: #e2e8f0;
+        }
+
+        .nav-item.active {
+            background: var(--sidebar-active);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .nav-item.amber {
+            color: #fbbf24;
+        }
+
+        .nav-item.amber:hover {
+            background: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+        }
+
+        .nav-item.purple-nav {
+            color: #c084fc;
+        }
+
+        .nav-item.purple-nav:hover {
+            background: rgba(192, 132, 252, 0.1);
+            color: #c084fc;
+        }
+
+        .nav-item.meeting-active {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .nav-item.meeting-active:hover {
+            opacity: 0.92;
+        }
+
+        .nav-icon {
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 14px 22px;
+            font-size: 10.5px;
+            color: #1e3a5f;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* ── OVERLAY ── */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 190;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            color: var(--text);
+            font-size: 22px;
+        }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .topbar-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+
+        .content {
+            padding: 32px 36px;
+            flex: 1;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, #1a7fd4 100%);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-text {
+            position: relative;
+        }
+
+        .hero-text h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .hero-text p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.75);
+            max-width: 420px;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            position: relative;
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .hero-stat {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            padding: 14px 20px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-stat strong {
+            display: block;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .hero-stat span {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        /* ── MEETING GRID ── */
+        .meeting-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        /* ── MEETING CARD ── */
+        .meeting-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.25s ease;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .meeting-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 60, 140, 0.12);
+            border-color: #bbd8ff;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-photo {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            transition: transform 0.4s;
+        }
+
+        .meeting-card:hover .card-photo img {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 18px 20px;
+        }
+
+        .card-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+
+        .card-degree {
+            font-size: 12.5px;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 14px;
+        }
+
+        .chip {
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .card-specs {
+            margin-bottom: 16px;
+        }
+
+        .card-specs-title {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .spec-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            color: var(--text);
+            margin: 0 4px 4px 0;
+        }
+
+        /* ── MEETING INFO ── */
+        .meeting-info {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+
+        .meeting-info-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .meeting-info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .meeting-info-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .meeting-info-text {
+            flex: 1;
+        }
+
+        .meeting-info-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+        }
+
+        .meeting-info-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* ── ACTION BUTTONS ── */
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .action-btn i {
+            font-size: 16px;
+        }
+
+        .btn-meet {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #fff;
+        }
+
+        .btn-meet:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+        }
+
+        .btn-wa {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #a7f3d0;
+        }
+
+        .btn-wa:hover {
+            background: #bbf7d0;
+            transform: translateY(-1px);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .topbar {
+                padding: 14px 20px;
+            }
+
+            .content {
+                padding: 20px 16px;
+            }
+
+            .hero {
+                flex-direction: column;
+                padding: 22px 20px;
+            }
+
+            .meeting-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar" id="sidebar">
+        <a href="index.html" class="sidebar-logo">
+            <span class="logo-star">⭐</span>
+            <h2>Make-A-Wish<br>Türkiye</h2>
+            <p>Gönüllü Paneli</p>
+        </a>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Dilek Alımları</div>
+            <a href="calender.html" class="nav-item">
+                <span class="nav-icon">📅</span> Haftalık &amp; Aylık Takvimler
+            </a>
+            <a href="https://form.jotform.com/242213350145039" target="_blank" class="nav-item">
+                <span class="nav-icon">📝</span> Dilek Alım Formu (Jotform)
+            </a>
+            <a href="https://dernegi1-my.sharepoint.com/:w:/g/personal/mail_makeawish_org_tr/EYSRjUCXgddHsxWJe7M4854BkmLAcjp1jkyhR4OfPivnyA?e=iacnVo"
+                target="_blank" class="nav-item">
+                <span class="nav-icon">📄</span> Dilek Alım Formu (Word)
+            </a>
+            <a href="https://dernegi1-my.sharepoint.com/:f:/g/personal/mail_makeawish_org_tr/EgC_y55DcW1Ch2TY5LoJVh4BzCciIzeoyMYT-7JFKiiWFg?e=gqrcBu"
+                target="_blank" class="nav-item">
+                <span class="nav-icon">🏥</span> Hastane Başvuru Formları
+            </a>
+            <a href="https://dernegi1-my.sharepoint.com/:b:/g/personal/mail_makeawish_org_tr/EYlzt5tmD2NEmsgakFso0DEBStGcAoTK9_RndgTyDtlECw?e=2zhOtw"
+                target="_blank" class="nav-item">
+                <span class="nav-icon">🧠</span> Psikolog Sunumu
+            </a>
+            <a href="https://dernegi1-my.sharepoint.com/:b:/g/personal/mail_makeawish_org_tr/EW3SHCFc3QtMmSQGRreK04sBd-c_wLQXbSFX9Fo0-hKtEg?e=Xt7Vac"
+                target="_blank" class="nav-item">
+                <span class="nav-icon">🩺</span> Riskli Hastalıklar Sunumu
+            </a>
+            <a href="sihirli-kitap.pdf" target="_blank" class="nav-item">
+                <span class="nav-icon">📖</span> Sihirli Kitap
+            </a>
+
+            <div class="nav-label" style="margin-top:10px;">Araçlar</div>
+            <a href="mentor.html" class="nav-item amber">
+                <span class="nav-icon">🧑‍🏫</span> Mentör Paneli
+            </a>
+            <a href="meeting.html" class="nav-item meeting-active">
+                <span class="nav-icon">📹</span> Mentör Görüşmeleri
+            </a>
+            <a href="games.html" class="nav-item purple-nav">
+                <span class="nav-icon">🎮</span> Dijital Oyunlar Paneli
+            </a>
+            <a href="fun.html" class="nav-item purple-nav">
+                <span class="nav-icon">🎉</span> Dijital Eğlence Köşesi
+            </a>
+        </nav>
+        <div class="sidebar-footer">© 2025 Make-A-Wish Türkiye</div>
+    </aside>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- ── MAIN ── -->
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="hamburger" onclick="toggleSidebar()">☰</button>
+                <div class="topbar-title">📹 Mentör Görüşmeleri</div>
+            </div>
+            <a href="https://calendar.google.com/calendar/u/0/r/eventedit?vcon=meet&dates=now&hl=tr" target="_blank"
+                style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;text-decoration:none;transition:all 0.2s;border:none;cursor:pointer;">
+                <i class="ph-fill ph-plus-circle" style="font-size:16px;"></i> Toplantı Oluştur
+            </a>
+        </div>
+
+        <div class="content">
+            <!-- Hero -->
+            <div class="hero">
+                <div class="hero-text">
+                    <h2>Mentör – Gönüllü Görüşmeleri</h2>
+                    <p>Dilek alımı öncesinde mentörlerinizle online görüşme yaparak çocuğun durumuna uygun hazırlık
+                        yapabilirsiniz.</p>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat"><strong>3</strong><span>Aktif Mentör</span></div>
+                    <div class="hero-stat"><strong>📹</strong><span>Online Görüşme</span></div>
+                </div>
+            </div>
+
+            <!-- Meeting Cards -->
+            <div class="meeting-grid">
+
+                <!-- Şevval Müftüoğlu -->
+                <div class="meeting-card" style="animation-delay: 0s;">
+                    <div class="card-photo">
+                        <img src="images/sevval.jpeg" alt="Şevval Müftüoğlu">
+                    </div>
+                    <div class="card-body">
+                        <div class="card-name">Şevval Müftüoğlu</div>
+                        <div class="card-degree">Dil ve Konuşma Terapisti</div>
+                        <div class="card-chips">
+                            <span class="chip">3-6 Yaş</span>
+                            <span class="chip">7-9 Yaş</span>
+                            <span class="chip">10-13 Yaş</span>
+                            <span class="chip">14-17 Yaş</span>
+                        </div>
+                        <div class="card-specs">
+                            <div class="card-specs-title">Uzmanlık Alanları</div>
+                            <span class="spec-tag">Oyun terapisi</span>
+                            <span class="spec-tag">Materyal kullanımı</span>
+                        </div>
+                        <div class="meeting-info">
+                            <div class="meeting-info-row">
+                                <div class="meeting-info-icon"><i class="ph-fill ph-calendar"></i></div>
+                                <div class="meeting-info-text">
+                                    <div class="meeting-info-label">Tarih & Saat</div>
+                                    <div class="meeting-info-value">14 Mart 2026 — Cumartesi, 20:00</div>
+                                </div>
+                            </div>
+                            <div class="meeting-info-row">
+                                <div class="meeting-info-icon" style="background:#0ea5e9;"><i
+                                        class="ph-fill ph-video-camera"></i></div>
+                                <div class="meeting-info-text">
+                                    <div class="meeting-info-label">Toplantı Linki</div>
+                                    <div class="meeting-info-value">Google Meet</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="https://meet.google.com/" target="_blank" class="action-btn btn-meet">
+                                <i class="ph-fill ph-video-camera"></i> Toplantıya Katıl
+                            </a>
+                            <a href="https://wa.me/905071217690" target="_blank" class="action-btn btn-wa">
+                                <i class="ph-fill ph-whatsapp-logo"></i> WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Melek Seçil Aka -->
+                <div class="meeting-card" style="animation-delay: 0.08s;">
+                    <div class="card-photo">
+                        <img src="images/melek.jpeg" alt="Melek Seçil Aka">
+                    </div>
+                    <div class="card-body">
+                        <div class="card-name">Melek Seçil Aka</div>
+                        <div class="card-degree">Dil ve Konuşma Terapisti</div>
+                        <div class="card-chips">
+                            <span class="chip">3-6 Yaş</span>
+                            <span class="chip">7-9 Yaş</span>
+                            <span class="chip">10-13 Yaş</span>
+                            <span class="chip">14-17 Yaş</span>
+                        </div>
+                        <div class="card-specs">
+                            <div class="card-specs-title">Uzmanlık Alanları</div>
+                            <span class="spec-tag">Oyun terapisi</span>
+                            <span class="spec-tag">Materyal kullanımı</span>
+                        </div>
+                        <div class="meeting-info">
+                            <div class="meeting-info-row">
+                                <div class="meeting-info-icon"><i class="ph-fill ph-calendar"></i></div>
+                                <div class="meeting-info-text">
+                                    <div class="meeting-info-label">Tarih & Saat</div>
+                                    <div class="meeting-info-value">17 Mart 2026 — Salı, 20:30</div>
+                                </div>
+                            </div>
+                            <div class="meeting-info-row">
+                                <div class="meeting-info-icon" style="background:#0ea5e9;"><i
+                                        class="ph-fill ph-video-camera"></i></div>
+                                <div class="meeting-info-text">
+                                    <div class="meeting-info-label">Toplantı Linki</div>
+                                    <div class="meeting-info-value">Google Meet</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="https://meet.google.com/" target="_blank" class="action-btn btn-meet">
+                                <i class="ph-fill ph-video-camera"></i> Toplantıya Katıl
+                            </a>
+                            <a href="https://wa.me/905079629148" target="_blank" class="action-btn btn-wa">
+                                <i class="ph-fill ph-whatsapp-logo"></i> WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asude Buldu -->
+                <div class="meeting-card" style="animation-delay: 0.16s;">
+                    <div class="card-photo">
+                        <img src="images/asude.jpeg" alt="Asude Buldu">
+                    </div>
+                    <div class="card-body">
+                        <div class="card-name">Asude Buldu</div>
+                        <div class="card-degree">Gönüllü Eğitmen</div>
+                        <div class="card-chips">
+                            <span class="chip">7-9 Yaş</span>
+                            <span class="chip">10-13 Yaş</span>
+                            <span class="chip">14-17 Yaş</span>
+                        </div>
+                        <div class="card-specs">
+                            <div class="card-specs-title">Uzmanlık Alanları</div>
+                            <span class="spec-tag">Online dilek alma</span>
+                            <span class="spec-tag">Hikayeleştirme</span>
+                            <span class="spec-tag">Sohbet havası oluşturma</span>
+                            <span class="spec-tag">Ergen iletişimi</span>
+                        </div>
+                        <div class="meeting-info">
+                            <div class="meeting-info-row">
+                                <div class="meeting-info-icon"><i class="ph-fill ph-calendar"></i></div>
+                                <div class="meeting-info-text">
+                                    <div class="meeting-info-label">Tarih & Saat</div>
+                                    <div class="meeting-info-value">19 Mart 2026 — Perşembe, 21:00</div>
+                                </div>
+                            </div>
+                            <div class="meeting-info-row">
+                                <div class="meeting-info-icon" style="background:#0ea5e9;"><i
+                                        class="ph-fill ph-video-camera"></i></div>
+                                <div class="meeting-info-text">
+                                    <div class="meeting-info-label">Toplantı Linki</div>
+                                    <div class="meeting-info-value">Google Meet</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <a href="https://meet.google.com/" target="_blank" class="action-btn btn-meet">
+                                <i class="ph-fill ph-video-camera"></i> Toplantıya Katıl
+                            </a>
+                            <a href="https://wa.me/905465981896" target="_blank" class="action-btn btn-wa">
+                                <i class="ph-fill ph-whatsapp-logo"></i> WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
+    </script>
+</body>
+
+</html>

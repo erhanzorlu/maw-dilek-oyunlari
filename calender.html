@@ -44,6 +44,207 @@
             --s-red-border: #fca5a5;
         }
 
+        /* ── KEYFRAME ANIMATIONS ── */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeSlideOutLeft {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+        }
+
+        @keyframes fadeSlideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeSlideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+        }
+
+        @keyframes fadeSlideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes statusPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.6);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 8px rgba(0, 85, 150, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(0, 85, 150, 0.6);
+            }
+        }
+
+        @keyframes starSpin {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(180deg) scale(1.15);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-20px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes dashFlow {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 40px 0;
+            }
+        }
+
+        @keyframes subtleBounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                transform: scale(0);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes modalFormAppear {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes legendPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.25);
+            }
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -56,6 +257,27 @@
             color: var(--text);
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── CUSTOM SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 85, 150, 0.15);
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 85, 150, 0.35);
         }
 
         a {
@@ -66,115 +288,124 @@
         /* ── SIDEBAR ── */
         .sidebar {
             width: var(--sidebar-width);
-            min-height: 100vh;
             background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
             position: fixed;
             top: 0;
             left: 0;
-            display: flex;
-            flex-direction: column;
+            bottom: 0;
             z-index: 200;
-            transition: transform 0.3s ease;
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
         }
 
         .sidebar-logo {
-            padding: 28px 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 24px 22px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            transition: background 0.2s;
-            display: block;
             text-decoration: none;
+            transition: background 0.18s;
         }
 
         .sidebar-logo:hover {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .sidebar-logo .logo-star {
-            font-size: 26px;
-            display: block;
+            font-size: 22px;
+            display: inline-block;
             margin-bottom: 6px;
+            animation: starSpin 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.5));
         }
 
         .sidebar-logo h2 {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 800;
             color: #fff;
-            letter-spacing: -0.3px;
-            line-height: 1.3;
+            letter-spacing: -0.2px;
+            line-height: 1.35;
         }
 
         .sidebar-logo p {
-            font-size: 11px;
-            color: var(--sidebar-text);
+            font-size: 10.5px;
+            color: #475569;
             margin-top: 3px;
+            font-weight: 500;
         }
 
         .sidebar-nav {
             flex: 1;
-            padding: 16px 12px;
-            overflow-y: auto;
+            padding: 14px 12px;
         }
 
         .nav-label {
-            font-size: 10px;
-            font-weight: 700;
+            font-size: 9.5px;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1.2px;
-            color: rgba(148, 163, 184, 0.5);
-            padding: 12px 12px 6px;
+            color: #334155;
+            padding: 0 10px;
+            margin: 10px 0 6px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            text-decoration: none;
+            padding: 9px 12px;
+            border-radius: 9px;
             color: var(--sidebar-text);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 13.5px;
+            font-size: 12.5px;
             font-weight: 500;
-            transition: all 0.2s ease;
+            text-decoration: none;
+            transition: all 0.18s;
             margin-bottom: 2px;
         }
 
         .nav-item:hover {
             background: var(--sidebar-hover);
-            color: #fff;
+            color: #e2e8f0;
         }
 
         .nav-item.active {
-            background: var(--primary);
+            background: var(--sidebar-active);
             color: #fff;
+            font-weight: 700;
         }
 
-        .nav-item .nav-icon {
-            font-size: 16px;
-            width: 22px;
-            text-align: center;
+        .nav-item.amber {
+            color: #fbbf24;
+        }
+
+        .nav-item.amber:hover {
+            background: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+        }
+
+        .nav-item.purple-nav {
+            color: #c084fc;
+        }
+
+        .nav-item.purple-nav:hover {
+            background: rgba(192, 132, 252, 0.1);
+            color: #c084fc;
+        }
+
+        .nav-icon {
+            font-size: 15px;
             flex-shrink: 0;
         }
 
-        .nav-item.amber:hover,
-        .nav-item.amber.active {
-            background: #78350f;
-            color: #fff;
-        }
-
-        .nav-item.purple-nav:hover,
-        .nav-item.purple-nav.active {
-            background: #4c1d95;
-            color: #fff;
-        }
-
         .sidebar-footer {
-            padding: 16px 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 11px;
-            color: rgba(148, 163, 184, 0.4);
-            text-align: center;
+            padding: 14px 22px;
+            font-size: 10.5px;
+            color: #1e3a5f;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .overlay {
@@ -210,8 +441,10 @@
 
         /* ── TOPBAR ── */
         .topbar {
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
             padding: 0 32px;
             height: 64px;
             display: flex;
@@ -260,7 +493,11 @@
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            transition: all 0.18s;
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .week-btn:active {
+            transform: scale(0.88);
         }
 
         .week-btn:hover {
@@ -288,7 +525,13 @@
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.18s;
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: subtleBounce 3s ease-in-out infinite;
+        }
+
+        .today-btn:active {
+            transform: scale(0.92);
+            animation: none;
         }
 
         .today-btn:hover {
@@ -317,6 +560,23 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
+            animation: legendPulse 2.5s ease-in-out infinite;
+        }
+
+        .legend-item:nth-child(1) .legend-dot {
+            animation-delay: 0s;
+        }
+
+        .legend-item:nth-child(2) .legend-dot {
+            animation-delay: 0.3s;
+        }
+
+        .legend-item:nth-child(3) .legend-dot {
+            animation-delay: 0.6s;
+        }
+
+        .legend-item:nth-child(4) .legend-dot {
+            animation-delay: 0.9s;
         }
 
         /* ── CALENDAR GRID ── */
@@ -334,7 +594,38 @@
         }
 
         /* Day Header */
-        .day-col {}
+        .day-col {
+            opacity: 0;
+            animation: fadeSlideUp 0.5s ease-out forwards;
+        }
+
+        .day-col:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .day-col:nth-child(2) {
+            animation-delay: 0.10s;
+        }
+
+        .day-col:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .day-col:nth-child(4) {
+            animation-delay: 0.20s;
+        }
+
+        .day-col:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+
+        .day-col:nth-child(6) {
+            animation-delay: 0.30s;
+        }
+
+        .day-col:nth-child(7) {
+            animation-delay: 0.35s;
+        }
 
         .day-header {
             background: var(--card);
@@ -343,6 +634,12 @@
             padding: 12px 14px;
             margin-bottom: 10px;
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .day-header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
         }
 
         .day-name {
@@ -364,8 +661,22 @@
         }
 
         .day-header.today {
-            background: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             border-color: var(--primary-dark);
+            box-shadow: 0 4px 20px rgba(0, 85, 150, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-header.today::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s ease-in-out infinite;
         }
 
         .day-header.today .day-name {
@@ -384,16 +695,35 @@
             padding: 13px 14px;
             margin-bottom: 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             border-left-width: 4px;
             border-left-color: var(--s-none);
             min-height: 88px;
+            overflow: hidden;
+        }
+
+        .slot-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 85, 150, 0.03), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slot-card:hover::before {
+            opacity: 1;
         }
 
         .slot-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(0, 85, 150, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
             border-color: #bbd8ff;
             border-left-color: var(--primary);
         }
@@ -423,16 +753,24 @@
             border-style: dashed;
             border-left-style: dashed;
             background: #fafbfc;
-            opacity: 0.7;
+            opacity: 0.6;
             min-height: 52px;
             display: flex;
             align-items: center;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .slot-card.empty:hover {
             opacity: 1;
             border-color: var(--primary);
             border-left-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 85, 150, 0.1);
+        }
+
+        .slot-card.empty:hover .slot-empty-label i {
+            transform: rotate(90deg) scale(1.2);
         }
 
         .slot-card-header {
@@ -461,6 +799,11 @@
             border-radius: 50%;
             background: var(--s-none);
             flex-shrink: 0;
+            transition: all 0.4s ease;
+        }
+
+        .slot-card:hover .status-dot {
+            animation: statusPulse 1.5s ease-in-out infinite;
         }
 
         .status-green .status-dot {
@@ -496,6 +839,15 @@
             align-items: center;
             gap: 6px;
             margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .slot-empty-label i {
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slot-card.empty:hover .slot-empty-label {
+            color: var(--primary);
         }
 
         .slot-vols {
@@ -680,8 +1032,9 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 500;
             display: flex;
             align-items: center;
@@ -689,7 +1042,7 @@
             padding: 20px;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.25s;
+            transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .modal-overlay.open {
@@ -701,18 +1054,50 @@
             background: var(--card);
             width: 100%;
             max-width: 620px;
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
-            transform: scale(0.95) translateY(20px);
-            transition: all 0.28s cubic-bezier(0.34, 1.4, 0.64, 1);
+            border-radius: 20px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18), 0 8px 24px rgba(0, 0, 0, 0.1);
+            transform: scale(0.9) translateY(30px);
+            transition: all 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
             max-height: 92vh;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            border: 1px solid rgba(226, 232, 240, 0.5);
         }
 
         .modal-overlay.open .modal-box {
             transform: scale(1) translateY(0);
+        }
+
+        .modal-overlay.open .form-section {
+            animation: modalFormAppear 0.4s ease-out forwards;
+            opacity: 0;
+        }
+
+        .modal-overlay.open .form-section:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .modal-overlay.open .form-section:nth-child(2) {
+            animation-delay: 0.18s;
+        }
+
+        .modal-overlay.open .form-section:nth-child(3) {
+            animation-delay: 0.26s;
+        }
+
+        .modal-overlay.open .form-section:nth-child(4) {
+            animation-delay: 0.34s;
+        }
+
+        .modal-overlay.open .form-section:nth-child(5) {
+            animation-delay: 0.42s;
+        }
+
+        .modal-overlay.open .caller-section {
+            animation: modalFormAppear 0.4s ease-out forwards;
+            animation-delay: 0.38s;
+            opacity: 0;
         }
 
         .modal-header {
@@ -930,8 +1315,12 @@
             border-radius: 10px;
             border: 2px solid var(--border);
             cursor: pointer;
-            transition: all 0.18s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: center;
+        }
+
+        .status-opt:active {
+            transform: scale(0.92);
         }
 
         .status-opt:hover {
@@ -1053,21 +1442,37 @@
         .btn-save {
             padding: 10px 24px;
             border-radius: 8px;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: #fff;
             border: none;
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.18s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             gap: 7px;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-save:hover {
-            background: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-dark), #002d5c);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 85, 150, 0.3);
+        }
+
+        .btn-save:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .btn-save .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.35);
+            animation: rippleEffect 0.6s ease-out forwards;
+            pointer-events: none;
         }
 
         /* ── RESPONSIVE ── */
@@ -1113,10 +1518,505 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        /* ── FLOATING PARTICLES ── */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            bottom: -20px;
+            opacity: 0;
+            animation: floatParticle linear infinite;
+            font-size: 12px;
+            filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.3));
+        }
+
+        /* ── WEEK TRANSITION ── */
+        .calendar-grid.slide-out-left {
+            animation: fadeSlideOutLeft 0.25s ease-in forwards;
+        }
+
+        .calendar-grid.slide-in-right {
+            animation: fadeSlideInRight 0.35s ease-out forwards;
+        }
+
+        .calendar-grid.slide-out-right {
+            animation: fadeSlideOutRight 0.25s ease-in forwards;
+        }
+
+        .calendar-grid.slide-in-left {
+            animation: fadeSlideInLeft 0.35s ease-out forwards;
+        }
+
+        /* ── VOLUNTEER CHIP ENHANCEMENTS ── */
+        .slot-vol-chip {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slot-vol-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(21, 128, 61, 0.15);
+        }
+
+        /* ── TOAST NOTIFICATION ── */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: linear-gradient(135deg, #14532d, #166534);
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast i {
+            font-size: 18px;
+        }
+
+        /* ── GUIDE PANEL ── */
+        .guide-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 9px;
+            border: 1.5px solid var(--border);
+            background: var(--card);
+            color: var(--primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .guide-btn:hover {
+            background: var(--primary-light);
+            border-color: #bbd8ff;
+            transform: translateY(-1px);
+        }
+
+        .guide-btn i {
+            font-size: 15px;
+        }
+
+        .guide-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .guide-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .guide-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 480px;
+            max-width: 92vw;
+            height: 100vh;
+            background: var(--card);
+            z-index: 310;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .guide-panel.open {
+            transform: translateX(0);
+        }
+
+        .guide-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .guide-header h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--muted);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.18s;
+        }
+
+        .guide-close:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        .guide-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+        }
+
+        .guide-note {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 12.5px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .guide-note strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .guide-section {
+            margin-bottom: 16px;
+        }
+
+        .guide-section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 6px;
+            border-bottom: 1.5px solid var(--border);
+        }
+
+        .guide-text {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.7;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+
+        .guide-text em {
+            color: var(--primary);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .guide-footer {
+            padding: 14px 24px;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+            font-size: 11px;
+            color: var(--muted);
+            text-align: center;
+            background: var(--bg);
+        }
+
+        /* ── CHECKLIST PANEL ── */
+        .checklist-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 9px;
+            border: 1.5px solid #fed7aa;
+            background: #fff7ed;
+            color: #c2410c;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checklist-btn:hover {
+            background: #ffedd5;
+            border-color: #fb923c;
+            transform: translateY(-1px);
+        }
+
+        .checklist-btn i {
+            font-size: 15px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .cl-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .cl-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .cl-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 500px;
+            max-width: 94vw;
+            height: 100vh;
+            background: var(--card);
+            z-index: 310;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .cl-panel.open {
+            transform: translateX(0);
+        }
+
+        .cl-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #ea580c, #c2410c);
+        }
+
+        .cl-header h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cl-header .guide-close {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .cl-header .guide-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #fff;
+        }
+
+        .cl-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+        }
+
+        .cl-group {
+            margin-bottom: 22px;
+        }
+
+        .cl-group-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cl-group-title.general {
+            color: var(--primary);
+            border-color: var(--primary-light);
+        }
+
+        .cl-group-title.online {
+            color: #7c3aed;
+            border-color: #ede9fe;
+        }
+
+        .cl-group-title.physical {
+            color: #059669;
+            border-color: #d1fae5;
+        }
+
+        .cl-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 9px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.18s;
+            align-items: flex-start;
+        }
+
+        .cl-item:hover {
+            border-color: #bbd8ff;
+            background: #f8faff;
+        }
+
+        .cl-item.checked {
+            background: #f0fdf4;
+            border-color: #a7f3d0;
+        }
+
+        .cl-item.checked .cl-check {
+            background: #10b981;
+            border-color: #10b981;
+            color: #fff;
+        }
+
+        .cl-item.checked .cl-q {
+            color: #6b7280;
+            text-decoration: line-through;
+        }
+
+        .cl-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid #cbd5e1;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 11px;
+            color: transparent;
+            transition: all 0.18s;
+            margin-top: 1px;
+        }
+
+        .cl-q {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.55;
+            font-weight: 500;
+            transition: all 0.18s;
+        }
+
+        .cl-q .cl-hint {
+            display: block;
+            font-size: 11.5px;
+            color: var(--muted);
+            font-weight: 400;
+            margin-top: 3px;
+            font-style: italic;
+            text-decoration: none !important;
+        }
+
+        .cl-footer {
+            padding: 14px 24px;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+            font-size: 11px;
+            color: var(--muted);
+            text-align: center;
+            background: var(--bg);
+        }
+
+        @media (max-width: 768px) {
+            .topbar-actions {
+                gap: 4px;
+            }
+
+            .guide-btn,
+            .checklist-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .guide-btn i,
+            .checklist-btn i {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- ── FLOATING PARTICLES ── -->
+    <div class="particles-container" id="particlesContainer"></div>
+
+    <!-- ── TOAST NOTIFICATION ── -->
+    <div class="toast" id="saveToast">
+        <i class="ph-bold ph-check-circle"></i>
+        Başarıyla kaydedildi!
+    </div>
 
     <!-- ── SIDEBAR ── -->
     <aside class="sidebar" id="sidebar">
@@ -1156,6 +2056,9 @@
             <a href="mentor.html" class="nav-item amber">
                 <span class="nav-icon">🧑‍🏫</span> Mentör Paneli
             </a>
+            <a href="meeting.html" class="nav-item">
+                <span class="nav-icon">📹</span> Mentör Görüşmeleri
+            </a>
             <a href="games.html" class="nav-item purple-nav">
                 <span class="nav-icon">🎮</span> Dijital Oyunlar Paneli
             </a>
@@ -1174,6 +2077,14 @@
             <div class="topbar-left">
                 <button class="hamburger" onclick="toggleSidebar()">☰</button>
                 <div class="topbar-title">📅 Haftalık Takvim</div>
+            </div>
+            <div class="topbar-actions">
+                <button class="checklist-btn" onclick="toggleChecklist()">
+                    <i class="ph-bold ph-list-checks"></i> Sorulacak Sorular
+                </button>
+                <button class="guide-btn" onclick="toggleGuide()">
+                    <i class="ph-bold ph-book-open-text"></i> Örnek Aile Araması
+                </button>
             </div>
         </div>
 
@@ -1342,6 +2253,167 @@
                 <button class="btn-cancel" onclick="closeModal()">Vazgeç</button>
                 <button class="btn-save" onclick="saveSlot()"><i class="ph-bold ph-floppy-disk"></i> Kaydet</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ── GUIDE PANEL ── -->
+    <div class="guide-overlay" id="guideOverlay" onclick="toggleGuide()"></div>
+    <div class="guide-panel" id="guidePanel">
+        <div class="guide-header">
+            <h3>📋 Örnek Aile Araması Kalıbı</h3>
+            <button class="guide-close" onclick="toggleGuide()"><i class="ph-bold ph-x"></i></button>
+        </div>
+        <div class="guide-body">
+            <div class="guide-note">
+                <strong>💡 Bu nedir?</strong>
+                Aile aramasında sorduğumuz sorulara verilen cevapları bu kalıba uygun şekilde yazabilirsiniz. Aşağıda
+                örnek bir çocuk için doldurulmuş hali paylaşılmıştır.
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-section-title">🏥 Tedavi Süreci &amp; Zamanlama</div>
+                <div class="guide-text">
+                    Çocuk şu anda <em>aktif tedavi sürecindedir</em> ve belirli günlerde kemoterapi almaktadır. Tedavi
+                    günleri hem fiziksel hem de duygusal olarak zor geçebilmektedir çünkü uzun süre hastanede kalmakta
+                    ve sonrasında oldukça yorulmaktadır. Bu nedenle <em>dilek görüşmesinin tedavi günüyle aynı zamana
+                        denk gelmemesi</em> daha uygun olacaktır.<br><br>
+                    Kemoterapiden sonraki ilk 1–2 gün genellikle halsizlik ve içe kapanma görülebilmektedir; ancak
+                    yaklaşık <em>3–4 gün sonra enerjisi ve morali belirgin şekilde toparlanmaktadır</em>. Bu sebeple
+                    görüşmenin tedaviden birkaç gün sonraya planlanması çocuk açısından daha rahat ve keyifli bir
+                    görüşme ortamı sağlayacaktır.
+                </div>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-section-title">💜 Ruhsal Durum &amp; Fiziksel Etkiler</div>
+                <div class="guide-text">
+                    Tedavi süreci zaman zaman ruhsal durumunu da etkileyebilmektedir. Bazı günler oldukça <em>neşeli,
+                        konuşkan ve enerjik</em> olurken bazı günler daha sessiz ve dinlenmeye ihtiyaç duyan bir ruh
+                    halinde olabilmektedir.<br><br>
+                    Kemoterapi sonrasında zaman zaman halsizlik, mide bulantısı veya ağız içinde küçük yaralar
+                    oluşabilmektedir. Bu durum özellikle tedaviden hemen sonraki günlerde konuşmasını veya uzun süre
+                    sohbet etmesini zorlaştırabilmektedir, ancak genellikle <em>birkaç gün içinde düzelmektedir</em>.
+                </div>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-section-title">🧒 Kişilik Özellikleri</div>
+                <div class="guide-text">
+                    Kişilik özellikleri açısından <em>meraklı ve hayal gücü güçlü</em> bir çocuktur. Tanıdığı kişilerin
+                    yanında oldukça konuşkan ve kendini ifade etmeyi seven bir yapısı vardır.<br><br>
+                    Yeni insanlarla tanıştığında ise ilk başta biraz çekingen davranabilmektedir. <em>Ortama alıştıktan
+                        sonra hızlıca açılmakta</em> ve sohbet etmeye başlamaktadır. Özellikle ilgisini çeken konular
+                    olduğunda heyecanla anlatmayı sevdiği gözlemlenmektedir.
+                </div>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-section-title">🤝 Yabancılarla İletişim</div>
+                <div class="guide-text">
+                    Yabancı kişilerle iletişim kurarken başlangıçta utangaç davranabilse de <em>sıcak ve samimi bir
+                        yaklaşım gördüğünde kısa sürede rahatlamaktadır</em>.<br><br>
+                    Sadece soru-cevap şeklindeki iletişimden ziyade <em>oyun oynarken ya da birlikte bir etkinlik
+                        yaparken</em> kendini daha rahat ifade edebilmektedir. Özellikle oyun oynarken veya resim
+                    çizerken hem daha rahat olmakta hem de iletişime daha açık hale gelmektedir.
+                </div>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-section-title">⭐ İlgi Alanları &amp; Hobiler</div>
+                <div class="guide-text">
+                    İlgi alanları arasında <em>legolarla bir şeyler tasarlamak</em> önemli bir yer tutmaktadır;
+                    özellikle araçlar ve robotlar yapmayı sevmektedir. Bilgisayar oyunlarına ilgi duymakta ve zaman
+                    zaman YouTube’da oyun videoları veya eğlenceli içerikler izlemektedir.<br><br>
+                    <em>Süper kahraman filmlerini ve animasyonları</em> da oldukça sevmektedir. Ayrıca zaman zaman kendi
+                    hayal ettiği karakterleri çizip onlarla ilgili hikâyeler anlatmaktadır.<br><br>
+                    Uzun süre hastanede kaldığı için en çok özlediği şeylerden biri <em>dışarıda koşup oynamak ve
+                        arkadaşlarıyla vakit geçirmektir</em>. Bu nedenle hareket içeren veya yaratıcı etkinlikler onu
+                    oldukça mutlu etmektedir.
+                </div>
+            </div>
+        </div>
+        <div class="guide-footer">
+            ✨ Bu kalıp, dilek alım görüşmeleri için hazırlanmış örnek bir şablondur.
+        </div>
+    </div>
+
+    <!-- ── CHECKLIST PANEL ── -->
+    <div class="cl-overlay" id="clOverlay" onclick="toggleChecklist()"></div>
+    <div class="guide-panel" id="clPanel">
+        <div class="guide-header" style="background: linear-gradient(135deg, #ea580c, #c2410c);">
+            <h3 style="color:#fff;">📞 Arama Sırasında Sorulacak Sorular</h3>
+            <button class="guide-close" onclick="toggleChecklist()"
+                style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.2);color:#fff;"><i
+                    class="ph-bold ph-x"></i></button>
+        </div>
+        <div class="guide-body">
+            <div class="guide-note" style="background:linear-gradient(135deg, #ea580c, #9a3412);">
+                <strong>📋 Bu nedir?</strong>
+                Aile araması sırasında aşağıdaki soruları sırasıyla sorarak çocuğun durumunu ve görüşme detaylarını
+                öğrenin.
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-section-title">📋 Genel Sorular</div>
+                <div class="guide-text">
+                    <em>1.</em> Belirtilen gün ve saatte görüşme için uygunlar mı?<br><br>
+                    <em>2.</em> Dilek görüşmesinden bir gün önce ya da aynı gün içinde tedavi (kemoterapi, radyoterapi
+                    vb.) alacak mı? <em>(Çocukluk çağı kanserlerinden birine sahipse sorulmalıdır.)</em><br><br>
+                    <em>3.</em> Eğer tedavi alacaksa, bu tedavi çocuğun ruhsal durumunu etkiliyor mu?<br><br>
+                    <em>4.</em> Etkiliyorsa, görüşme için daha uygun olabilecekleri bir gün önerisi alalım.<br><br>
+                    <em>5.</em> Tedaviden dolayı etkilenen başka bir durumu var mı? <em>(Ağız yaraları vs. varsa
+                        konuşamayabilir.)</em><br><br>
+                    <em>6.</em> Çocuğun kişiliği nasıl? <em>(Konuşkan, utangaç, sessiz vb.)</em><br><br>
+                    <em>7.</em> Yabancı insanlarla konuşma konusunda nasıl? Daha çok konuşmayı mı yoksa oyun oynamayı mı
+                    seviyor? <em>(Konuşarak kendini ifade edemiyorsa oyun ve resim odaklı çalışan gönüllüleri dileğe
+                        dahil ediyoruz.)</em><br><br>
+                    <em>8.</em> İlgi alanları nelerdir, yapmaktan en çok hoşlandığı şeyler neler? <em>(Oyuncaklar,
+                        oyunlar, filmler, dans, spor vb. — önceden hazırlık için gerekli.)</em>
+                </div>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-section-title">💡 Hatırlatmalar</div>
+                <div class="guide-text">
+                    <em>•</em> Bu görüşmenin bir anket ya da soru-cevap olmadığını; çocuklarla <em>oyun oynayarak ve
+                        sohbet ederek</em> hayallerini keşfe çıktığımızı aileyle paylaşalım.<br><br>
+                    <em>•</em> Dilek alınırken odada <em>sadece bir ebeveyn ve dilek çocuğu</em> olmalı, diğer kardeşler
+                    ve yetişkinler odanın dışında olmalı.
+                </div>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-section-title">📱 Online Dilek Alımları İçin Ekstra</div>
+                <div class="guide-text">
+                    <em>1.</em> WhatsApp görüşmesi için yeterli internet bağlantıları var mı?<br><br>
+                    <em>2.</em> Dilek alımı sırasında, oda içinde (görüş alanı dışında kalsa bile) başka kimse
+                    bulunmamalıdır. Görüşme yalnızca dilek çocuğu ve ebeveyni ile yapılmalıdır.
+                </div>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-section-title">🏠 Fiziksel Dilek Alımları İçin Ekstra</div>
+                <div class="guide-text">
+                    <em>1.</em> Eve ya da hastaneye dilek alımı için gelinmesi uygun mu? Bu hafta veya önümüzdeki hafta
+                    evde mi, hastanede mi olacaklar?<br><br>
+                    <em>2.</em> Hastanelerinde bir değişiklik oldu mu? Hala aynı hastanede mi kalıyorlar?<br><br>
+                    <em>3.</em> Eğer başka bir şehirde olduklarsa, önümüzdeki 1–2 hafta içinde tedavi veya kontrol için
+                    tekrar hastaneye gelecekler mi?<br><br>
+                    <em>4.</em> Hastanede yatıştalarsa, odaya giriş izni bulunuyor mu? Doktor ya da sorumlu hemşire bu
+                    görüşmeye izin veriyor mu?<br><br>
+                    <em>5.</em> Fiziksel olarak dilek alımı yapılacaksa, eve en fazla kaç kişinin gelmesi uygun olur?
+                    <em>(Hastane ziyaretlerinde en fazla 2 kişi kabul ediliyor.)</em><br><br>
+                    <em>6.</em> Dilek alımı için hangi gün ve saatlerde uygunlar?<br><br>
+                    <em>7.</em> Dilek alım gününde evde başka kardeş ya da çocuk olacak mı? Varsa yaşları nelerdir?
+                    <em>(Dilek alımı hastanede yapılacaksa bu soruya gerek yok.)</em><br><br>
+                    <em>8.</em> Görüşme sırasında sağlık durumuna bağlı olarak dikkat edilmesi gereken özel bir durum
+                    var mı? Maske kullanımı gerekli mi?<br><br>
+                    <em>9.</em> Ev adresi güncel ve doğru mu?
+                </div>
+            </div>
+        </div>
+        <div class="guide-footer">
+            📞 Bu soruları aile araması sırasında sırasıyla sorunuz.
         </div>
     </div>
 
@@ -1515,15 +2587,53 @@
             }
         }
 
-        // ── Week navigation ──
+        // ── Week navigation (animated) ──
+        let isTransitioning = false;
+
         function changeWeek(dir) {
-            weekOffset += dir;
-            renderCalendar();
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            const grid = document.getElementById('calendarGrid');
+            const outClass = dir > 0 ? 'slide-out-left' : 'slide-out-right';
+            const inClass = dir > 0 ? 'slide-in-right' : 'slide-in-left';
+
+            grid.classList.add(outClass);
+
+            setTimeout(() => {
+                grid.classList.remove(outClass);
+                weekOffset += dir;
+                renderCalendar();
+                grid.classList.add(inClass);
+
+                setTimeout(() => {
+                    grid.classList.remove(inClass);
+                    isTransitioning = false;
+                }, 350);
+            }, 250);
         }
 
         function goToday() {
-            weekOffset = 0;
-            renderCalendar();
+            if (isTransitioning || weekOffset === 0) return;
+            isTransitioning = true;
+
+            const grid = document.getElementById('calendarGrid');
+            const dir = weekOffset > 0 ? 'slide-out-right' : 'slide-out-left';
+            const inDir = weekOffset > 0 ? 'slide-in-left' : 'slide-in-right';
+
+            grid.classList.add(dir);
+
+            setTimeout(() => {
+                grid.classList.remove(dir);
+                weekOffset = 0;
+                renderCalendar();
+                grid.classList.add(inDir);
+
+                setTimeout(() => {
+                    grid.classList.remove(inDir);
+                    isTransitioning = false;
+                }, 350);
+            }, 250);
         }
 
         // ── Modal ──
@@ -1639,6 +2749,17 @@
 
         function saveSlot() {
             if (!activeKey) return;
+
+            // Ripple effect on save button
+            const saveBtn = document.querySelector('.btn-save');
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            ripple.style.width = ripple.style.height = '20px';
+            ripple.style.left = '50%';
+            ripple.style.top = '50%';
+            saveBtn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+
             slotData[activeKey] = {
                 volunteers: [...activeVolunteers],
                 childInfo: document.getElementById('childInfo').value.trim(),
@@ -1652,9 +2773,20 @@
                 status: activeStatus,
                 wishNotes: document.getElementById('wishNotes').value.trim(),
             };
-            closeModal();
-            localStorage.setItem('slotData', JSON.stringify(slotData));
-            renderCalendar();
+
+            setTimeout(() => {
+                closeModal();
+                localStorage.setItem('slotData', JSON.stringify(slotData));
+                renderCalendar();
+                showToast();
+            }, 300);
+        }
+
+        // ── Toast ──
+        function showToast() {
+            const toast = document.getElementById('saveToast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
         function closeModal() {
@@ -1670,6 +2802,16 @@
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('show');
+        }
+
+        function toggleGuide() {
+            document.getElementById('guideOverlay').classList.toggle('open');
+            document.getElementById('guidePanel').classList.toggle('open');
+        }
+
+        function toggleChecklist() {
+            document.getElementById('clOverlay').classList.toggle('open');
+            document.getElementById('clPanel').classList.toggle('open');
         }
 
         window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
@@ -1791,6 +2933,26 @@
             localStorage.setItem('slotData', JSON.stringify(slotData));
         }
         renderCalendar();
+
+        // ── Floating Star Particles ──
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            const stars = ['⭐', '✨', '🌟', '💫', '⚡'];
+            const count = 12;
+
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.textContent = stars[Math.floor(Math.random() * stars.length)];
+                p.style.left = Math.random() * 100 + '%';
+                p.style.fontSize = (8 + Math.random() * 10) + 'px';
+                p.style.animationDuration = (15 + Math.random() * 25) + 's';
+                p.style.animationDelay = (Math.random() * 20) + 's';
+                p.style.opacity = 0.15 + Math.random() * 0.25;
+                container.appendChild(p);
+            }
+        }
+        createParticles();
     </script>
 </body>
 

@@ -848,6 +848,61 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ── VIDEO MODAL ── */
+    .video-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 9000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .video-modal-overlay.open {
+      display: flex;
+    }
+
+    .video-modal {
+      width: 90vw;
+      max-width: 900px;
+      aspect-ratio: 16/9;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      position: relative;
+      cursor: default;
+    }
+
+    .video-modal iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-modal-close {
+      position: absolute;
+      top: -44px;
+      right: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s;
+    }
+
+    .video-modal-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
   </style>
 </head>
 
@@ -862,7 +917,7 @@
     </a>
     <nav class="sidebar-nav">
       <div class="nav-label">Dilek Alımları</div>
-      <a href="takvim.html" class="nav-item">
+      <a href="calender.html" class="nav-item">
         <span class="nav-icon">📅</span> Haftalık &amp; Aylık Takvimler
       </a>
       <a href="https://form.jotform.com/242213350145039" target="_blank" class="nav-item">
@@ -891,11 +946,14 @@
       <a href="mentor.html" class="nav-item amber">
         <span class="nav-icon">🧑‍🏫</span> Mentör Paneli
       </a>
+      <a href="meeting.html" class="nav-item">
+        <span class="nav-icon">📹</span> Mentör Görüşmeleri
+      </a>
       <a href="games.html" class="nav-item purple-nav">
         <span class="nav-icon">🎮</span> Dijital Oyunlar Paneli
       </a>
-      <a href="eglence.html" class="nav-item fun-active">
-        <span class="nav-icon">🎉</span> Eğlence Köşesi
+      <a href="fun.html" class="nav-item fun-active">
+        <span class="nav-icon">🎉</span> Dijital Eğlence Köşesi
       </a>
     </nav>
     <div class="sidebar-footer">© 2025 Make-A-Wish Türkiye</div>
@@ -980,6 +1038,14 @@
         <p>Yukarıdan bir link ekleyerek başla. YouTube, TikTok, Instagram — hepsi olur!</p>
       </div>
       <div class="media-grid" id="mediaGrid"></div>
+    </div>
+  </div>
+
+  <!-- Video Modal -->
+  <div class="video-modal-overlay" id="videoModal" onclick="if(event.target===this)closeVideo()">
+    <div class="video-modal">
+      <button class="video-modal-close" onclick="closeVideo()"><i class="ph-bold ph-x"></i></button>
+      <iframe id="videoIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -1121,7 +1187,7 @@
             : `<div class="media-thumb-placeholder"><i class="ph-fill ${icon} ph-icon"></i></div>`
           }
               <div class="platform-badge ${item.platform}">${platformLabel(item.platform)}</div>
-              <div class="play-overlay"><i class="ph-bold ph-arrow-square-out"></i></div>
+              <div class="play-overlay"><i class="ph-bold ${item.platform === 'youtube' ? 'ph-play' : 'ph-arrow-square-out'}"></i></div>
             </div>
             <div class="media-body">
               <div class="media-title">${displayTitle}</div>
@@ -1146,7 +1212,24 @@
     }
 
     function openLink(encoded) {
-      window.open(decodeURIComponent(encoded), '_blank');
+      const url = decodeURIComponent(encoded);
+      const ytId = getYtId(url);
+      if (ytId) {
+        const modal = document.getElementById('videoModal');
+        const iframe = document.getElementById('videoIframe');
+        iframe.src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0';
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+
+    function closeVideo() {
+      const modal = document.getElementById('videoModal');
+      document.getElementById('videoIframe').src = '';
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
     }
 
     // ── Add ──
@@ -1233,6 +1316,11 @@
       document.getElementById(id).addEventListener('keydown', e => {
         if (e.key === 'Enter') addMedia();
       });
+    });
+
+    // Escape to close video
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeVideo();
     });
 
     // ── Init ──
