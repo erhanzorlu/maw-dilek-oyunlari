@@ -65,8 +65,37 @@
             left: 0;
             bottom: 0;
             z-index: 100;
-            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
+        }
+
+        .sidebar-collapsed .sidebar {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 18px;
+            right: 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #94a3b8;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .sidebar-close-btn:hover {
+            background: rgba(244,63,94,0.15);
+            color: #f43f5e;
+            border-color: rgba(244,63,94,0.2);
         }
 
         .sidebar-logo {
@@ -182,6 +211,11 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-collapsed .main {
+            margin-left: 0;
         }
 
         /* ── TOPBAR ── */
@@ -449,15 +483,27 @@
             background: #bbf7d0;
         }
 
-        /* ── HAMBURGER (mobile) ── */
+        /* ── HAMBURGER ── */
         .hamburger {
-            display: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: none;
-            border: none;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             cursor: pointer;
-            padding: 6px;
+            padding: 6px 10px;
             color: var(--text-dark);
-            font-size: 22px;
+            font-size: 20px;
+            transition: all 0.2s;
+            width: 38px;
+            height: 38px;
+        }
+
+        .hamburger:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         /* ── OVERLAY ── */
@@ -485,10 +531,6 @@
 
             .main {
                 margin-left: 0;
-            }
-
-            .hamburger {
-                display: block;
             }
 
             .topbar {
@@ -687,6 +729,7 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" onclick="toggleSidebar()" title="Menüyü Kapat">✕</button>
         <a href="index.html" class="sidebar-logo">
             <span class="logo-star">⭐</span>
             <h2>Make-A-Wish<br>Türkiye</h2>
@@ -694,6 +737,9 @@
         </a>
 
         <nav class="sidebar-nav">
+            <a href="admin.html" class="nav-item" style="display:none;">
+                <span class="nav-icon">📊</span> Admin Dashboard
+            </a>
             <div class="nav-label">Dilek Alımları</div>
             <a href="https://dernegi1-my.sharepoint.com/personal/mail_makeawish_org_tr/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fmail%5Fmakeawish%5Forg%5Ftr%2FDocuments%2FG%C3%B6n%C3%BCll%C3%BCl%C3%BCk%2C%20Etkinlik%20ve%20E%C4%9Fitim%20%C3%87al%C4%B1%C5%9Fmalar%C4%B1%2FDilek%20Al%C4%B1m%20Haftal%C4%B1k%20Takvim%2F2026&ga=1"
                 target="_blank" class="nav-item">
@@ -937,11 +983,22 @@
 
     <script>
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('show');
+            } else {
+                document.body.classList.toggle('sidebar-collapsed');
+            }
         }
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('overlay').classList.remove('show');
+            }
+        });
     </script>
 
 </body>

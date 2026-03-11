@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make-A-Wish | Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #005596;
+            --primary-dark: #003d73;
+            --primary-light: #e8f3ff;
+            --bg: #f0f4f8;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --muted: #64748b;
+            --sidebar-bg: #0a1628;
+            --sidebar-hover: #1a2d4a;
+            --sidebar-text: #94a3b8;
+            --sidebar-width: 270px;
+            --green: #10b981;
+            --amber: #f59e0b;
+            --rose: #f43f5e;
+            --violet: #8b5cf6;
+            --sky: #0ea5e9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 200;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .sidebar-collapsed .sidebar {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 18px;
+            right: 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #94a3b8;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .sidebar-close-btn:hover {
+            background: rgba(244,63,94,0.15);
+            color: #f43f5e;
+            border-color: rgba(244,63,94,0.2);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 24px 22px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            text-decoration: none;
+            transition: background 0.18s;
+        }
+
+        .sidebar-logo:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .sidebar-logo .logo-star {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-logo h2 {
+            font-family: 'Plus Jakarta Sans';
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.35;
+        }
+
+        .sidebar-logo p {
+            font-size: 10.5px;
+            color: #475569;
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 14px 12px;
+        }
+
+        .nav-label {
+            font-size: 9.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #334155;
+            padding: 0 10px;
+            margin: 10px 0 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 9px;
+            color: var(--sidebar-text);
+            font-size: 12.5px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.18s;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--sidebar-hover);
+            color: #e2e8f0;
+        }
+
+        .nav-item.admin-active {
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .nav-item.amber {
+            color: #fbbf24;
+        }
+
+        .nav-item.amber:hover {
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .nav-item.purple-nav {
+            color: #c084fc;
+        }
+
+        .nav-item.purple-nav:hover {
+            background: rgba(192, 132, 252, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 14px 22px;
+            font-size: 10.5px;
+            color: #1e3a5f;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 190;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .hamburger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 6px 10px;
+            color: var(--text);
+            font-size: 20px;
+            transition: all 0.2s;
+            width: 38px;
+            height: 38px;
+        }
+
+        .hamburger:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-collapsed .main {
+            margin-left: 0;
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            padding: 16px 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .topbar-title {
+            font-family: 'Plus Jakarta Sans';
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .topbar-badge {
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(244, 63, 94, 0);
+            }
+        }
+
+        .content {
+            padding: 28px 36px;
+        }
+
+        /* ── HERO ── */
+        .dash-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #334155 100%);
+            border-radius: 24px;
+            padding: 36px 40px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dash-hero::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -40px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(244, 63, 94, 0.2) 0%, transparent 70%);
+            animation: heroGlow1 6s ease-in-out infinite;
+        }
+
+        .dash-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: 15%;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+            animation: heroGlow2 8s ease-in-out infinite;
+        }
+
+        @keyframes heroGlow1 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(-20px, 20px) scale(1.1);
+            }
+        }
+
+        @keyframes heroGlow2 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(30px, -15px) scale(1.15);
+            }
+        }
+
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .hero-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100%) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .dash-hero-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dash-hero h1 {
+            font-family: 'Plus Jakarta Sans';
+            font-size: 26px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .dash-hero p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        .hero-live {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 8px 16px;
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: livePulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+            }
+        }
+
+        .hero-live span {
+            font-size: 12px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* ── REVEAL ANIMATION ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── KPI CARDS ── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .kpi-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 1px;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: xor;
+            opacity: 0;
+            transition: opacity 0.35s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .kpi-card:hover::before {
+            opacity: 1;
+        }
+
+        .kpi-card.blue::before {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        }
+
+        .kpi-card.green::before {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .kpi-card.amber::before {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .kpi-card.rose::before {
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+        }
+
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            opacity: 0.06;
+        }
+
+        .kpi-card.blue::after {
+            background: var(--sky);
+        }
+
+        .kpi-card.green::after {
+            background: var(--green);
+        }
+
+        .kpi-card.amber::after {
+            background: var(--amber);
+        }
+
+        .kpi-card.rose::after {
+            background: var(--rose);
+        }
+
+        .kpi-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 14px;
+            transition: transform 0.3s;
+        }
+
+        .kpi-card:hover .kpi-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .kpi-icon.blue {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            color: var(--primary);
+        }
+
+        .kpi-icon.green {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: var(--green);
+        }
+
+        .kpi-icon.amber {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: var(--amber);
+        }
+
+        .kpi-icon.rose {
+            background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+            color: var(--rose);
+        }
+
+        .kpi-value {
+            font-family: 'Plus Jakarta Sans';
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text), #334155);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2px;
+        }
+
+        .kpi-label {
+            font-size: 12.5px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .kpi-change {
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .kpi-change.up {
+            color: var(--green);
+            background: #ecfdf5;
+        }
+
+        /* ── GRIDS ── */
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .row-2-1 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        /* ── PANEL ── */
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px 26px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .panel:hover {
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .panel-title {
+            font-family: 'Plus Jakarta Sans';
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .panel-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary-light), #dbeafe);
+            color: var(--primary);
+        }
+
+        /* ── TABLE ── */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--muted);
+            padding: 10px 12px;
+            border-bottom: 2px solid var(--border);
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr {
+            transition: all 0.2s;
+        }
+
+        .data-table tr:hover td {
+            background: linear-gradient(90deg, #f8fafc, #f0f9ff);
+        }
+
+        .rank-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #d97706, #92400e);
+        }
+
+        .rank-other {
+            background: #e2e8f0;
+            color: var(--muted);
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+
+        tr:hover .user-avatar {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+
+        .tag-online {
+            background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+            color: #1d4ed8;
+        }
+
+        .tag-fiziksel {
+            background: linear-gradient(135deg, #fce7f3, #ffe4e6);
+            color: #be185d;
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-item {
+            margin-bottom: 16px;
+        }
+
+        .progress-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .progress-name {
+            font-size: 12.5px;
+            font-weight: 700;
+        }
+
+        .progress-value {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .progress-bar {
+            height: 10px;
+            border-radius: 5px;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            width: 0;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* ── CITY ── */
+        .city-section-title {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .city-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.2s;
+        }
+
+        .city-item:last-child {
+            border-bottom: none;
+        }
+
+        .city-item:hover {
+            padding-left: 6px;
+        }
+
+        .city-rank {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--muted);
+            width: 20px;
+            text-align: center;
+        }
+
+        .city-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .city-count {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .city-bar-bg {
+            width: 80px;
+            height: 7px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+
+        .city-bar {
+            height: 100%;
+            border-radius: 4px;
+            width: 0;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ── MENTOR STAT ── */
+        .mentor-stat-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.2s;
+        }
+
+        .mentor-stat-card:last-child {
+            border-bottom: none;
+        }
+
+        .mentor-stat-card:hover {
+            padding-left: 6px;
+        }
+
+        .mentor-stat-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .mentor-stat-card:hover .mentor-stat-avatar {
+            transform: scale(1.08);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .mentor-stat-info {
+            flex: 1;
+        }
+
+        .mentor-stat-name {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .mentor-stat-degree {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .mentor-stat-nums {
+            display: flex;
+            gap: 16px;
+        }
+
+        .mentor-stat-num {
+            text-align: center;
+            padding: 6px 12px;
+            border-radius: 10px;
+            background: #f8fafc;
+            transition: background 0.2s;
+        }
+
+        .mentor-stat-card:hover .mentor-stat-num {
+            background: var(--primary-light);
+        }
+
+        .mentor-stat-num strong {
+            display: block;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .mentor-stat-num span {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+        }
+
+        /* ── DONUT CENTER ── */
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .donut-center strong {
+            font-size: 30px;
+            font-weight: 800;
+            display: block;
+        }
+
+        .donut-center span {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .donut-stats {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-top: 18px;
+        }
+
+        .donut-stat {
+            text-align: center;
+            padding: 10px 18px;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .donut-stat:hover {
+            background: #f8fafc;
+        }
+
+        .donut-stat strong {
+            display: block;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .donut-stat span {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* ── RESPONSIVE ── */
+
+        /* ── AI INSIGHTS ── */
+        .ai-panel {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-radius: 20px;
+            padding: 28px 30px;
+            margin-bottom: 22px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .ai-panel::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #0ea5e9);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: xor;
+            animation: borderRotate 4s linear infinite;
+            background-size: 300% 300%;
+        }
+
+        @keyframes borderRotate {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .ai-panel::after {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -30px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            animation: heroGlow1 5s ease-in-out infinite;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            animation: aiPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes aiPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+            }
+        }
+
+        .ai-title-group {
+            flex: 1;
+        }
+
+        .ai-title {
+            font-family: 'Plus Jakarta Sans';
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-title .ai-badge {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #e9d5ff;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-subtitle {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 2px;
+        }
+
+        .ai-insights {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-insight {
+            display: flex;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+
+        .ai-insight.typed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .ai-insight:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .ai-insight-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .ai-insight-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .ai-insight-text strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .ai-insight-text .ai-highlight {
+            color: #a78bfa;
+            font-weight: 700;
+        }
+
+        .ai-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 14px;
+            background: #a78bfa;
+            margin-left: 2px;
+            animation: blink 0.8s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .ai-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-footer span {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 600;
+        }
+
+        @media (max-width: 1100px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .row-2,
+            .row-2-1 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .topbar {
+                padding: 14px 20px;
+            }
+
+            .content {
+                padding: 20px 16px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .dash-hero {
+                padding: 24px 20px;
+            }
+
+            .dash-hero h1 {
+                font-size: 20px;
+            }
+
+            .dash-hero-inner {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" onclick="toggleSidebar()" title="Menüyü Kapat">✕</button>
+        <a href="index.html" class="sidebar-logo">
+            <span class="logo-star">⭐</span>
+            <h2>Make-A-Wish<br>Türkiye</h2>
+            <p>Gönüllü Paneli</p>
+        </a>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Yönetim</div>
+            <a href="admin.html" class="nav-item admin-active">
+                <span class="nav-icon">📊</span> Admin Dashboard
+            </a>
+            <div class="nav-label" style="margin-top:10px;">Dilek Alımları</div>
+            <a href="calender.html" class="nav-item"><span class="nav-icon">📅</span> Haftalık &amp; Aylık Takvimler</a>
+            <div class="nav-label" style="margin-top:10px;">Araçlar</div>
+            <a href="mentor.html" class="nav-item amber"><span class="nav-icon">🧑‍🏫</span> Mentör Paneli</a>
+            <a href="meeting.html" class="nav-item"><span class="nav-icon">📹</span> Mentör Görüşmeleri</a>
+            <a href="games.html" class="nav-item purple-nav"><span class="nav-icon">🎮</span> Dijital Oyunlar Paneli</a>
+            <a href="fun.html" class="nav-item purple-nav"><span class="nav-icon">🎉</span> Dijital Eğlence Köşesi</a>
+        </nav>
+        <div class="sidebar-footer">© 2026 Make-A-Wish Türkiye</div>
+    </aside>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="hamburger" onclick="toggleSidebar()">☰</button>
+                <div class="topbar-title">📊 Admin Dashboard</div>
+                <span class="topbar-badge">🔴 Şubat 2026</span>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- HERO -->
+            <div class="dash-hero reveal">
+                <div class="hero-particles" id="particles"></div>
+                <div class="dash-hero-inner">
+                    <div>
+                        <h1>Gönüllü İstatistikleri — Şubat 2026</h1>
+                        <p>Dilek alım süreçlerinin aylık performans raporu</p>
+                    </div>
+                    <div class="hero-live">
+                        <div class="live-dot"></div>
+                        <span>Canlı Veri</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI INSIGHTS -->
+            <div class="ai-panel reveal" data-delay="100">
+                <div class="ai-header">
+                    <div class="ai-avatar"><i class="ph-fill ph-brain"></i></div>
+                    <div class="ai-title-group">
+                        <div class="ai-title">MAW AI <span class="ai-badge">BETA</span></div>
+                        <div class="ai-subtitle">Şubat 2026 verilerine göre otomatik analiz</div>
+                    </div>
+                </div>
+                <div class="ai-insights" id="aiInsights">
+                    <div class="ai-insight" data-type-delay="400">
+                        <div class="ai-insight-icon">📈</div>
+                        <div class="ai-insight-text"><strong>Tebrikler!</strong> Şubat ayında toplam <span
+                                class="ai-highlight">47 dilek alımı</span> gerçekleştirildi — Ocak'a göre <span
+                                class="ai-highlight">%18 artış</span> kaydedildi. Ekip olarak büyüyen ivmenizi korumaya
+                            devam edin!</div>
+                    </div>
+                    <div class="ai-insight" data-type-delay="900">
+                        <div class="ai-insight-icon">⚠️</div>
+                        <div class="ai-insight-text">Aile araması tablosunda <span class="ai-highlight">16
+                                gönüllü</span> yer alıyor ancak toplam aramaların <strong>%65'ini yalnızca 5
+                                kişi</strong> gerçekleştirmiş. Yükün daha dengeli dağıtılması için düşük aktiviteli
+                            gönüllülere <strong>eşleşme desteği</strong> ve ek motivasyon sağlanabilir.</div>
+                    </div>
+                    <div class="ai-insight" data-type-delay="1400">
+                        <div class="ai-insight-icon">🗺️</div>
+                        <div class="ai-insight-text">Fiziksel dilek alımlarının <span class="ai-highlight">%39'u
+                                İstanbul</span>'da yoğunlaşıyor. Gaziantep ve Adana gibi Güneydoğu illerinde talep
+                            mevcut ancak gönüllü sayısı düşük — bu bölgelerde <strong>yeni gönüllü kazanım
+                                çalışması</strong> başlatılması önerilir.</div>
+                    </div>
+                    <div class="ai-insight" data-type-delay="1900">
+                        <div class="ai-insight-icon">🧑‍🏫</div>
+                        <div class="ai-insight-text">Şevval Müftüoğlu en aktif mentör olarak <span
+                                class="ai-highlight">6 görüşme</span> ve <span class="ai-highlight">14 katılımcı</span>
+                            ile öne çıkıyor. Mentör başına ortalama katılım <strong>2.3 kişi</strong> — toplantı
+                            linklerinin daha fazla gönüllüyle paylaşılması katılımı artırabilir.</div>
+                    </div>
+                    <div class="ai-insight" data-type-delay="2400">
+                        <div class="ai-insight-icon">🌐</div>
+                        <div class="ai-insight-text">Online dilek alımları toplam dağılımın <span
+                                class="ai-highlight">%62'sini</span> oluşturuyor. Dijital altyapınızın güçlü olması,
+                            coğrafi sınırları aşarak daha fazla çocuğa ulaşmanıza olanak sağlıyor. Bu avantajı
+                            <strong>kırsal bölgelere</strong> yönlendirmek stratejik olarak değerli olabilir.
+                        </div>
+                    </div>
+                    <div class="ai-insight" data-type-delay="2900">
+                        <div class="ai-insight-icon">⏰</div>
+                        <div class="ai-insight-text">Aile arama yoğunluğu <span class="ai-highlight">14:00-15:00</span>
+                            arasında zirve yapıyor. Sabah saatlerinde (16:00-18:00) düşük aktivite görülüyor — bu
+                            dilimlere daha fazla gönüllü yönlendirerek <strong>bekleme sürelerini azaltmak</strong>
+                            mümkün.</div>
+                    </div>
+                </div>
+                <div class="ai-footer">
+                    <i class="ph-fill ph-sparkle" style="color:rgba(139,92,246,0.4);font-size:12px;"></i>
+                    <span>MAW AI tarafından 10 Mart 2026 tarihli verilere göre üretilmiştir</span>
+                </div>
+            </div>
+
+            <!-- KPI CARDS -->
+            <div class="kpi-grid">
+                <div class="kpi-card blue reveal" data-delay="100">
+                    <div class="kpi-icon blue"><i class="ph-fill ph-shooting-star"></i></div>
+                    <div class="kpi-value" data-count="47">0</div>
+                    <div class="kpi-label">Toplam Dilek Alımı</div>
+                    <div class="kpi-change up">↑ %18 Ocak'a göre</div>
+                </div>
+                <div class="kpi-card green reveal" data-delay="200">
+                    <div class="kpi-icon green"><i class="ph-fill ph-phone-call"></i></div>
+                    <div class="kpi-value" data-count="124">0</div>
+                    <div class="kpi-label">Aile Araması</div>
+                    <div class="kpi-change up">↑ %12 Ocak'a göre</div>
+                </div>
+                <div class="kpi-card amber reveal" data-delay="300">
+                    <div class="kpi-icon amber"><i class="ph-fill ph-users-three"></i></div>
+                    <div class="kpi-value" data-count="16">0</div>
+                    <div class="kpi-label">Aktif Gönüllü</div>
+                    <div class="kpi-change up">↑ 3 yeni katılım</div>
+                </div>
+                <div class="kpi-card rose reveal" data-delay="400">
+                    <div class="kpi-icon rose"><i class="ph-fill ph-chalkboard-teacher"></i></div>
+                    <div class="kpi-value" data-count="23">0</div>
+                    <div class="kpi-label">Mentör Görüşmesi</div>
+                    <div class="kpi-change up">↑ %25 Ocak'a göre</div>
+                </div>
+            </div>
+
+            <!-- ROW 1: Leaderboard + Donut -->
+            <div class="row-2-1">
+                <div class="panel reveal" data-delay="500">
+                    <div class="panel-header">
+                        <div class="panel-title">🏆 Şubat — En Fazla Dilek Alanlar</div>
+                        <div class="panel-badge">Top 10</div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width:40px">#</th>
+                                <th>Gönüllü</th>
+                                <th>Dilek</th>
+                                <th>Arama</th>
+                                <th>Tür</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="rank-badge rank-1">1</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/elnaz.jpeg">
+                                        <div>
+                                            <div class="user-name">Elnaz Kohen</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>8</strong></td>
+                                <td>21</td>
+                                <td><span class="tag-pill tag-online">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-2">2</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/huseyin.jpeg">
+                                        <div>
+                                            <div class="user-name">Hüseyin İnan Gül</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>7</strong></td>
+                                <td>18</td>
+                                <td><span class="tag-pill tag-fiziksel">Fiziksel</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-3">3</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/fatmanur.jpeg">
+                                        <div>
+                                            <div class="user-name">Fatma Nur Kugu</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>6</strong></td>
+                                <td>16</td>
+                                <td><span class="tag-pill tag-online">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-other">4</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/asude.jpeg">
+                                        <div>
+                                            <div class="user-name">Asude Buldu</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>5</strong></td>
+                                <td>14</td>
+                                <td><span class="tag-pill tag-online">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-other">5</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/yagmur.jpeg">
+                                        <div>
+                                            <div class="user-name">Yağmur Ay</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>5</strong></td>
+                                <td>12</td>
+                                <td><span class="tag-pill tag-fiziksel">Fiziksel</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-other">6</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/baris.jpeg">
+                                        <div>
+                                            <div class="user-name">Barış Yılmaz</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>4</strong></td>
+                                <td>10</td>
+                                <td><span class="tag-pill tag-fiziksel">Fiziksel</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-other">7</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/ceyda.jpeg">
+                                        <div>
+                                            <div class="user-name">Ceyda Duran</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>4</strong></td>
+                                <td>9</td>
+                                <td><span class="tag-pill tag-online">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-other">8</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/ilker.jpeg">
+                                        <div>
+                                            <div class="user-name">İlker Korkmaz</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>3</strong></td>
+                                <td>8</td>
+                                <td><span class="tag-pill tag-online">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-other">9</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/irem.jpeg">
+                                        <div>
+                                            <div class="user-name">İrem Kurtulmuş</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>3</strong></td>
+                                <td>9</td>
+                                <td><span class="tag-pill tag-online">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-other">10</span></td>
+                                <td>
+                                    <div class="user-cell"><img class="user-avatar" src="images/sevval.jpeg">
+                                        <div>
+                                            <div class="user-name">Şevval Müftüoğlu</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><strong>2</strong></td>
+                                <td>7</td>
+                                <td><span class="tag-pill tag-fiziksel">Fiziksel</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="panel reveal" data-delay="600">
+                    <div class="panel-header">
+                        <div class="panel-title">🌐 Online vs Fiziksel</div>
+                    </div>
+                    <div style="position:relative;height:220px;display:flex;align-items:center;justify-content:center;">
+                        <canvas id="donutChart"></canvas>
+                        <div class="donut-center"><strong data-count="47">0</strong><span>Toplam</span></div>
+                    </div>
+                    <div class="donut-stats">
+                        <div class="donut-stat"><strong style="color:var(--sky);" data-count="29">0</strong><span>Online
+                                (%62)</span></div>
+                        <div class="donut-stat"><strong style="color:var(--rose);"
+                                data-count="18">0</strong><span>Fiziksel (%38)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 2: Trend + Family Calls -->
+            <div class="row-2">
+                <div class="panel reveal" data-delay="300">
+                    <div class="panel-header">
+                        <div class="panel-title">📈 Aylık Dilek Alım Trendi</div>
+                        <div class="panel-badge">Son 6 Ay</div>
+                    </div>
+                    <div style="height:260px;"><canvas id="trendChart"></canvas></div>
+                </div>
+
+                <div class="panel reveal" data-delay="400">
+                    <div class="panel-header">
+                        <div class="panel-title">📞 Aile Araması Sıralaması</div>
+                        <div class="panel-badge">Şubat</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span class="progress-name">🥇 Elnaz Kohen</span><span
+                                class="progress-value">21</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="100"
+                                style="background:linear-gradient(90deg,#f59e0b,#d97706);"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span class="progress-name">🥈 Hüseyin İnan Gül</span><span
+                                class="progress-value">18</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="86"
+                                style="background:linear-gradient(90deg,#94a3b8,#64748b);"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span class="progress-name">🥉 Fatma Nur Kugu</span><span
+                                class="progress-value">16</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="76"
+                                style="background:linear-gradient(90deg,#d97706,#92400e);"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span class="progress-name">Asude Buldu</span><span
+                                class="progress-value">14</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="67"
+                                style="background:linear-gradient(90deg,#0ea5e9,#0284c7);"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span class="progress-name">Yağmur Ay</span><span
+                                class="progress-value">12</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="57"
+                                style="background:linear-gradient(90deg,#0ea5e9,#0284c7);"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span class="progress-name">Barış Yılmaz</span><span
+                                class="progress-value">10</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="48"
+                                style="background:linear-gradient(90deg,#8b5cf6,#7c3aed);"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span class="progress-name">Ceyda Duran</span><span
+                                class="progress-value">9</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="43"
+                                style="background:linear-gradient(90deg,#8b5cf6,#7c3aed);"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header"><span class="progress-name">İrem Kurtulmuş</span><span
+                                class="progress-value">9</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" data-width="43"
+                                style="background:linear-gradient(90deg,#8b5cf6,#7c3aed);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 3: Mentors + Cities -->
+            <div class="row-2">
+                <div class="panel reveal" data-delay="200">
+                    <div class="panel-header">
+                        <div class="panel-title">🧑‍🏫 Mentör Görüşme İstatistikleri</div>
+                        <div class="panel-badge">Şubat</div>
+                    </div>
+                    <div class="mentor-stat-card"><img class="mentor-stat-avatar" src="images/sevval.jpeg">
+                        <div class="mentor-stat-info">
+                            <div class="mentor-stat-name">Şevval Müftüoğlu</div>
+                            <div class="mentor-stat-degree">Dil ve Konuşma Terapisti</div>
+                        </div>
+                        <div class="mentor-stat-nums">
+                            <div class="mentor-stat-num"><strong>6</strong><span>Görüşme</span></div>
+                            <div class="mentor-stat-num"><strong>14</strong><span>Katılımcı</span></div>
+                        </div>
+                    </div>
+                    <div class="mentor-stat-card"><img class="mentor-stat-avatar" src="images/melek.jpeg">
+                        <div class="mentor-stat-info">
+                            <div class="mentor-stat-name">Melek Seçil Aka</div>
+                            <div class="mentor-stat-degree">Dil ve Konuşma Terapisti</div>
+                        </div>
+                        <div class="mentor-stat-nums">
+                            <div class="mentor-stat-num"><strong>5</strong><span>Görüşme</span></div>
+                            <div class="mentor-stat-num"><strong>11</strong><span>Katılımcı</span></div>
+                        </div>
+                    </div>
+                    <div class="mentor-stat-card"><img class="mentor-stat-avatar" src="images/asude.jpeg">
+                        <div class="mentor-stat-info">
+                            <div class="mentor-stat-name">Asude Buldu</div>
+                            <div class="mentor-stat-degree">Gönüllü Eğitmen</div>
+                        </div>
+                        <div class="mentor-stat-nums">
+                            <div class="mentor-stat-num"><strong>4</strong><span>Görüşme</span></div>
+                            <div class="mentor-stat-num"><strong>9</strong><span>Katılımcı</span></div>
+                        </div>
+                    </div>
+                    <div class="mentor-stat-card"><img class="mentor-stat-avatar" src="images/ceyda.jpeg">
+                        <div class="mentor-stat-info">
+                            <div class="mentor-stat-name">Ceyda Duran</div>
+                            <div class="mentor-stat-degree">Psikolog, Aile Danışmanı</div>
+                        </div>
+                        <div class="mentor-stat-nums">
+                            <div class="mentor-stat-num"><strong>4</strong><span>Görüşme</span></div>
+                            <div class="mentor-stat-num"><strong>8</strong><span>Katılımcı</span></div>
+                        </div>
+                    </div>
+                    <div class="mentor-stat-card"><img class="mentor-stat-avatar" src="images/elnaz.jpeg">
+                        <div class="mentor-stat-info">
+                            <div class="mentor-stat-name">Elnaz Kohen</div>
+                            <div class="mentor-stat-degree">Philanthropy Yüksek Lisans</div>
+                        </div>
+                        <div class="mentor-stat-nums">
+                            <div class="mentor-stat-num"><strong>4</strong><span>Görüşme</span></div>
+                            <div class="mentor-stat-num"><strong>10</strong><span>Katılımcı</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel reveal" data-delay="300">
+                    <div class="panel-header">
+                        <div class="panel-title">🗺️ İl Bazlı Dağılım</div>
+                    </div>
+                    <div class="city-section-title" style="color:var(--sky);">📱 Online Dilek Alımları</div>
+                    <div class="city-item">
+                        <div class="city-rank">1</div>
+                        <div class="city-name">İstanbul</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="100" style="background:var(--sky);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--sky);">9</div>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-rank">2</div>
+                        <div class="city-name">Ankara</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="67" style="background:var(--sky);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--sky);">6</div>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-rank">3</div>
+                        <div class="city-name">İzmir</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="56" style="background:var(--sky);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--sky);">5</div>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-rank">4</div>
+                        <div class="city-name">Bursa</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="33" style="background:var(--sky);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--sky);">3</div>
+                    </div>
+                    <div class="city-item" style="border-bottom:none;">
+                        <div class="city-rank">5</div>
+                        <div class="city-name">Antalya</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="33" style="background:var(--sky);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--sky);">3</div>
+                    </div>
+
+                    <div class="city-section-title" style="color:var(--rose);margin-top:20px;">🏠 Fiziksel Dilek
+                        Alımları</div>
+                    <div class="city-item">
+                        <div class="city-rank">1</div>
+                        <div class="city-name">İstanbul</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="100" style="background:var(--rose);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--rose);">7</div>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-rank">2</div>
+                        <div class="city-name">Ankara</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="57" style="background:var(--rose);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--rose);">4</div>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-rank">3</div>
+                        <div class="city-name">İzmir</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="43" style="background:var(--rose);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--rose);">3</div>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-rank">4</div>
+                        <div class="city-name">Gaziantep</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="29" style="background:var(--rose);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--rose);">2</div>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-rank">5</div>
+                        <div class="city-name">Adana</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="14" style="background:var(--rose);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--rose);">1</div>
+                    </div>
+                    <div class="city-item">
+                        <div class="city-rank">6</div>
+                        <div class="city-name">Konya</div>
+                        <div class="city-bar-bg">
+                            <div class="city-bar" data-width="14" style="background:var(--rose);"></div>
+                        </div>
+                        <div class="city-count" style="color:var(--rose);">1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 4: Weekly + Hourly -->
+            <div class="row-2">
+                <div class="panel reveal" data-delay="200">
+                    <div class="panel-header">
+                        <div class="panel-title">📊 Haftalık Dilek Dağılımı</div>
+                    </div>
+                    <div style="height:230px;"><canvas id="weeklyChart"></canvas></div>
+                </div>
+                <div class="panel reveal" data-delay="300">
+                    <div class="panel-header">
+                        <div class="panel-title">⏰ Saatlik Aile Araması Dağılımı</div>
+                    </div>
+                    <div style="height:230px;"><canvas id="hourChart"></canvas></div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                document.getElementById('sidebar').classList.toggle('open');
+                document.getElementById('overlay').classList.toggle('show');
+            } else {
+                document.body.classList.toggle('sidebar-collapsed');
+                // Trigger chart resize after transition
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+                }, 400);
+            }
+        }
+
+        // Handle window resize: if resizing from mobile to desktop while sidebar is open
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('overlay').classList.remove('show');
+            }
+        });
+
+        // ── Particles ──
+        const pc = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'hero-particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+            p.style.animationDuration = (6 + Math.random() * 10) + 's';
+            p.style.animationDelay = Math.random() * 8 + 's';
+            pc.appendChild(p);
+        }
+
+        // ── Scroll Reveal ──
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = entry.target.dataset.delay || 0;
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                        animateProgressBars(entry.target);
+                        animateCityBars(entry.target);
+                        animateAiInsights(entry.target);
+                    }, +delay);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // ── Animated Counter ──
+        function animateCount(el, target, duration = 1500) {
+            const start = performance.now();
+            const update = (now) => {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 4);
+                el.textContent = Math.round(eased * target);
+                if (progress < 1) requestAnimationFrame(update);
+            };
+            requestAnimationFrame(update);
+        }
+
+        // Start counters after a short delay
+        setTimeout(() => {
+            document.querySelectorAll('[data-count]').forEach(el => {
+                animateCount(el, +el.dataset.count);
+            });
+        }, 600);
+
+        // ── Animate Progress Bars ──
+        function animateProgressBars(container) {
+            container.querySelectorAll('.progress-fill[data-width]').forEach(bar => {
+                setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+            });
+        }
+
+        // ── Animate City Bars ──
+        function animateCityBars(container) {
+            container.querySelectorAll('.city-bar[data-width]').forEach((bar, i) => {
+                setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200 + i * 80);
+            });
+        }
+
+        // ── Animate AI Insights ──
+        function animateAiInsights(container) {
+            const insights = container.querySelectorAll('.ai-insight[data-type-delay]');
+            insights.forEach(insight => {
+                setTimeout(() => {
+                    insight.classList.add('typed');
+                }, +insight.dataset.typeDelay);
+            });
+        }
+
+        // ── Chart.js ──
+        Chart.defaults.font.family = "'DM Sans', sans-serif";
+        Chart.defaults.font.weight = 600;
+        Chart.defaults.plugins.legend.display = false;
+
+        const tooltipStyle = { backgroundColor: '#0f172a', titleFont: { weight: 800, size: 13 }, bodyFont: { size: 12 }, padding: 14, cornerRadius: 12, displayColors: false };
+
+        // Donut
+        new Chart(document.getElementById('donutChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Online', 'Fiziksel'],
+                datasets: [{ data: [29, 18], backgroundColor: ['#0ea5e9', '#f43f5e'], borderWidth: 0, hoverOffset: 8, borderRadius: 6 }]
+            },
+            options: {
+                cutout: '74%', responsive: true, maintainAspectRatio: false,
+                animation: { animateRotate: true, duration: 1500, easing: 'easeOutQuart' },
+                plugins: { tooltip: { ...tooltipStyle, callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} dilek` } } }
+            }
+        });
+
+        // Trend
+        new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: ['Eylül', 'Ekim', 'Kasım', 'Aralık', 'Ocak', 'Şubat'],
+                datasets: [{
+                    data: [18, 24, 28, 32, 40, 47],
+                    borderColor: '#005596', backgroundColor: 'rgba(0,85,150,0.06)',
+                    fill: true, tension: 0.4,
+                    pointBackgroundColor: '#fff', pointBorderColor: '#005596', pointBorderWidth: 3,
+                    pointRadius: 6, pointHoverRadius: 10, borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 2000, easing: 'easeOutQuart' },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { color: '#94a3b8', font: { size: 11 } } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11 } } }
+                },
+                plugins: { tooltip: { ...tooltipStyle, callbacks: { label: ctx => ` ${ctx.parsed.y} dilek alımı` } } }
+            }
+        });
+
+        // Weekly
+        new Chart(document.getElementById('weeklyChart'), {
+            type: 'bar',
+            data: {
+                labels: ['1. Hafta', '2. Hafta', '3. Hafta', '4. Hafta'],
+                datasets: [
+                    { label: 'Online', data: [8, 7, 9, 5], backgroundColor: '#0ea5e9', borderRadius: 8, barThickness: 28 },
+                    { label: 'Fiziksel', data: [4, 5, 5, 4], backgroundColor: '#f43f5e', borderRadius: 8, barThickness: 28 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 1500, easing: 'easeOutQuart' },
+                plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 12, borderRadius: 4, useBorderRadius: true, padding: 16, font: { size: 11, weight: 700 } } }, tooltip: tooltipStyle },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { color: '#94a3b8', font: { size: 11 } } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11 } } }
+                }
+            }
+        });
+
+        // Hourly
+        new Chart(document.getElementById('hourChart'), {
+            type: 'bar',
+            data: {
+                labels: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '19:00', '20:00'],
+                datasets: [{
+                    data: [4, 12, 18, 22, 16, 14, 10, 15, 13],
+                    backgroundColor: ctx => {
+                        const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 230);
+                        g.addColorStop(0, '#8b5cf6'); g.addColorStop(1, '#c4b5fd');
+                        return g;
+                    },
+                    borderRadius: 8, barThickness: 22
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 1500, easing: 'easeOutQuart', delay: ctx => ctx.dataIndex * 100 },
+                plugins: { tooltip: { ...tooltipStyle, callbacks: { label: ctx => ` ${ctx.parsed.y} arama` } } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { color: '#94a3b8', font: { size: 11 } } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11 } } }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

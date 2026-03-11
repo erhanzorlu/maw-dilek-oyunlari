@@ -296,8 +296,37 @@
             left: 0;
             bottom: 0;
             z-index: 200;
-            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
+        }
+
+        .sidebar-collapsed .sidebar {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 18px;
+            right: 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #94a3b8;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .sidebar-close-btn:hover {
+            background: rgba(244,63,94,0.15);
+            color: #f43f5e;
+            border-color: rgba(244,63,94,0.2);
         }
 
         .sidebar-logo {
@@ -421,13 +450,25 @@
         }
 
         .hamburger {
-            display: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: none;
-            border: none;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             cursor: pointer;
-            padding: 6px;
+            padding: 6px 10px;
             color: var(--text);
-            font-size: 22px;
+            font-size: 20px;
+            transition: all 0.2s;
+            width: 38px;
+            height: 38px;
+        }
+
+        .hamburger:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         /* ── MAIN ── */
@@ -437,6 +478,11 @@
             display: flex;
             flex-direction: column;
             min-width: 0;
+            transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-collapsed .main {
+            margin-left: 0;
         }
 
         /* ── TOPBAR ── */
@@ -1489,10 +1535,6 @@
                 margin-left: 0;
             }
 
-            .hamburger {
-                display: block;
-            }
-
             .topbar {
                 padding: 0 16px;
             }
@@ -2020,6 +2062,7 @@
 
     <!-- ── SIDEBAR ── -->
     <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" onclick="toggleSidebar()" title="Menüyü Kapat">✕</button>
         <a href="index.html" class="sidebar-logo">
             <span class="logo-star">⭐</span>
             <h2>Make-A-Wish<br>Türkiye</h2>
@@ -2800,9 +2843,20 @@
         }
 
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('show');
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                document.getElementById('sidebar').classList.toggle('open');
+                document.getElementById('overlay').classList.toggle('show');
+            } else {
+                document.body.classList.toggle('sidebar-collapsed');
+            }
         }
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('overlay').classList.remove('show');
+            }
+        });
 
         function toggleGuide() {
             document.getElementById('guideOverlay').classList.toggle('open');
