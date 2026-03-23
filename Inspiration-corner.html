@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İlham Merkezi — Gönüllüler İçin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────── */
+:root {
+  --ink:        #f0eaf8;
+  --ink-dim:    rgba(240,234,248,.55);
+  --ink-faint:  rgba(240,234,248,.25);
+  --bg-deep:    #0a0614;
+  --bg-mid:     #110921;
+  --bg-card:    rgba(255,255,255,.045);
+  --border:     rgba(255,255,255,.09);
+  --accent-1:   #c084fc;   /* soft violet */
+  --accent-2:   #818cf8;   /* indigo */
+  --accent-3:   #f472b6;   /* rose */
+  --accent-4:   #34d399;   /* emerald */
+  --glow-1:     rgba(192,132,252,.35);
+  --glow-2:     rgba(129,140,248,.3);
+  --glow-3:     rgba(244,114,182,.3);
+  --card-radius: 18px;
+  --ease-out: cubic-bezier(.22,1,.36,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-deep);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ─────────────────────────────────────────
+   COSMIC BACKGROUND
+───────────────────────────────────────── */
+.cosmos {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  overflow: hidden;
+}
+.cosmos-layer {
+  position: absolute; inset: 0;
+}
+.cosmos-nebula {
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 25%, rgba(139,92,246,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 70% at 85% 70%, rgba(244,114,182,.13) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(99,102,241,.12) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, #0a0614 40%, #0f062a 100%);
+  animation: nebulaShift 25s ease-in-out infinite alternate;
+}
+@keyframes nebulaShift {
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.04) rotate(.8deg); }
+  100% { transform: scale(1.02) rotate(-.5deg); }
+}
+
+/* Stars */
+.stars-canvas { position: absolute; inset: 0; }
+
+/* Mouse-follow orb */
+.mouse-orb {
+  position: fixed;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(192,132,252,.08) 0%, transparent 70%);
+  pointer-events: none; z-index: 1;
+  transform: translate(-50%,-50%);
+  transition: left .8s var(--ease-out), top .8s var(--ease-out);
+  will-change: left, top;
+}
+
+/* ─────────────────────────────────────────
+   PARTICLES
+───────────────────────────────────────── */
+.particle {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none; z-index: 2;
+  animation: particleDrift var(--dur,12s) ease-in-out infinite var(--del,0s);
+  opacity: 0;
+}
+@keyframes particleDrift {
+  0%   { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+  10%  { opacity: var(--op,.7); transform: translateY(85vh) translateX(10px) scale(1); }
+  90%  { opacity: var(--op,.4); }
+  100% { transform: translateY(-10vh) translateX(var(--drift,40px)) scale(.5); opacity: 0; }
+}
+
+/* ─────────────────────────────────────────
+   LAYOUT
+───────────────────────────────────────── */
+.page { position: relative; z-index: 10; }
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.hero {
+  min-height: 100svh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 6rem 1.5rem 4rem;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: rgba(192,132,252,.12);
+  border: 1px solid rgba(192,132,252,.25);
+  border-radius: 100px;
+  padding: .35rem 1rem;
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  color: var(--accent-1);
+  margin-bottom: 2.5rem;
+  animation: fadeSlideUp .9s var(--ease-out) both;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--accent-1);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+.hero-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 300;
+  line-height: 1.2;
+  max-width: 820px;
+  margin-bottom: 1.8rem;
+  animation: fadeSlideUp 1s var(--ease-out) .2s both;
+  background: linear-gradient(135deg, #f0eaf8 30%, var(--accent-1) 70%, var(--accent-3) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-title em { font-style: italic; }
+
+.hero-sub {
+  font-size: clamp(.95rem, 2vw, 1.15rem);
+  font-weight: 300;
+  color: var(--ink-dim);
+  max-width: 540px;
+  line-height: 1.8;
+  animation: fadeSlideUp 1s var(--ease-out) .4s both;
+  margin-bottom: 3rem;
+}
+
+.hero-scroll {
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  animation: fadeSlideUp 1s var(--ease-out) .7s both;
+  color: var(--ink-faint);
+  font-size: .75rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.hero-scroll-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, var(--accent-1), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse { 0%,100%{opacity:.3;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.1)} }
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────
+   SECTION WRAPPER
+───────────────────────────────────────── */
+.section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+}
+.section-label {
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: .6rem;
+  font-weight: 500;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 300;
+  margin-bottom: 3rem;
+  color: var(--ink);
+}
+
+/* ─────────────────────────────────────────
+   TABS
+───────────────────────────────────────── */
+.tabs-wrapper {
+  display: flex; justify-content: center;
+  margin-bottom: 3rem;
+}
+.tabs {
+  display: inline-flex;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: .3rem;
+  gap: .2rem;
+}
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-radius: 100px;
+  padding: .65rem 1.8rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem;
+  font-weight: 400;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: all .35s var(--ease-out);
+  position: relative;
+  white-space: nowrap;
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, rgba(192,132,252,.35), rgba(129,140,248,.3));
+  color: var(--ink);
+  box-shadow: 0 0 20px rgba(192,132,252,.25);
+}
+
+/* ─────────────────────────────────────────
+   TAG FILTERS
+───────────────────────────────────────── */
+.tags-bar {
+  display: flex; flex-wrap: wrap; gap: .6rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+.tag-chip {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: .4rem 1rem;
+  font-size: .78rem;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: all .25s var(--ease-out);
+  font-family: 'DM Sans', sans-serif;
+}
+.tag-chip:hover {
+  border-color: var(--accent-1);
+  color: var(--accent-1);
+  background: rgba(192,132,252,.08);
+}
+.tag-chip.active {
+  background: rgba(192,132,252,.18);
+  border-color: var(--accent-1);
+  color: var(--accent-1);
+  box-shadow: 0 0 12px rgba(192,132,252,.2);
+}
+
+/* ─────────────────────────────────────────
+   MOVIE GRID
+───────────────────────────────────────── */
+.movies-panel { display: none; animation: panelFade .5s var(--ease-out) both; }
+.movies-panel.active { display: block; }
+@keyframes panelFade { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out), border-color .3s;
+  position: relative;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.card:hover {
+  transform: translateY(-8px) scale(1.02) rotate(.3deg);
+  box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 30px var(--card-glow, var(--glow-1));
+  border-color: rgba(192,132,252,.4);
+}
+.card.hidden { display: none; }
+
+.card-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  display: block;
+  transition: transform .6s var(--ease-out);
+  background: linear-gradient(135deg, #1a0a2e, #0d0520);
+}
+.card:hover .card-poster { transform: scale(1.04); }
+
+.card-poster-fallback {
+  width: 100%;
+  aspect-ratio: 2/3;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-size: 3rem;
+  background: linear-gradient(135deg, #1a0a2e, #0d0520);
+  color: var(--ink-dim);
+  gap: .5rem;
+}
+.card-poster-fallback span { font-size: .7rem; text-align: center; padding: 0 .5rem; }
+
+.card-body {
+  padding: 1.1rem 1rem 1.2rem;
+}
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: .35rem;
+  line-height: 1.3;
+}
+.card-desc {
+  font-size: .78rem;
+  color: var(--ink-dim);
+  line-height: 1.6;
+  margin-bottom: .75rem;
+}
+.card-why {
+  font-size: .72rem;
+  color: var(--accent-1);
+  line-height: 1.5;
+  border-top: 1px solid var(--border);
+  padding-top: .65rem;
+  display: flex; gap: .4rem;
+}
+.card-why-icon { flex-shrink: 0; font-size: .85rem; }
+
+.card-tags {
+  display: flex; flex-wrap: wrap; gap: .3rem;
+  margin-bottom: .7rem;
+}
+.card-tag {
+  font-size: .62rem;
+  padding: .18rem .55rem;
+  border-radius: 100px;
+  border: 1px solid;
+  letter-spacing: .04em;
+}
+.card-tag.empati   { border-color: rgba(192,132,252,.4); color: var(--accent-1); background: rgba(192,132,252,.08); }
+.card-tag.hayal    { border-color: rgba(129,140,248,.4); color: var(--accent-2); background: rgba(129,140,248,.08); }
+.card-tag.keder    { border-color: rgba(244,114,182,.4); color: var(--accent-3); background: rgba(244,114,182,.08); }
+.card-tag.neşe     { border-color: rgba(52,211,153,.4);  color: var(--accent-4); background: rgba(52,211,153,.08);  }
+.card-tag.cesaret  { border-color: rgba(251,191,36,.4);  color: #fbbf24;         background: rgba(251,191,36,.08);  }
+.card-tag.aile     { border-color: rgba(251,146,60,.4);  color: #fb923c;         background: rgba(251,146,60,.08);  }
+
+/* card overlay shimmer */
+.card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.06) 0%, transparent 50%);
+  pointer-events: none; z-index: 1;
+  border-radius: var(--card-radius);
+}
+
+/* ─────────────────────────────────────────
+   RANDOM BUTTON
+───────────────────────────────────────── */
+.random-section {
+  padding: 3rem 1.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 2rem;
+}
+.random-btn {
+  position: relative;
+  background: transparent;
+  border: 1px solid rgba(192,132,252,.5);
+  border-radius: 100px;
+  padding: 1rem 2.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all .35s var(--ease-out);
+  overflow: hidden;
+}
+.random-btn::before {
+  content: '';
+  position: absolute; inset: -2px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity .3s;
+}
+.random-btn:hover {
+  border-color: transparent;
+  box-shadow: 0 0 40px rgba(192,132,252,.4);
+  transform: scale(1.03);
+}
+.random-btn:hover::before { opacity: 1; }
+
+.random-status {
+  font-size: .85rem;
+  color: var(--accent-1);
+  min-height: 1.4rem;
+  animation: fadeIn .4s ease;
+}
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* Random Result Modal */
+.modal-bg {
+  display: none;
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(5,1,15,.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  align-items: center; justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn .3s ease;
+}
+.modal-bg.open { display: flex; }
+
+.modal {
+  background: rgba(17,9,33,.9);
+  border: 1px solid rgba(192,132,252,.3);
+  border-radius: 24px;
+  max-width: 460px; width: 100%;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,.7), 0 0 60px rgba(192,132,252,.15);
+  animation: modalPop .45s var(--ease-out) both;
+  position: relative;
+}
+@keyframes modalPop {
+  from { opacity:0; transform: scale(.88) translateY(20px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+.modal-poster {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.modal-poster-fallback {
+  width: 100%; height: 280px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 4rem;
+  background: linear-gradient(135deg, #1a0a2e, #0d0520);
+}
+.modal-body { padding: 1.5rem 1.5rem 2rem; }
+.modal-label {
+  font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-1); margin-bottom: .4rem;
+}
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.7rem; font-weight: 300;
+  color: var(--ink); margin-bottom: .7rem;
+}
+.modal-desc { font-size: .88rem; color: var(--ink-dim); line-height: 1.7; margin-bottom: 1rem; }
+.modal-why { font-size: .82rem; color: var(--accent-1); line-height: 1.6; }
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: rgba(255,255,255,.1);
+  border: none; border-radius: 50%;
+  width: 34px; height: 34px;
+  font-size: 1rem; color: var(--ink);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.modal-close:hover { background: rgba(192,132,252,.3); }
+
+/* ─────────────────────────────────────────
+   QUOTES
+───────────────────────────────────────── */
+.quotes-section {
+  padding: 5rem 1.5rem;
+  text-align: center;
+  position: relative;
+}
+.quote-divider {
+  width: 80px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--accent-1), transparent);
+  margin: 0 auto 3rem;
+}
+.quote-display {
+  max-width: 680px; margin: 0 auto;
+  position: relative; min-height: 120px;
+  display: flex; align-items: center; justify-content: center;
+}
+.quote-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink);
+  position: absolute;
+  transition: opacity .6s ease, transform .6s var(--ease-out);
+}
+.quote-text.hidden { opacity: 0; transform: translateY(12px); pointer-events: none; }
+.quote-text.visible { opacity: 1; transform: translateY(0); }
+.quote-author {
+  font-size: .8rem;
+  color: var(--accent-1);
+  letter-spacing: .1em;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+.footer {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  font-size: .78rem;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--border);
+}
+
+/* ─────────────────────────────────────────
+   SCROLL REVEAL
+───────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .8s var(--ease-out), transform .8s var(--ease-out);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 600px) {
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .modal-poster, .modal-poster-fallback { height: 200px; }
+}
+@media (max-width: 380px) {
+  .grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- COSMOS -->
+<div class="cosmos">
+  <div class="cosmos-layer cosmos-nebula"></div>
+  <canvas class="stars-canvas" id="starsCanvas"></canvas>
+</div>
+<div class="mouse-orb" id="mouseOrb"></div>
+
+<!-- PARTICLES -->
+<div id="particlesRoot"></div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Gönüllüler İçin İlham Merkezi
+    </div>
+    <h1 class="hero-title">
+      Bir çocuğun dünyasını anlamak için,<br>
+      <em>bazen onun hayalleriyle görmek gerekir.</em>
+    </h1>
+    <p class="hero-sub">
+      Bu hikâyeler; hissetmene, hayal kurmanıza ve bağlantı kurmanıza yardımcı olmak için burada.
+    </p>
+    <div class="hero-scroll">
+      <div class="hero-scroll-line"></div>
+      Keşfet
+    </div>
+  </section>
+
+  <!-- ── FILMS ── -->
+  <section class="section reveal" id="filmsSection">
+    <p class="section-label">✦ Film Koleksiyonu</p>
+    <h2 class="section-title">Hayal gücünü genişlet</h2>
+
+    <!-- TABS -->
+    <div class="tabs-wrapper">
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="animasyon" onclick="switchTab('animasyon')">🎨 Animasyonlar</button>
+        <button class="tab-btn"        data-tab="film"      onclick="switchTab('film')">🎬 Filmler</button>
+      </div>
+    </div>
+
+    <!-- TAG FILTERS -->
+    <div class="tags-bar" id="tagsBar">
+      <button class="tag-chip active" data-tag="tümü" onclick="filterTag('tümü', this)">✦ Tümü</button>
+      <button class="tag-chip" data-tag="empati"  onclick="filterTag('empati', this)">💜 Empati</button>
+      <button class="tag-chip" data-tag="hayal"   onclick="filterTag('hayal', this)">🌌 Hayal Gücü</button>
+      <button class="tag-chip" data-tag="keder"   onclick="filterTag('keder', this)">🌧 Kayıp & Keder</button>
+      <button class="tag-chip" data-tag="neşe"    onclick="filterTag('neşe', this)">✨ Neşe</button>
+      <button class="tag-chip" data-tag="cesaret" onclick="filterTag('cesaret', this)">🔥 Cesaret</button>
+      <button class="tag-chip" data-tag="aile"    onclick="filterTag('aile', this)">🍊 Aile & Bellek</button>
+    </div>
+
+    <!-- PANEL: ANİMASYONLAR -->
+    <div class="movies-panel active" id="panel-animasyon">
+      <div class="grid" id="grid-animasyon"></div>
+    </div>
+
+    <!-- PANEL: FİLMLER -->
+    <div class="movies-panel" id="panel-film">
+      <div class="grid" id="grid-film"></div>
+    </div>
+  </section>
+
+  <!-- ── RANDOM ── -->
+  <section class="random-section reveal">
+    <p style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--ink-dim);text-align:center;">
+      Bugün ne izlemeli?
+    </p>
+    <button class="random-btn" onclick="pickRandom()">✦ &nbsp;Ruhuma Bir Hikâye Bul</button>
+    <p class="random-status" id="randomStatus"></p>
+  </section>
+
+  <!-- ── QUOTES ── -->
+  <section class="quotes-section reveal">
+    <div class="quote-divider"></div>
+    <div class="quote-display" id="quoteDisplay"></div>
+    <p class="quote-author" id="quoteAuthor" style="margin-top:4.5rem;"></p>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <p>✦ İlham Merkezi — Gönüllüler için sevgiyle hazırlandı ✦</p>
+  </footer>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div id="modalPosterWrap"></div>
+    <div class="modal-body">
+      <p class="modal-label">✦ Rastgele Seçim</p>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <p class="modal-desc"  id="modalDesc"></p>
+      <p class="modal-why"   id="modalWhy"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════
+   DATA
+═══════════════════════════════ */
+const TMDB = 'https://image.tmdb.org/t/p/w500';
+
+const animations = [
+  {
+    title: 'Ters Yüz',
+    poster: TMDB + '/2H1TmgdfNtsKlU9jKdeNyYL5y8T.jpg',
+    emoji: '🧠',
+    desc: 'Riley\'nin zihninde yaşayan duyguların - Sevinç, Üzüntü, Korku, Öfke ve Tiksinme\'nin - kendi çatışmalarından doğan büyüme hikâyesi.',
+    why: 'Her duygunun değerli olduğunu, üzüntünün bile bağlantı kurduğunu anlamak için.',
+    tags: ['empati', 'neşe', 'keder'],
+    glow: 'rgba(192,132,252,.3)'
+  },
+  {
+    title: 'Coco',
+    poster: TMDB + '/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg',
+    emoji: '🎸',
+    desc: 'Müzik tutkusu ailesiyle çatışan Miguel\'in Ölüler Diyarı\'na yaptığı unutulmaz yolculuk.',
+    why: 'Bellek, aile ve hatırlanmanın ne kadar güçlü bir bağ yarattığını hissetmek için.',
+    tags: ['aile', 'empati', 'neşe'],
+    glow: 'rgba(251,146,60,.25)'
+  },
+  {
+    title: 'Soul',
+    poster: TMDB + '/hm58Jw4Lw8OIeECIq5qyPYhAeRJ.jpg',
+    emoji: '✨',
+    desc: 'Tutkusuna kavuşmak üzereyken hayatını kaybeden müzisyen Joe\'nun anlamlı bir var oluş arayışı.',
+    why: 'Çocuklara "kıvılcımlarını" bulmada yardımcı olabilmek için önce kendinizinkini bulun.',
+    tags: ['hayal', 'empati', 'cesaret'],
+    glow: 'rgba(129,140,248,.3)'
+  },
+  {
+    title: 'The Mitchells vs the Machines',
+    poster:'https://m.media-amazon.com/images/M/MV5BNzAyOWNiMjAtNWUzMi00ZDk1LWE5NzYtNDUzMWE1Y2M0NDM2XkEyXkFqcGc@._V1_.jpg',
+    emoji: '🤖',
+    desc: 'Bozuk bir aile, robot isyanının tam ortasında birbirini yeniden keşfediyor.',
+    why: 'Farklılıkların ailede nasıl güce dönüşebileceğini görmek için.',
+    tags: ['aile', 'neşe', 'cesaret'],
+    glow: 'rgba(52,211,153,.25)'
+  },
+  {
+    title: 'Wish Dragon',
+    poster: 'https://m.media-amazon.com/images/M/MV5BMWM1YmJmYWMtMDM1Ni00ZGM2LTkxODYtOTU1ZjA4MTFkMDM1XkEyXkFqcGc@._V1_.jpg',
+    emoji: '🐉',
+    desc: 'Genç bir öğrenci, dilek dolu ejderha Long ile tanışır ve gerçek arkadaşlığın ne anlama geldiğini öğrenir.',
+    why: 'Dileğin ötesinde, gerçek bağlantının değerini anlamak için.',
+    tags: ['hayal', 'neşe', 'empati'],
+    glow: 'rgba(251,191,36,.25)'
+  },
+  {
+    title: 'Sihirbazın Fili',
+    poster: 'https://image.tmdb.org/t/p/original/qsIlpIFNavxMZlE0o71LwvUXOTf.jpg',
+    emoji: '🐘',
+    desc: 'Kayıp kız kardeşini aramak için yola çıkan küçük Peter\'in sihrin mümkün olduğuna dair yolculuğu.',
+    why: 'Umudun, en karanlık yerlerde bile yolu aydınlattığını göstermek için.',
+    tags: ['hayal', 'empati', 'cesaret'],
+    glow: 'rgba(129,140,248,.3)'
+  },
+  {
+    title: 'Encanto',
+    poster: TMDB + '/4j0PNHkMr5ax3IA8tjtxcmPU3QT.jpg',
+    emoji: '🦋',
+    desc: 'Ailede tek sihri olmayan Mirabel, ailesini kurtarmak için kendi gücünü keşfeder.',
+    why: 'Her çocuğun kendine özgü bir kıvılcımı olduğunu hatırlatmak için.',
+    tags: ['aile', 'empati', 'neşe'],
+    glow: 'rgba(244,114,182,.25)'
+  },
+  {
+    title: 'Wish',
+    poster: 'https://lumiere-a.akamaihd.net/v1/images/p_disney_wish_2993_f80fee96.jpeg',
+    emoji: '⭐',
+    desc: 'Asha, dileklerin korunduğu Rosas Krallığı\'nda gerçek gücün nereden geldiğini sorgulamaya başlar.',
+    why: 'Hayaller gerçekleşmeden önce inanca ve cesarete ihtiyaç duyduğunu hatırlatmak için.',
+    tags: ['hayal', 'cesaret', 'neşe'],
+    glow: 'rgba(251,191,36,.3)'
+  },
+  {
+    title: 'Sing',
+    poster: 'https://m.media-amazon.com/images/S/pv-target-images/fea77ca4da5884b2a6396ffd79f6ba843dced9c6c43ad98fde555f9f969653a6.jpg',
+    emoji: '🎤',
+    desc: 'Farklı hayvanlardan oluşan bir şarkı yarışması, hayallerinin peşinden gitme cesareti verir.',
+    why: 'Cesareti teşvik etmek ve "denemeye" değer olduğunu göstermek için.',
+    tags: ['cesaret', 'neşe', 'empati'],
+    glow: 'rgba(52,211,153,.3)'
+  },
+  {
+    title: 'Hexed',
+    poster: 'https://cdn.mos.cms.futurecdn.net/zrC7RaHPzMGPbqRo2NmuLG.jpg',
+    emoji: '🧙‍♀️',
+    desc: 'Genç bir kızın büyülü dünyada kendini keşfetme ve güçlü yönlerini anlama yolculuğu.',
+    why: 'Özgünlük ve kendine güvenin büyüden daha güçlü olduğunu göstermek için.',
+    tags: ['hayal', 'cesaret', 'empati'],
+    glow: 'rgba(192,132,252,.3)'
+  },
+  {
+    title: 'Unutulmuş Ada',
+    poster: '',
+    emoji: '🏝️',
+    desc: 'Kayıp bir adada hayatta kalmaya çalışan çocukların dayanışma ve yaratıcılık hikâyesi.',
+    why: 'Birlikte problem çözmenin ve empati kurmanın gücünü keşfetmek için.',
+    tags: ['cesaret', 'empati', 'hayal'],
+    glow: 'rgba(52,211,153,.3)'
+  },
+  {
+    title: 'Making Fun',
+    poster: 'https://m.media-amazon.com/images/M/MV5BZGE3NGE0ZGMtY2Q4MS00MGM2LWFhZWMtM2E2Y2EzYWM0NmQwXkEyXkFqcGc@._V1_.jpg',
+    emoji: '🔧',
+    desc: 'Çocuklarla birlikte olağanüstü şeyler inşa eden bir yaratıcının belgesel serisi.',
+    why: 'Hayal gücünü eyleme dönüştürmenin ilhamını vermek için.',
+    tags: ['hayal', 'neşe', 'cesaret'],
+    glow: 'rgba(129,140,248,.3)'
+  }
+];
+
+const films = [
+  {
+    title: 'Walter Mitty\'nin Gizli Yaşamı',
+    poster: 'https://img-s2.onedio.com/id-69a1e15bec63eee65cc4b634/rev-0/w-620/f-jpg/s-dfc95c06f27dd2303c1e76af3f9403332f6e59e2.jpg',
+    emoji: '🗺️',
+    desc: 'Sıradan görünümlü Walter, zihnindeki maceralardan gerçek dünyaya atlamayı öğrenir.',
+    why: 'Hayali küçümseyen yetişkinlere: hayaller gerçekliğe kapı açar.',
+    tags: ['hayal', 'cesaret', 'neşe'],
+    glow: 'rgba(52,211,153,.3)'
+  },
+  {
+    title: 'Terabithia Köprüsü',
+    poster: 'https://image.tmdb.org/t/p/original/c6iTdD4UvpfDCOFb3BTYb1TpKki.jpg',
+    emoji: '🌳',
+    desc: 'İki çocuğun hayal güçleriyle yarattıkları gizli krallık ve bu dostluğun bıraktığı iz.',
+    why: 'Hayal gücünün bir çocuğun dünyasını nasıl ayakta tuttuğunu derinden anlamak için.',
+    tags: ['hayal', 'keder', 'empati'],
+    glow: 'rgba(192,132,252,.3)'
+  },
+  {
+    title: 'Kaptan Fantastik',
+    poster: 'https://duslerdengercege.com/wp-content/uploads/2016/10/captain_fantastic.jpg',
+    emoji: '🌲',
+    desc: 'Ormanda yetiştirilen altı çocuğun dünyayla ilk karşılaşması ve babanın farklı bir ebeveynlik anlayışı.',
+    why: 'Çocukların farklı gerçekliklerde büyüyebileceğini ve her birinin değer taşıdığını görmek için.',
+    tags: ['aile', 'cesaret', 'empati'],
+    glow: 'rgba(52,211,153,.3)'
+  },
+  {
+    title: 'The Fall',
+    poster: '',
+    emoji: '🎭',
+    desc: 'Hastanede yatan küçük bir kız ve yaralı bir aktörün birlikte ördükleri masal.',
+    why: 'Hikayelerin yalnızlığı nasıl aştığını ve bağlantı kurmanın büyüsünü görmek için.',
+    tags: ['hayal', 'empati', 'keder'],
+    glow: 'rgba(244,114,182,.3)'
+  },
+  {
+    title: 'Being John Malkovich',
+    poster: 'https://s3.amazonaws.com/nightjarprod/content/uploads/sites/189/2024/07/25084915/vKVUsumbCzK5Kn3aDpKM4EizKCA.jpg',
+    emoji: '🚪',
+    desc: 'Bir başkasının zihnine girebileceğiniz kapı — gerçekliğin sınırlarını sorgulatan tuhaf bir macera.',
+    why: 'Empatiyi en radikal biçimiyle keşfetmek: birisinin tam olarak kim olduğunu yaşamak.',
+    tags: ['hayal', 'empati'],
+    glow: 'rgba(129,140,248,.3)'
+  },
+  {
+    title: 'Big Fish',
+    poster: 'https://m.media-amazon.com/images/M/MV5BYzAzYWE3ODktY2QwNS00ZDdmLWJkY2QtYTg4OTVmZDk2ZGVhXkEyXkFqcGc@._V1_.jpg',
+    emoji: '🐟',
+    desc: 'Bir oğul, babasının anlattığı efsanevi hikayelerin arkasındaki gerçeği arar.',
+    why: 'Bir insanın hayatının hikâyelerle nasıl anlam kazandığını görmek için.',
+    tags: ['hayal', 'aile', 'empati'],
+    glow: 'rgba(251,191,36,.3)'
+  },
+  {
+    title: 'Charlie\'nin Çikolata Fabrikası',
+    poster: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgbSYzB6ykPF0XQCF__SQlN7ipJQF9oFVejU5V6GF2EqGnJRr6tQgpZ5QRiX21Oa4bXGxkPRyDl6k257u_dnYNSskhWdaS_tGX8RXF_WIf_o_Wemdz3JBDrgaLk1epvAZnu7r8s3dPJ4vzGIEDZ3jjXzYzbAD8HH2t1yO8uBpBoxGFo_GYPODF0CUDyqQ/s2560/charlie-nin-cikolata-fabrikasi-scaled.jpg',
+    emoji: '🍫',
+    desc: 'Beş çocuk, tuhaf ve büyülü bir çikolata fabrikasında beklenmedik bir macerayla yüz yüze gelir.',
+    why: 'Saf hayal gücünün ödüllendirildiğini ve çocukluğun sihrine dönmek için.',
+    tags: ['hayal', 'neşe', 'empati'],
+    glow: 'rgba(192,132,252,.3)'
+  },
+  {
+    title: 'Timmy Failure: Hatalar Yapıldı',
+    poster: 'https://images.justwatch.com/poster/319885402/s718/timmy-failure-hatalar-yapildi.jpg',
+    emoji: '🐻',
+    desc: 'Kendini efsanevi bir dedektif olarak gören Timmy, sınırların dışında kendi gerçekliğini yaşar.',
+    why: 'Farklı düşünen çocukların bakış açısına girebilmek için.',
+    tags: ['hayal', 'empati', 'neşe'],
+    glow: 'rgba(52,211,153,.3)'
+  },
+  {
+    title: 'Hayali Arkadaşlar (IF)',
+    poster: 'https://tr.web.img2.acsta.net/img/f2/2a/f22a9b34210daeba59f963186ea6dc41.jpg',
+    emoji: '🫧',
+    desc: 'Artık sahiplenilmeyen hayal ürünü arkadaşları gerçek dünyada keşfeden küçük bir kızın macerası.',
+    why: 'Çocukların iç dünyasına — hayali arkadaşlara, gizli dillere — saygıyla bakabilmek için.',
+    tags: ['hayal', 'empati', 'keder'],
+    glow: 'rgba(192,132,252,.3)'
+  },
+  {
+    title: 'Patch Adams',
+    poster: 'https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p22143_p_v10_al.jpg',
+    emoji: '🤡',
+    desc: 'Hastaları güldürerek iyileştirmeye inanan doktor Patch Adams\'ın sistemle mücadelesi.',
+    why: 'Empati ve neşenin bir doktorun en güçlü ilacı olabileceğini hatırlamak için.',
+    tags: ['empati', 'neşe', 'cesaret'],
+    glow: 'rgba(244,114,182,.3)'
+  },
+  {
+    title: 'A Boy Called Po',
+    poster: 'https://m.media-amazon.com/images/M/MV5BODJkYmU5N2QtYjdjYS00MDE1LTgzYjktODVlMjYxMjVkYjZhXkEyXkFqcGc@._V1_.jpg',
+    emoji: '🌟',
+    desc: 'Otistik oğluyla baş başa kalan bir babanın, oğlunun iç dünyasını anlamak için yaptığı zorlu yolculuk.',
+    why: 'Her çocuğun kendi anlatısında kahramanı olduğunu derin bir şekilde görmek için.',
+    tags: ['empati', 'keder', 'aile'],
+    glow: 'rgba(129,140,248,.3)'
+  }
+];
+
+const quotes = [
+  { text: 'Her çocuk dünyayı farklı görür. Onunla birlikte görmeye çalış.', author: '— İlham Merkezi' },
+  { text: 'Hayal kurmak, çocukların en ciddi işidir.', author: '— Jean Piaget' },
+  { text: 'Bir çocuğun gözünde dünya hâlâ sihirle dolu.', author: '— Antoine de Saint-Exupéry' },
+  { text: 'Empati, bir insanın sesini duymak için kendi sesini kısmaktır.', author: '— Brené Brown' },
+  { text: 'Gerçekten anlamak için, önce dinlemeyi öğren.', author: '— Carl Rogers' },
+  { text: 'Her dilek, onu dile getiren çocuğu anlatır.', author: '— İlham Merkezi' },
+  { text: 'Hayal kuramayan yetişkin, çocukla asla gerçekten buluşamaz.', author: '— İlham Merkezi' },
+];
+
+/* ═══════════════════════════════
+   BUILD CARDS
+═══════════════════════════════ */
+function buildCard(item) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.style.setProperty('--card-glow', item.glow);
+  div.dataset.tags = item.tags.join(',');
+
+  const tagHTML = item.tags.map(t => `<span class="card-tag ${t}">${tagLabel(t)}</span>`).join('');
+
+  let posterHTML;
+  if (item.poster) {
+    posterHTML = `<img class="card-poster" src="${item.poster}" alt="${item.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="card-poster-fallback" style="display:none">${item.emoji}<span>${item.title}</span></div>`;
+  } else {
+    posterHTML = `<div class="card-poster-fallback">${item.emoji}<span>${item.title}</span></div>`;
+  }
+
+  div.innerHTML = `
+    ${posterHTML}
+    <div class="card-body">
+      <div class="card-tags">${tagHTML}</div>
+      <h3 class="card-title">${item.title}</h3>
+      <p class="card-desc">${item.desc}</p>
+      <div class="card-why"><span class="card-why-icon">💡</span><span>${item.why}</span></div>
+    </div>
+  `;
+  return div;
+}
+
+function tagLabel(t) {
+  const m = { empati:'💜 Empati', hayal:'🌌 Hayal', keder:'🌧 Kayıp', neşe:'✨ Neşe', cesaret:'🔥 Cesaret', aile:'🍊 Aile' };
+  return m[t] || t;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const gA = document.getElementById('grid-animasyon');
+  const gF = document.getElementById('grid-film');
+  animations.forEach(a => gA.appendChild(buildCard(a)));
+  films.forEach(f => gF.appendChild(buildCard(f)));
+  startQuotes();
+  buildStars();
+  buildParticles();
+  startReveal();
+});
+
+/* ═══════════════════════════════
+   TABS
+═══════════════════════════════ */
+let activeTab = 'animasyon';
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.movies-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  // re-apply filter
+  const activeTagEl = document.querySelector('.tag-chip.active');
+  const t = activeTagEl ? activeTagEl.dataset.tag : 'tümü';
+  applyTagFilter(t);
+}
+
+/* ═══════════════════════════════
+   TAG FILTER
+═══════════════════════════════ */
+function filterTag(tag, el) {
+  document.querySelectorAll('.tag-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  applyTagFilter(tag);
+}
+function applyTagFilter(tag) {
+  const panel = document.getElementById('panel-' + activeTab);
+  panel.querySelectorAll('.card').forEach(card => {
+    const tags = card.dataset.tags.split(',');
+    const show = tag === 'tümü' || tags.includes(tag);
+    card.classList.toggle('hidden', !show);
+    if (show) { card.style.animation = 'panelFade .4s ease both'; }
+  });
+}
+
+/* ═══════════════════════════════
+   RANDOM
+═══════════════════════════════ */
+const loadingTexts = [
+  'Ruhunuza bir hikâye aranıyor...',
+  'Hayaller arasında geziniyor...',
+  'Büyülü kütüphane taranıyor...',
+  'Yıldızlara soruyoruz...',
+  'Hazırlanıyor...'
+];
+let randomTimers = [];
+
+function pickRandom() {
+  randomTimers.forEach(clearTimeout);
+  randomTimers = [];
+  const all = [...animations, ...films];
+  const item = all[Math.floor(Math.random() * all.length)];
+  let i = 0;
+  const status = document.getElementById('randomStatus');
+  const cycle = () => {
+    status.textContent = loadingTexts[i % loadingTexts.length];
+    i++;
+    if (i < 4) randomTimers.push(setTimeout(cycle, 500));
+    else randomTimers.push(setTimeout(() => showModal(item), 500));
+  };
+  cycle();
+}
+
+function showModal(item) {
+  document.getElementById('modalTitle').textContent = item.title;
+  document.getElementById('modalDesc').textContent  = item.desc;
+  document.getElementById('modalWhy').textContent   = '💡 ' + item.why;
+  const wrap = document.getElementById('modalPosterWrap');
+  if (item.poster) {
+    wrap.innerHTML = `<img class="modal-poster" src="${item.poster}" alt="${item.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="modal-poster-fallback" style="display:none">${item.emoji}</div>`;
+  } else {
+    wrap.innerHTML = `<div class="modal-poster-fallback">${item.emoji}</div>`;
+  }
+  document.getElementById('randomStatus').textContent = '';
+  document.getElementById('modalBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(e) { if (e.target === document.getElementById('modalBg')) closeModalDirect(); }
+function closeModalDirect() {
+  document.getElementById('modalBg').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ═══════════════════════════════
+   QUOTES
+═══════════════════════════════ */
+let qIdx = 0, qEl, qAuth;
+function startQuotes() {
+  const disp = document.getElementById('quoteDisplay');
+  qEl = document.createElement('p');
+  qEl.className = 'quote-text visible';
+  disp.appendChild(qEl);
+  qAuth = document.getElementById('quoteAuthor');
+  showQuote();
+  setInterval(nextQuote, 5000);
+}
+function showQuote() {
+  qEl.textContent = '\u201C' + quotes[qIdx].text + '\u201D';
+  qAuth.textContent = quotes[qIdx].author;
+}
+function nextQuote() {
+  qEl.classList.remove('visible'); qEl.classList.add('hidden');
+  setTimeout(() => {
+    qIdx = (qIdx + 1) % quotes.length;
+    showQuote();
+    qEl.classList.remove('hidden'); qEl.classList.add('visible');
+  }, 600);
+}
+
+/* ═══════════════════════════════
+   STARS CANVAS
+═══════════════════════════════ */
+function buildStars() {
+  const c = document.getElementById('starsCanvas');
+  c.width = window.innerWidth; c.height = window.innerHeight;
+  const ctx = c.getContext('2d');
+  for (let i = 0; i < 220; i++) {
+    const x = Math.random() * c.width;
+    const y = Math.random() * c.height;
+    const r = Math.random() * 1.2 + .2;
+    const a = Math.random() * .7 + .1;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${a})`;
+    ctx.fill();
+  }
+  window.addEventListener('resize', () => {
+    c.width = window.innerWidth; c.height = window.innerHeight;
+    buildStars();
+  });
+}
+
+/* ═══════════════════════════════
+   PARTICLES
+═══════════════════════════════ */
+function buildParticles() {
+  const root = document.getElementById('particlesRoot');
+  const colors = ['rgba(192,132,252', 'rgba(129,140,248', 'rgba(244,114,182', 'rgba(255,255,255'];
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const c = colors[Math.floor(Math.random() * colors.length)];
+    const s = Math.random() * 3 + 1;
+    p.style.cssText = `
+      left: ${Math.random()*100}%;
+      width: ${s}px; height: ${s}px;
+      background: ${c},.8);
+      box-shadow: 0 0 ${s*3}px ${c},.5);
+      --dur: ${10 + Math.random()*10}s;
+      --del: ${Math.random() * -15}s;
+      --drift: ${(Math.random()-.5)*120}px;
+      --op: ${Math.random()*.5+.2};
+    `;
+    root.appendChild(p);
+  }
+}
+
+/* ═══════════════════════════════
+   MOUSE ORB PARALLAX
+═══════════════════════════════ */
+document.addEventListener('mousemove', e => {
+  const orb = document.getElementById('mouseOrb');
+  orb.style.left = e.clientX + 'px';
+  orb.style.top  = e.clientY + 'px';
+});
+
+/* ═══════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════ */
+function startReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+</script>
+</body>
+</html>

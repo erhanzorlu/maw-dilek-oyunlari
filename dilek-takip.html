@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dilek Takip — Make-A-Wish</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&family=Droid+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --maw-blue:        #0057B8;
+      --maw-blue-dark:   #003D82;
+      --maw-blue-light:  #D6E7F7;
+      --maw-blue-pale:   #EDF4FB;
+      --maw-red:         #FF585D;
+      --maw-orange:      #FFB549;
+      --maw-yellow:      #FBD872;
+      --maw-teal:        #00BAB3;
+      --maw-teal-light:  #D6F5F4;
+      --white:           #FFFFFF;
+      --gray-50:         #F7F8FA;
+      --gray-100:        #EAECF0;
+      --gray-300:        #C4C9D4;
+      --gray-500:        #7A8299;
+      --gray-700:        #3D4460;
+      --gray-900:        #1A1F36;
+      --shadow-card:     0 2px 16px rgba(0,87,184,0.10), 0 1px 3px rgba(0,60,130,0.06);
+      --shadow-active:   0 4px 24px rgba(0,87,184,0.18);
+      --font-display:    'Droid Serif', Georgia, serif;
+      --font-body:       'Lato', system-ui, sans-serif;
+      --radius-md:       14px;
+      --radius-lg:       20px;
+    }
+
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--gray-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 800px 500px at 5% 0%,   rgba(0,87,184,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 600px 400px at 95% 100%, rgba(0,186,179,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 400px 300px at 60% 40%,  rgba(251,216,114,0.05) 0%, transparent 60%);
+    }
+
+    .page { position: relative; z-index: 1; max-width: 580px; margin: 0 auto; padding: 48px 20px 80px; }
+
+    /* Top bar */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 40px;
+      opacity: 0; animation: fadeUp 0.5s ease 0.05s forwards;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-name { font-family: var(--font-display); font-size: 17px; color: var(--maw-blue); line-height: 1.2; }
+    .brand-name small { display: block; font-family: var(--font-body); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-500); }
+    .live-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--maw-blue-pale); border: 1px solid var(--maw-blue-light);
+      color: var(--maw-blue); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 20px;
+    }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--maw-red); animation: pulseDot 2s ease-in-out infinite; }
+
+    /* Hero */
+    .hero { margin-bottom: 28px; opacity: 0; animation: fadeUp 0.55s ease 0.15s forwards; }
+    .hero h1 { font-family: var(--font-display); font-size: 34px; line-height: 1.2; color: var(--maw-blue-dark); letter-spacing: -0.01em; margin-bottom: 10px; }
+    .hero h1 em { font-style: italic; color: var(--maw-blue); }
+    .hero p { font-size: 14px; color: var(--gray-500); line-height: 1.65; max-width: 420px; }
+    .stars-row { display: flex; gap: 6px; margin-bottom: 12px; }
+
+    /* Progress card */
+    .progress-card {
+      background: var(--maw-blue); border-radius: var(--radius-lg);
+      padding: 20px 24px; margin-bottom: 20px; color: var(--white);
+      display: flex; align-items: center; gap: 20px;
+      box-shadow: var(--shadow-active);
+      opacity: 0; animation: fadeUp 0.5s ease 0.25s forwards;
+      position: relative; overflow: hidden;
+    }
+    .progress-card::after  { content: ''; position: absolute; right: -30px; top: -30px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+    .progress-card::before { content: ''; position: absolute; right: 40px; bottom: -50px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+    .progress-text { flex: 1; position: relative; z-index: 1; }
+    .progress-text-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; margin-bottom: 10px; }
+    .progress-bar  { height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+    .progress-fill { height: 100%; background: var(--maw-yellow); border-radius: 3px; width: 0; transition: width 1.3s cubic-bezier(0.4,0,0.2,1); }
+    .progress-sub  { font-size: 12px; opacity: 0.65; }
+    .progress-pct  { font-family: var(--font-display); font-size: 40px; line-height: 1; color: var(--maw-yellow); position: relative; z-index: 1; white-space: nowrap; }
+
+    /* Child card */
+    .child-card {
+      background: var(--white); border: 1px solid var(--gray-100);
+      border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 28px;
+      box-shadow: var(--shadow-card); display: flex; align-items: center; gap: 14px;
+      opacity: 0; animation: fadeUp 0.5s ease 0.38s forwards;
+    }
+    .child-avatar {
+      width: 50px; height: 50px; border-radius: 50%;
+      background: var(--maw-blue-pale); border: 2px solid var(--maw-blue-light);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 16px; color: var(--maw-blue);
+      flex-shrink: 0;
+    }
+    .child-info { flex: 1; min-width: 0; }
+    .child-name { font-size: 15px; font-weight: 700; color: var(--gray-900); margin-bottom: 2px; }
+    .child-meta { font-size: 12px; color: var(--gray-500); }
+    .child-badge { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; padding: 4px 12px; border-radius: 20px; background: var(--maw-teal-light); color: #007975; white-space: nowrap; }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; }
+    .step-row { display: flex; gap: 16px; align-items: flex-start; opacity: 0; transform: translateY(16px); }
+    .step-row.visible { animation: fadeUp 0.55s ease forwards; }
+    .step-rail { display: flex; flex-direction: column; align-items: center; width: 46px; flex-shrink: 0; }
+
+    .step-circle {
+      width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--gray-100); background: var(--white);
+      transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative; z-index: 1;
+    }
+    .step-circle.done {
+      background: var(--maw-blue); border-color: var(--maw-blue);
+      animation: circPop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards, pulseRing 2.5s ease-in-out 0.6s infinite;
+    }
+    .step-circle.active { background: var(--white); border-color: var(--maw-blue); border-width: 2.5px; }
+    .step-circle.pending { opacity: 0.35; }
+
+    .step-connector { width: 2px; flex: 1; min-height: 28px; background: var(--gray-100); margin: 4px 0; transform-origin: top; position: relative; overflow: hidden; }
+    .step-connector.filled::after { content: ''; position: absolute; inset: 0; background: var(--maw-blue); animation: lineGrow 0.7s ease 0.3s forwards; transform: scaleY(0); transform-origin: top; }
+
+    .check-path { stroke-dasharray: 36; stroke-dashoffset: 36; }
+    .check-path.drawn { animation: drawCheck 0.4s ease 0.25s forwards; }
+    .active-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--maw-blue); animation: pulseDot 2s ease-in-out infinite; }
+    .pending-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-300); }
+
+    .step-content { flex: 1; padding-bottom: 24px; }
+    .step-card {
+      background: var(--white); border: 1px solid var(--gray-100);
+      border-radius: var(--radius-md); padding: 16px 18px;
+      box-shadow: var(--shadow-card); transition: border-color 0.4s, box-shadow 0.4s;
+    }
+    .step-card.done   { border-color: var(--maw-blue-light); }
+    .step-card.active { border-color: var(--maw-blue); border-width: 1.5px; box-shadow: var(--shadow-active); }
+    .step-card.pending { opacity: 0.42; box-shadow: none; }
+
+    .step-number { font-size: 11px; font-weight: 700; color: var(--maw-blue); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 4px; opacity: 0.7; }
+    .step-card.pending .step-number { color: var(--gray-500); }
+    .step-title { font-size: 15px; font-weight: 700; color: var(--gray-900); margin-bottom: 5px; line-height: 1.35; }
+    .step-desc  { font-size: 13px; color: var(--gray-500); line-height: 1.55; }
+    .step-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 11px; flex-wrap: wrap; gap: 8px; }
+    .step-date  { font-size: 12px; color: var(--maw-blue); display: flex; align-items: center; gap: 5px; }
+    .step-date-pending { font-size: 12px; color: var(--gray-300); }
+    .step-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.03em; }
+    .step-badge.done    { background: var(--maw-blue-pale); color: var(--maw-blue); }
+    .step-badge.active  { background: #FFF6E0; color: #8A6200; }
+    .step-badge.pending { background: var(--gray-100); color: var(--gray-500); }
+
+    /* Keyframes */
+    @keyframes fadeUp   { to { opacity: 1; transform: translateY(0); } }
+    @keyframes circPop  { 0%{transform:scale(0.6);opacity:0.5} 60%{transform:scale(1.18)} 100%{transform:scale(1);opacity:1} }
+    @keyframes pulseRing { 0%,100%{box-shadow:0 0 0 0 rgba(0,87,184,0.35)} 50%{box-shadow:0 0 0 8px rgba(0,87,184,0)} }
+    @keyframes pulseDot  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.55;transform:scale(0.82)} }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+    @keyframes lineGrow  { to { transform: scaleY(1); } }
+
+    /* Footer */
+    .footer-note {
+      text-align: center; font-size: 12px; color: var(--gray-300);
+      margin-top: 52px; padding-top: 24px; border-top: 1px solid var(--gray-100);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .footer-note strong { color: var(--gray-500); font-weight: 700; }
+    .footer-tagline { font-family: var(--font-display); font-style: italic; font-size: 13px; color: var(--maw-blue); opacity: 0.7; }
+
+    @media (max-width: 480px) {
+      .page { padding: 32px 16px 60px; }
+      .hero h1 { font-size: 26px; }
+      .progress-pct { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <div class="brand">
+      <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+        <circle cx="19" cy="19" r="19" fill="#0057B8"/>
+        <path d="M10 26 Q12 14 22 10 Q28 8 28 14 Q28 20 20 20 Q14 20 14 26 Q14 30 19 30"
+          stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M26 10 L27.2 13.5 L31 13.5 L28 15.7 L29.2 19.2 L26 17 L22.8 19.2 L24 15.7 L21 13.5 L24.8 13.5 Z"
+          fill="#FBD872"/>
+      </svg>
+      <div class="brand-name">
+        Make-A-Wish
+        <small>Dilek Takip Sistemi</small>
+      </div>
+    </div>
+    <div class="live-pill"><span class="live-dot"></span> Canlı</div>
+  </div>
+
+  <div class="hero">
+    <div class="stars-row">
+      <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1l1.5 4h4.2l-3.4 2.5 1.3 4L7 9.3 3.4 11.5l1.3-4L1.3 5h4.2z" fill="#FBD872"/></svg>
+      <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1l1.5 4h4.2l-3.4 2.5 1.3 4L7 9.3 3.4 11.5l1.3-4L1.3 5h4.2z" fill="#FBD872"/></svg>
+      <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1l1.5 4h4.2l-3.4 2.5 1.3 4L7 9.3 3.4 11.5l1.3-4L1.3 5h4.2z" fill="#FFB549"/></svg>
+      <svg width="10" height="10" viewBox="0 0 14 14"><path d="M7 1l1.5 4h4.2l-3.4 2.5 1.3 4L7 9.3 3.4 11.5l1.3-4L1.3 5h4.2z" fill="#FFB549" opacity="0.5"/></svg>
+    </div>
+    <h1>Dileğinizin <em>yolculuğu</em><br>burada.</h1>
+    <p>Her adımı anlık olarak izleyin. Dileğiniz gerçeğe dönüşene kadar yanınızdayız.</p>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-text">
+      <div class="progress-text-label">Genel ilerleme</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-sub" id="progress-sub">Yükleniyor...</div>
+    </div>
+    <div class="progress-pct" id="progress-pct">0%</div>
+  </div>
+
+  <div class="child-card">
+    <div class="child-avatar">EY</div>
+    <div class="child-info">
+      <div class="child-name">Elif Yılmaz</div>
+      <div class="child-meta">Dilek No: #WH-2024-0187 &nbsp;·&nbsp; İstanbul</div>
+    </div>
+    <div class="child-badge">Aktif Dilek</div>
+  </div>
+
+  <div class="steps" id="steps-container"></div>
+
+  <div class="footer-note">
+    <svg width="22" height="22" viewBox="0 0 14 14"><path d="M7 1l1.5 4h4.2l-3.4 2.5 1.3 4L7 9.3 3.4 11.5l1.3-4L1.3 5h4.2z" fill="#FBD872" opacity="0.6"/></svg>
+    <div><strong>Make-A-Wish®</strong> — Her çocuğun bir dilekte hakkı var.</div>
+    <div class="footer-tagline">Together, we create life-changing wishes.</div>
+  </div>
+
+</div>
+
+<script>
+  const steps = [
+    { num:"1. Aşama", title:"Dilek alımı yapıldı",                        desc:"Çocuğun dilekleri aile görüşmesiyle kayıt altına alındı ve sisteme işlendi.",            date:"12 Mart 2025, Çarşamba", status:"done"    },
+    { num:"2. Aşama", title:"Dilek tasarımı yapıldı",                     desc:"Dileğin hayata geçirilmesi için detaylı plan ve tasarım ekip tarafından tamamlandı.",   date:"28 Mart 2025, Cuma",     status:"done"    },
+    { num:"3. Aşama", title:"Dilek gerçekleştirme tarihi belirlendi",     desc:"Gönüllüler, aile ve ilgili paydaşlar için ortak bir tarih koordinasyonu sağlandı.",      date:"15 Nisan 2025, Salı",    status:"active"  },
+    { num:"4. Aşama", title:"Dilek gerçekleştirildi",                     desc:"Unutulmaz gün hayata geçirildi ve anılar oluşturuldu.",                                  date:null,                     status:"pending" }
+  ];
+
+  const doneCount  = steps.filter(s => s.status === 'done').length;
+  const activeCount = steps.filter(s => s.status === 'active').length;
+  const pct = Math.round(((doneCount + activeCount * 0.5) / steps.length) * 100);
+
+  const calIcon = () => `<svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+    <rect x="1" y="2" width="10" height="9" rx="2" stroke="#0057B8" stroke-width="1"/>
+    <path d="M4 1v2M8 1v2M1 5h10" stroke="#0057B8" stroke-width="1" stroke-linecap="round"/>
+  </svg>`;
+
+  const container = document.getElementById('steps-container');
+  steps.forEach((step, i) => {
+    const isLast = i === steps.length - 1;
+    let circleInner = step.status === 'done'
+      ? `<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path class="check-path drawn" d="M5 11l4 4 8-8" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      : step.status === 'active'
+      ? `<div class="active-dot"></div>`
+      : `<div class="pending-dot"></div>`;
+
+    const row = document.createElement('div');
+    row.className = 'step-row';
+    row.style.animationDelay = (0.52 + i * 0.16) + 's';
+    row.innerHTML = `
+      <div class="step-rail">
+        <div class="step-circle ${step.status}">${circleInner}</div>
+        ${!isLast ? `<div class="step-connector ${step.status === 'done' ? 'filled' : ''}"></div>` : ''}
+      </div>
+      <div class="step-content">
+        <div class="step-card ${step.status}">
+          <div class="step-number">${step.num}</div>
+          <div class="step-title">${step.title}</div>
+          <div class="step-desc">${step.desc}</div>
+          <div class="step-footer">
+            ${step.date
+              ? `<div class="step-date">${calIcon()} ${step.date}</div>`
+              : `<div class="step-date-pending">Tarih bekleniyor</div>`}
+            <span class="step-badge ${step.status}">${
+              step.status === 'done' ? 'Tamamlandı' :
+              step.status === 'active' ? 'Devam ediyor' : 'Beklemede'
+            }</span>
+          </div>
+        </div>
+      </div>`;
+    container.appendChild(row);
+  });
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.step-row').forEach(r => obs.observe(r));
+
+  setTimeout(() => {
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-sub').textContent = doneCount + ' / ' + steps.length + ' aşama tamamlandı';
+    let cur = 0;
+    const el = document.getElementById('progress-pct');
+    const iv = setInterval(() => { cur = Math.min(cur + 2, pct); el.textContent = cur + '%'; if (cur >= pct) clearInterval(iv); }, 22);
+  }, 700);
+</script>
+</body>
+</html>

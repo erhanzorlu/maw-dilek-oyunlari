@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make-A-Wish Türkiye – Tasarım Karşılaştırma</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ─── RESET ─── */
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+
+/* ══════════════════════════════════════
+   STAR REVEAL INTRO
+══════════════════════════════════════ */
+#starReveal{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  background:#003DA5;
+  pointer-events:all;
+}
+#starReveal.done{pointer-events:none;}
+
+/* The SVG clip mask container */
+.star-mask-wrap{
+  position:fixed;inset:0;z-index:9998;
+  pointer-events:none;
+}
+.star-mask-wrap svg{width:100%;height:100%;}
+
+/* Content is clipped to the star shape */
+#revealContent{
+  position:fixed;inset:0;z-index:9997;
+  /* clip-path applied via JS */
+}
+
+/* Intro screen — shown before clip starts */
+.intro-screen{
+  position:fixed;inset:0;z-index:10000;
+  background:#003DA5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;
+}
+.intro-screen.hidden{display:none;}
+
+.intro-logo{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(2rem,6vw,3.5rem);
+  color:white;letter-spacing:-1px;
+  text-align:center;line-height:1.1;
+}
+.intro-logo span{color:#FFD700;}
+.intro-tagline{
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:500;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.6);
+}
+.intro-star-btn{
+  margin-top:12px;
+  width:90px;height:90px;
+  background:none;border:none;cursor:pointer;
+  position:relative;
+  animation:introPulse 2s ease-in-out infinite;
+  transition:transform .15s;
+}
+.intro-star-btn:hover{transform:scale(1.08);}
+.intro-star-btn:active{transform:scale(.96);}
+@keyframes introPulse{
+  0%,100%{filter:drop-shadow(0 0 12px rgba(255,215,0,.5));}
+  50%{filter:drop-shadow(0 0 28px rgba(255,215,0,.9));}
+}
+.intro-hint{
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+  animation:blinkHint 1.8s ease-in-out infinite;
+}
+@keyframes blinkHint{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+/* floating sparkles on intro */
+.intro-sparkle{
+  position:absolute;
+  font-size:20px;
+  animation:sparkFloat var(--sd) ease-in-out infinite var(--ss);
+  opacity:.7;
+  pointer-events:none;
+}
+@keyframes sparkFloat{
+  0%,100%{transform:translateY(0) rotate(0deg);opacity:.5;}
+  50%{transform:translateY(-18px) rotate(15deg);opacity:1;}
+}
+
+/* reveal content wrapper — hidden until star fires */
+#revealContent{display:none;}
+
+/* ─── TOGGLE BAR ─── */
+.toggle-bar{
+  position:fixed;top:0;left:0;right:0;
+  z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  height:62px;
+  background:#ffffff;
+  border-bottom:1px solid #E8E8E8;
+  gap:0;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+.toggle-btn{
+  padding:10px 32px;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:600;
+  letter-spacing:.8px;text-transform:uppercase;
+  border:none;cursor:pointer;
+  transition:all .3s ease;
+  position:relative;z-index:1;
+}
+.toggle-btn.fun{
+  background:transparent;color:#003DA5;
+  border-radius:50px 0 0 50px;
+  border:1.5px solid #003DA5;border-right:none;
+}
+.toggle-btn.lux{
+  background:transparent;color:#2C2C2C;
+  border-radius:0 50px 50px 0;
+  border:1.5px solid #2C2C2C;border-left:none;
+}
+.toggle-btn.active.fun{background:#003DA5;color:white;}
+.toggle-btn.active.lux{background:#2C2C2C;color:white;}
+
+/* ─── SCREENS ─── */
+.screen{
+  position:fixed;
+  top:62px;left:0;right:0;bottom:0;
+  overflow-y:auto;
+  transition:opacity .5s ease, transform .5s ease;
+}
+.screen.hidden{opacity:0;pointer-events:none;transform:translateY(16px);}
+.screen.visible{opacity:1;pointer-events:all;transform:translateY(0);}
+
+/* ══════════════════════════════════════
+   SCREEN A – EĞLENCELİ (mevcut)
+══════════════════════════════════════ */
+#screenFun{
+  background:#E8F4FD;
+}
+
+/* stars */
+.stars-bg{position:fixed;inset:62px 0 0 0;pointer-events:none;z-index:0;overflow:hidden;}
+.star{position:absolute;border-radius:50%;background:#FFD700;opacity:0;animation:twinkle var(--d) ease-in-out infinite var(--delay);}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5);}50%{opacity:.7;transform:scale(1.2);}}
+.floating-shape{position:fixed;pointer-events:none;z-index:0;animation:floatUp linear infinite;opacity:.08;}
+@keyframes floatUp{0%{transform:translateY(110vh) rotate(0deg);opacity:0;}10%{opacity:.08;}90%{opacity:.08;}100%{transform:translateY(-10vh) rotate(360deg);opacity:0;}}
+
+.fun-wrapper{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:36px 20px 60px;}
+
+.fun-header{text-align:center;margin-bottom:36px;animation:fadeInDown .8s ease both;}
+.logo-badge{display:inline-flex;align-items:center;gap:10px;background:#003DA5;color:white;padding:9px 22px;border-radius:50px;font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;box-shadow:0 4px 20px rgba(0,61,165,.3);}
+.logo-badge .si{font-size:16px;animation:spin 4s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.fun-header h1{font-family:'Fredoka One',cursive;font-size:clamp(1.8rem,5vw,2.8rem);color:#003DA5;line-height:1.1;margin-bottom:6px;}
+.fun-header h1 span{color:#E5202E;}
+.fun-header p{color:#4A5568;font-size:14px;font-weight:600;}
+
+.fun-card{background:white;border-radius:32px;padding:36px;box-shadow:0 20px 60px rgba(0,61,165,.12),0 4px 16px rgba(0,0,0,.06);animation:fadeInUp .9s ease .2s both;position:relative;overflow:hidden;font-family:'Nunito',sans-serif;}
+.fun-card::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#E5202E,#FFD700,#003DA5,#7B2D8B);border-radius:32px 32px 0 0;}
+
+.avatar-section{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;}
+.avatar-wrap{position:relative;width:110px;height:110px;margin-bottom:14px;cursor:pointer;}
+.avatar-img{width:110px;height:110px;border-radius:50%;border:4px solid white;box-shadow:0 8px 30px rgba(0,61,165,.2);overflow:hidden;transition:transform .3s;}
+.avatar-wrap:hover .avatar-img{transform:scale(1.05);}
+.avatar-emoji{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:46px;background:linear-gradient(135deg,#003DA5,#7B2D8B);}
+.avatar-edit{position:absolute;bottom:3px;right:3px;width:32px;height:32px;background:#E5202E;border-radius:50%;border:3px solid white;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;box-shadow:0 2px 10px rgba(229,32,46,.4);transition:transform .2s,background .2s;cursor:pointer;}
+.avatar-edit:hover{transform:scale(1.15);background:#003DA5;}
+.avatar-hint{font-size:12px;color:#718096;font-weight:600;}
+
+.fun-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.fun-group{display:flex;flex-direction:column;gap:6px;}
+.fun-group.full{grid-column:1/-1;}
+.fun-label{font-size:12px;font-weight:800;color:#003DA5;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:5px;}
+.fun-input,.fun-select,.fun-textarea{width:100%;padding:12px 15px;border:2.5px solid #E2E8F0;border-radius:14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:#1A1A2E;background:#F4F7FB;transition:border-color .25s,box-shadow .25s,background .25s;outline:none;appearance:none;}
+.fun-input:focus,.fun-select:focus,.fun-textarea:focus{border-color:#003DA5;background:white;box-shadow:0 0 0 4px rgba(0,61,165,.12);}
+.fun-input::placeholder,.fun-textarea::placeholder{color:#A0AEC0;font-weight:600;}
+.fun-textarea{resize:vertical;min-height:90px;line-height:1.6;}
+.fun-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23003DA5' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;cursor:pointer;}
+.phone-wrap{display:flex;gap:8px;}
+.phone-pre{padding:12px 12px;border:2.5px solid #E2E8F0;border-radius:14px;background:#F4F7FB;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:#003DA5;min-width:64px;text-align:center;flex-shrink:0;}
+.fun-divider{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:2px 0;}
+.fun-divider span{font-size:11px;font-weight:800;color:#E5202E;text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;}
+.fun-divider::before,.fun-divider::after{content:'';flex:1;height:1.5px;background:linear-gradient(90deg,transparent,#E2E8F0,transparent);}
+.age-lbl{font-size:12px;font-weight:800;color:#003DA5;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:5px;margin-bottom:10px;}
+.age-chips{display:flex;flex-wrap:wrap;gap:10px;}
+.age-chip input{display:none;}
+.age-chip label{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:50px;border:2.5px solid #E2E8F0;background:#F4F7FB;cursor:pointer;font-size:14px;font-weight:800;color:#718096;transition:all .25s ease;user-select:none;}
+.age-chip input:checked+label{background:#003DA5;border-color:#003DA5;color:white;box-shadow:0 6px 20px rgba(0,61,165,.3);transform:translateY(-2px) scale(1.04);}
+.fun-save{margin-top:28px;width:100%;padding:16px;border:none;border-radius:16px;background:linear-gradient(135deg,#E5202E,#FF8C00);color:white;font-family:'Fredoka One',cursive;font-size:20px;letter-spacing:1px;cursor:pointer;box-shadow:0 8px 30px rgba(229,32,46,.35);transition:transform .2s,box-shadow .2s;}
+.fun-save:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(229,32,46,.45);}
+
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-28px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(36px);}to{opacity:1;transform:translateY(0);}}
+
+
+/* ══════════════════════════════════════
+   SCREEN B – MODERN & CİDDİ
+══════════════════════════════════════ */
+#screenLux{ background:#F5F5F5; }
+
+/* Subtle texture */
+#screenLux::after{
+  content:'';position:fixed;inset:62px 0 0 0;
+  background-image:radial-gradient(circle at 80% 20%, rgba(229,32,46,.04) 0%, transparent 50%),
+                   radial-gradient(circle at 10% 80%, rgba(44,44,44,.03) 0%, transparent 40%);
+  pointer-events:none;z-index:0;
+}
+
+.lux-wrapper{position:relative;z-index:1;max-width:740px;margin:0 auto;padding:44px 24px 70px;}
+
+/* ── Header ── */
+.lux-header{margin-bottom:40px;animation:lxFade .7s ease both;}
+.lux-eyebrow{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:20px;
+}
+.lux-eyebrow-line{flex:1;height:1px;background:#D0D0D0;}
+.lux-eyebrow-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'DM Sans',sans-serif;
+  font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;
+  color:#E5202E;white-space:nowrap;
+}
+.lux-eyebrow-dot{width:5px;height:5px;border-radius:50%;background:#E5202E;}
+.lux-header h1{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(2rem,4.5vw,3rem);
+  font-weight:400;color:#1A1A1A;
+  line-height:1.1;letter-spacing:-.5px;
+  margin-bottom:10px;
+  animation:lxFade .7s ease .1s both;
+}
+.lux-header h1 em{font-style:italic;color:#E5202E;}
+.lux-header p{
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:400;color:#888;
+  letter-spacing:.2px;
+  animation:lxFade .7s ease .2s both;
+}
+@keyframes lxFade{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── Card ── */
+.lux-card{
+  background:#fff;
+  border-radius:16px;
+  padding:44px;
+  box-shadow:0 2px 4px rgba(0,0,0,.04), 0 12px 40px rgba(0,0,0,.07);
+  position:relative;overflow:hidden;
+  animation:lxFade .7s ease .25s both;
+  border:1px solid rgba(0,0,0,.06);
+}
+.lux-card-accent{
+  position:absolute;top:0;left:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#E5202E 0%,#B01020 100%);
+  border-radius:16px 0 0 16px;
+}
+
+/* ── Avatar ── */
+.lux-avatar-section{
+  display:flex;align-items:center;gap:24px;
+  margin-bottom:36px;
+  padding-bottom:32px;
+  border-bottom:1px solid #F0F0F0;
+}
+.lux-avatar-ring{position:relative;width:96px;height:96px;cursor:pointer;flex-shrink:0;}
+.lux-avatar-inner{
+  width:96px;height:96px;border-radius:50%;overflow:hidden;
+  background:linear-gradient(135deg,#2C2C2C,#4A4A4A);
+  display:flex;align-items:center;justify-content:center;
+  font-size:38px;color:white;
+  border:3px solid #F0F0F0;
+  box-shadow:0 4px 20px rgba(0,0,0,.12);
+  transition:transform .25s,box-shadow .25s;
+}
+.lux-avatar-ring:hover .lux-avatar-inner{transform:scale(1.04);box-shadow:0 8px 28px rgba(0,0,0,.18);}
+.lux-avatar-edit{
+  position:absolute;bottom:2px;right:2px;
+  width:28px;height:28px;
+  background:#E5202E;border-radius:50%;
+  border:2.5px solid white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:white;
+  box-shadow:0 2px 8px rgba(229,32,46,.35);
+  cursor:pointer;transition:transform .2s,background .2s;
+}
+.lux-avatar-edit:hover{transform:scale(1.1);background:#B01020;}
+.lux-avatar-meta{flex:1;}
+.lux-avatar-meta h3{
+  font-family:'DM Serif Display',serif;
+  font-size:20px;color:#1A1A1A;margin-bottom:4px;
+}
+.lux-avatar-meta p{
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;color:#999;font-weight:400;
+}
+.lux-change-photo{
+  margin-top:10px;
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:600;letter-spacing:.3px;
+  color:#E5202E;cursor:pointer;
+  border:none;background:none;padding:0;
+  transition:opacity .2s;
+}
+.lux-change-photo:hover{opacity:.7;}
+
+/* ── Section label ── */
+.lux-section-title{
+  grid-column:1/-1;
+  margin:14px 0 4px;
+}
+.lux-section-title span{
+  font-family:'DM Sans',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:#BBBBBB;
+  display:flex;align-items:center;gap:10px;
+}
+.lux-section-title span::after{content:'';flex:1;height:1px;background:#EEEEEE;}
+
+/* ── Form ── */
+.lux-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.lux-group{display:flex;flex-direction:column;gap:7px;}
+.lux-group.full{grid-column:1/-1;}
+
+.lux-label{
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;
+  color:#555;
+}
+
+.lux-input,.lux-select,.lux-textarea{
+  width:100%;padding:13px 16px;
+  background:#FAFAFA;
+  border:1.5px solid #E8E8E8;
+  border-radius:10px;
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:400;
+  color:#1A1A1A;
+  outline:none;appearance:none;
+  transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.lux-input:focus,.lux-select:focus,.lux-textarea:focus{
+  border-color:#E5202E;
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(229,32,46,.08);
+}
+.lux-input::placeholder,.lux-textarea::placeholder{color:#C0C0C0;}
+.lux-textarea{resize:vertical;min-height:96px;line-height:1.65;}
+.lux-select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:40px;cursor:pointer;
+}
+.lux-select option{background:#fff;color:#1A1A1A;}
+
+.lux-phone-wrap{display:flex;gap:10px;}
+.lux-phone-pre{
+  padding:13px 14px;
+  background:#F0F0F0;
+  border:1.5px solid #E8E8E8;
+  border-radius:10px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:700;
+  color:#2C2C2C;min-width:70px;text-align:center;flex-shrink:0;
+}
+
+/* ── Age chips ── */
+.lux-age-lbl{
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  color:#555;margin-bottom:12px;
+}
+.lux-chips{display:flex;flex-wrap:wrap;gap:10px;}
+.lux-chip input{display:none;}
+.lux-chip label{
+  padding:11px 20px;
+  border:1.5px solid #E8E8E8;
+  border-radius:50px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:500;
+  color:#888;
+  cursor:pointer;
+  transition:all .22s ease;user-select:none;
+  background:#FAFAFA;
+}
+.lux-chip input:checked+label{
+  background:#E5202E;border-color:#E5202E;
+  color:white;
+  box-shadow:0 4px 16px rgba(229,32,46,.25);
+  transform:translateY(-1px);
+}
+.lux-chip label:hover:not(.lux-chip input:checked+label){
+  border-color:#E5202E;color:#E5202E;background:#FFF5F5;
+}
+
+/* ── Save button ── */
+.lux-save{
+  margin-top:32px;width:100%;padding:17px;
+  border:none;border-radius:10px;
+  background:#1A1A1A;
+  color:white;
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:700;
+  letter-spacing:.5px;
+  cursor:pointer;
+  position:relative;overflow:hidden;
+  transition:all .25s ease;
+  box-shadow:0 4px 20px rgba(0,0,0,.18);
+}
+.lux-save:hover{background:#E5202E;box-shadow:0 8px 28px rgba(229,32,46,.3);transform:translateY(-2px);}
+.lux-save:active{transform:translateY(0);}
+.lux-save .save-inner{display:flex;align-items:center;justify-content:center;gap:10px;}
+.lux-save .gold-line{display:none;}
+
+/* corner ornament classes kept but hidden */
+.corner-tr,.corner-bl,.lux-orb{display:none;}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);padding:13px 26px;border-radius:3px;font-weight:700;font-size:14px;z-index:9999;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .4s;opacity:0;display:flex;align-items:center;gap:10px;white-space:nowrap;}
+.toast.fun-toast{background:#003DA5;color:white;border-radius:50px;font-family:'Nunito',sans-serif;font-size:14px;box-shadow:0 10px 40px rgba(0,61,165,.4);}
+.toast.lux-toast{background:#1A1A1A;color:white;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:.3px;box-shadow:0 10px 40px rgba(0,0,0,.25);}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* ─── shared hidden ─── */
+#avatarInputFun,#avatarInputLux{display:none;}
+
+@media(max-width:560px){
+  .fun-grid,.lux-grid{grid-template-columns:1fr;}
+  .fun-group.full,.lux-group.full{grid-column:1;}
+  .fun-card,.lux-card{padding:24px 18px;}
+  .lux-card::before,.lux-card::after,.corner-tr,.corner-bl{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ STAR INTRO ══════════ -->
+<div class="intro-screen" id="introScreen">
+  <!-- floating sparkles -->
+  <span class="intro-sparkle" style="top:12%;left:8%;--sd:3.1s;--ss:0s">✨</span>
+  <span class="intro-sparkle" style="top:18%;right:10%;--sd:2.7s;--ss:.4s">⭐</span>
+  <span class="intro-sparkle" style="bottom:20%;left:12%;--sd:3.4s;--ss:.8s">💫</span>
+  <span class="intro-sparkle" style="bottom:14%;right:8%;--sd:2.9s;--ss:.2s">✨</span>
+  <span class="intro-sparkle" style="top:40%;left:4%;--sd:3.8s;--ss:1s">🌟</span>
+  <span class="intro-sparkle" style="top:55%;right:5%;--sd:2.5s;--ss:.6s">⭐</span>
+
+  <div class="intro-logo">Make-A-<span>Wish</span><br>Türkiye</div>
+  <div class="intro-tagline">Gönüllü Profil Paneli</div>
+
+  <button class="intro-star-btn" id="introBtn" onclick="triggerStarReveal()">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <polygon
+        points="50,2 61,35 97,35 68,57 79,91 50,70 21,91 32,57 3,35 39,35"
+        fill="#FFD700"
+        stroke="rgba(255,255,255,.3)"
+        stroke-width="1.5"
+      />
+    </svg>
+  </button>
+
+  <div class="intro-hint">Yıldıza tıkla</div>
+</div>
+
+<!-- clip wrapper for reveal -->
+<div id="revealContent">
+
+<!-- ─── TOGGLE BAR ─── -->
+<div class="toggle-bar">
+  <button class="toggle-btn fun active" id="btnFun" onclick="switchTo('fun')">⭐ Eğlenceli</button>
+  <button class="toggle-btn lux" id="btnLux" onclick="switchTo('lux')">◆ Premium</button>
+</div>
+<div class="screen visible" id="screenFun">
+
+  <!-- Stars -->
+  <div class="stars-bg" id="starsBg"></div>
+  <div id="floatingShapes"></div>
+
+  <div class="fun-wrapper">
+    <div class="fun-header">
+      <div class="logo-badge"><span class="si">⭐</span> Make-A-Wish Türkiye <span class="si">⭐</span></div>
+      <h1>Profilini <span>Düzenle</span></h1>
+      <p>Dilekleri gerçekleştiren gönüllünün bilgileri ✨</p>
+    </div>
+
+    <div class="fun-card">
+      <div class="avatar-section">
+        <div class="avatar-wrap" onclick="document.getElementById('avatarInputFun').click()">
+          <div class="avatar-img" id="funAvatarPreview">
+            <div class="avatar-emoji">🌟</div>
+          </div>
+          <div class="avatar-edit">✏️</div>
+        </div>
+        <p class="avatar-hint">Profil fotoğrafını değiştirmek için tıkla</p>
+        <input type="file" id="avatarInputFun" accept="image/*">
+      </div>
+
+      <div class="fun-grid">
+        <div class="fun-group">
+          <div class="fun-label"><span>👤</span> Ad</div>
+          <input class="fun-input" type="text" placeholder="Adınız">
+        </div>
+        <div class="fun-group">
+          <div class="fun-label"><span>👤</span> Soyad</div>
+          <input class="fun-input" type="text" placeholder="Soyadınız">
+        </div>
+        <div class="fun-group">
+          <div class="fun-label"><span>🎂</span> Yaş</div>
+          <input class="fun-input" type="number" placeholder="25" min="18" max="99">
+        </div>
+        <div class="fun-group">
+          <div class="fun-label"><span>🌈</span> Cinsiyet</div>
+          <select class="fun-select">
+            <option value="" disabled selected>Seçiniz...</option>
+            <option>Kadın</option><option>Erkek</option><option>Belirtmek istemiyorum</option>
+          </select>
+        </div>
+
+        <div class="fun-divider full"><span>✦ İletişim & Meslek ✦</span></div>
+
+        <div class="fun-group full">
+          <div class="fun-label"><span>💼</span> Meslek</div>
+          <input class="fun-input" type="text" placeholder="Örn: Öğretmen, Psikolog, Mühendis...">
+        </div>
+        <div class="fun-group full">
+          <div class="fun-label"><span>📱</span> Telefon Numarası</div>
+          <div class="phone-wrap">
+            <div class="phone-pre">🇹🇷 +90</div>
+            <input class="fun-input" type="tel" placeholder="5XX XXX XX XX" maxlength="10">
+          </div>
+        </div>
+
+        <div class="fun-divider full"><span>✦ Hakkında ✦</span></div>
+
+        <div class="fun-group full">
+          <div class="fun-label"><span>💬</span> Açıklama</div>
+          <textarea class="fun-textarea" placeholder="Kendinizi kısaca tanıtın. Neden Make-A-Wish ailesinin bir parçasısınız? ✨"></textarea>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;">
+        <div class="age-lbl"><span>🧒</span> Çalıştığı Yaş Grupları</div>
+        <div class="age-chips">
+          <div class="age-chip"><input type="checkbox" id="fa1"><label for="fa1">🍼 3 – 6 yaş</label></div>
+          <div class="age-chip"><input type="checkbox" id="fa2"><label for="fa2">🚀 7 – 10 yaş</label></div>
+          <div class="age-chip"><input type="checkbox" id="fa3"><label for="fa3">🎮 11 – 13 yaş</label></div>
+          <div class="age-chip"><input type="checkbox" id="fa4"><label for="fa4">🌟 14 – 17 yaş</label></div>
+        </div>
+      </div>
+
+      <button class="fun-save" onclick="showToast('fun')">⭐ Profili Kaydet ⭐</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN LUX ══════════ -->
+<div class="screen hidden" id="screenLux">
+
+  <div class="lux-wrapper">
+    <div class="lux-header">
+      <div class="lux-eyebrow">
+        <div class="lux-eyebrow-line"></div>
+        <div class="lux-eyebrow-tag"><span class="lux-eyebrow-dot"></span> Make-A-Wish Türkiye <span class="lux-eyebrow-dot"></span></div>
+        <div class="lux-eyebrow-line"></div>
+      </div>
+      <h1>Profil <em>Bilgilerini</em> Düzenle</h1>
+      <p>Gönüllü hesap bilgilerinizi güncel tutun</p>
+    </div>
+
+    <div class="lux-card">
+      <div class="lux-card-accent"></div>
+
+      <!-- Avatar — horizontal layout -->
+      <div class="lux-avatar-section">
+        <div class="lux-avatar-ring" onclick="document.getElementById('avatarInputLux').click()">
+          <div class="lux-avatar-inner" id="luxAvatarPreview">👤</div>
+          <div class="lux-avatar-edit">✏</div>
+        </div>
+        <div class="lux-avatar-meta">
+          <h3>Profil Fotoğrafı</h3>
+          <p>JPG veya PNG formatında yükleyiniz</p>
+          <button class="lux-change-photo" onclick="document.getElementById('avatarInputLux').click()">
+            ↑ Fotoğraf Değiştir
+          </button>
+        </div>
+        <input type="file" id="avatarInputLux" accept="image/*">
+      </div>
+
+      <div class="lux-grid">
+        <div class="lux-group">
+          <div class="lux-label">Ad</div>
+          <input class="lux-input" type="text" placeholder="Adınız">
+        </div>
+        <div class="lux-group">
+          <div class="lux-label">Soyad</div>
+          <input class="lux-input" type="text" placeholder="Soyadınız">
+        </div>
+        <div class="lux-group">
+          <div class="lux-label">Yaş</div>
+          <input class="lux-input" type="number" placeholder="—" min="18" max="99">
+        </div>
+        <div class="lux-group">
+          <div class="lux-label">Cinsiyet</div>
+          <select class="lux-select">
+            <option value="" disabled selected>Seçiniz</option>
+            <option>Kadın</option><option>Erkek</option><option>Belirtmek istemiyorum</option>
+          </select>
+        </div>
+
+        <div class="lux-section-title full"><span>İletişim & Meslek</span></div>
+
+        <div class="lux-group full">
+          <div class="lux-label">Meslek</div>
+          <input class="lux-input" type="text" placeholder="Mesleğinizi giriniz">
+        </div>
+        <div class="lux-group full">
+          <div class="lux-label">Telefon Numarası</div>
+          <div class="lux-phone-wrap">
+            <div class="lux-phone-pre">🇹🇷 +90</div>
+            <input class="lux-input" type="tel" placeholder="5XX XXX XX XX" maxlength="10">
+          </div>
+        </div>
+
+        <div class="lux-section-title full"><span>Hakkında</span></div>
+
+        <div class="lux-group full">
+          <div class="lux-label">Açıklama</div>
+          <textarea class="lux-textarea" placeholder="Kendinizi ve gönüllülük motivasyonunuzu kısaca aktarınız…"></textarea>
+        </div>
+      </div>
+
+      <div style="margin-top:28px;">
+        <div class="lux-age-lbl">Çalışılan Yaş Grupları</div>
+        <div class="lux-chips">
+          <div class="lux-chip"><input type="checkbox" id="la1"><label for="la1">3 – 6 Yaş</label></div>
+          <div class="lux-chip"><input type="checkbox" id="la2"><label for="la2">7 – 10 Yaş</label></div>
+          <div class="lux-chip"><input type="checkbox" id="la3"><label for="la3">11 – 13 Yaş</label></div>
+          <div class="lux-chip"><input type="checkbox" id="la4"><label for="la4">14 – 17 Yaş</label></div>
+        </div>
+      </div>
+
+      <button class="lux-save" onclick="showToast('lux')">
+        <div class="save-inner">Profili Kaydet</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast fun-toast" id="toastFun">🌟 Profil başarıyla kaydedildi!</div>
+<div class="toast lux-toast" id="toastLux">✓ Profil başarıyla kaydedildi</div>
+
+</div><!-- /revealContent -->
+
+<script>
+// ══════════════════════════════════════
+// STAR REVEAL ANIMATION
+// ══════════════════════════════════════
+function triggerStarReveal() {
+  const intro = document.getElementById('introScreen');
+  const reveal = document.getElementById('revealContent');
+  const btn = document.getElementById('introBtn');
+
+  // Pulse the button first
+  btn.style.transform = 'scale(0.85)';
+  setTimeout(() => { btn.style.transform = 'scale(1.2)'; }, 120);
+
+  // Star polygon clip-path points (5-point star, normalised 0-100)
+  // We'll animate the clip-path from a tiny star in center → huge star covering screen
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const cx = 50; // percent center
+  const cy = 50;
+
+  // Generate star clip-path polygon string at a given "radius" (percent units)
+  function starClip(outerR, innerR) {
+    const points = [];
+    for (let i = 0; i < 10; i++) {
+      const angle = (i * Math.PI / 5) - Math.PI / 2;
+      const r = i % 2 === 0 ? outerR : innerR;
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * innerRatio(outerR) * Math.sin(angle) * (H / W); // aspect-correct
+      points.push(`${x}% ${y}%`);
+    }
+    return `polygon(${points.join(', ')})`;
+  }
+
+  // Because viewport isn't square, we need to scale Y differently
+  // Simple version: just use vw-based clip
+  function starClipSimple(outerR) {
+    const innerR = outerR * 0.42;
+    const points = [];
+    for (let i = 0; i < 10; i++) {
+      const angle = (i * Math.PI / 5) - Math.PI / 2;
+      const r = i % 2 === 0 ? outerR : innerR;
+      const px = 50 + r * Math.cos(angle);
+      const py = 50 + r * Math.sin(angle) * (W / H); // compensate aspect ratio
+      points.push(`${px}% ${py}%`);
+    }
+    return `polygon(${points.join(', ')})`;
+  }
+
+  // Start: tiny star, end: massive star well beyond viewport
+  const startSize = 5;
+  const endSize = 160; // way beyond viewport
+
+  // Apply initial clip
+  reveal.style.clipPath = starClipSimple(startSize);
+  reveal.style.webkitClipPath = starClipSimple(startSize);
+  reveal.style.display = 'block';
+
+  // Hide intro with a quick fade
+  intro.style.transition = 'opacity 0.25s ease';
+  intro.style.opacity = '0';
+  setTimeout(() => { intro.style.display = 'none'; }, 280);
+
+  // Animate the clip-path expanding
+  const duration = 1600; // ms
+  const startTime = performance.now();
+  const ease = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; // easeInOutCubic
+
+  function animate(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = ease(progress);
+    const currentSize = startSize + (endSize - startSize) * eased;
+
+    reveal.style.clipPath = starClipSimple(currentSize);
+    reveal.style.webkitClipPath = starClipSimple(currentSize);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      // Done — remove clip entirely
+      reveal.style.clipPath = 'none';
+      reveal.style.webkitClipPath = 'none';
+    }
+  }
+
+  setTimeout(() => requestAnimationFrame(animate), 50);
+}
+
+function innerRatio(r) { return 1; }
+
+// ── Stars (fun) ──
+const sb = document.getElementById('starsBg');
+for(let i=0;i<55;i++){
+  const s=document.createElement('div');s.className='star';
+  const sz=Math.random()*4+2;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*5}s;`;
+  sb.appendChild(s);
+}
+// floating shapes
+const fc=document.getElementById('floatingShapes');
+['⭐','🌟','✨','💫','🎈','❤️'].forEach(e=>{
+  for(let i=0;i<3;i++){
+    const el=document.createElement('div');el.className='floating-shape';
+    el.textContent=e;
+    el.style.cssText=`font-size:${18+Math.random()*28}px;left:${Math.random()*100}%;animation-duration:${12+Math.random()*18}s;animation-delay:${Math.random()*14}s;`;
+    fc.appendChild(el);
+  }
+});
+
+// ── Toggle ──
+function switchTo(mode){
+  const isFun = mode==='fun';
+  document.getElementById('screenFun').className='screen '+(isFun?'visible':'hidden');
+  document.getElementById('screenLux').className='screen '+(isFun?'hidden':'visible');
+  document.getElementById('btnFun').className='toggle-btn fun '+(isFun?'active':'');
+  document.getElementById('btnLux').className='toggle-btn lux '+(isFun?'':'active');
+}
+
+// ── Avatar ──
+document.getElementById('avatarInputFun').addEventListener('change',function(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{document.getElementById('funAvatarPreview').innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`};
+  r.readAsDataURL(f);
+});
+document.getElementById('avatarInputLux').addEventListener('change',function(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{document.getElementById('luxAvatarPreview').innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`};
+  r.readAsDataURL(f);
+});
+
+// ── Toast ──
+function showToast(type){
+  const id = type==='fun'?'toastFun':'toastLux';
+  const t=document.getElementById(id);
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>

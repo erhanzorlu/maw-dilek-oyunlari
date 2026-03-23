@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bölüm İnşaatta 🚧🎮</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --neon-purple: #b94fff;
+    --neon-blue: #00f0ff;
+    --neon-green: #39ff14;
+    --neon-yellow: #ffd700;
+    --neon-orange: #ff6a00;
+    --dark-bg: #08080f;
+    --dark-mid: #0d0d1a;
+    --dark-panel: #111128;
+    --grid-color: rgba(0,240,255,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--dark-bg);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ── PARALLAX LAYERS ── */
+  .parallax-bg {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  }
+  .layer-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridScroll 20s linear infinite;
+  }
+  @keyframes gridScroll {
+    from { background-position: 0 0; }
+    to   { background-position: 40px 40px; }
+  }
+  .layer-stars {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 20% 20%, rgba(185,79,255,.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0,240,255,.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(57,255,20,.07) 0%, transparent 70%);
+  }
+  .layer-particles { position: absolute; inset: 0; }
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    animation: float-particle var(--dur, 8s) ease-in-out infinite var(--delay, 0s);
+    opacity: 0;
+  }
+  @keyframes float-particle {
+    0%   { transform: translateY(110vh) translateX(0); opacity: 0; }
+    10%  { opacity: .8; }
+    90%  { opacity: .5; }
+    100% { transform: translateY(-10vh) translateX(var(--drift,30px)); opacity: 0; }
+  }
+
+  /* ── SCANLINES ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.08) 2px, rgba(0,0,0,.08) 4px);
+    pointer-events: none; z-index: 1000;
+  }
+
+  /* ── FLOATING PIXEL BLOCKS ── */
+  .blocks-container { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+  .pixel-block {
+    position: absolute;
+    image-rendering: pixelated;
+    animation: floatBlock var(--dur,6s) ease-in-out infinite var(--delay,0s);
+    font-size: var(--size, 24px);
+    filter: drop-shadow(0 0 8px var(--glow, #b94fff));
+    opacity: .7;
+  }
+  @keyframes floatBlock {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    25%      { transform: translateY(-18px) rotate(5deg); }
+    75%      { transform: translateY(10px) rotate(-5deg); }
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .page-wrapper {
+    position: relative; z-index: 10;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2rem 1.5rem;
+  }
+
+  /* ── HUD CORNERS ── */
+  .hud-corner {
+    position: fixed;
+    width: 60px; height: 60px;
+    pointer-events: none; z-index: 20;
+  }
+  .hud-corner::before,.hud-corner::after {
+    content: ''; position: absolute;
+    background: var(--neon-blue);
+  }
+  .hud-corner::before { width: 100%; height: 2px; }
+  .hud-corner::after  { width: 2px; height: 100%; }
+  .hud-tl { top: 16px; left: 16px; }
+  .hud-tr { top: 16px; right: 16px; transform: scaleX(-1); }
+  .hud-bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+  .hud-br { bottom: 16px; right: 16px; transform: scale(-1); }
+
+  /* HUD status bar */
+  .hud-status {
+    position: fixed; top: 16px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Press Start 2P', monospace;
+    font-size: .45rem;
+    color: var(--neon-green);
+    letter-spacing: .1em;
+    z-index: 20;
+    text-shadow: 0 0 10px var(--neon-green);
+    animation: blink 1.5s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── CARD ── */
+  .card {
+    background: rgba(13,13,26,.85);
+    border: 1px solid rgba(185,79,255,.3);
+    border-radius: 4px;
+    padding: 2.5rem 2rem;
+    max-width: 680px; width: 100%;
+    text-align: center;
+    position: relative;
+    backdrop-filter: blur(12px);
+    box-shadow:
+      0 0 0 1px rgba(0,240,255,.08),
+      0 0 40px rgba(185,79,255,.15),
+      inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .card::before {
+    content: '';
+    position: absolute; inset: -1px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(185,79,255,.4), transparent 40%, rgba(0,240,255,.3));
+    pointer-events: none; z-index: -1;
+  }
+
+  /* Corner labels */
+  .card-label {
+    position: absolute;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .35rem;
+    color: rgba(0,240,255,.5);
+    letter-spacing: .05em;
+  }
+  .card-label.tl { top: 8px; left: 12px; }
+  .card-label.tr { top: 8px; right: 12px; }
+
+  /* ── CHARACTER SCENE ── */
+  .scene {
+    margin: 0 auto 1.5rem;
+    position: relative;
+    width: 260px; height: 180px;
+  }
+  /* Ground / platform */
+  .platform {
+    position: absolute;
+    bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 180px; height: 14px;
+    background: repeating-linear-gradient(90deg, #5a3e1b 0 16px, #7a5422 16px 32px);
+    border-top: 3px solid #c8a04a;
+    image-rendering: pixelated;
+    box-shadow: 0 4px 0 #2a1c08, 0 0 20px rgba(200,160,74,.3);
+    border-radius: 2px;
+  }
+  .platform-broken {
+    position: absolute;
+    bottom: 0; right: -10px;
+    width: 60px; height: 10px;
+    background: repeating-linear-gradient(90deg, #5a3e1b 0 12px, #7a5422 12px 24px);
+    border-top: 3px solid #c8a04a;
+    opacity: .5;
+    transform: rotate(15deg) translateY(4px);
+  }
+
+  /* Character */
+  .character {
+    position: absolute;
+    bottom: 14px; left: 50%; transform: translateX(-50%);
+    font-size: 56px;
+    animation: charBob 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(185,79,255,.7));
+  }
+  @keyframes charBob {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(-8px); }
+  }
+
+  /* Floating mini blocks in scene */
+  .scene-block {
+    position: absolute;
+    font-size: 22px;
+    animation: sceneFloat var(--sd,3s) ease-in-out infinite var(--sdl,0s);
+    filter: drop-shadow(0 0 6px var(--sc, #00f0ff));
+  }
+  @keyframes sceneFloat {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-12px) rotate(10deg); }
+  }
+
+  /* Construction cone */
+  .cone { position: absolute; bottom: 13px; font-size: 24px; }
+
+  /* ── HEADING ── */
+  .main-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(.7rem, 2.5vw, 1.05rem);
+    line-height: 1.6;
+    margin-bottom: .5rem;
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue), var(--neon-green));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: titleGlitch 6s ease-in-out infinite;
+    text-shadow: none;
+  }
+  @keyframes titleGlitch {
+    0%,90%,100% { filter: none; transform: none; }
+    92%  { filter: hue-rotate(90deg); transform: translateX(-2px); }
+    94%  { filter: hue-rotate(-90deg); transform: translateX(2px); }
+    96%  { filter: none; transform: none; }
+  }
+
+  .sub-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(.45rem, 1.5vw, .6rem);
+    color: var(--neon-yellow);
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 12px var(--neon-yellow);
+    animation: blink 2.5s step-end infinite;
+  }
+
+  .subtext {
+    font-size: 1rem;
+    color: rgba(255,255,255,.65);
+    line-height: 1.7;
+    margin-bottom: 1.8rem;
+    max-width: 480px; margin-left: auto; margin-right: auto;
+  }
+  .subtext strong { color: var(--neon-blue); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section { margin-bottom: 1.8rem; }
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: .5rem;
+  }
+  .progress-label span {
+    font-family: 'Press Start 2P', monospace;
+    font-size: .4rem;
+    color: rgba(255,255,255,.5);
+  }
+  .progress-label .pct {
+    color: var(--neon-green);
+    text-shadow: 0 0 8px var(--neon-green);
+    animation: pctBlink 1s step-end infinite;
+  }
+  @keyframes pctBlink { 50% { opacity: .4; } }
+
+  .progress-bar-outer {
+    height: 18px;
+    background: rgba(0,0,0,.6);
+    border: 1px solid rgba(185,79,255,.4);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    width: 0%;
+    background: repeating-linear-gradient(90deg, var(--neon-purple) 0 8px, var(--neon-blue) 8px 16px);
+    image-rendering: pixelated;
+    position: relative;
+    animation: progressFill 8s steps(40) forwards, progressPulse 1s ease-in-out infinite;
+    box-shadow: 0 0 16px var(--neon-purple);
+  }
+  @keyframes progressFill {
+    to { width: 69%; }
+  }
+  @keyframes progressPulse {
+    0%,100% { filter: brightness(1); }
+    50%      { filter: brightness(1.4); }
+  }
+  .progress-bar-inner::after {
+    content: '';
+    position: absolute; right: 0; top: 0;
+    width: 4px; height: 100%;
+    background: #fff;
+    animation: scanLine .5s ease-in-out infinite alternate;
+    opacity: .7;
+  }
+  @keyframes scanLine { to { opacity: 0; } }
+
+  /* ── LOADING MESSAGE ── */
+  .loading-msg {
+    font-family: 'Press Start 2P', monospace;
+    font-size: .45rem;
+    color: var(--neon-green);
+    text-shadow: 0 0 10px var(--neon-green);
+    margin-bottom: 2rem;
+    min-height: 1.5rem;
+    display: flex; align-items: center; justify-content: center; gap: .5rem;
+    transition: opacity .3s;
+  }
+  .loading-dots { display: inline-flex; gap: 2px; }
+  .loading-dots span {
+    width: 5px; height: 5px;
+    background: var(--neon-green);
+    display: inline-block;
+    animation: dotBounce 1s step-start infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: .2s; }
+  .loading-dots span:nth-child(3) { animation-delay: .4s; }
+  @keyframes dotBounce {
+    0%,100% { opacity: 1; transform: scaleY(1); }
+    50%      { opacity: .3; transform: scaleY(.4); }
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: flex; gap: 1rem; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  .stat-chip {
+    background: rgba(0,0,0,.5);
+    border: 1px solid rgba(0,240,255,.2);
+    border-radius: 3px;
+    padding: .4rem .8rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .35rem;
+    color: rgba(255,255,255,.6);
+    display: flex; flex-direction: column; align-items: center; gap: .3rem;
+  }
+  .stat-chip .val {
+    font-size: .55rem;
+    color: var(--neon-blue);
+    text-shadow: 0 0 8px var(--neon-blue);
+  }
+
+  /* ── BUTTONS ── */
+  .btn-row {
+    display: flex; gap: 1rem; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 1.5rem;
+  }
+  .btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: .45rem;
+    padding: .8rem 1.4rem;
+    border: 2px solid;
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform .1s, box-shadow .2s;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: .5rem;
+    letter-spacing: .05em;
+    background: transparent;
+  }
+  .btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:hover::before { opacity: 1; }
+  .btn:active { animation: shake .2s ease-in-out; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25%      { transform: translateX(-4px) rotate(-1deg); }
+    75%      { transform: translateX(4px) rotate(1deg); }
+  }
+
+  .btn-primary {
+    border-color: var(--neon-purple);
+    color: var(--neon-purple);
+    box-shadow: 0 0 12px rgba(185,79,255,.3), inset 0 0 12px rgba(185,79,255,.05);
+  }
+  .btn-primary::before { background: rgba(185,79,255,.1); }
+  .btn-primary:hover {
+    box-shadow: 0 0 25px rgba(185,79,255,.6), inset 0 0 20px rgba(185,79,255,.1);
+    color: #fff;
+    border-color: #fff;
+  }
+  .btn-secondary {
+    border-color: var(--neon-blue);
+    color: var(--neon-blue);
+    box-shadow: 0 0 12px rgba(0,240,255,.3), inset 0 0 12px rgba(0,240,255,.05);
+  }
+  .btn-secondary::before { background: rgba(0,240,255,.08); }
+  .btn-secondary:hover {
+    box-shadow: 0 0 25px rgba(0,240,255,.6), inset 0 0 20px rgba(0,240,255,.1);
+    color: #fff;
+    border-color: #fff;
+  }
+  .btn-danger {
+    border-color: var(--neon-orange);
+    color: var(--neon-orange);
+    box-shadow: 0 0 12px rgba(255,106,0,.3), inset 0 0 12px rgba(255,106,0,.05);
+  }
+  .btn-danger::before { background: rgba(255,106,0,.08); }
+  .btn-danger:hover {
+    box-shadow: 0 0 25px rgba(255,106,0,.6), inset 0 0 20px rgba(255,106,0,.1);
+    color: #fff;
+    border-color: #fff;
+  }
+
+  /* ── GEAR / ROTATING ICON ── */
+  .gear-row {
+    display: flex; justify-content: center; align-items: center; gap: 1rem;
+    margin-bottom: .5rem; opacity: .4;
+  }
+  .gear {
+    font-size: 1.4rem;
+    animation: spin 3s linear infinite;
+    display: inline-block;
+  }
+  .gear.reverse { animation-direction: reverse; animation-duration: 2s; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── FOOTER ── */
+  .footer-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: .32rem;
+    color: rgba(255,255,255,.2);
+    letter-spacing: .05em;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: rgba(13,13,26,.95);
+    border: 1px solid var(--neon-green);
+    border-radius: 3px;
+    padding: .6rem 1.2rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: .4rem;
+    color: var(--neon-green);
+    box-shadow: 0 0 20px rgba(57,255,20,.4);
+    z-index: 200;
+    transition: transform .4s cubic-bezier(.175,.885,.32,1.275), opacity .4s;
+    opacity: 0;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .card { padding: 1.8rem 1.2rem; }
+    .scene { width: 220px; height: 150px; }
+    .character { font-size: 44px; }
+    .btn-row { flex-direction: column; align-items: center; }
+    .btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HUD Corners -->
+<div class="hud-corner hud-tl"></div>
+<div class="hud-corner hud-tr"></div>
+<div class="hud-corner hud-bl"></div>
+<div class="hud-corner hud-br"></div>
+<div class="hud-status">● SİSTEM ÇEVRIMIÇI &nbsp;|&nbsp; BÖLÜM: ALPHA-BUILD &nbsp;|&nbsp; DURUM: İNŞAAT</div>
+
+<!-- Parallax BG -->
+<div class="parallax-bg">
+  <div class="layer-stars"></div>
+  <div class="layer-grid"></div>
+  <div class="layer-particles" id="particles"></div>
+</div>
+
+<!-- Floating Pixel Blocks -->
+<div class="blocks-container" id="floatingBlocks"></div>
+
+<!-- MAIN -->
+<div class="page-wrapper">
+  <div class="card">
+    <span class="card-label tl">SYS://LEVEL_404</span>
+    <span class="card-label tr">v0.0.1-BETA</span>
+
+    <!-- Scene -->
+    <div class="scene">
+      <div class="scene-block" style="top:10px;left:10px;--sd:2.8s;--sdl:.2s;--sc:#b94fff;">🧱</div>
+      <div class="scene-block" style="top:5px;right:15px;--sd:3.5s;--sdl:.7s;--sc:#00f0ff;">⛏️</div>
+      <div class="scene-block" style="top:40px;left:30px;--sd:2s;--sdl:.4s;--sc:#39ff14;">📦</div>
+      <div class="scene-block" style="top:30px;right:30px;--sd:4s;--sdl:1s;--sc:#ffd700;">⚙️</div>
+      <div class="scene-block" style="top:70px;left:5px;--sd:3s;--sdl:.1s;--sc:#ff6a00;">🔩</div>
+
+      <div class="character">👷</div>
+
+      <div class="platform"></div>
+      <div class="platform-broken"></div>
+
+      <div class="cone" style="left:20px;">🚧</div>
+      <div class="cone" style="right:22px;">🔺</div>
+    </div>
+
+    <!-- Heading -->
+    <div class="main-title">BU BÖLÜM HÂLÂ İNŞAATTA 🚧🎮</div>
+    <div class="sub-title">[ YÜKLENIYOR... ]</div>
+
+    <p class="subtext">
+      Geliştiricilerimiz <strong>bloklar yerleştiriyor</strong>, hataları düzeltiyor ve içine biraz sihir katıyor.<br>
+      Bu bölümü keşfetmek için yakında geri dön.
+    </p>
+
+    <!-- Progress Bar -->
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>BÖLÜM İNŞAAT İLERLEMESİ</span>
+        <span class="pct" id="pct">0%</span>
+      </div>
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="progressBar"></div>
+      </div>
+    </div>
+
+    <!-- Loading Message -->
+    <div class="loading-msg">
+      <span id="loadingText">Varlıklar oluşturuluyor...</span>
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-chip">
+        KALAN BUG
+        <span class="val" id="bugCount">247</span>
+      </div>
+      <div class="stat-chip">
+        YÜKLENEN VARLIK
+        <span class="val">%69</span>
+      </div>
+      <div class="stat-chip">
+        KAHVE TÜKETİMİ
+        <span class="val" id="coffeeCount">∞</span>
+      </div>
+      <div class="stat-chip">
+        NPC'LER HAZIR
+        <span class="val">3/99</span>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+<button class="btn btn-primary" onclick="goHome(this)">
+  🏠 Ana Menü
+</button>
+
+    </div>
+
+    <!-- Gear Row -->
+    <div class="gear-row">
+      <span class="gear">⚙️</span>
+      <span class="gear reverse">⚙️</span>
+      <span class="gear">⚙️</span>
+    </div>
+
+    <p class="footer-text">N-E-Ş-M (Nurcan-Erhan-Şevval-Melek) GAME STUDIOS &copy; 2099 — BUILD #00000001</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ── LOADING MESSAGES ── */
+  const messages = [
+    "Varlıklar oluşturuluyor...",
+    "Hata ayıklanıyor (kelimenin tam anlamıyla 🐛)",
+    "NPC'ler yerleştiriliyor...",
+    "Eğlence derleniyor...",
+    "Muhteşemlik hazırlanıyor...",
+    "Fizik motoru hesaplanıyor...",
+    "Kahve entegre ediliyor ☕",
+    "Arka plan müziği ekleniyor...",
+    "Harita parçaları birleştiriliyor...",
+    "Piksel boyaları kurutuluyor...",
+    "Patron kalıpları yükleniyor...",
+    "Sır geçişler açılıyor 🗝️",
+    "Collision detection optimize ediliyor...",
+    "Spawn noktaları ayarlanıyor...",
+    "Loot tabloları güncelleniyor...",
+    "Neon ışıklar takılıyor...",
+    "Yeniden başlatılıyor... bir saniye...",
+    "Kahve bitiyor, panik başlıyor ☕💀",
+  ];
+
+  let msgIdx = 0;
+  const loadingText = document.getElementById('loadingText');
+  setInterval(() => {
+    loadingText.style.opacity = '0';
+    setTimeout(() => {
+      msgIdx = (msgIdx + 1) % messages.length;
+      loadingText.textContent = messages[msgIdx];
+      loadingText.style.opacity = '1';
+    }, 300);
+  }, 2800);
+
+  /* ── PROGRESS PCT ── */
+  const pctEl = document.getElementById('pct');
+  let pct = 0;
+  const pctInterval = setInterval(() => {
+    if (pct >= 69) { clearInterval(pctInterval); return; }
+    pct += Math.floor(Math.random() * 3) + 1;
+    if (pct > 69) pct = 69;
+    pctEl.textContent = pct + '%';
+  }, 200);
+
+  /* ── BUG COUNTER (random decrease) ── */
+  const bugEl = document.getElementById('bugCount');
+  setInterval(() => {
+    let cur = parseInt(bugEl.textContent);
+    const change = Math.floor(Math.random() * 5) - 1; // sometimes increases 😅
+    bugEl.textContent = Math.max(0, cur + change);
+  }, 2000);
+
+  /* ── FLOATING PARTICLES ── */
+  const particlesContainer = document.getElementById('particles');
+  const COLORS = ['#b94fff','#00f0ff','#39ff14','#ffd700','#ff6a00'];
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random()*100}%;
+      background: ${COLORS[Math.floor(Math.random()*COLORS.length)]};
+      --dur: ${6+Math.random()*10}s;
+      --delay: ${Math.random()*-15}s;
+      --drift: ${(Math.random()-.5)*80}px;
+      width: ${2+Math.random()*4}px;
+      height: ${2+Math.random()*4}px;
+    `;
+    particlesContainer.appendChild(p);
+  }
+
+  /* ── FLOATING BLOCKS ── */
+  const blocksContainer = document.getElementById('floatingBlocks');
+  const blockEmojis = ['🧱','📦','⛏️','🔩','⚙️','🪓','🔨','🪛','💎','⭐'];
+  for (let i = 0; i < 18; i++) {
+    const b = document.createElement('div');
+    b.className = 'pixel-block';
+    const glows = ['#b94fff','#00f0ff','#39ff14','#ffd700'];
+    b.style.cssText = `
+      left: ${Math.random()*95}%;
+      top: ${Math.random()*90}%;
+      --dur: ${4+Math.random()*6}s;
+      --delay: ${Math.random()*-8}s;
+      --size: ${16+Math.random()*20}px;
+      --glow: ${glows[Math.floor(Math.random()*glows.length)]};
+    `;
+    b.textContent = blockEmojis[Math.floor(Math.random()*blockEmojis.length)];
+    blocksContainer.appendChild(b);
+  }
+
+  /* ── PARALLAX ── */
+  document.addEventListener('mousemove', e => {
+    const x = (e.clientX / window.innerWidth - .5) * 20;
+    const y = (e.clientY / window.innerHeight - .5) * 20;
+    blocksContainer.style.transform = `translate(${x*.3}px, ${y*.3}px)`;
+  });
+
+  /* ── SHAKE BUTTON ── */
+  function triggerShake(el) {
+    el.classList.remove('shake-anim');
+    void el.offsetWidth;
+    el.style.animation = 'shake .2s ease-in-out';
+    setTimeout(() => el.style.animation = '', 250);
+  }
+
+  /* ── RETRY GAG ── */
+  let retryCount = 0;
+  const retryMsgs = [
+    "🔄 Yeniden deneniyor... hayır, olmaz.",
+    "❌ Hâlâ inşaatta. Şaşırdın mı?",
+    "🤡 Tekrar mı denedin? Ciddiye aldın.",
+    "💀 Yüklenme başarısız. (Tabi ki.)",
+    "☕ Devler kahve içiyor, bekle.",
+    "🐛 Bir hata bulundu: SEN.",
+    "🎲 Şansını dene... 404 kazandın!",
+  ];
+  function retryGag() {
+    showToast(retryMsgs[retryCount % retryMsgs.length]);
+    retryCount++;
+  }
+
+function goHome(el) {
+  triggerShake(el);
+  showToast('🏠 Ana menüye dönülüyor...');
+
+  setTimeout(() => {
+    window.location.href = 'Index.html'; 
+  }, 800);
+}
+
+  /* ── TOAST ── */
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    clearTimeout(toastTimer);
+    t.textContent = msg;
+    t.classList.add('show');
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+</body>
+</html>
