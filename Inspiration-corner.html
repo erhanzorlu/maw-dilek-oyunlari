@@ -101,8 +101,31 @@
 #introParticles { position: absolute; inset: 0; z-index: 1; }
 
 /* ─────────────────────────────────────────
-   TOKENS — VIBRANT LIGHT THEME
+   MOBİL: Hafif intro versiyonu
 ───────────────────────────────────────── */
+@media (max-width: 600px) {
+  /* drop-shadow kaldır — en ağır GPU efekti */
+  .intro-star-emoji {
+    filter: none !important;
+    animation: starPopMobile 2.0s cubic-bezier(.16,1.4,.4,1) .1s forwards !important;
+  }
+  @keyframes starPopMobile {
+    0%   { transform: translate(-50%,-50%) scale(0); font-size: 0px; opacity: 0; }
+    15%  { opacity: 1; }
+    65%  { transform: translate(-50%,-50%) scale(1.08); font-size: 120px; }
+    85%  { transform: translate(-50%,-50%) scale(.96); font-size: 108px; }
+    100% { transform: translate(-50%,-50%) scale(1); font-size: 114px; opacity: 1; }
+  }
+
+  /* box-shadow kaldır starBurst'ten */
+  #starBurst { box-shadow: none !important; }
+
+  /* ışınları gizle */
+  .intro-ray { display: none !important; }
+
+  /* halkaları gizle */
+  .intro-ring { display: none !important; }
+}
 :root {
   --ink:        #1e0a3c;
   --ink-mid:    #4a2c6e;
@@ -747,49 +770,55 @@ function startReveal() {
   const intro = document.getElementById('starIntro');
   const particlesEl = document.getElementById('introParticles');
 
-  // Rays
+  // Rays — skip on mobile
+  const isMobile = window.innerWidth < 600;
   const rayCount = 16;
-  for (let i = 0; i < rayCount; i++) {
-    const ray = document.createElement('div');
-    ray.className = 'intro-ray';
-    const angle = (360 / rayCount) * i;
-    const len = 200 + Math.random() * 300;
-    const dur = 0.6 + Math.random() * 0.6;
-    const del = 0.4 + Math.random() * 0.5;
-    ray.style.cssText = `
-      transform: translate(-50%,-50%) rotate(${angle}deg);
-      top: 50%; left: 50%;
-      --rlen: ${len}px;
-      --rdur: ${dur}s;
-      --rdel: ${del}s;
-      height: 0;
-      width: ${1 + Math.random() * 2}px;
-    `;
-    intro.appendChild(ray);
+  if (!isMobile) {
+    for (let i = 0; i < rayCount; i++) {
+      const ray = document.createElement('div');
+      ray.className = 'intro-ray';
+      const angle = (360 / rayCount) * i;
+      const len = 200 + Math.random() * 300;
+      const dur = 0.6 + Math.random() * 0.6;
+      const del = 0.4 + Math.random() * 0.5;
+      ray.style.cssText = `
+        transform: translate(-50%,-50%) rotate(${angle}deg);
+        top: 50%; left: 50%;
+        --rlen: ${len}px;
+        --rdur: ${dur}s;
+        --rdel: ${del}s;
+        height: 0;
+        width: ${1 + Math.random() * 2}px;
+      `;
+      intro.appendChild(ray);
+    }
+
+    // Rings — desktop only
+    const ringSizes = [120, 260, 420, 600, 820];
+    ringSizes.forEach((size, i) => {
+      const ring = document.createElement('div');
+      ring.className = 'intro-ring';
+      ring.style.cssText = `--rs:${size}px;--rrd:${0.9+i*0.18}s;--rrdl:${0.25+i*0.18}s;`;
+      intro.appendChild(ring);
+    });
   }
 
-  // Rings
-  [120, 260, 420, 600, 820].forEach((size, i) => {
-    const ring = document.createElement('div');
-    ring.className = 'intro-ring';
-    ring.style.cssText = `--rs:${size}px;--rrd:${0.9+i*0.18}s;--rrdl:${0.25+i*0.18}s;`;
-    intro.appendChild(ring);
-  });
-
-  // Sparkle particles
+  // Sparkle particles — desktop only
   const cols = ['#fff','#ffd700','#c084fc','#f472b6','#818cf8','#6ee7b7'];
-  for (let i = 0; i < 55; i++) {
-    const p = document.createElement('div');
-    const size = 2 + Math.random() * 5;
-    const angle = Math.random() * 360;
-    const dist  = 60 + Math.random() * 380;
-    const tx = Math.cos(angle * Math.PI / 180) * dist;
-    const ty = Math.sin(angle * Math.PI / 180) * dist;
-    const color = cols[Math.floor(Math.random() * cols.length)];
-    const dur = 0.8 + Math.random() * 0.9;
-    const del = 0.3 + Math.random() * 0.7;
-    p.style.cssText = `position:absolute;top:50%;left:50%;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 ${size*3}px ${color};opacity:0;animation:sparkFly ${dur}s ease-out ${del}s forwards;--tx:${tx}px;--ty:${ty}px;`;
-    particlesEl.appendChild(p);
+  if (!isMobile) {
+    for (let i = 0; i < 55; i++) {
+      const p = document.createElement('div');
+      const size = 2 + Math.random() * 5;
+      const angle = Math.random() * 360;
+      const dist  = 60 + Math.random() * 380;
+      const tx = Math.cos(angle * Math.PI / 180) * dist;
+      const ty = Math.sin(angle * Math.PI / 180) * dist;
+      const color = cols[Math.floor(Math.random() * cols.length)];
+      const dur = 0.8 + Math.random() * 0.9;
+      const del = 0.3 + Math.random() * 0.7;
+      p.style.cssText = `position:absolute;top:50%;left:50%;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 ${size*3}px ${color};opacity:0;animation:sparkFly ${dur}s ease-out ${del}s forwards;--tx:${tx}px;--ty:${ty}px;`;
+      particlesEl.appendChild(p);
+    }
   }
 
   const style = document.createElement('style');
@@ -797,11 +826,17 @@ function startReveal() {
   document.head.appendChild(style);
 
   setTimeout(() => {
-    // Trigger the star shape to explode and fill the screen
+    // Compute scale so star (160px base) fills the screen diagonal
     const burst = document.getElementById('starBurst');
+    const diag = Math.sqrt(window.innerWidth ** 2 + window.innerHeight ** 2);
+    const neededScale = Math.ceil((diag / 160) * 2.2); // 2.2× overshoot to guarantee full cover
+
+    const style2 = document.createElement('style');
+    style2.textContent = `@keyframes burstGrow{0%{transform:scale(0);opacity:1;}100%{transform:scale(${neededScale});opacity:1;}}`;
+    document.head.appendChild(style2);
+
     burst.style.opacity = '1';
     burst.classList.add('go');
-    // After burst covers screen, fade out the whole intro
     setTimeout(() => {
       intro.classList.add('fade-out');
       setTimeout(() => { intro.style.display = 'none'; }, 520);
