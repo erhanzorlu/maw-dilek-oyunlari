@@ -495,12 +495,12 @@
       }
     }
 
-    .mentor-photo-wrap {
-      position: relative;
-      height: 200px;
-      overflow: hidden;
-      background: #e8edf5;
-    }
+.mentor-photo-wrap {
+  position: relative;
+  height: 500px;  /* 200px yerine biraz daha büyük */
+  overflow: hidden;
+  background: #e8edf5;
+}
 
     .mentor-photo-wrap img {
       width: 100%;
@@ -1067,20 +1067,19 @@
         card.className = 'mentor-card';
         card.style.animationDelay = (i * 0.06) + 's';
         card.onclick = () => openModal(m);
-        card.innerHTML = `
-          <div class="mentor-photo-wrap">
-            <img src="${m.photo}" alt="${m.name}" loading="lazy">
-          </div>
-          <div class="mentor-info">
-            <div class="mentor-name">${m.name}</div>
-            <div class="mentor-degree">${m.degree}</div>
-            <div class="age-chips">${m.ageLabels.map(l => `<span class="age-chip">${l}</span>`).join('')}</div>
-            <div class="card-btns">
-              <div class="card-btn wa-btn" onclick="event.stopPropagation();openWA('${m.phone}')">
-                <i class="ph-fill ph-whatsapp-logo"></i> WhatsApp
-              </div>
-            </div>
-          </div>`;
+card.innerHTML = `
+  <div class="mentor-photo-wrap">
+    <img src="${m.photo}" alt="${m.name}" loading="lazy">
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.1) 50%,transparent 100%);"></div>
+    <div style="position:absolute;bottom:12px;left:14px;right:14px;">
+      <div style="font-family:'Playfair Display',serif;font-size:17px;color:#fff;font-weight:700;margin-bottom:2px;">${m.name}</div>
+      <div style="font-size:11.5px;color:rgba(255,255,255,0.78);font-weight:600;margin-bottom:8px;line-height:1.4;">${m.degree}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;">${m.ageLabels.map(l => `<span style="font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.35);">${l}</span>`).join('')}</div>
+      <div class="card-btn wa-btn" onclick="event.stopPropagation();openWA('${m.phone}')" style="background:rgba(16,185,129,0.25);border-color:rgba(16,185,129,0.5);color:#fff;justify-content:center;display:flex;align-items:center;gap:5px;padding:7px;border-radius:8px;font-size:12px;font-weight:800;border:1.5px solid;cursor:pointer;">
+        <i class="ph-fill ph-whatsapp-logo"></i> WhatsApp
+      </div>
+    </div>
+  </div>`;
         grid.appendChild(card);
       });
     }
