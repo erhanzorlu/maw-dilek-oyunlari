@@ -31,13 +31,13 @@
     display: flex; align-items: center; justify-content: space-between;
     width: 100%; max-width: 620px; padding: 8px 16px;
     background: linear-gradient(90deg, #0D0D1A, #1A1A35, #0D0D1A);
-    border-bottom: 2px solid #00D4FF;
+    border-bottom: 2px solid #00AEEF;
     backdrop-filter: blur(4px); z-index: 10;
-    box-shadow: 0 2px 20px rgba(0,212,255,0.3);
+    box-shadow: 0 2px 20px rgba(0,174,239,0.3);
   }
   .hud-item { text-align: center; }
-  .hud-label { font-size: 10px; letter-spacing: 2px; color: #00D4FF; text-transform: uppercase; }
-  .hud-value { font-size: 22px; font-weight: 800; color: #fff; font-family: 'Cinzel', serif; text-shadow: 0 0 10px rgba(0,212,255,0.6); }
+  .hud-label { font-size: 10px; letter-spacing: 2px; color: #00AEEF; text-transform: uppercase; }
+  .hud-value { font-size: 22px; font-weight: 800; color: #fff; font-family: 'Cinzel', serif; text-shadow: 0 0 10px rgba(0,174,239,0.6); }
 
   #canvas-wrap {
     position: relative; width: 100%; max-width: 620px;
@@ -103,6 +103,154 @@
     line-height: 100px; margin: 0 auto 16px; font-family: 'Cinzel', serif;
     box-shadow: 0 0 30px rgba(212,160,23,0.6);
   }
+
+  /* Setup modal extras */
+  .setup-section { margin-bottom: 18px; text-align: left; }
+  .setup-label { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .name-input {
+    width: 100%; padding: 12px 16px; font-size: 16px; font-weight: 700;
+    font-family: 'Nunito', sans-serif; border: 2px solid #00AEEF;
+    border-radius: 12px; outline: none; background: #fff;
+    transition: box-shadow 0.2s;
+  }
+  .name-input:focus { box-shadow: 0 0 0 4px rgba(0,174,239,0.2); }
+  .color-picker { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+  .color-opt {
+    width: 44px; height: 44px; border-radius: 50%; border: 3px solid transparent;
+    cursor: pointer; transition: transform 0.15s, border-color 0.15s;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  }
+  .color-opt:hover { transform: scale(1.15); }
+  .color-opt.selected { border-color: #FFD700; transform: scale(1.2); box-shadow: 0 0 16px rgba(255,215,0,0.5); }
+
+  /* Power gauge */
+  #power-gauge {
+    position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%);
+    width: 180px; height: 14px; background: rgba(0,0,0,0.4);
+    border-radius: 7px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2);
+    pointer-events: none; opacity: 0; transition: opacity 0.2s;
+    z-index: 5;
+  }
+  #power-gauge.show { opacity: 1; }
+  #power-fill {
+    height: 100%; width: 0%; border-radius: 5px;
+    background: linear-gradient(90deg, #00AEEF, #00E676, #FFEB3B, #FF5722);
+    transition: width 0.05s;
+  }
+  #power-label {
+    position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; font-weight: 800; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    letter-spacing: 1px; white-space: nowrap;
+  }
+
+  /* Mascot */
+  #mascot {
+    position: absolute; bottom: 60px; right: 6px;
+    font-size: 48px; transition: transform 0.3s, opacity 0.3s;
+    pointer-events: none; z-index: 6; opacity: 0;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+  }
+  #mascot.show { opacity: 1; }
+  #mascot.bounce { animation: mascotBounce 0.6s ease; }
+  @keyframes mascotBounce {
+    0%,100% { transform: translateY(0) scale(1); }
+    30% { transform: translateY(-18px) scale(1.15); }
+    60% { transform: translateY(-6px) scale(1.05); }
+  }
+  #mascot-msg {
+    position: absolute; bottom: 110px; right: 4px;
+    background: rgba(255,255,255,0.95); color: var(--navy);
+    font-size: 12px; font-weight: 700; padding: 6px 12px;
+    border-radius: 12px 12px 4px 12px; opacity: 0;
+    pointer-events: none; z-index: 6; white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    transition: opacity 0.3s;
+  }
+  #mascot-msg.show { opacity: 1; }
+
+  /* Screen shake */
+  #canvas-wrap.shake {
+    animation: screenShake 0.4s ease;
+  }
+  @keyframes screenShake {
+    0%   { transform: translate(0,0) rotate(0deg); }
+    15%  { transform: translate(-8px,4px) rotate(-1.5deg); }
+    30%  { transform: translate(6px,-6px) rotate(1deg); }
+    45%  { transform: translate(-4px,6px) rotate(-0.5deg); }
+    60%  { transform: translate(5px,-3px) rotate(0.8deg); }
+    75%  { transform: translate(-3px,2px) rotate(-0.3deg); }
+    100% { transform: translate(0,0) rotate(0deg); }
+  }
+  #canvas-wrap.mega-shake {
+    animation: megaShake 0.6s ease;
+  }
+  @keyframes megaShake {
+    0%   { transform: translate(0,0) rotate(0deg) scale(1); }
+    10%  { transform: translate(-12px,8px) rotate(-3deg) scale(1.02); }
+    20%  { transform: translate(10px,-10px) rotate(2deg) scale(0.98); }
+    30%  { transform: translate(-8px,12px) rotate(-2deg) scale(1.01); }
+    40%  { transform: translate(10px,-6px) rotate(2.5deg) scale(0.99); }
+    50%  { transform: translate(-6px,4px) rotate(-1deg) scale(1.01); }
+    60%  { transform: translate(4px,-3px) rotate(1deg); }
+    80%  { transform: translate(-2px,1px) rotate(-0.5deg); }
+    100% { transform: translate(0,0) rotate(0deg) scale(1); }
+  }
+
+  /* Big overlay text */
+  #big-text {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; z-index: 20; opacity: 0;
+  }
+  #big-text.show {
+    animation: bigTextPop 1.2s ease-out forwards;
+  }
+  #big-text-inner {
+    font-family: 'Cinzel', serif; font-size: 56px; font-weight: 900;
+    color: #FFD700; text-shadow: 0 0 20px #FF6B00, 0 0 40px #FF3D00, 0 4px 8px rgba(0,0,0,0.5);
+    letter-spacing: 4px;
+  }
+  @keyframes bigTextPop {
+    0%   { opacity: 0; transform: scale(0.2) rotate(-10deg); }
+    25%  { opacity: 1; transform: scale(1.3) rotate(3deg); }
+    40%  { transform: scale(0.95) rotate(-1deg); }
+    55%  { transform: scale(1.1) rotate(1deg); }
+    70%  { transform: scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: scale(1.8) rotate(0deg); }
+  }
+
+  /* Emoji rain container */
+  .emoji-particle {
+    position: absolute; top: -50px;
+    font-size: 28px; pointer-events: none; z-index: 15;
+    animation: emojiDrift 2.5s ease-in forwards;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+  @keyframes emojiDrift {
+    0%   { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 1; }
+    20%  { transform: translateY(80px) rotate(45deg) scale(1.2); opacity: 1; }
+    100% { transform: translateY(600px) rotate(360deg) scale(0.8); opacity: 0; }
+  }
+
+  /* Flash overlay */
+  #flash-overlay {
+    position: absolute; inset: 0; pointer-events: none; z-index: 18;
+    opacity: 0; border-radius: 4px;
+  }
+  #flash-overlay.flash-white {
+    animation: flashWhite 0.3s ease-out;
+  }
+  #flash-overlay.flash-gold {
+    animation: flashGold 0.4s ease-out;
+  }
+  @keyframes flashWhite {
+    0%   { opacity: 0.8; background: white; }
+    100% { opacity: 0; }
+  }
+  @keyframes flashGold {
+    0%   { opacity: 0.6; background: linear-gradient(135deg, #FFD700, #FF6B00); }
+    100% { opacity: 0; }
+  }
 </style>
 </head>
 <body>
@@ -113,8 +261,8 @@
     <div class="hud-value" id="hud-frame">1/10</div>
   </div>
   <div class="hud-item">
-    <div class="hud-label">🎳 Türk Bowling</div>
-    <div class="hud-value" style="font-size:14px;color:#FF3CAC;text-shadow:0 0 8px rgba(255,60,172,0.8)">🎳 Bowling Salonu</div>
+    <div class="hud-label">⭐ Make-A-Wish</div>
+    <div class="hud-value" style="font-size:14px;color:#00AEEF;text-shadow:0 0 8px rgba(0,174,239,0.8)">⭐ Bowling</div>
   </div>
   <div class="hud-item">
     <div class="hud-label">Skor</div>
@@ -124,25 +272,44 @@
 
 <div id="canvas-wrap">
   <canvas id="c"></canvas>
+  <div id="power-gauge"><div id="power-fill"></div><div id="power-label">GÜÇ</div></div>
+  <div id="mascot">🐰</div>
+  <div id="mascot-msg"></div>
+  <div id="big-text"><div id="big-text-inner"></div></div>
+  <div id="flash-overlay"></div>
 </div>
 
-<!-- Intro Modal -->
+<!-- Setup Modal (Name + Color) -->
 <div class="modal-overlay" id="modal-intro">
   <div class="modal-box">
     <div class="modal-ornament"></div>
-    <div class="modal-title">🎳 Türk Motifli Bowling</div>
-    <div class="modal-subtitle">NASIL OYNANIR?</div>
+    <div class="modal-title">⭐ Make-A-Wish Bowling</div>
+    <div class="modal-subtitle">OYUNA HAZIRLAN!</div>
+
+    <div class="setup-section">
+      <div class="setup-label">👋 Adın ne?</div>
+      <input type="text" class="name-input" id="player-name" placeholder="Adını yaz..." maxlength="20" autocomplete="off">
+    </div>
+
+    <div class="setup-section">
+      <div class="setup-label">🎱 Topunu seç:</div>
+      <div class="color-picker" id="color-picker">
+        <div class="color-opt selected" data-color="blue" style="background:linear-gradient(135deg,#40C4FF,#003F72)"></div>
+        <div class="color-opt" data-color="pink" style="background:linear-gradient(135deg,#FF9ECD,#D0508A)"></div>
+        <div class="color-opt" data-color="green" style="background:linear-gradient(135deg,#69F0AE,#2E7D32)"></div>
+        <div class="color-opt" data-color="orange" style="background:linear-gradient(135deg,#FFD54F,#E65100)"></div>
+        <div class="color-opt" data-color="rainbow" style="background:conic-gradient(#FF0000,#FF8800,#FFFF00,#00FF00,#0088FF,#8800FF,#FF0000)"></div>
+      </div>
+    </div>
+
     <ul class="modal-rules">
-      <li><span class="emoji">🖱️</span><strong>Fare / Parmak:</strong> Topu tutup sürükle, bırak ile fırlat</li>
-      <li><span class="emoji">🎯</span>10 labutun hepsini devir = <strong>Strike!</strong></li>
+      <li><span class="emoji">🖱️</span><strong>Sürükle & Bırak:</strong> Topu fırlat</li>
+      <li><span class="emoji">🎯</span>10 labut = <strong>Strike!</strong></li>
       <li><span class="emoji">🔄</span>Her turda <strong>2 atış</strong> hakkın var</li>
-      <li><span class="emoji">📋</span><strong>8 turda</strong> soru çıkar — cevabını sesli paylaş</li>
-      <li><span class="emoji">🏆</span>10 turda toplam puanın en yüksek olsun!</li>
-      <li><span class="emoji">🔵</span>Strike bonusu: sonraki 2 atışın puanı eklenir</li>
-      <li><span class="emoji">🟡</span>Spare bonusu: sonraki 1 atışın puanı eklenir</li>
+      <li><span class="emoji">📋</span>İlk <strong>7 turda</strong> soru çıkar</li>
     </ul>
     <br>
-    <button class="modal-btn" onclick="startGame()">🎳 OYUNA BAŞLA</button>
+    <button class="modal-btn" onclick="setupAndStart()">⭐ BAŞLA!</button>
   </div>
 </div>
 
@@ -172,15 +339,241 @@
 <script>
 // ==================== QUESTIONS ====================
 const QUESTIONS = [
-  "Türkiye'de en sevdiğin şehir hangisi ve neden?",
-  "Geleneksel Türk yemeklerinden en sevdiğin hangisi?",
-  "Hayatında seni en çok etkileyen kişi kim oldu?",
-  "5 yıl sonra kendini nerede görüyorsun?",
-  "En anlamlı anın hangisiydi, kısaca anlatır mısın?",
-  "Bir haftanı istediğin gibi geçirebilseydin ne yapardın?",
-  "Türk müziğinden hangi sanatçıyı seversin?",
-  "Gençlere vermek istediğin en önemli tavsiye nedir?"
+  "Boş zamanlarında neler yapmayı seversin? (Hobilerin, ilgi alanların)",
+  "Büyüyünce ne olmak istersin?",
+  "Senin yeteneğin (iyi olduğun alan) nedir?",
+  "Büyüyünce ne olmak istiyorsun?",
+  "Olmaktan mutlu olduğun, gitmeyi sevdiğin bir yer var mı?",
+  "Hangi oyunları seviyorsun?",
+  "Uyumadan önce ne hayal edersin?"
 ];
+
+// ==================== PLAYER SETUP ====================
+let playerName = '';
+let selectedBallColor = 'blue';
+
+const BALL_COLORS = {
+  blue:    { light: '#40C4FF', mid: '#00AEEF', dark: '#003F72', glow: '#00AEEF' },
+  pink:    { light: '#FF9ECD', mid: '#E91E8C', dark: '#880E4F', glow: '#FF4DB2' },
+  green:   { light: '#69F0AE', mid: '#00C853', dark: '#1B5E20', glow: '#00E676' },
+  orange:  { light: '#FFD54F', mid: '#FF9800', dark: '#BF360C', glow: '#FFA726' },
+  rainbow: { light: '#FF6B6B', mid: '#8E24AA', dark: '#1A237E', glow: '#E040FB' },
+};
+
+// Color picker handler
+document.getElementById('color-picker').addEventListener('click', (e) => {
+  const opt = e.target.closest('.color-opt');
+  if (!opt) return;
+  document.querySelectorAll('.color-opt').forEach(o => o.classList.remove('selected'));
+  opt.classList.add('selected');
+  selectedBallColor = opt.dataset.color;
+});
+
+// ==================== LANE THEMES ====================
+const LANE_THEMES = [
+  { name: 'Gündüz',  wood1: '#7A5533', wood2: '#8D6640', tint: 'rgba(255,240,200,0.06)', starColor: '#00AEEF' },
+  { name: 'Gece',    wood1: '#4A3A5C', wood2: '#5A4570', tint: 'rgba(80,60,160,0.08)',    starColor: '#B39DDB' },
+  { name: 'Uzay',    wood1: '#2A3A5C', wood2: '#3A4A6C', tint: 'rgba(0,174,239,0.06)',    starColor: '#40C4FF' },
+];
+
+function getLaneTheme() {
+  const idx = Math.floor(currentFrame / 3) % LANE_THEMES.length;
+  return LANE_THEMES[idx];
+}
+
+// ==================== MASCOT SYSTEM ====================
+const MASCOTS = ['🐰', '🐱', '🐶', '🦊', '🐻', '🐼'];
+let currentMascot = 0;
+
+function showMascot(type) {
+  const el = document.getElementById('mascot');
+  const msg = document.getElementById('mascot-msg');
+  const name = playerName || 'Dostum';
+
+  // Rotate mascot each frame
+  el.textContent = MASCOTS[currentFrame % MASCOTS.length];
+
+  const messages = {
+    strike:  ['Süpersin ' + name + '! 🌟', 'Strike! Harikasın! ⭐', 'WOW ' + name + '! 🎉'],
+    spare:   ['Güzel kurtardın ' + name + '! 👏', 'Spare! Bravo! ✨'],
+    good:    ['İyi atış ' + name + '! 💪', 'Devam et! 🎯'],
+    miss:    ['Olsun ' + name + ', tekrar dene! 💫', 'Bir dahakine ' + name + '! 🌈'],
+    gutter:  ['Oops! Sorun değil ' + name + '! 😄', 'Gutter! Ama eğlence devam! 🎳'],
+  };
+
+  const list = messages[type] || messages.good;
+  const text = list[Math.floor(Math.random() * list.length)];
+
+  msg.textContent = text;
+  el.classList.add('show');
+  msg.classList.add('show');
+  el.classList.remove('bounce');
+  void el.offsetWidth;
+  el.classList.add('bounce');
+
+  setTimeout(() => {
+    msg.classList.remove('show');
+    setTimeout(() => el.classList.remove('show'), 300);
+  }, 2200);
+}
+
+// ==================== POWER GAUGE ====================
+const powerGauge = document.getElementById('power-gauge');
+const powerFill = document.getElementById('power-fill');
+const powerLabel = document.getElementById('power-label');
+
+function updatePowerGauge(len) {
+  const maxLen = 200;
+  const pct = Math.min(len / maxLen * 100, 100);
+  powerFill.style.width = pct + '%';
+  if (pct < 30) powerLabel.textContent = 'Hafif';
+  else if (pct < 60) powerLabel.textContent = 'Orta';
+  else if (pct < 85) powerLabel.textContent = 'Güçlü!';
+  else powerLabel.textContent = '🔥 MAKSİMUM!';
+}
+
+// ==================== VISUAL EFFECTS SYSTEM ====================
+const canvasWrap = document.getElementById('canvas-wrap');
+
+function screenShake(mega) {
+  canvasWrap.classList.remove('shake', 'mega-shake');
+  void canvasWrap.offsetWidth;
+  canvasWrap.classList.add(mega ? 'mega-shake' : 'shake');
+  setTimeout(() => canvasWrap.classList.remove('shake', 'mega-shake'), mega ? 600 : 400);
+}
+
+function flashScreen(type) {
+  const el = document.getElementById('flash-overlay');
+  el.classList.remove('flash-white', 'flash-gold');
+  void el.offsetWidth;
+  el.classList.add(type === 'gold' ? 'flash-gold' : 'flash-white');
+  setTimeout(() => el.classList.remove('flash-white', 'flash-gold'), 500);
+}
+
+function showBigText(text) {
+  const el = document.getElementById('big-text');
+  const inner = document.getElementById('big-text-inner');
+  inner.textContent = text;
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1300);
+}
+
+function emojiRain(emojis, count) {
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'emoji-particle';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = (Math.random() * 90 + 5) + '%';
+      el.style.animationDuration = (1.8 + Math.random() * 1.5) + 's';
+      el.style.fontSize = (22 + Math.random() * 18) + 'px';
+      canvasWrap.appendChild(el);
+      setTimeout(() => el.remove(), 3500);
+    }, i * 80);
+  }
+}
+
+let confettiParticles = [];
+
+function spawnConfetti(cx, cy, count, colors) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 6;
+    confettiParticles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 3,
+      size: 3 + Math.random() * 5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * 6.28,
+      rotV: (Math.random() - 0.5) * 0.4,
+      shape: Math.floor(Math.random() * 3),
+      life: 1,
+    });
+  }
+}
+
+function updateAndDrawConfetti() {
+  confettiParticles = confettiParticles.filter(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.vy += 0.12; p.vx *= 0.99;
+    p.rot += p.rotV; p.life -= 0.015;
+    return p.life > 0;
+  });
+  confettiParticles.forEach(p => {
+    ctx.save();
+    ctx.globalAlpha = p.life;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 4;
+    const s = p.size;
+    if (p.shape === 0) {
+      ctx.beginPath(); ctx.arc(0, 0, s, 0, Math.PI * 2); ctx.fill();
+    } else if (p.shape === 1) {
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const r = i % 2 === 0 ? s : s * 0.4;
+        const a = (i * Math.PI / 5) - Math.PI / 2;
+        i === 0 ? ctx.moveTo(Math.cos(a)*r, Math.sin(a)*r) : ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+      }
+      ctx.closePath(); ctx.fill();
+    } else {
+      const hs = s * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(0, hs);
+      ctx.bezierCurveTo(-hs*2, -hs*0.5, -hs*0.5, -hs*2, 0, -hs*0.5);
+      ctx.bezierCurveTo(hs*0.5, -hs*2, hs*2, -hs*0.5, 0, hs);
+      ctx.fill();
+    }
+    ctx.restore();
+  });
+}
+
+function vibrateDevice(pattern) {
+  if (navigator.vibrate) {
+    navigator.vibrate(pattern);
+  }
+}
+
+function pinExplosion(px, py) {
+  spawnConfetti(px, py, 8, ['#FFD700','#FF6B00','#00AEEF','#FF3D00','#FFF','#FF9ECD']);
+  screenShake(false);
+  vibrateDevice(15); // Her pin düştüğünde hafif titreşim
+}
+
+function strikeCelebration() {
+  screenShake(true);
+  flashScreen('gold');
+  vibrateDevice([100, 50, 100, 50, 300]); // Strike için güçlü ritmik titreşim
+  showBigText('⭐ STRIKE! ⭐');
+  emojiRain(['🌟','⭐','🎉','🎊','💥','🔥','✨','🏆'], 18);
+  spawnConfetti(CANVAS_W/2, CANVAS_H/3, 40, ['#FFD700','#FF6B00','#FF3D00','#00AEEF','#FF9ECD','#FFF','#69F0AE']);
+}
+
+function spareCelebration() {
+  screenShake(false);
+  flashScreen('white');
+  vibrateDevice([100, 50, 150]); // Spare için orta ritmik titreşim
+  showBigText('🎯 SPARE! 🎯');
+  emojiRain(['✨','👏','🎯','💫','🌈'], 10);
+  spawnConfetti(CANVAS_W/2, CANVAS_H/3, 25, ['#00AEEF','#40C4FF','#FFD700','#FFF','#B39DDB']);
+}
+
+function goodHitEffect(fallen) {
+  if (fallen >= 7) {
+    screenShake(false);
+    vibrateDevice([80, 40, 80]); // İyi vuruş
+    showBigText('💪 SÜPER!');
+    emojiRain(['💪','🔥','⭐'], 6);
+  } else if (fallen >= 4) {
+    vibrateDevice(50); // Normal vuruş
+    showBigText('👍 İYİ!');
+  }
+}
 
 // ==================== SOUND ENGINE (Gerçekçi Bowling) ====================
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -500,229 +893,231 @@ function resetBall() {
 
 // ==================== DRAWING ====================
 function drawBackground() {
-  // === BOWLING SALONU ARKA PLANI ===
+  // === MAKE-A-WISH THEMED BOWLING ALLEY ===
 
-  // Tavan - koyu lacivert/mor gradient
+  // Ceiling - deep wish blue gradient
   const ceilGrad = ctx.createLinearGradient(0, 0, 0, 170);
-  ceilGrad.addColorStop(0, '#0D0D1A');
-  ceilGrad.addColorStop(1, '#1A1A35');
+  ceilGrad.addColorStop(0, '#001A33');
+  ceilGrad.addColorStop(0.5, '#003366');
+  ceilGrad.addColorStop(1, '#004D80');
   ctx.fillStyle = ceilGrad;
   ctx.fillRect(0, 0, CANVAS_W, 170);
 
-  // Neon ışık bantları - tavanda renkli çizgiler
-  const neonColors = ['#FF3CAC','#7B2FBE','#00D4FF','#00FF94','#FFD600'];
-  neonColors.forEach((col, i) => {
-    const y = 8 + i * 5;
+  // Soft starry ceiling
+  const starSeed = [17,53,89,127,163,211,257,293,331,377,419,461,503,541];
+  starSeed.forEach((s, i) => {
+    const sx = (s * 3.7 + 20) % (CANVAS_W - 40) + 20;
+    const sy = (s * 1.3 + 10) % 140 + 10;
+    const twinkle = 0.3 + 0.4 * Math.sin((Date.now() * 0.002) + i * 1.1);
+    const size = 1 + (i % 3) * 0.8;
     ctx.save();
-    ctx.shadowColor = col;
-    ctx.shadowBlur = 10;
-    ctx.strokeStyle = col;
-    ctx.globalAlpha = 0.7;
-    ctx.lineWidth = 2;
+    ctx.globalAlpha = twinkle;
+    ctx.fillStyle = '#FFF';
+    ctx.shadowColor = '#00AEEF';
+    ctx.shadowBlur = 6;
     ctx.beginPath();
-    ctx.moveTo(0, y); ctx.lineTo(CANVAS_W, y);
-    ctx.stroke();
+    ctx.arc(sx, sy, size, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   });
 
-  // Tavan lambalar (spot lights)
-  const lights = [80, 190, 310, 430, 530];
-  lights.forEach(lx => {
-    // Lamba gövdesi
-    ctx.save();
-    ctx.fillStyle = '#2A2A3E';
-    ctx.beginPath(); ctx.roundRect(lx - 18, 28, 36, 14, 6); ctx.fill();
-    ctx.fillStyle = '#444460';
-    ctx.beginPath(); ctx.roundRect(lx - 14, 32, 28, 8, 4); ctx.fill();
-
-    // Işık huzmesi (V şeklinde)
-    const beamGrad = ctx.createLinearGradient(lx, 42, lx, 170);
-    beamGrad.addColorStop(0, 'rgba(255,240,180,0.25)');
-    beamGrad.addColorStop(1, 'rgba(255,240,180,0)');
+  // Make-A-Wish star accent lights on ceiling
+  const wishLights = [100, 200, 300, 400, 500];
+  wishLights.forEach((lx, i) => {
+    // Soft spotlight beam
+    const beamGrad = ctx.createLinearGradient(lx, 30, lx, 170);
+    beamGrad.addColorStop(0, 'rgba(0,174,239,0.15)');
+    beamGrad.addColorStop(1, 'rgba(0,174,239,0)');
     ctx.fillStyle = beamGrad;
     ctx.beginPath();
-    ctx.moveTo(lx - 4, 42);
-    ctx.lineTo(lx - 45, 170);
-    ctx.lineTo(lx + 45, 170);
-    ctx.lineTo(lx + 4, 42);
+    ctx.moveTo(lx - 3, 30);
+    ctx.lineTo(lx - 40, 170);
+    ctx.lineTo(lx + 40, 170);
+    ctx.lineTo(lx + 3, 30);
     ctx.closePath();
     ctx.fill();
 
-    // Ampul sarısı ışık
+    // Star lamp
     ctx.save();
-    ctx.shadowColor = '#FFE066';
-    ctx.shadowBlur = 16;
-    ctx.fillStyle = '#FFE566';
-    ctx.beginPath(); ctx.arc(lx, 35, 5, 0, Math.PI*2); ctx.fill();
-    ctx.restore();
+    ctx.shadowColor = '#00AEEF';
+    ctx.shadowBlur = 12;
+    drawStar(lx, 28, 8, 5, '#00AEEF', 0.8);
     ctx.restore();
   });
 
-  // Yan duvarlar - bowling salonu panelleri
-  // Sol duvar
+  // Side walls - deep blue panels
   drawWallPanel(0, 0, 80, 170);
-  // Sağ duvar
   drawWallPanel(CANVAS_W - 80, 0, 80, 170);
 
-  // Zemin - bowling pisti öncesi koyu zemin (gutter area sides)
+  // Floor transition
   const floorGrad = ctx.createLinearGradient(0, 168, 0, 200);
-  floorGrad.addColorStop(0, '#111122');
-  floorGrad.addColorStop(1, '#1A1A2E');
+  floorGrad.addColorStop(0, '#002244');
+  floorGrad.addColorStop(1, '#003355');
   ctx.fillStyle = floorGrad;
   ctx.fillRect(0, 168, CANVAS_W, 32);
 
-  // Gutterlar (yan çukurlar)
-  ctx.fillStyle = '#111';
+  // Gutters
+  const gutterGrad = ctx.createLinearGradient(0, 168, 0, CANVAS_H);
+  gutterGrad.addColorStop(0, '#001A2E');
+  gutterGrad.addColorStop(1, '#002040');
+  ctx.fillStyle = gutterGrad;
   ctx.fillRect(0, 168, 80, CANVAS_H - 168);
   ctx.fillRect(CANVAS_W - 80, 168, 80, CANVAS_H - 168);
 
-  // Gutter kenar çizgileri (neon)
+  // Gutter edge glow - Make-A-Wish cyan
   ctx.save();
-  ctx.shadowColor = '#FF3CAC';
-  ctx.shadowBlur = 8;
-  ctx.strokeStyle = '#FF3CAC';
+  ctx.shadowColor = '#00AEEF';
+  ctx.shadowBlur = 10;
+  ctx.strokeStyle = '#00AEEF';
   ctx.lineWidth = 2;
-  ctx.globalAlpha = 0.6;
+  ctx.globalAlpha = 0.5;
   ctx.beginPath(); ctx.moveTo(80, 168); ctx.lineTo(80, CANVAS_H); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(CANVAS_W-80, 168); ctx.lineTo(CANVAS_W-80, CANVAS_H); ctx.stroke();
   ctx.restore();
 
-  // Gutter'da dekoratif yıldız/emoji sembolleri
   drawGutterDeco();
 
-  // Arka duvar - pin arkası
+  // Back wall behind pins
   const backGrad = ctx.createLinearGradient(80, 168, 80, 240);
-  backGrad.addColorStop(0, '#1E1E3A');
-  backGrad.addColorStop(1, '#252540');
+  backGrad.addColorStop(0, '#002855');
+  backGrad.addColorStop(1, '#003D6B');
   ctx.fillStyle = backGrad;
   ctx.fillRect(80, 168, CANVAS_W - 160, 32);
 
-  // Arka duvarda neon "BOWLING" yazısı efekti
+  // Back wall text
   ctx.save();
-  ctx.font = 'bold 13px "Nunito", sans-serif';
+  ctx.font = 'bold 12px "Nunito", sans-serif';
   ctx.textAlign = 'center';
-  ctx.shadowColor = '#00D4FF';
-  ctx.shadowBlur = 12;
-  ctx.fillStyle = '#00D4FF';
-  ctx.globalAlpha = 0.8;
-  ctx.fillText('🎳  B O W L I N G  🎳', CANVAS_W/2, 186);
+  ctx.shadowColor = '#00AEEF';
+  ctx.shadowBlur = 14;
+  ctx.fillStyle = '#00AEEF';
+  ctx.globalAlpha = 0.85;
+  ctx.fillText('⭐  M A K E - A - W I S H  ⭐', CANVAS_W/2, 186);
+  ctx.restore();
+}
+
+// Draw a 5-pointed star
+function drawStar(cx, cy, r, points, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha || 1;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  for (let i = 0; i < points * 2; i++) {
+    const radius = i % 2 === 0 ? r : r * 0.45;
+    const angle = (i * Math.PI / points) - Math.PI / 2;
+    const x = cx + Math.cos(angle) * radius;
+    const y = cy + Math.sin(angle) * radius;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fill();
   ctx.restore();
 }
 
 function drawWallPanel(x, y, w, h) {
-  // Koyu panel
-  ctx.fillStyle = '#15152A';
+  // Deep blue panel
+  const panelGrad = ctx.createLinearGradient(x, y, x + w, y + h);
+  panelGrad.addColorStop(0, '#001833');
+  panelGrad.addColorStop(1, '#002244');
+  ctx.fillStyle = panelGrad;
   ctx.fillRect(x, y, w, h);
 
-  // Renkli neon şeritler yan duvarda
-  const panelColors = ['#FF3CAC','#7B2FBE','#00D4FF'];
-  panelColors.forEach((c, i) => {
-    ctx.save();
-    ctx.fillStyle = c;
-    ctx.globalAlpha = 0.15;
-    ctx.fillRect(x, y + 30 + i*40, w, 18);
-    ctx.globalAlpha = 0.6;
-    ctx.strokeStyle = c;
-    ctx.lineWidth = 1.5;
-    ctx.shadowColor = c;
-    ctx.shadowBlur = 6;
-    ctx.strokeRect(x + 6, y + 30 + i*40, w - 12, 18);
-    ctx.restore();
+  // Subtle wish-star decorations
+  const stars = [[x+w/2, y+50], [x+w/2, y+100], [x+w/2, y+145]];
+  stars.forEach(([sx, sy], i) => {
+    const t = 0.4 + 0.3 * Math.sin((Date.now() * 0.0015) + i * 2);
+    drawStar(sx, sy, 7, 5, '#00AEEF', t * 0.5);
   });
 
-  // Küçük yıldız / bowling emojileri
+  // Vertical accent line
   ctx.save();
-  ctx.font = '16px serif';
-  ctx.textAlign = 'center';
-  ctx.globalAlpha = 0.5;
-  [[x+w/2, y+150], [x+w/2, y+105]].forEach(([px,py]) => {
-    ctx.fillText('⭐', px, py);
-  });
+  ctx.strokeStyle = 'rgba(0,174,239,0.15)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(x + w/2, y + 30);
+  ctx.lineTo(x + w/2, y + h - 10);
+  ctx.stroke();
   ctx.restore();
 }
 
 function drawGutterDeco() {
-  // Sol gutter - küçük yıldızlar
+  // Floating wish stars in gutters
   ctx.save();
-  ctx.font = '13px serif';
-  ctx.textAlign = 'center';
-  ctx.globalAlpha = 0.35;
-  [[40, 280],[40, 340],[40, 400],[40, 460]].forEach(([px,py]) => {
-    ctx.fillText('✨', px, py);
-  });
-  [[CANVAS_W-40, 280],[CANVAS_W-40, 340],[CANVAS_W-40, 400],[CANVAS_W-40, 460]].forEach(([px,py]) => {
-    ctx.fillText('✨', px, py);
+  const positions = [
+    [40, 280], [40, 380], [40, 480], [40, 580],
+    [CANVAS_W-40, 320], [CANVAS_W-40, 420], [CANVAS_W-40, 520], [CANVAS_W-40, 620]
+  ];
+  positions.forEach(([px, py], i) => {
+    const t = 0.2 + 0.2 * Math.sin((Date.now() * 0.001) + i * 0.8);
+    const yOff = Math.sin((Date.now() * 0.0012) + i) * 4;
+    drawStar(px, py + yOff, 6, 5, '#00AEEF', t);
   });
   ctx.restore();
 }
 
 function drawLane() {
-  // Wood lane
   const laneX = 80, laneW = CANVAS_W - 160;
+  const theme = getLaneTheme();
 
-  // Lane wood base
+  // Lane wood base - themed colors
   for (let i = 0; i < 8; i++) {
     const woodGrad = ctx.createLinearGradient(laneX + i*laneW/8, 0, laneX + (i+1)*laneW/8, 0);
-    const c1 = i % 2 === 0 ? '#8B5E3C' : '#A0714F';
-    const c2 = i % 2 === 0 ? '#9A6B45' : '#8B5A38';
+    const c1 = i % 2 === 0 ? theme.wood1 : theme.wood2;
+    const c2 = i % 2 === 0 ? theme.wood2 : theme.wood1;
     woodGrad.addColorStop(0, c1);
     woodGrad.addColorStop(1, c2);
     ctx.fillStyle = woodGrad;
     ctx.fillRect(laneX + i*laneW/8, 170, laneW/8, CANVAS_H - 170);
   }
 
-  // Lane border
-  ctx.strokeStyle = var_gold();
-  ctx.lineWidth = 3;
+  // Lane polished shine
+  const shineGrad = ctx.createLinearGradient(laneX, 0, laneX + laneW, 0);
+  shineGrad.addColorStop(0, 'rgba(255,255,255,0)');
+  shineGrad.addColorStop(0.3, 'rgba(255,255,255,0.06)');
+  shineGrad.addColorStop(0.5, 'rgba(255,255,255,0.1)');
+  shineGrad.addColorStop(0.7, 'rgba(255,255,255,0.06)');
+  shineGrad.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = shineGrad;
+  ctx.fillRect(laneX, 170, laneW, CANVAS_H - 170);
+
+  // Lane border - cyan glow
+  ctx.save();
+  ctx.shadowColor = '#00AEEF';
+  ctx.shadowBlur = 6;
+  ctx.strokeStyle = 'rgba(0,174,239,0.4)';
+  ctx.lineWidth = 2;
   ctx.strokeRect(laneX, 170, laneW, CANVAS_H - 170);
+  ctx.restore();
 
-  // Kilim pattern overlay
-  drawKilimPattern(laneX, 170, laneW, CANVAS_H - 170);
+  // Star pattern overlay
+  drawStarPattern(laneX, 170, laneW, CANVAS_H - 170);
 
-  // Arrows on lane
-  ctx.fillStyle = 'rgba(212,160,23,0.5)';
+  // Star-shaped arrow guides
+  ctx.save();
   const arrY = CANVAS_H - 140;
   const arrows = [-60, -30, 0, 30, 60];
-  arrows.forEach(ax => {
-    ctx.beginPath();
-    ctx.moveTo(CANVAS_W/2 + ax, arrY);
-    ctx.lineTo(CANVAS_W/2 + ax - 8, arrY + 14);
-    ctx.lineTo(CANVAS_W/2 + ax + 8, arrY + 14);
-    ctx.closePath();
-    ctx.fill();
+  arrows.forEach((ax, i) => {
+    const isCenter = i === 2;
+    ctx.save();
+    ctx.shadowColor = isCenter ? '#00AEEF' : '#FFD700';
+    ctx.shadowBlur = isCenter ? 8 : 4;
+    drawStar(CANVAS_W/2 + ax, arrY, isCenter ? 8 : 6, 5, isCenter ? '#00AEEF' : 'rgba(212,160,23,0.5)', isCenter ? 0.7 : 0.4);
+    ctx.restore();
   });
+  ctx.restore();
 }
 
 function var_gold() { return '#D4A017'; }
 
-function drawKilimPattern(x, y, w, h) {
+function drawStarPattern(x, y, w, h) {
   ctx.save();
-  ctx.globalAlpha = 0.12;
-
-  // Diamond/geometric kilim motifs
-  const colors = ['#C0392B','#1ABC9C','#D4A017','#1A6B7A'];
-  const step = 50;
-  for (let ky = y + 20; ky < y + h - 20; ky += step) {
-    for (let kx = x + 20; kx < x + w - 20; kx += step) {
-      const ci = ((kx + ky) / step | 0) % 4;
-      ctx.strokeStyle = colors[ci];
-      ctx.lineWidth = 2;
-      // Diamond
-      ctx.beginPath();
-      ctx.moveTo(kx + 15, ky);
-      ctx.lineTo(kx + 30, ky + 15);
-      ctx.lineTo(kx + 15, ky + 30);
-      ctx.lineTo(kx, ky + 15);
-      ctx.closePath();
-      ctx.stroke();
-      // Center
-      ctx.fillStyle = colors[(ci+1)%4];
-      ctx.beginPath();
-      ctx.arc(kx+15, ky+15, 3, 0, Math.PI*2);
-      ctx.fill();
+  ctx.globalAlpha = 0.06;
+  const step = 60;
+  for (let ky = y + 30; ky < y + h - 30; ky += step) {
+    for (let kx = x + 30; kx < x + w - 30; kx += step) {
+      drawStar(kx, ky, 8, 5, '#00AEEF', 1);
     }
   }
-
   ctx.restore();
 }
 
@@ -736,17 +1131,20 @@ function drawPin(pin) {
   }
 
   // Pin shadow
-  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.beginPath();
   ctx.ellipse(3, 20, 10, 4, 0, 0, Math.PI*2);
   ctx.fill();
 
-  // Pin body
+  // Pin body - premium gradient
   const pinGrad = ctx.createLinearGradient(-12, -28, 12, 28);
   pinGrad.addColorStop(0, '#FFFFFF');
-  pinGrad.addColorStop(0.4, '#F0F0F0');
-  pinGrad.addColorStop(1, '#D0D0D0');
+  pinGrad.addColorStop(0.3, '#F5F5F5');
+  pinGrad.addColorStop(0.6, '#E8E8E8');
+  pinGrad.addColorStop(1, '#C8C8C8');
   ctx.fillStyle = pinGrad;
+  ctx.shadowColor = 'rgba(0,174,239,0.3)';
+  ctx.shadowBlur = 6;
 
   ctx.beginPath();
   ctx.moveTo(-6, 20);
@@ -757,32 +1155,44 @@ function drawPin(pin) {
   ctx.closePath();
   ctx.fill();
 
-  // Nazar boncuğu (evil eye)
-  // Outer white
-  ctx.fillStyle = '#fff';
-  ctx.beginPath(); ctx.arc(0, -8, 9, 0, Math.PI*2); ctx.fill();
-  // Blue
-  ctx.fillStyle = '#1A6BB5';
-  ctx.beginPath(); ctx.arc(0, -8, 7, 0, Math.PI*2); ctx.fill();
-  // Light blue
-  ctx.fillStyle = '#5BC8F5';
-  ctx.beginPath(); ctx.arc(0, -8, 4.5, 0, Math.PI*2); ctx.fill();
-  // White
-  ctx.fillStyle = '#fff';
-  ctx.beginPath(); ctx.arc(0, -8, 2.5, 0, Math.PI*2); ctx.fill();
-  // Pupil
-  ctx.fillStyle = '#000';
-  ctx.beginPath(); ctx.arc(0, -8, 1.2, 0, Math.PI*2); ctx.fill();
-  // Shine
-  ctx.fillStyle = 'rgba(255,255,255,0.8)';
-  ctx.beginPath(); ctx.arc(1.5, -9.5, 1, 0, Math.PI*2); ctx.fill();
+  // Highlight reflection
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.beginPath();
+  ctx.ellipse(-3, -5, 3, 12, -0.2, 0, Math.PI*2);
+  ctx.fill();
 
-  // Red stripe
-  ctx.strokeStyle = '#C0392B';
-  ctx.lineWidth = 2.5;
+  // Wish star emblem (instead of nazar boncuğu)
+  ctx.save();
+  ctx.shadowColor = '#00AEEF';
+  ctx.shadowBlur = 6;
+  // Star background circle
+  ctx.fillStyle = '#003F72';
+  ctx.beginPath(); ctx.arc(0, -8, 8, 0, Math.PI*2); ctx.fill();
+  // Inner cyan circle
+  ctx.fillStyle = '#00AEEF';
+  ctx.beginPath(); ctx.arc(0, -8, 6, 0, Math.PI*2); ctx.fill();
+  // Wish star
+  drawStar(0, -8, 4.5, 5, '#FFF', 1);
+  // Center dot
+  ctx.fillStyle = '#00AEEF';
+  ctx.beginPath(); ctx.arc(0, -8, 1.5, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // Cyan accent stripe
+  ctx.strokeStyle = '#00AEEF';
+  ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(-7, 5);
   ctx.quadraticCurveTo(0, 8, 7, 5);
+  ctx.stroke();
+
+  // Gold accent stripe
+  ctx.strokeStyle = 'rgba(212,160,23,0.6)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(-6, 9);
+  ctx.quadraticCurveTo(0, 11, 6, 9);
   ctx.stroke();
 
   ctx.restore();
@@ -794,43 +1204,44 @@ function drawBall() {
   ctx.translate(ball.x, ball.y);
 
   // Shadow
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
   ctx.beginPath();
   ctx.ellipse(4, ball.r - 2, ball.r * 0.9, ball.r * 0.35, 0, 0, Math.PI*2);
   ctx.fill();
 
-  // Ball body
+  // Ball body - player's chosen color
+  const bc = BALL_COLORS[selectedBallColor] || BALL_COLORS.blue;
   const ballGrad = ctx.createRadialGradient(-7, -7, 3, 0, 0, ball.r);
-  ballGrad.addColorStop(0, '#FF6B6B');
-  ballGrad.addColorStop(0.4, '#C0392B');
-  ballGrad.addColorStop(1, '#5A0A0A');
+  ballGrad.addColorStop(0, bc.light);
+  ballGrad.addColorStop(0.35, bc.mid);
+  ballGrad.addColorStop(1, bc.dark);
   ctx.fillStyle = ballGrad;
+  ctx.shadowColor = bc.glow;
+  ctx.shadowBlur = 14;
   ctx.beginPath();
   ctx.arc(0, 0, ball.r, 0, Math.PI*2);
   ctx.fill();
 
-  // White swirl stripes (çini style)
+  // Starry swirl pattern
   ctx.save();
+  ctx.beginPath();
+  ctx.arc(0, 0, ball.r, 0, Math.PI*2);
   ctx.clip();
-  ctx.strokeStyle = 'rgba(255,255,255,0.65)';
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.arc(0, 0, ball.r * 0.55, -Math.PI * 0.8, Math.PI * 0.3);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(0, 0, ball.r * 0.8, Math.PI * 0.5, Math.PI * 1.5);
-  ctx.stroke();
+  ctx.globalAlpha = 0.3;
+  drawStar(6, -4, 6, 5, '#FFD700', 1);
+  drawStar(-8, 6, 4, 5, '#FFF', 1);
   ctx.restore();
 
   // Finger holes
-  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = 'rgba(0,30,60,0.5)';
   ctx.beginPath(); ctx.arc(-6, -5, 3.5, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(4, -8, 3.5, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(5, 4, 3, 0, Math.PI*2); ctx.fill();
 
   // Shine
-  ctx.fillStyle = 'rgba(255,255,255,0.3)';
-  ctx.beginPath(); ctx.arc(-8, -8, 6, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.beginPath(); ctx.arc(-8, -8, 7, 0, Math.PI*2); ctx.fill();
 
   ctx.restore();
 }
@@ -843,9 +1254,11 @@ function drawAimArrow() {
   if (len < 10) return;
 
   ctx.save();
-  ctx.globalAlpha = 0.6;
-  ctx.strokeStyle = '#FFD700';
+  ctx.globalAlpha = 0.7;
+  ctx.strokeStyle = '#00AEEF';
   ctx.lineWidth = 2.5;
+  ctx.shadowColor = '#00AEEF';
+  ctx.shadowBlur = 8;
   ctx.setLineDash([8,6]);
   ctx.beginPath();
   ctx.moveTo(ball.x, ball.y);
@@ -854,15 +1267,10 @@ function drawAimArrow() {
   ctx.lineTo(endX, endY);
   ctx.stroke();
   ctx.setLineDash([]);
-  // Arrowhead
-  const angle = Math.atan2(dy, dx);
-  ctx.fillStyle = '#FFD700';
-  ctx.beginPath();
-  ctx.moveTo(endX, endY);
-  ctx.lineTo(endX - 12*Math.cos(angle-0.4), endY - 12*Math.sin(angle-0.4));
-  ctx.lineTo(endX - 12*Math.cos(angle+0.4), endY - 12*Math.sin(angle+0.4));
-  ctx.closePath();
-  ctx.fill();
+
+  // Star arrowhead
+  ctx.shadowBlur = 10;
+  drawStar(endX, endY, 10, 5, '#00AEEF', 0.8);
   ctx.restore();
 }
 
@@ -938,7 +1346,10 @@ function updatePhysics() {
     const dx = pin.x - initPos.x;
     const dy = pin.y - initPos.y;
     if (Math.sqrt(dx*dx+dy*dy) > 50) {
-      if (!pin.fallen) playPinFall();
+      if (!pin.fallen) {
+        playPinFall();
+        pinExplosion(pin.x, pin.y);
+      }
       pin.fallen = true;
     }
   });
@@ -957,6 +1368,7 @@ function loop() {
   drawLane();
   pins.forEach(pin => drawPin(pin));
   if (!ballMoving) drawAimArrow();
+  updateAndDrawConfetti();
   drawBall();
   updatePhysics();
 
@@ -979,24 +1391,26 @@ function loop() {
 }
 
 // ==================== GAME LOGIC ====================
-function startGame() {
+function setupAndStart() {
+  playerName = document.getElementById('player-name').value.trim() || 'Yıldız';
   document.getElementById('modal-intro').classList.add('hidden');
+  startGame();
+}
 
+function startGame() {
+  confettiParticles = [];
   // Setup frames
   frames = [];
   for (let i = 0; i < FRAME_COUNT; i++) {
     frames.push({ rolls: [], pinsStanding: Array(10).fill(true), fallenThisRoll: [] });
   }
 
-  // Pick question frames: 8 of 10 random
-  const frameIndices = Array.from({length:10},(_,i)=>i);
-  const shuffled = frameIndices.sort(()=>Math.random()-0.5);
-  questionFrames = shuffled.slice(0, 8);
+  // İlk 7 turda soru çıksın (frame 0-6), son 3 turda çıkmasın
+  questionFrames = [0, 1, 2, 3, 4, 5, 6];
 
-  // Assign questions to those frames
-  const qShuffled = [...QUESTIONS].sort(()=>Math.random()-0.5);
+  // Her tura sırasıyla bir soru ata
   questions = {};
-  questionFrames.forEach((f, i) => { questions[f] = qShuffled[i]; });
+  questionFrames.forEach((f, i) => { questions[f] = QUESTIONS[i]; });
 
   currentFrame = 0;
   currentRoll = 0;
@@ -1007,11 +1421,14 @@ function startGame() {
   initPins([]);
   resetBall();
   loop();
+
+  // Welcome mascot
+  setTimeout(() => showMascot('good'), 500);
 }
 
 function restartGame() {
   document.getElementById('modal-end').classList.add('hidden');
-  startGame();
+  document.getElementById('modal-intro').classList.remove('hidden');
 }
 
 function countFallen() {
@@ -1036,21 +1453,55 @@ function onRollEnd() {
 
   const firstRollKnocked = frame.rolls[0] || 0;
   const isStrike = currentRoll === 0 && firstRollKnocked === 10;
+  const isSpare = currentRoll === 1 && (frame.rolls[0] || 0) + (frame.rolls[1] || 0) === 10;
   const isFrameDone = isStrike || currentRoll === 1;
+  const isGutter = knockedThisRoll === 0;
+
+  // 🎉 HER VURUŞTA KUTLAMA — pin sayısına göre seviye artar
+  if (knockedThisRoll >= 10) {
+    // STRIKE — MEGA kutlama
+    showMascot('strike');
+    strikeCelebration();
+    playStrike();
+  } else if (isSpare) {
+    // SPARE — büyük kutlama
+    showMascot('spare');
+    spareCelebration();
+    playSpare();
+  } else if (knockedThisRoll >= 6) {
+    // 6-9 pin — harika!
+    showMascot('good');
+    screenShake(true);
+    flashScreen('gold');
+    showBigText('🔥 HARİKA!');
+    emojiRain(['🔥','💥','⭐','🎉','✨'], 12);
+    spawnConfetti(CANVAS_W/2, CANVAS_H/3, 30, ['#FFD700','#FF6B00','#00AEEF','#FF9ECD','#69F0AE']);
+  } else if (knockedThisRoll >= 3) {
+    // 3-5 pin — güzel!
+    showMascot('good');
+    screenShake(false);
+    showBigText('💪 GÜZEL!');
+    emojiRain(['💪','👍','⭐','✨'], 8);
+    spawnConfetti(CANVAS_W/2, CANVAS_H/3, 18, ['#00AEEF','#FFD700','#FFF','#FF9ECD']);
+  } else if (knockedThisRoll >= 1) {
+    // 1-2 pin — teşvik!
+    showMascot('good');
+    showBigText('👏 İYİ!');
+    emojiRain(['👏','✨','💫'], 5);
+    spawnConfetti(CANVAS_W/2, CANVAS_H/2, 10, ['#00AEEF','#FFD700','#FFF']);
+  } else {
+    // Gutter — sevimli teşvik
+    showMascot('gutter');
+    emojiRain(['💫','🌈','😊'], 4);
+  }
 
   if (isFrameDone) {
     // Score calculation (simplified running total)
     calculateScore();
 
-    // Strike / Spare sesleri
-    if (isStrike) {
-      playStrike();
-    } else if (currentRoll === 1 && (frame.rolls[0] || 0) + (frame.rolls[1] || 0) === 10) {
-      playSpare();
-    }
-
     if (questionFrames.includes(currentFrame)) {
-      showQuestion(questions[currentFrame]);
+      // 2 saniye bekle ki çocuk kutlamayı yaşasın
+      setTimeout(() => showQuestion(questions[currentFrame]), 2000);
     } else {
       advanceFrame();
     }
@@ -1115,7 +1566,9 @@ function advanceFrame() {
 }
 
 function showQuestion(q) {
+  const name = playerName || 'Yıldız';
   document.getElementById('q-text').textContent = q;
+  document.querySelector('#modal-question .modal-title').textContent = '🌙 ' + name + ', Soru Zamanı!';
   document.getElementById('modal-question').classList.remove('hidden');
 }
 
@@ -1126,16 +1579,19 @@ function closeQuestion() {
 
 function endGame() {
   gameRunning = false;
+  const name = playerName || 'Yıldız';
   document.getElementById('final-score').textContent = totalScore;
-  let msg = totalScore >= 150 ? '🏆 Muhteşem! Gerçek bir bowling ustasısın!' :
-            totalScore >= 100 ? '⭐ Harika! Çok güzel bir oyun çıkardın!' :
-            totalScore >= 60  ? '👏 İyi iş! Pratik yaptıkça daha da iyileşeceksin.' :
-                                '🎳 Güzel deneme! Bir daha dene!';
+  let msg = totalScore >= 150 ? '🏆 Muhteşem ' + name + '! Gerçek bir bowling yıldızısın!' :
+            totalScore >= 100 ? '⭐ Harika ' + name + '! Çok güzel bir oyun çıkardın!' :
+            totalScore >= 60  ? '👏 İyi iş ' + name + '! Pratik yaptıkça daha da iyileşeceksin.' :
+                                '🎳 Güzel deneme ' + name + '! Bir daha deneyelim!';
   document.getElementById('end-msg').textContent = msg;
+  document.querySelector('#modal-end .modal-title').textContent = '🏆 Tebrikler ' + name + '!';
   document.getElementById('modal-end').classList.remove('hidden');
 }
 
 function updateHUD() {
+  const theme = getLaneTheme();
   document.getElementById('hud-frame').textContent = `${Math.min(currentFrame+1,10)}/10`;
   document.getElementById('hud-score').textContent = totalScore;
 }
@@ -1160,6 +1616,8 @@ function onDown(e) {
   if (Math.sqrt(dx*dx+dy*dy) < ball.r * 2.5) {
     dragStart = { x: pos.x, y: pos.y };
     dragCurrent = { x: pos.x, y: pos.y };
+    powerGauge.classList.add('show');
+    updatePowerGauge(0);
   }
 }
 
@@ -1167,6 +1625,12 @@ function onMove(e) {
   if (!dragStart) return;
   e.preventDefault();
   dragCurrent = getPos(e);
+
+  // Update power gauge
+  const dx = dragStart.x - dragCurrent.x;
+  const dy = dragStart.y - dragCurrent.y;
+  const len = Math.sqrt(dx*dx+dy*dy);
+  updatePowerGauge(len);
 }
 
 function onUp(e) {
@@ -1186,6 +1650,7 @@ function onUp(e) {
   }
   dragStart = null;
   dragCurrent = null;
+  powerGauge.classList.remove('show');
 }
 
 canvas.addEventListener('mousedown', onDown);

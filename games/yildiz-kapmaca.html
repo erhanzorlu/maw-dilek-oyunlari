@@ -151,9 +151,42 @@
             100% { transform: translate(-50%, -80%) scale(1.1); opacity: 0; }
         }
 
+        /* --- BAŞLANGIÇ EKRANI --- */
+        #start-screen {
+            position: fixed; inset: 0; z-index: 150;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
+        .start-box {
+            background: #fff; padding: 40px; border-radius: 40px;
+            border: 8px solid #FF9A9E;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            text-align: center; max-width: 400px; width: 85%;
+            animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .start-box h2 { font-size: 2.2rem; color: #555; margin: 0 0 20px; }
+        .start-box p { font-size: 1.2rem; color: #666; font-weight: 600; line-height: 1.5; margin-bottom: 30px; }
+        .start-btn {
+            background: linear-gradient(to bottom, #FF9A9E, #FECFEF);
+            color: #fff; border: none; padding: 15px 40px;
+            font-size: 1.5rem; font-weight: 700; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 6px 0 #E57373;
+            transition: all 0.2s; font-family: 'Fredoka', sans-serif;
+            width: 100%;
+        }
+        .start-btn:active { transform: translateY(6px); box-shadow: none; }
     </style>
 </head>
 <body>
+    <div id="start-screen">
+        <div class="start-box">
+            <h2>Nasıl Oynanır? 🎈</h2>
+            <p>Ekrana dokunarak veya Boşluk tuşu ile kancayı at.<br><br>Kara bulutlara çarpmadan yıldızları yakala ve sürpriz soruları cevapla! 🌟</p>
+            <button class="start-btn" onclick="startGame()">Maceraya Başla!</button>
+        </div>
+    </div>
 
     <script>
         for(let i=0; i<8; i++) {
@@ -172,8 +205,6 @@
     </script>
 
     <div id="ui-layer">
-        <h1>🎈 Sihirli Gökler 🎈</h1>
-        <p class="instruction">Uçan daireyi kullan, yıldızları kap!</p>
     </div>
 
     <div id="game-wrapper">
@@ -198,15 +229,19 @@
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
+        let globalScale = 1;
+
         function resize() {
             canvas.width = window.innerWidth > 800 ? 800 : window.innerWidth;
             canvas.height = window.innerHeight;
+            // Calculate a scale factor for mobile screens to make elements smaller
+            globalScale = Math.min(1, Math.max(0.6, window.innerWidth / 600));
         }
         window.addEventListener('resize', resize);
         resize();
 
         // --- KONFİGÜRASYON ---
-        const praises = [ "SÜPERSİN! 🌟", "ÇOK GÜZEL! 💖", "HARİKA! 🚀", "MÜKEMMEL! ✨", "BRAVO! 👏" ];
+        const praises = [ "HARİKA! 🌟", "SÜPERSİN! 🚀", "BRAVO! 👏", "MUHTEŞEM! ✨", "ŞAHANE! 💖", "YILDIZ GİBİ! ⭐" ];
         const colors = { 
             rope: "#FF9A9E", // Tatlı Pembe İp
             hook: "#FFD700"  // Altın Kanca
@@ -231,14 +266,21 @@
 
         const origin = { x: canvas.width / 2, y: 90 }; 
         let angle = 0;
-        let angleSpeed = 0.015; // Yavaş ve sakin
+        let angleSpeed = 0.035; // Hızlandırıldı
         let angleDir = 1;
         let ropeLength = 80;
         const minRope = 80;
         let state = "swing";
         let caughtTarget = null;
-        let isPaused = false;
+        let isPaused = true;
         let confettiParticles = []; 
+        
+        // Kara Bulutlar (Engeller)
+        let obstacles = [
+            { rely: 0.35, freq: 0.5, offset: 0, w: 80, h: 40 },
+            { rely: 0.55, freq: 0.7, offset: 2, w: 90, h: 45 },
+            { rely: 0.70, freq: 0.4, offset: 4, w: 70, h: 35 }
+        ];
 
         // --- KONFETİ MOTORU ---
         class Confetti {
@@ -306,10 +348,21 @@
             if (isPaused) return;
 
             const time = Date.now() * 0.002;
+            
+            // Hareketli UFO (Origin)
+            origin.x = (canvas.width / 2) + Math.sin(time * 0.4) * (canvas.width * 0.25);
+
             targets.forEach(t => {
                 if (!t.caught) {
-                    t.currentY = t.realY + Math.sin(time + t.floatOffset) * 12; // Yumuşak salınım
+                    t.currentY = t.realY + Math.sin(time + t.floatOffset) * 15; // Yumuşak salınım
+                    t.currentX = t.realX + Math.cos(time * 0.7 + t.floatOffset) * 50; // Sağa sola hareket
                 }
+            });
+
+            // Hareketli Bulutlar (Engeller)
+            obstacles.forEach(o => {
+                o.currentY = o.rely * canvas.height;
+                o.currentX = (canvas.width / 2) + Math.sin(time * o.freq + o.offset) * (canvas.width * 0.45);
             });
 
             if (state === "swing") {
@@ -317,28 +370,59 @@
                 if (angle > 1.1 || angle < -1.1) angleDir *= -1;
             } 
             else if (state === "shoot") {
-                ropeLength += 12; 
+                ropeLength += 18; // Daha hızlı atış
                 let hookX = origin.x + Math.sin(angle) * ropeLength;
                 let hookY = origin.y + Math.cos(angle) * ropeLength;
 
                 targets.forEach(t => {
                     if (!t.caught && !t.answered && !caughtTarget) {
-                        let dist = Math.hypot(hookX - t.realX, hookY - t.currentY);
-                        if (dist < t.radius + 10) {
+                        let dist = Math.hypot(hookX - t.currentX, hookY - t.currentY);
+                        let scaledRadius = t.radius * globalScale;
+                        if (dist < scaledRadius - 5) { // Hitbox küçültüldü ve ölçeklendirildi
                             caughtTarget = t;
                             t.caught = true;
                             state = "rewind";
                         }
                     }
                 });
+
+                // Bulut (Engel) Çarpışması
+                if (!caughtTarget) {
+                    obstacles.forEach(o => {
+                        let dx = Math.abs(hookX - o.currentX);
+                        let dy = Math.abs(hookY - o.currentY);
+                        if (dx < o.w/2 + 10 && dy < o.h/2 + 10) {
+                            state = "rewind";
+                            if (navigator.vibrate) navigator.vibrate([50, 50, 50]); // Çarpma titreşimi
+                        }
+                    });
+                }
+                
                 if (ropeLength > canvas.height + 50) state = "rewind";
             } 
             else if (state === "rewind") {
-                ropeLength -= 10; 
+                ropeLength -= 15; // Daha hızlı geri dönüş
                 if (ropeLength <= minRope) {
                     ropeLength = minRope;
-                    state = "swing";
-                    if (caughtTarget) openModal(caughtTarget);
+                    if (caughtTarget) {
+                        state = "waiting";
+                        triggerConfetti();
+                        
+                        // Praise Mesajını Göster
+                        const randomPraise = praises[Math.floor(Math.random() * praises.length)];
+                        praiseEl.innerText = randomPraise;
+                        praiseEl.style.animation = "none";
+                        praiseEl.offsetHeight; // trigger reflow
+                        praiseEl.style.animation = "praiseAnim 2s forwards";
+                        
+                        if (navigator.vibrate) navigator.vibrate([100, 100, 100]);
+                        setTimeout(() => {
+                            state = "swing";
+                            openModal(caughtTarget);
+                        }, 1500);
+                    } else {
+                        state = "swing";
+                    }
                 }
             }
 
@@ -377,10 +461,22 @@
             ctx.stroke();
             ctx.restore();
 
+            // Kara Bulutları Çiz
+            obstacles.forEach(o => {
+                ctx.fillStyle = "rgba(80, 90, 105, 0.85)";
+                ctx.beginPath();
+                ctx.roundRect(o.currentX - o.w/2, o.currentY - o.h/2, o.w, o.h, 20);
+                ctx.fill();
+                ctx.font = "20px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("🌩️", o.currentX, o.currentY);
+            });
+
             // Hedefler
             targets.forEach(t => {
                 if (!t.answered) {
-                    let drawX = t.realX;
+                    let drawX = t.currentX;
                     let drawY = t.currentY;
 
                     if (caughtTarget === t) {
@@ -388,27 +484,29 @@
                         drawY = hookY + 25;
                     }
 
-                    // Yıldız Çizimi (Daha tombul yıldızlar)
-                    drawStar(drawX, drawY, 5, 50, 25, "#FFD700");
+                    // Yıldız Çizimi (Responsive Ölçekli)
+                    drawStar(drawX, drawY, 5, 50 * globalScale, 25 * globalScale, "#FFD700");
 
                     // Emoji
-                    ctx.font = "35px Fredoka";
+                    ctx.font = Math.floor(35 * globalScale) + "px Fredoka";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
                     ctx.fillStyle = "#333";
-                    ctx.fillText(t.icon, drawX, drawY + 4); 
+                    ctx.fillText(t.icon, drawX, drawY + (4 * globalScale)); 
                     
                     if(caughtTarget !== t) {
-                        // Etiket (Daha şık)
-                        let labelW = ctx.measureText(t.label).width + 30;
+                        // Etiket (Daha şık ve responsive)
+                        ctx.font = "bold " + Math.floor(15 * Math.max(0.8, globalScale)) + "px Fredoka";
+                        let labelW = ctx.measureText(t.label).width + 30 * globalScale;
+                        let labelY = drawY + 55 * globalScale;
+                        
                         ctx.fillStyle = "rgba(255,255,255,0.95)";
                         ctx.beginPath();
-                        ctx.roundRect(drawX - labelW/2, drawY + 55, labelW, 28, 15);
+                        ctx.roundRect(drawX - labelW/2, labelY, labelW, 28 * globalScale, 15 * globalScale);
                         ctx.fill();
                         
-                        ctx.font = "bold 15px Fredoka";
                         ctx.fillStyle = "#0057B8";
-                        ctx.fillText(t.label, drawX, drawY + 69);
+                        ctx.fillText(t.label, drawX, labelY + (14 * globalScale));
                     }
                 }
             });
@@ -433,6 +531,11 @@
         const praiseEl = document.getElementById("praise-text");
         let countdownTimer = null;
 
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            isPaused = false;
+        }
+
         function openModal(target) {
             isPaused = true;
             modal.style.display = "flex";
@@ -440,7 +543,7 @@
             document.getElementById("modal-question").innerText = target.question;
             
             // Butonu sıfırla
-            let timeLeft = 10;
+            let timeLeft = 3;
             modalBtn.disabled = true;
             modalBtn.innerHTML = `⏳ <span id="countdown">${timeLeft}</span>`;
             
@@ -461,8 +564,7 @@
 
         function submitAnswer() {
             modal.style.display = "none";
-            const randomPraise = praises[Math.floor(Math.random() * praises.length)];
-            praiseEl.innerText = randomPraise;
+            praiseEl.innerText = "TEBRİKLER! 🎈";
             praiseEl.style.animation = "none";
             praiseEl.offsetHeight;
             praiseEl.style.animation = "praiseAnim 2s forwards";
@@ -480,7 +582,7 @@
         window.addEventListener("keydown", (e) => { if(e.code==="Space") action(); });
         
         window.addEventListener("touchstart", (e) => { 
-            if(e.target.closest('#magic-modal')) return;
+            if(e.target.closest('#magic-modal') || e.target.closest('#start-screen')) return;
             e.preventDefault(); 
             action(); 
         }, {passive: false});

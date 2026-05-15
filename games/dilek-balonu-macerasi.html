@@ -141,11 +141,78 @@ body{background:#87ceeb;display:flex;justify-content:center;align-items:center;m
 .footer{position:absolute;bottom:0;left:0;right:0;text-align:center;padding:4px 0 5px;font-size:9px;color:var(--purple);opacity:.6;font-weight:700;z-index:41;pointer-events:none;}
 #pauseBtn{position:absolute;top:12px;right:12px;z-index:41;width:32px;height:32px;border-radius:50%;border:2px solid var(--pink);background:#fff9;color:var(--pink);font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;font-weight:900;}
 #pauseBtn.show{display:flex;}
+
+/* ================== NEW EFFECTS CSS ================== */
+/* Screen Shake */
+#gw.shake { animation: screenShake 0.4s ease; }
+@keyframes screenShake {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  15%  { transform: translate(-6px,4px) rotate(-1.5deg); }
+  30%  { transform: translate(5px,-5px) rotate(1deg); }
+  45%  { transform: translate(-4px,5px) rotate(-0.5deg); }
+  60%  { transform: translate(4px,-2px) rotate(0.8deg); }
+  75%  { transform: translate(-2px,2px) rotate(-0.3deg); }
+  100% { transform: translate(0,0) rotate(0deg); }
+}
+#gw.mega-shake { animation: megaShake 0.6s ease; }
+@keyframes megaShake {
+  0%   { transform: translate(0,0) rotate(0deg) scale(1); }
+  10%  { transform: translate(-10px,8px) rotate(-3deg) scale(1.02); }
+  20%  { transform: translate(10px,-10px) rotate(2deg) scale(0.98); }
+  30%  { transform: translate(-8px,12px) rotate(-2deg) scale(1.01); }
+  40%  { transform: translate(10px,-6px) rotate(2.5deg) scale(0.99); }
+  50%  { transform: translate(-6px,4px) rotate(-1deg) scale(1.01); }
+  60%  { transform: translate(4px,-3px) rotate(1deg); }
+  80%  { transform: translate(-2px,1px) rotate(-0.5deg); }
+  100% { transform: translate(0,0) rotate(0deg) scale(1); }
+}
+
+/* Big Overlay Text */
+#big-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 50; opacity: 0; }
+#big-text.show { animation: bigTextPop 1.5s ease-out forwards; }
+#big-text-inner { font-family: 'Nunito', sans-serif; font-size: 42px; font-weight: 900; color: #FFD700; text-shadow: 0 0 20px #FF6B00, 0 0 40px #FF3D00, 0 4px 8px rgba(0,0,0,0.5); letter-spacing: 2px; text-align: center; line-height: 1.1; }
+@keyframes bigTextPop {
+  0%   { opacity: 0; transform: scale(0.2) rotate(-10deg); }
+  20%  { opacity: 1; transform: scale(1.3) rotate(3deg); }
+  35%  { transform: scale(0.95) rotate(-1deg); }
+  50%  { transform: scale(1.1) rotate(1deg); }
+  75%  { opacity: 1; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(1.5) rotate(0deg); }
+}
+
+/* Rocket Power-up */
+.rocketItem { position: absolute; width: 44px; height: 50px; transform: translateX(-50%); z-index: 15; animation: rocketGlow 1s ease-in-out infinite alternate; }
+@keyframes rocketGlow {
+  from { filter: drop-shadow(0 0 8px #ff4757); transform: translateX(-50%) scale(0.95) rotate(-5deg); }
+  to { filter: drop-shadow(0 0 20px #ff6eb4); transform: translateX(-50%) scale(1.05) rotate(5deg); }
+}
+.rocketEmoji { font-size: 36px; line-height: 50px; text-align: center; }
+
+/* Rocket Trail Particle */
+.trailParticle { position: absolute; width: 14px; height: 14px; border-radius: 50%; pointer-events: none; z-index: 18; animation: trailFade 0.6s linear forwards; }
+@keyframes trailFade {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  100% { transform: translate(-50%, 20px) scale(0.2); opacity: 0; }
+}
+
+/* Rocket Mode active on player */
+#player.rocketMode .bBody { box-shadow: 0 0 30px #ffeb3b, 0 0 60px #ff4757; }
+#player.rocketMode { animation: rocketShake 0.2s linear infinite; }
+@keyframes rocketShake {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  50% { transform: translateX(-50%) rotate(2deg); }
+}
+
+/* Star Rain Overlay */
+#starRainOverlay { position: absolute; inset: 0; background: rgba(0,0,20,0.6); z-index: 14; opacity: 0; pointer-events: none; transition: opacity 1s; }
+#starRainOverlay.active { opacity: 1; }
 </style>
 </head>
 <body>
 <div id="gw">
   <div id="sky"></div>
+  <div id="starRainOverlay"></div>
+  <div id="big-text"><div id="big-text-inner"></div></div>
 
   <div id="hud">
     <div class="hudBox"><div class="hudLabel">⭐ Dilek</div><div class="hudValue" id="scoreDisplay">0</div></div>
@@ -233,9 +300,9 @@ body{background:#87ceeb;display:flex;justify-content:center;align-items:center;m
 const LANE_X    = [90, 180, 270];
 const BASE_SPD  = 3.5;
 const MAX_ADD   = 9;
-const SPAWN_MIN = 1800;
-const SPAWN_MAX = 2800;
-const STAR_P    = 0.33;
+const SPAWN_MIN = 1400;
+const SPAWN_MAX = 2200;
+const STAR_P    = 0.55;
 const PLR_H     = 90, PLR_W = 60;
 const OBS_H     = 60;
 const STR_H     = 38;
@@ -312,6 +379,14 @@ let cntIv    = null;   // question countdown interval
 let roundT   = 0;      // ms since last question / round start
 const ROUND_MS = 30000; // 30 seconds
 let skinIdx  = +(localStorage.getItem('dilekSkin') || 0);
+
+// NEW MECHANICS STATE
+let comboCount = 0;
+let isRocketMode = false;
+let rocketTimer = 0;
+let isStarRain = false;
+let starRainTimer = 0;
+let starRainTriggered = false;
 
 /* ════════════════════════════════════════════════════
    DOM
@@ -433,27 +508,54 @@ function stopMusic() {
   if (bgG) { bgG.gain.setTargetAtTime(0, AC.currentTime, .1); bgG = null; }
 }
 
+let rockets = []; // Store active rocket items
+
 /* ════════════════════════════════════════════════════
    SPAWN
 ════════════════════════════════════════════════════ */
 function spawnItem() {
   const li = Math.floor(Math.random() * 3), x = LANE_X[li];
-  if (Math.random() < STAR_P) {
+  const r = Math.random();
+  if (r < STAR_P) {
     const el = document.createElement('div');
     el.className = 'wishStar'; el.style.left = x + 'px'; el.style.top = '-44px';
     el.innerHTML = '<div class="starShape"></div><div class="starSparkle"><div class="sparkDot"></div><div class="sparkDot"></div><div class="sparkDot"></div><div class="sparkDot"></div></div>';
     GW.appendChild(el); strs.push({ el, y: -44, lane: li });
-  } else {
+  } else if (r < STAR_P + 0.06 && !isStarRain) {
+    // 6% chance for a Rocket (only if not in star rain)
     const el = document.createElement('div');
-    el.className = 'obstacle'; el.style.left = x + 'px'; el.style.top = '-70px';
-    el.innerHTML = '<div class="cloudShape"></div><div class="lightning">⚡</div>';
-    GW.appendChild(el); obs.push({ el, x, y: -70, lane: li });
+    el.className = 'rocketItem'; el.style.left = x + 'px'; el.style.top = '-50px';
+    el.innerHTML = '<div class="rocketEmoji">🚀</div>';
+    GW.appendChild(el); rockets.push({ el, y: -50, lane: li });
+  } else {
+    if (!isStarRain) {
+      const el = document.createElement('div');
+      el.className = 'obstacle'; el.style.left = x + 'px'; el.style.top = '-70px';
+      el.innerHTML = '<div class="cloudShape"></div><div class="lightning">⚡</div>';
+      GW.appendChild(el); obs.push({ el, x, y: -70, lane: li });
+    }
   }
 }
 
 /* ════════════════════════════════════════════════════
    EFFECTS
 ════════════════════════════════════════════════════ */
+function screenShake(mega) {
+  GW.classList.remove('shake', 'mega-shake');
+  void GW.offsetWidth;
+  GW.classList.add(mega ? 'mega-shake' : 'shake');
+  setTimeout(() => GW.classList.remove('shake', 'mega-shake'), mega ? 600 : 400);
+  if (navigator.vibrate) navigator.vibrate(mega ? [100, 50, 100] : 50);
+}
+
+function showBigText(text) {
+  const el = document.getElementById('big-text');
+  const inner = document.getElementById('big-text-inner');
+  inner.innerHTML = text;
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
+}
 const CC = ['#ff6eb4','#ffd700','#7bed9f','#70a1ff','#ff4757','#ffeaa7','#fd79a8','#a29bfe','#00cec9','#e17055'];
 function burst(cx, cy) {
   for (let i = 0; i < 40; i++) {
@@ -480,6 +582,23 @@ function floatTxt(t, x, y) {
 /* ════════════════════════════════════════════════════
    GAME LOOP
 ════════════════════════════════════════════════════ */
+function startRocketMode() {
+  isRocketMode = true;
+  rocketTimer = 5000; // 5 seconds
+  PLAYER.classList.add('rocketMode');
+  showBigText('🚀 ROKET HIZI!');
+  screenShake(false);
+}
+
+function triggerStarRain() {
+  starRainTriggered = true;
+  isStarRain = true;
+  starRainTimer = 10000; // 10 seconds
+  document.getElementById('starRainOverlay').classList.add('active');
+  showBigText('⭐ YILDIZ YAĞMURU! ⭐');
+  screenShake(true);
+}
+
 function loop(ts) {
   if (!running || showingQ) { fid = null; return; }
 
@@ -509,24 +628,92 @@ function loop(ts) {
   spawnT += dt;
   if (spawnT >= spawnN) { spawnT = 0; spawnN = rndSpawn(); spawnItem(); }
 
+  // Timers for new modes
+  if (isRocketMode) {
+    rocketTimer -= dt;
+    if (rocketTimer <= 0) {
+      isRocketMode = false;
+      PLAYER.classList.remove('rocketMode');
+    } else if (Math.random() > 0.6) {
+      // Create rainbow trail particles
+      const t = document.createElement('div');
+      t.className = 'trailParticle';
+      t.style.left = (LANE_X[lane] + (Math.random()*20 - 10)) + 'px';
+      t.style.top = (GH - 80) + 'px';
+      t.style.background = CC[Math.floor(Math.random() * CC.length)];
+      GW.appendChild(t);
+      setTimeout(() => t.remove(), 600);
+    }
+  }
+
+  if (isStarRain) {
+    starRainTimer -= dt;
+    if (starRainTimer <= 0) {
+      isStarRain = false;
+      document.getElementById('starRainOverlay').classList.remove('active');
+    } else {
+      // Heavy star spawning
+      spawnT += dt * 3; // Spawn 3x faster
+    }
+  }
+
   // Obstacles
   for (let i = obs.length - 1; i >= 0; i--) {
     const o = obs[i]; o.y += mv; o.el.style.top = o.y + 'px';
     if (o.y > GH + 80) { o.el.remove(); obs.splice(i, 1); continue; }
     if (hitsObs(o)) {
-      hitFX(o.x, o.y + 20); whoosh();
-      onCrash(); return; 
+      if (isRocketMode) {
+        // Destroy obstacle
+        hitFX(o.x, o.y + 20);
+        o.el.remove(); obs.splice(i, 1);
+        score += 50; SCORE_EL.textContent = score;
+        ding();
+      } else {
+        hitFX(o.x, o.y + 20); whoosh();
+        comboCount = 0; // Reset combo
+        screenShake(true); // MEGA SHAKE on crash
+        onCrash(); return; 
+      }
+    }
+  }
+
+  // Rockets
+  for (let i = rockets.length - 1; i >= 0; i--) {
+    const r = rockets[i]; r.y += mv; r.el.style.top = r.y + 'px';
+    if (r.y > GH + 50) { r.el.remove(); rockets.splice(i, 1); continue; }
+    if (hitsStar(r)) { // We can reuse hitsStar logic since sizes are similar
+      r.el.remove(); rockets.splice(i, 1);
+      startRocketMode();
     }
   }
 
   // Stars
   for (let i = strs.length - 1; i >= 0; i--) {
     const s = strs[i]; s.y += mv; s.el.style.top = s.y + 'px';
-    if (s.y > GH + 50) { s.el.remove(); strs.splice(i, 1); continue; }
+    if (s.y > GH + 50) { 
+      s.el.remove(); strs.splice(i, 1); 
+      comboCount = 0; // Reset combo if star missed
+      continue; 
+    }
     if (hitsStar(s)) {
       burst(LANE_X[s.lane], s.y); floatTxt('+100 ⭐', LANE_X[s.lane], s.y);
       s.el.remove(); strs.splice(i, 1);
       score += 100; SCORE_EL.textContent = score; ding();
+      if (navigator.vibrate) navigator.vibrate(20); // Vibrate on every star
+      
+      comboCount++;
+      if (comboCount > 0 && comboCount % 5 === 0) {
+        showBigText('🔥 HARİKA SERİ! 🔥');
+        burst(180, 200); // 180 is center X, 200 is upper Y
+        burst(180, 300); // Double burst for combo!
+        screenShake(false);
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]); // Heavy vibration for combo
+      }
+      
+      // Check Star Rain Trigger
+      if (!starRainTriggered && score >= 1000) {
+        triggerStarRain();
+      }
     }
   }
 
@@ -588,7 +775,7 @@ function openQuestion() {
   btn.classList.remove('ready');
   btn.innerHTML = 'Sohbet Zamanı...';
 
-  let secs = 10;
+  let secs = 3;
   clearInterval(cntIv);
   
   // Geri sayım arka planda çalışıyor, ekranda görünmüyor
