@@ -94,6 +94,7 @@
     -webkit-tap-highlight-color: transparent;
     transition: background 0.1s, transform 0.1s;
     color: #444;
+    touch-action: none;
   }
   .ctrl-btn:active { background: rgba(255,255,255,1); transform: scale(0.93); }
 
@@ -3845,14 +3846,24 @@ document.addEventListener('keydown', e => {
 });
 
 // Mobile buttons
-document.getElementById('btnLeft').addEventListener('pointerdown', e => {
-  e.preventDefault();
+const btnLeft = document.getElementById('btnLeft');
+const btnRight = document.getElementById('btnRight');
+
+const handleLeft = (e) => {
+  if (e.cancelable) e.preventDefault();
   if (Game.state === GameState.PLAYING) player.moveLeft();
-});
-document.getElementById('btnRight').addEventListener('pointerdown', e => {
-  e.preventDefault();
+};
+
+const handleRight = (e) => {
+  if (e.cancelable) e.preventDefault();
   if (Game.state === GameState.PLAYING) player.moveRight();
-});
+};
+
+btnLeft.addEventListener('touchstart', handleLeft, { passive: false });
+btnLeft.addEventListener('mousedown', handleLeft);
+
+btnRight.addEventListener('touchstart', handleRight, { passive: false });
+btnRight.addEventListener('mousedown', handleRight);
 
 // Swipe
 let touchStartX = 0;

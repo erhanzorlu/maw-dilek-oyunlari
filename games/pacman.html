@@ -567,7 +567,8 @@
                 ctx.fill();
             } else {
                 // Emojiler
-                ctx.font = `${CELL_SIZE * 0.5}px Arial`;
+                ctx.fillStyle = '#ffffff'; // iOS Safari gradient fillStyle sorununu çözer
+                ctx.font = `${CELL_SIZE * 0.5}px "Apple Color Emoji", "Segoe UI Emoji", Arial, sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 for (let y = 0; y < MAZE_ROWS; y++) {
@@ -581,20 +582,23 @@
                 }
             }
 
+            // Metin ve Emojiler için iOS gradient bug'ına karşı güvenlik önlemi
+            ctx.fillStyle = '#ffffff';
+
             const exitX = (MAZE_COLS - 1) * CELL_SIZE;
             const exitY = (MAZE_ROWS - 1) * CELL_SIZE;
-            ctx.font = `${CELL_SIZE * 0.7}px Arial`;
+            ctx.font = `${CELL_SIZE * 0.7}px "Apple Color Emoji", "Segoe UI Emoji", Arial, sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('🚪', exitX + CELL_SIZE / 2, exitY + CELL_SIZE / 2);
 
             // Karakterleri Çiz
             enemies.forEach(e => {
-                ctx.font = `${CELL_SIZE * 0.7}px Arial`;
+                ctx.font = `${CELL_SIZE * 0.7}px "Apple Color Emoji", "Segoe UI Emoji", Arial, sans-serif`;
                 ctx.fillText(e.type, e.x * CELL_SIZE + CELL_SIZE / 2, e.y * CELL_SIZE + CELL_SIZE / 2);
             });
 
-            ctx.font = `${CELL_SIZE * 0.7}px Arial`;
+            ctx.font = `${CELL_SIZE * 0.7}px "Apple Color Emoji", "Segoe UI Emoji", Arial, sans-serif`;
             ctx.fillText(theme.player, player.x * CELL_SIZE + CELL_SIZE / 2, player.y * CELL_SIZE + CELL_SIZE / 2);
 
             // Yıldız yenildiğinde çıkan ekstra patlama tozu
@@ -1034,17 +1038,11 @@
                     canvas.style.backgroundColor = '#6a0000';
                     canvas.style.transform = "translate(5px, 5px)";
                     
-                    // 1 saniye bekledikten sonra başa ışınla
+                    // 1 saniye bekledikten sonra oyuna devam et
                     setTimeout(() => {
                         canvas.style.backgroundColor = '#0a0a1a';
                         canvas.style.transform = "translate(0px, 0px)";
                         
-                        // Karakteri başlangıç noktasına gönder (Respawn)
-                        player.x = 0;
-                        player.y = 0;
-                        playerDir = { dx: 0, dy: 0 };
-                        nextPlayerDir = { dx: 0, dy: 0 };
-
                         // Düşmanı rastgele başka bir yere gönder (üst üste hasar almamak için)
                         enemy.x = Math.floor(Math.random() * MAZE_COLS);
                         enemy.y = Math.floor(Math.random() * MAZE_ROWS);
