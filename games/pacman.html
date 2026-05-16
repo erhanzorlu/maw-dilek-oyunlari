@@ -26,6 +26,7 @@
             color: #fff;
             overflow: hidden;
             padding-top: 10px;
+            touch-action: none; /* Mobilde sayfanın sürüklenmesini ve pull-to-refresh'i tamamen engeller */
         }
 
         .game-container {
@@ -51,17 +52,30 @@
         .stats {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             margin: 10px 0;
-            font-size: 1em;
+            font-size: 1.1em;
         }
 
         .stat-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 15px;
-            border-radius: 15px;
-            border: 1px solid #ff69b4;
-            box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+            background: rgba(255, 255, 255, 0.05); /* Şeffaf Glassmorphism */
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15); /* İnce sınır */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Derinlik gölgesi */
+            color: #fff;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-item.pop {
+            transform: scale(1.15) translateY(-3px);
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 10px 40px 0 rgba(255, 215, 0, 0.4);
         }
 
         canvas {
@@ -75,54 +89,10 @@
             max-width: 100%;
         }
 
-        /* --- MOBİL KONTROLLER (YENİ) --- */
-        .mobile-controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 15px;
-            gap: 10px;
-        }
-
-        .control-row {
-            display: flex;
-            gap: 20px;
-        }
-
-        .d-btn {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid #ff69b4;
-            border-radius: 50%;
-            color: #ffd700;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
-            transition: transform 0.1s;
-            /* Dokunma tepkisi için */
-            touch-action: manipulation; 
-        }
-
-        .d-btn:active {
-            background: rgba(255, 105, 180, 0.4);
-            transform: scale(0.9);
-        }
-
         .controls-text {
-            margin-top: 10px;
+            margin-top: 15px;
             font-size: 0.9em;
             color: #aaa;
-            display: none; /* Mobilde metni gizle, butonlar var zaten */
-        }
-        
-        /* PC'de metni göster, mobilde butonları göster */
-        @media (min-width: 769px) {
-            .mobile-controls { display: none; }
-            .controls-text { display: block; }
         }
 
         /* --- MODAL STILLERI --- */
@@ -220,7 +190,10 @@
     <div class="particles" id="particles"></div>
     
     <div class="game-container">
-        <h1>✨ Make a Wish ✨</h1>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 5px;">
+            <h1 style="margin-bottom: 0;">✨ Make a Wish ✨</h1>
+            <button onclick="togglePause()" style="background: rgba(255,255,255,0.1); padding: 5px 15px; font-size: 1.2em; border: 1px solid #ff69b4; border-radius: 10px; cursor: pointer; color: white; box-shadow: 0 0 10px rgba(255,105,180,0.5);">⏸️</button>
+        </div>
         
         <div class="stats">
             <div class="stat-item">
@@ -229,30 +202,26 @@
             <div class="stat-item">
                 ⭐ <span id="score">0</span>
             </div>
+            <div class="stat-item" id="qCountContainer">
+                💬 Soru: <span id="qCount">7</span>
+            </div>
+            <div class="stat-item" id="fogStatusContainer" style="font-size: 0.9em;">
+                🌫️ Sis: <span id="fogTimer">...</span>
+            </div>
         </div>
 
         <canvas id="gameCanvas"></canvas>
         
-        <div class="mobile-controls">
-            <div class="d-btn" onclick="movePlayer(0, -1)">▲</div>
-            <div class="control-row">
-                <div class="d-btn" onclick="movePlayer(-1, 0)">◀</div>
-                <div class="d-btn" onclick="movePlayer(0, 1)">▼</div>
-                <div class="d-btn" onclick="movePlayer(1, 0)">▶</div>
-            </div>
-        </div>
-
         <div class="controls-text">
-            ⌨️ Yön tuşları ile hareket et • Dilek Kapısına ulaş! 🚪✨
+            👆 Ekranda kaydırarak veya ⌨️ Yön tuşlarıyla hareket et • Kapıya ulaş! 🚪✨
         </div>
     </div>
 
     <div id="wishModal" class="modal">
         <div class="modal-content">
-            <h2>✨ Make a Wish! ✨</h2>
-            <p id="wishMessage"></p>
-            <p class="wish-quote" id="wishQuote"></p>
-            <button onclick="continueGame()">🌟 Dileği Tuttum 🌟</button>
+            <h2>💭 Sohbet Zamanı 💭</h2>
+            <p id="wishMessage" style="font-size: 1.3em; font-weight: bold;"></p>
+            <button onclick="continueGame()">🚀 Devam Et</button>
         </div>
     </div>
 
@@ -265,57 +234,195 @@
         </div>
     </div>
 
+    <div id="pauseModal" class="modal">
+        <div class="modal-content">
+            <h2>⏸️ DURAKLATILDI ⏸️</h2>
+            <p style="margin-bottom: 20px;">Oyun ayarlarını değiştirebilirsin.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px; align-items: center; margin-bottom: 25px;">
+                <label style="cursor:pointer; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 10px; border: 1px solid #ff69b4; width: 100%; box-sizing: border-box;">
+                    <input type="checkbox" id="enemyToggle" checked onchange="toggleEnemies()"> 🌩️ Canavarlar
+                </label>
+                <select id="themeSelect" onchange="changeTheme()" style="background: rgba(45, 27, 78, 0.9); color: #fff; padding: 10px 20px; border-radius: 10px; border: 1px solid #ff69b4; cursor: pointer; outline: none; width: 100%; font-size: 1.1em;">
+                    <option value="neon">Tema: Siberpunk Neon</option>
+                    <option value="pixel">Tema: Piksel Dünyası</option>
+                    <option value="candy">Tema: Şeker Diyarı</option>
+                    <option value="dungeon">Tema: Gizemli Zindan</option>
+                </select>
+                <select id="mapSizeSelect" onchange="changeMapSize()" style="background: rgba(45, 27, 78, 0.9); color: #fff; padding: 10px 20px; border-radius: 10px; border: 1px solid #ff69b4; cursor: pointer; outline: none; width: 100%; font-size: 1.1em;">
+                    <option value="small">Boyut: Küçük (10x)</option>
+                    <option value="medium" selected>Boyut: Orta (15x)</option>
+                    <option value="large">Boyut: Büyük (20x)</option>
+                </select>
+            </div>
+            
+            <button onclick="togglePause()">▶ Oyuna Dön</button>
+        </div>
+    </div>
+
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
         // EKRAN BOYUTUNA GÖRE AYARLAMA
-        function resizeCanvas() {
-            // Ekran genişliğinden biraz pay bırak (padding)
-            // Maksimum 600px olsun, yoksa mobilde ekran genişliği kadar olsun
-            const size = Math.min(window.innerWidth - 30, window.innerHeight - 350, 600);
-            canvas.width = size;
-            canvas.height = size;
-            return size;
+        
+        let MAZE_COLS = 15;
+        let MAZE_ROWS = 15;
+        let CELL_SIZE = 30;
+        let selectedMapSize = 'medium';
+
+        function changeMapSize() {
+            selectedMapSize = document.getElementById('mapSizeSelect').value;
+            // Harita değiştiği için oyuncuyu başa alıp yeni harita çiziyoruz
+            resizeCanvas();
+            generateMaze();
+            spawnEnemies();
+            player.x = 0;
+            player.y = 0;
+            playerDir = { dx: 0, dy: 0 };
+            nextPlayerDir = { dx: 0, dy: 0 };
+            if (gameRunning) drawMaze();
         }
 
-        const canvasSize = resizeCanvas();
-        
-        const MAZE_SIZE = 15; 
-        const CELL_SIZE = canvas.width / MAZE_SIZE;
+        function resizeCanvas() {
+            let width = Math.min(window.innerWidth - 20, 600);
+            
+            if (selectedMapSize === 'small') MAZE_COLS = 10;
+            else if (selectedMapSize === 'medium') MAZE_COLS = 15;
+            else if (selectedMapSize === 'large') MAZE_COLS = 20;
+
+            CELL_SIZE = Math.floor(width / MAZE_COLS);
+            
+            let isMobile = window.innerWidth <= 768;
+            let availableHeight = Math.min(window.innerHeight - 180, 800);
+            
+            if (isMobile) {
+                MAZE_ROWS = Math.floor(availableHeight / CELL_SIZE);
+            } else {
+                MAZE_ROWS = MAZE_COLS; // PC'de kare kalsın
+            }
+            
+            canvas.width = MAZE_COLS * CELL_SIZE;
+            canvas.height = MAZE_ROWS * CELL_SIZE;
+        }
+        resizeCanvas();
+
         
         let maze = [];
         let player = { x: 0, y: 0 };
         let score = 0;
         let timer = 15;
         let gameRunning = false;
+        let isPaused = false;
         let timerInterval;
+
+        function togglePause() {
+            const pauseModal = document.getElementById('pauseModal');
+            if (!isPaused) {
+                isPaused = true;
+                gameRunning = false;
+                pauseModal.style.display = 'block';
+            } else {
+                isPaused = false;
+                gameRunning = true;
+                pauseModal.style.display = 'none';
+                
+                // Zaman ölçümünü bozmamak için timer'ları güncelle
+                const now = performance.now();
+                lastPlayerMove = now;
+                lastEnemyMove = now;
+            }
+        }
         let starDust = [];
+        let enemies = [];
+        let lastEnemyMove = 0;
+        const ENEMY_MOVE_INTERVAL = 600;
+        let currentQuestionIndex = 0;
+
+        const THEMES = {
+            neon: {
+                name: "Siberpunk Neon",
+                player: '🧚‍♀️',
+                enemies: ['🌩️', '👻'],
+                collectible: '✨',
+                bgInner: '#1a1a3a',
+                bgOuter: '#050510',
+                wallDepth: '#0a0a1f',
+                wallColor: '#00ffff',
+                wallBlur: 8,
+                dotColor: '#ff69b4',
+                drawDotAsText: false
+            },
+            pixel: {
+                name: "Piksel Dünyası",
+                player: '🧑‍🌾',
+                enemies: ['🧟‍♂️', '🕷️'],
+                collectible: '💎',
+                bgInner: '#2d3e23',
+                bgOuter: '#121a0f',
+                wallDepth: '#3b2f21',
+                wallColor: '#6da64b',
+                wallBlur: 0,
+                dotColor: '#00ffff',
+                drawDotAsText: true
+            },
+            candy: {
+                name: "Şeker Diyarı",
+                player: '🦄',
+                enemies: ['🐛', '👻'],
+                collectible: '🍬',
+                bgInner: '#ffccf9',
+                bgOuter: '#d48ed1',
+                wallDepth: '#c94c92',
+                wallColor: '#ffffff',
+                wallBlur: 5,
+                dotColor: '#ff69b4',
+                drawDotAsText: true
+            },
+            dungeon: {
+                name: "Gizemli Zindan",
+                player: '🧙‍♂️',
+                enemies: ['🐉', '🦇'],
+                collectible: '🪙',
+                bgInner: '#4a3d31',
+                bgOuter: '#11100f',
+                wallDepth: '#1f1a17',
+                wallColor: '#ff8c00',
+                wallBlur: 10,
+                dotColor: '#ffd700',
+                drawDotAsText: true
+            }
+        };
+
+        let currentTheme = 'neon';
+
+        function changeTheme() {
+            currentTheme = document.getElementById('themeSelect').value;
+            const theme = THEMES[currentTheme];
+            enemies.forEach((e, idx) => {
+                e.type = theme.enemies[idx % 2];
+            });
+            drawMaze();
+        }
         
         const wishMessages = [
-            "En büyük hayalin ne?",
-            "Bir dilek tut ve gerçekleşeceğine inan!",
-            "Yıldızlar seninle! ⭐",
-            "Kalbin ne söylüyor?",
-            "Hayal gücünün sınırı yok!",
-            "Evrenin sana sunduğu sonsuz olasılıkları hayal et!",
-            "Bu an, dileklerinin kapısı!",
-            "Gökyüzüne bak ve özgürce hayal kur!"
-        ];
-        
-        const wishQuotes = [
-            "\"Hayal kurmaktan asla vazgeçme!\"",
-            "\"Her dilek bir tohum, sabır ise sudur.\"",
-            "\"İnanç, mucizeler yaratır.\"",
-            "\"Yıldızlara uzanan eller, gökyüzünü yakalar.\"",
-            "\"Düşler gerçek olur, sadece inanmalısın.\"",
-            "\"Kalbinin sesini dinle, o seni asla yanıltmaz.\""
+            "Boş zamanlarında neler yapmayı seversin (Hobilerin, ilgi alanların)?",
+            "Büyüyünce ne olmak istersin?",
+            "Senin yeteneğin (iyi olduğun alan) nedir?",
+            "Büyüyünce ne olmak istiyorsun?",
+            "Olmaktan mutlu olduğun, gitmeyi sevdiğin bir yer var mı?",
+            "Hangi oyunları seviyorsun?",
+            "Uyumadan önce ne hayal edersin?"
         ];
 
         // Yıldız arka plan oluşturma
         function createStarBackground() {
+            // Mobilde CSS animasyonları ciddi kasma yaptığı için telefonda DOM partikülü çizmiyoruz
+            const isMobile = window.innerWidth < 768;
+            if (isMobile) return; 
+            
             const particlesDiv = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) { // Mobilde performans için sayıyı azalttım
+            for (let i = 0; i < 30; i++) { 
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
@@ -327,8 +434,8 @@
 
         // Labirent üretimi
         function generateMaze() {
-            maze = Array(MAZE_SIZE).fill().map(() => 
-                Array(MAZE_SIZE).fill().map(() => ({
+            maze = Array(MAZE_ROWS).fill().map(() => 
+                Array(MAZE_COLS).fill().map(() => ({
                     top: true, right: true, bottom: true, left: true,
                     visited: false,
                     hasStar: Math.random() > 0.65
@@ -356,20 +463,21 @@
 
             createAdditionalPaths();
             maze[0][0].hasStar = false;
-            maze[MAZE_SIZE - 1][MAZE_SIZE - 1].hasStar = false;
+            maze[MAZE_ROWS - 1][MAZE_COLS - 1].hasStar = false;
         }
 
         function createAdditionalPaths() {
-            const pathsToCreate = Math.floor(MAZE_SIZE * 1.5);
+            // Çıkmaz sokakları azaltmak için kırılan duvar sayısını artırdık
+            const pathsToCreate = Math.floor(MAZE_COLS * MAZE_ROWS / 4);
             for (let i = 0; i < pathsToCreate; i++) {
-                const x = Math.floor(Math.random() * MAZE_SIZE);
-                const y = Math.floor(Math.random() * MAZE_SIZE);
+                const x = Math.floor(Math.random() * MAZE_COLS);
+                const y = Math.floor(Math.random() * MAZE_ROWS);
                 const direction = Math.floor(Math.random() * 4);
                 
                 switch(direction) {
                     case 0: if (y > 0) { maze[y][x].top = false; maze[y - 1][x].bottom = false; } break;
-                    case 1: if (x < MAZE_SIZE - 1) { maze[y][x].right = false; maze[y][x + 1].left = false; } break;
-                    case 2: if (y < MAZE_SIZE - 1) { maze[y][x].bottom = false; maze[y + 1][x].top = false; } break;
+                    case 1: if (x < MAZE_COLS - 1) { maze[y][x].right = false; maze[y][x + 1].left = false; } break;
+                    case 2: if (y < MAZE_ROWS - 1) { maze[y][x].bottom = false; maze[y + 1][x].top = false; } break;
                     case 3: if (x > 0) { maze[y][x].left = false; maze[y][x - 1].right = false; } break;
                 }
             }
@@ -378,8 +486,8 @@
         function getUnvisitedNeighbors(x, y) {
             const neighbors = [];
             if (y > 0 && !maze[y - 1][x].visited) neighbors.push({ x, y: y - 1, dir: 'top' });
-            if (x < MAZE_SIZE - 1 && !maze[y][x + 1].visited) neighbors.push({ x: x + 1, y, dir: 'right' });
-            if (y < MAZE_SIZE - 1 && !maze[y + 1][x].visited) neighbors.push({ x, y: y + 1, dir: 'bottom' });
+            if (x < MAZE_COLS - 1 && !maze[y][x + 1].visited) neighbors.push({ x: x + 1, y, dir: 'right' });
+            if (y < MAZE_ROWS - 1 && !maze[y + 1][x].visited) neighbors.push({ x, y: y + 1, dir: 'bottom' });
             if (x > 0 && !maze[y][x - 1].visited) neighbors.push({ x: x - 1, y, dir: 'left' });
             return neighbors;
         }
@@ -393,49 +501,103 @@
             else if (dy === -1) { maze[current.y][current.x].top = false; maze[next.y][next.x].bottom = false; }
         }
 
-        function drawMaze() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function drawWalls(offsetX, offsetY, color, blur, lineWidth) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
             
-            for (let y = 0; y < MAZE_SIZE; y++) {
-                for (let x = 0; x < MAZE_SIZE; x++) {
+            // Performans için sadece tek bir path oluşturup toplu çizim (batch) yapıyoruz
+            ctx.shadowBlur = blur;
+            ctx.shadowColor = color;
+            
+            ctx.beginPath();
+            for (let y = 0; y < MAZE_ROWS; y++) {
+                for (let x = 0; x < MAZE_COLS; x++) {
+                    const px = x * CELL_SIZE + offsetX;
+                    const py = y * CELL_SIZE + offsetY;
                     const cell = maze[y][x];
-                    const px = x * CELL_SIZE;
-                    const py = y * CELL_SIZE;
+                    
+                    if (cell.top) { ctx.moveTo(px, py); ctx.lineTo(px + CELL_SIZE, py); }
+                    if (cell.right) { ctx.moveTo(px + CELL_SIZE, py); ctx.lineTo(px + CELL_SIZE, py + CELL_SIZE); }
+                    if (cell.bottom) { ctx.moveTo(px, py + CELL_SIZE); ctx.lineTo(px + CELL_SIZE, py + CELL_SIZE); }
+                    if (cell.left) { ctx.moveTo(px, py); ctx.lineTo(px, py + CELL_SIZE); }
+                }
+            }
+            ctx.stroke(); // Her duvar yerine tüüm labirent için SADECE 1 KEZ çiz komutu verilir (Performans artışı)
+            ctx.shadowBlur = 0;
+        }
 
-                    ctx.strokeStyle = '#00bfff';
-                    ctx.shadowBlur = 5; // Mobilde performans için blur'u azalttım
-                    ctx.shadowColor = '#00bfff';
-                    ctx.lineWidth = 2; // Mobilde çizgiler daha ince olsun
+        let canvasParticles = [];
 
-                    if (cell.top) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + CELL_SIZE, py); ctx.stroke(); }
-                    if (cell.right) { ctx.beginPath(); ctx.moveTo(px + CELL_SIZE, py); ctx.lineTo(px + CELL_SIZE, py + CELL_SIZE); ctx.stroke(); }
-                    if (cell.bottom) { ctx.beginPath(); ctx.moveTo(px, py + CELL_SIZE); ctx.lineTo(px + CELL_SIZE, py + CELL_SIZE); ctx.stroke(); }
-                    if (cell.left) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, py + CELL_SIZE); ctx.stroke(); }
+        function drawMaze() {
+            const theme = THEMES[currentTheme];
 
-                    ctx.shadowBlur = 0;
+            // Dinamik Işık Huzmesi (Radyal Degrade) Arka Plan
+            const cx = player.x * CELL_SIZE + CELL_SIZE/2;
+            const cy = player.y * CELL_SIZE + CELL_SIZE/2;
+            let bgGradient = ctx.createRadialGradient(cx, cy, CELL_SIZE/2, cx, cy, canvas.width * 0.8);
+            bgGradient.addColorStop(0, theme.bgInner);
+            bgGradient.addColorStop(1, theme.bgOuter);
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 2.5D Derinlik: Duvar Gölgesi (Kalınlık)
+            drawWalls(4, 4, theme.wallDepth, 0, 4);
+            // Duvarlar
+            drawWalls(0, 0, theme.wallColor, theme.wallBlur, 2);
 
-                    if (cell.hasStar) {
-                        ctx.fillStyle = '#ffd700';
-                        ctx.shadowBlur = 5;
-                        ctx.shadowColor = '#ffd700';
-                        ctx.beginPath();
-                        ctx.arc(px + CELL_SIZE / 2, py + CELL_SIZE / 2, CELL_SIZE/6, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
+            const time = Date.now() / 300;
+            const pulse = Math.abs(Math.sin(time)) * 2;
+
+            if (!theme.drawDotAsText) {
+                // Çizimli noktaları tek seferde batch (toplu) çiz
+                ctx.fillStyle = theme.dotColor;
+                // Performans için nokta etrafındaki shadowBlur'u kapattık
+                ctx.beginPath();
+                for (let y = 0; y < MAZE_ROWS; y++) {
+                    for (let x = 0; x < MAZE_COLS; x++) {
+                        if (maze[y][x].hasStar) {
+                            const px = x * CELL_SIZE;
+                            const py = y * CELL_SIZE;
+                            ctx.moveTo(px + CELL_SIZE / 2, py + CELL_SIZE / 2);
+                            ctx.arc(px + CELL_SIZE / 2, py + CELL_SIZE / 2, (CELL_SIZE/8) + pulse, 0, Math.PI * 2);
+                        }
+                    }
+                }
+                ctx.fill();
+            } else {
+                // Emojiler
+                ctx.font = `${CELL_SIZE * 0.5}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                for (let y = 0; y < MAZE_ROWS; y++) {
+                    for (let x = 0; x < MAZE_COLS; x++) {
+                        if (maze[y][x].hasStar) {
+                            const px = x * CELL_SIZE;
+                            const py = y * CELL_SIZE;
+                            ctx.fillText(theme.collectible, px + CELL_SIZE / 2, py + CELL_SIZE / 2 + (pulse / 2));
+                        }
                     }
                 }
             }
 
-            const exitX = (MAZE_SIZE - 1) * CELL_SIZE;
-            const exitY = (MAZE_SIZE - 1) * CELL_SIZE;
+            const exitX = (MAZE_COLS - 1) * CELL_SIZE;
+            const exitY = (MAZE_ROWS - 1) * CELL_SIZE;
             ctx.font = `${CELL_SIZE * 0.7}px Arial`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('✨', exitX + CELL_SIZE / 2, exitY + CELL_SIZE / 2);
+            ctx.fillText('🚪', exitX + CELL_SIZE / 2, exitY + CELL_SIZE / 2);
+
+            // Karakterleri Çiz
+            enemies.forEach(e => {
+                ctx.font = `${CELL_SIZE * 0.7}px Arial`;
+                ctx.fillText(e.type, e.x * CELL_SIZE + CELL_SIZE / 2, e.y * CELL_SIZE + CELL_SIZE / 2);
+            });
 
             ctx.font = `${CELL_SIZE * 0.7}px Arial`;
-            ctx.fillText('🧚‍♀️', player.x * CELL_SIZE + CELL_SIZE / 2, player.y * CELL_SIZE + CELL_SIZE / 2);
+            ctx.fillText(theme.player, player.x * CELL_SIZE + CELL_SIZE / 2, player.y * CELL_SIZE + CELL_SIZE / 2);
 
+            // Yıldız yenildiğinde çıkan ekstra patlama tozu
             starDust.forEach((particle, index) => {
                 ctx.fillStyle = `rgba(255, 215, 0, ${particle.alpha})`;
                 ctx.beginPath();
@@ -445,43 +607,94 @@
                 particle.alpha -= 0.05;
                 if (particle.alpha <= 0) starDust.splice(index, 1);
             });
+
+            // Fog of War (Sis) Efekti Çizimi (En son çizilir ki her şeyi kapatsın)
+            if (typeof fogActive !== 'undefined' && fogActive) {
+                const cx = player.x * CELL_SIZE + CELL_SIZE / 2;
+                const cy = player.y * CELL_SIZE + CELL_SIZE / 2;
+                
+                // Işık alanı küçültüldü
+                let fogGradient = ctx.createRadialGradient(cx, cy, CELL_SIZE * 0.8, cx, cy, CELL_SIZE * 2.5);
+                fogGradient.addColorStop(0, 'rgba(0, 0, 0, 0)'); // Merkez şeffaf
+                fogGradient.addColorStop(1, 'rgba(0, 0, 0, 0.98)'); // Kenarlar zifiri karanlık
+                
+                ctx.fillStyle = fogGradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
         }
 
+        let playerDir = { dx: 0, dy: 0 };
+        let nextPlayerDir = { dx: 0, dy: 0 };
+        let lastPlayerMove = 0;
+        const PLAYER_MOVE_INTERVAL = 250; // Otomatik yürüme hızı (ms)
+
         function movePlayer(dx, dy) {
+            nextPlayerDir = { dx, dy };
+            // Eğer karakter duruyorsa komutu alır almaz hareket etsin
+            if (playerDir.dx === 0 && playerDir.dy === 0) {
+                tryPlayerMove();
+            }
+        }
+
+        function canMoveTo(x, y, dx, dy) {
+            const newX = x + dx;
+            const newY = y + dy;
+            if (newX < 0 || newX >= MAZE_COLS || newY < 0 || newY >= MAZE_ROWS) return false;
+            const cell = maze[y][x];
+            if (dx === 1 && cell.right) return false;
+            if (dx === -1 && cell.left) return false;
+            if (dy === 1 && cell.bottom) return false;
+            if (dy === -1 && cell.top) return false;
+            return true;
+        }
+
+        function tryPlayerMove() {
             if (!gameRunning) return;
 
-            const newX = player.x + dx;
-            const newY = player.y + dy;
-
-            if (newX < 0 || newX >= MAZE_SIZE || newY < 0 || newY >= MAZE_SIZE) return;
-
-            const cell = maze[player.y][player.x];
-
-            if (dx === 1 && cell.right) return;
-            if (dx === -1 && cell.left) return;
-            if (dy === 1 && cell.bottom) return;
-            if (dy === -1 && cell.top) return;
-
-            player.x = newX;
-            player.y = newY;
-
-            if (maze[player.y][player.x].hasStar) {
-                maze[player.y][player.x].hasStar = false;
-                score += 10;
-                document.getElementById('score').textContent = score;
-                
-                for (let i = 0; i < 5; i++) {
-                    starDust.push({
-                        x: player.x * CELL_SIZE + CELL_SIZE / 2 + (Math.random() - 0.5) * 10,
-                        y: player.y * CELL_SIZE + CELL_SIZE / 2,
-                        size: Math.random() * 2 + 1,
-                        alpha: 1
-                    });
-                }
+            // Önce oyuncunun yeni girmek istediği yönü dene (Dönüş sırası)
+            if ((nextPlayerDir.dx !== 0 || nextPlayerDir.dy !== 0) && canMoveTo(player.x, player.y, nextPlayerDir.dx, nextPlayerDir.dy)) {
+                playerDir = { dx: nextPlayerDir.dx, dy: nextPlayerDir.dy };
+                nextPlayerDir = { dx: 0, dy: 0 }; 
             }
 
-            if (player.x === MAZE_SIZE - 1 && player.y === MAZE_SIZE - 1) {
-                winGame();
+            // Mevcut yönde yürümeye devam et
+            if (playerDir.dx !== 0 || playerDir.dy !== 0) {
+                if (canMoveTo(player.x, player.y, playerDir.dx, playerDir.dy)) {
+                    player.x += playerDir.dx;
+                    player.y += playerDir.dy;
+                    
+                    checkCollisions();
+
+                    if (maze[player.y][player.x].hasStar) {
+                        maze[player.y][player.x].hasStar = false;
+                        score += 10;
+                        const scoreEl = document.getElementById('score');
+                        scoreEl.textContent = score;
+                        
+                        const statItem = scoreEl.closest('.stat-item');
+                        if (statItem) {
+                            statItem.classList.add('pop');
+                            setTimeout(() => statItem.classList.remove('pop'), 200);
+                        }
+                        
+                        for (let i = 0; i < 5; i++) {
+                            starDust.push({
+                                x: player.x * CELL_SIZE + CELL_SIZE / 2 + (Math.random() - 0.5) * 10,
+                                y: player.y * CELL_SIZE + CELL_SIZE / 2,
+                                size: Math.random() * 2 + 1,
+                                alpha: 1
+                            });
+                        }
+                    }
+
+                    if (player.x === MAZE_COLS - 1 && player.y === MAZE_ROWS - 1) {
+                        playTada();
+                        winGame();
+                    }
+                } else {
+                    // Duvara çarptı, dur.
+                    playerDir = { dx: 0, dy: 0 };
+                }
             }
         }
 
@@ -490,7 +703,17 @@
                 if (gameRunning) {
                     timer--;
                     document.getElementById('timer').textContent = timer;
-                    if (timer <= 0) pauseForWish();
+                    
+                    if (timer <= 0) {
+                        if (currentQuestionIndex < wishMessages.length) {
+                            pauseForWish();
+                        } else {
+                            // Sorular bitti, saf oyun deneyimi! Sayacı durdur ve gizle.
+                            clearInterval(timerInterval);
+                            const timerContainer = document.getElementById('timer').closest('.stat-item');
+                            if (timerContainer) timerContainer.style.display = 'none';
+                        }
+                    }
                 }
             }, 1000);
         }
@@ -498,12 +721,13 @@
         function pauseForWish() {
             gameRunning = false;
             const modal = document.getElementById('wishModal');
-            const message = wishMessages[Math.floor(Math.random() * wishMessages.length)];
-            const quote = wishQuotes[Math.floor(Math.random() * wishQuotes.length)];
+            const message = wishMessages[currentQuestionIndex];
             
             document.getElementById('wishMessage').textContent = message;
-            document.getElementById('wishQuote').textContent = quote;
             modal.style.display = 'block';
+            
+            currentQuestionIndex++;
+            updateQuestionCount();
         }
 
         function continueGame() {
@@ -514,15 +738,158 @@
             gameRunning = true;
         }
 
+        function updateQuestionCount() {
+            let remaining = wishMessages.length - currentQuestionIndex;
+            const qc = document.getElementById('qCount');
+            const qcContainer = document.getElementById('qCountContainer');
+            if(qc) qc.textContent = Math.max(0, remaining);
+            if(remaining <= 0 && qcContainer) qcContainer.style.display = 'none';
+        }
+
         function winGame() {
             gameRunning = false;
             clearInterval(timerInterval);
-            document.getElementById('finalScore').textContent = score;
-            document.getElementById('victoryModal').style.display = 'block';
+            
+            if (currentQuestionIndex < wishMessages.length) {
+                // Tüm sorular bitmedi, sonraki bölüme geç
+                document.getElementById('finalScore').textContent = score;
+                document.querySelector('#victoryModal h2').textContent = '🎉 BÖLÜM GEÇİLDİ! 🎉';
+                document.querySelector('#victoryModal p').textContent = 'Kapıya ulaştın ama konuşacaklarımız bitmedi! 🧚‍♀️✨';
+                const btn = document.querySelector('#victoryModal button');
+                btn.textContent = '➡️ Sıradaki Bölüm';
+                btn.onclick = startNextLevel;
+                document.getElementById('victoryModal').style.display = 'block';
+            } else {
+                // Tüm sorular bitti
+                document.getElementById('finalScore').textContent = score;
+                document.querySelector('#victoryModal h2').textContent = '🎉 OYUN BİTTİ! 🎉';
+                document.querySelector('#victoryModal p').textContent = 'Tüm soruları cevapladın ve harika bir iş çıkardın! 🧚‍♀️✨';
+                const btn = document.querySelector('#victoryModal button');
+                btn.textContent = '🔄 Yeni Oyun';
+                btn.onclick = () => location.reload();
+                document.getElementById('victoryModal').style.display = 'block';
+            }
         }
 
-        // Klavye desteğini koru (PC kullanıcıları için)
+        function startNextLevel() {
+            document.getElementById('victoryModal').style.display = 'none';
+            player = { x: 0, y: 0 };
+            playerDir = { dx: 0, dy: 0 };
+            nextPlayerDir = { dx: 0, dy: 0 };
+            generateMaze();
+            spawnEnemies();
+            timer = 15;
+            document.getElementById('timer').textContent = timer;
+            updateQuestionCount();
+            gameStartTimestamp = 0; // Yeni bölümde süreyi sıfırla
+            gameRunning = true;
+            startTimer();
+        }
+
+        // Ses Efektleri (Kalp Atışı/Gerilim)
+        let audioCtx;
+        let lastPingTime = 0;
+
+        function initAudio() {
+            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playPing(distance) {
+            if(!audioCtx || !gameRunning) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            // Yaklaştıkça frekans ve ses seviyesi artar (Gerilim)
+            let danger = Math.max(0, 12 - distance) / 12; 
+            
+            osc.frequency.value = 150 + (danger * 300); 
+            osc.type = 'triangle';
+            
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.05 + (danger * 0.2), audioCtx.currentTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function playBzzzt() {
+            if(!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.5);
+
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function playTada() {
+            if(!audioCtx) return;
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc1.type = 'square';
+            osc2.type = 'sine';
+
+            const now = audioCtx.currentTime;
+            
+            osc1.frequency.setValueAtTime(523.25, now);
+            osc1.frequency.setValueAtTime(659.25, now + 0.1);
+            osc1.frequency.setValueAtTime(783.99, now + 0.2);
+            
+            osc2.frequency.setValueAtTime(523.25, now);
+            osc2.frequency.setValueAtTime(659.25, now + 0.1);
+            osc2.frequency.setValueAtTime(783.99, now + 0.2);
+
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.2, now + 0.05);
+            gain.gain.setValueAtTime(0.2, now + 0.3);
+            gain.gain.linearRampToValueAtTime(0, now + 0.6);
+
+            osc1.start(now);
+            osc2.start(now);
+            osc1.stop(now + 0.6);
+            osc2.stop(now + 0.6);
+        }
+
+        function updateHeartbeat(timestamp) {
+            if(!gameRunning || enemies.length === 0) return;
+            
+            let minDist = Infinity;
+            for(let e of enemies) {
+                let dist = Math.abs(e.x - player.x) + Math.abs(e.y - player.y);
+                if(dist < minDist) minDist = dist;
+            }
+            
+            if(minDist > 12) return; // Çok uzaktaysa ses yok
+            
+            let interval = Math.max(200, minDist * 80); // Yaklaştıkça atış hızlanır
+            
+            if(timestamp - lastPingTime > interval) {
+                playPing(minDist);
+                lastPingTime = timestamp;
+            }
+        }
+
+        // Klavye desteği (PC kullanıcıları için)
         document.addEventListener('keydown', (e) => {
+            initAudio();
             switch(e.key) {
                 case 'ArrowUp': movePlayer(0, -1); break;
                 case 'ArrowDown': movePlayer(0, 1); break;
@@ -531,24 +898,220 @@
             }
         });
 
-        // Butonlara dokunma sırasında kaydırmayı engelle
-        document.querySelectorAll('.d-btn').forEach(btn => {
-            btn.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Butona basınca sayfa oynamasın
-                btn.click(); // Click olayını tetikle
-            }, {passive: false});
-        });
+        // Mobilde Kaydırma (Swipe) Kontrolleri
+        let touchStartX = 0;
+        let touchStartY = 0;
 
-        function gameLoop() {
+        document.addEventListener('touchstart', function(e) {
+            initAudio();
+            if(e.target.closest('button') || e.target.closest('select') || e.target.closest('input')) return;
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, {passive: true});
+
+        document.addEventListener('touchend', function(e) {
+            if(e.target.closest('button') || e.target.closest('select') || e.target.closest('input')) return;
+            let touchEndX = e.changedTouches[0].screenX;
+            let touchEndY = e.changedTouches[0].screenY;
+            
+            let dx = touchEndX - touchStartX;
+            let dy = touchEndY - touchStartY;
+            
+            // Eğer yeterince kaydırılmışsa (30px)
+            if(Math.abs(dx) > 30 || Math.abs(dy) > 30) {
+                if(Math.abs(dx) > Math.abs(dy)) {
+                    dx > 0 ? movePlayer(1, 0) : movePlayer(-1, 0);
+                } else {
+                    dy > 0 ? movePlayer(0, 1) : movePlayer(0, -1);
+                }
+            }
+        }, {passive: true});
+
+        // Sadece canvas değil, tüm sayfada kaydırma (scroll/pull-to-refresh) hareketini engelle
+        document.addEventListener('touchmove', function(e) {
+            // Checkbox veya butonlar gibi objeler dışında tüm scroll hareketlerini yoksay
+            if(!e.target.closest('input') && !e.target.closest('select')) {
+                e.preventDefault();
+            }
+        }, {passive: false});
+
+        let fogActive = false;
+        let gameStartTimestamp = 0;
+
+        function gameLoop(timestamp) {
+            if (gameRunning) {
+                if (!gameStartTimestamp) gameStartTimestamp = timestamp;
+                
+                if (!isRespawning) {
+                    updateHeartbeat(timestamp);
+                    
+                    if (!lastPlayerMove) lastPlayerMove = timestamp;
+                    if (timestamp - lastPlayerMove > PLAYER_MOVE_INTERVAL) {
+                        tryPlayerMove();
+                        lastPlayerMove = timestamp;
+                    }
+
+                    if (!lastEnemyMove) lastEnemyMove = timestamp;
+                    
+                    // Karanlıkta (Sis modunda) düşmanlar 2 kat daha hızlı hareket eder!
+                    let currentEnemyInterval = fogActive ? 300 : ENEMY_MOVE_INTERVAL;
+                    if (timestamp - lastEnemyMove > currentEnemyInterval) {
+                        moveEnemies();
+                        lastEnemyMove = timestamp;
+                    }
+                }
+                
+                // Fog of War (Sis) Mantığı: 50 saniyelik döngü. İlk 10. ve 20. saniyeler arası aktif.
+                let elapsedSeconds = (timestamp - gameStartTimestamp) / 1000;
+                let cycleTime = elapsedSeconds % 50;
+                fogActive = (cycleTime >= 10 && cycleTime <= 20);
+                
+                let fogText = "";
+                let fogContainer = document.getElementById('fogStatusContainer');
+                if (cycleTime < 10) {
+                    fogText = Math.ceil(10 - cycleTime) + "s";
+                    fogContainer.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                    fogContainer.style.color = '#fff';
+                    fogContainer.style.background = 'rgba(255, 255, 255, 0.05)';
+                } else if (cycleTime <= 20) {
+                    fogText = Math.ceil(20 - cycleTime) + "s";
+                    fogContainer.style.borderColor = '#ff4444';
+                    fogContainer.style.color = '#ff4444';
+                    fogContainer.style.background = 'rgba(255, 68, 68, 0.1)';
+                } else {
+                    fogText = Math.ceil(50 - cycleTime) + "s";
+                    fogContainer.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                    fogContainer.style.color = '#fff';
+                    fogContainer.style.background = 'rgba(255, 255, 255, 0.05)';
+                }
+                document.getElementById('fogTimer').textContent = fogText;
+            }
             drawMaze();
             requestAnimationFrame(gameLoop);
         }
 
+        let enemiesEnabled = true;
+
+        function toggleEnemies() {
+            enemiesEnabled = document.getElementById('enemyToggle').checked;
+            if (!enemiesEnabled) {
+                enemies = []; // Anında temizle
+            } else {
+                spawnEnemies(); // Geri getir
+            }
+        }
+
+        function spawnEnemies() {
+            enemies = [];
+            if (!enemiesEnabled) return;
+            const theme = THEMES[currentTheme];
+            for(let i=0; i<2; i++) {
+                let ex, ey;
+                do {
+                    ex = Math.floor(Math.random() * MAZE_COLS);
+                    ey = Math.floor(Math.random() * MAZE_ROWS);
+                } while((ex <= 2 && ey <= 2) || (ex === MAZE_COLS-1 && ey === MAZE_ROWS-1)); 
+                enemies.push({ x: ex, y: ey, type: theme.enemies[i % 2] });
+            }
+        }
+
+        let isRespawning = false;
+
+        function checkCollisions() {
+            if (isRespawning) return; // Zaten çarpışma anındaysak tekrar etme
+            
+            for(let enemy of enemies) {
+                if(enemy.x === player.x && enemy.y === player.y) {
+                    isRespawning = true;
+                    playBzzzt(); // Elektrik çarpması sesi
+                    
+                    timer = Math.max(0, timer - 5);
+                    score = Math.max(0, score - 10);
+                    document.getElementById('timer').textContent = timer;
+                    document.getElementById('score').textContent = score;
+                    
+                    // Ekranı kırmızı yapıp titret
+                    canvas.style.backgroundColor = '#6a0000';
+                    canvas.style.transform = "translate(5px, 5px)";
+                    
+                    // 1 saniye bekledikten sonra başa ışınla
+                    setTimeout(() => {
+                        canvas.style.backgroundColor = '#0a0a1a';
+                        canvas.style.transform = "translate(0px, 0px)";
+                        
+                        // Karakteri başlangıç noktasına gönder (Respawn)
+                        player.x = 0;
+                        player.y = 0;
+                        playerDir = { dx: 0, dy: 0 };
+                        nextPlayerDir = { dx: 0, dy: 0 };
+
+                        // Düşmanı rastgele başka bir yere gönder (üst üste hasar almamak için)
+                        enemy.x = Math.floor(Math.random() * MAZE_COLS);
+                        enemy.y = Math.floor(Math.random() * MAZE_ROWS);
+                        
+                        isRespawning = false;
+                    }, 800); // 800ms donup kalma hissi
+                }
+            }
+        }
+
+        function moveEnemies() {
+            enemies.forEach(enemy => {
+                let queue = [{x: enemy.x, y: enemy.y, path: []}];
+                let visited = Array(MAZE_ROWS).fill().map(() => Array(MAZE_COLS).fill(false));
+                visited[enemy.y][enemy.x] = true;
+                let nextMove = null;
+
+                while(queue.length > 0) {
+                    let curr = queue.shift();
+                    
+                    if(curr.x === player.x && curr.y === player.y) {
+                        if(curr.path.length > 0) nextMove = curr.path[0];
+                        break;
+                    }
+
+                    let cell = maze[curr.y][curr.x];
+                    let neighbors = [];
+                    if(!cell.top) neighbors.push({x: curr.x, y: curr.y-1});
+                    if(!cell.right) neighbors.push({x: curr.x+1, y: curr.y});
+                    if(!cell.bottom) neighbors.push({x: curr.x, y: curr.y+1});
+                    if(!cell.left) neighbors.push({x: curr.x-1, y: curr.y});
+
+                    for(let n of neighbors) {
+                        if(n.x >= 0 && n.x < MAZE_COLS && n.y >= 0 && n.y < MAZE_ROWS && !visited[n.y][n.x]) {
+                            visited[n.y][n.x] = true;
+                            queue.push({x: n.x, y: n.y, path: curr.path.concat({x: n.x, y: n.y})});
+                        }
+                    }
+                }
+
+                // %70 ihtimalle doğru takip eder, %30 ihtimalle şaşırıp rastgele bir yöne sapar
+                if(nextMove && Math.random() > 0.3) {
+                    enemy.x = nextMove.x;
+                    enemy.y = nextMove.y;
+                } else {
+                    let cell = maze[enemy.y][enemy.x];
+                    let neighbors = [];
+                    if(!cell.top) neighbors.push({x: enemy.x, y: enemy.y-1});
+                    if(!cell.right) neighbors.push({x: enemy.x+1, y: enemy.y});
+                    if(!cell.bottom) neighbors.push({x: enemy.x, y: enemy.y+1});
+                    if(!cell.left) neighbors.push({x: enemy.x-1, y: enemy.y});
+                    if(neighbors.length > 0) {
+                        let n = neighbors[Math.floor(Math.random() * neighbors.length)];
+                        enemy.x = n.x;
+                        enemy.y = n.y;
+                    }
+                }
+            });
+            checkCollisions();
+        }
+
         createStarBackground();
         generateMaze();
+        spawnEnemies();
         gameRunning = true;
         startTimer();
-        gameLoop();
+        requestAnimationFrame(gameLoop);
     </script>
 </body>
 </html>

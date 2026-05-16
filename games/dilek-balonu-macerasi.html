@@ -246,7 +246,7 @@ body{background:#87ceeb;display:flex;justify-content:center;align-items:center;m
     <div class="gameSub">Yıldızları topla, <strong>dilekleri gerçekleştir!</strong><br>Her yıldız = bir çocuğun umudu ✨</div>
     <div class="howTo">
       <div class="howRow"><div class="howIcon">⬅️➡️</div><span>Ok tuşları / A D ile uç</span></div>
-      <div class="howRow"><div class="howIcon">📱</div><span>Sola-sağa kaydır</span></div>
+      <div class="howRow"><div class="howIcon">📱</div><span>Sola/sağa dokun veya kaydır</span></div>
       <div class="howRow"><div class="howIcon">⭐</div><span>Yıldız topla <strong>+100 puan</strong></span></div>
       <div class="howRow"><div class="howIcon">🌩️</div><span>Fırtına bulutlarından kaç!</span></div>
       <div class="howRow"><div class="howIcon">💬</div><span>Çarptıktan sonra soru gelir!</span></div>
@@ -917,14 +917,34 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { if (scPause.style.display === 'flex') resumeGame(); else pauseGame(); }
 });
 
-let tx = null;
-GW.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-GW.addEventListener('touchend',   e => {
-  if (tx === null) return;
-  const dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 28) { dx < 0 ? moveL() : moveR(); }
-  tx = null;
-}, { passive: true });
+let pDownX = null;
+let pDownY = null;
+let pDownT = 0;
+
+GW.addEventListener('pointerdown', e => {
+  if (e.target.closest('.btn') || e.target.closest('#pauseBtn') || e.target.closest('a')) return;
+  pDownX = e.clientX;
+  pDownY = e.clientY;
+  pDownT = performance.now();
+});
+
+GW.addEventListener('pointerup', e => {
+  if (pDownX === null || !running || showingQ) return;
+  
+  const dx = e.clientX - pDownX;
+  const dy = e.clientY - pDownY;
+  const dt = performance.now() - pDownT;
+  
+  if (Math.abs(dx) > 30) {
+    dx < 0 ? moveL() : moveR();
+  } else if (Math.abs(dx) < 15 && Math.abs(dy) < 15 && dt < 500) {
+    const rect = GW.getBoundingClientRect();
+    const midX = rect.left + rect.width / 2;
+    if (e.clientX < midX) moveL(); else moveR();
+  }
+  
+  pDownX = null;
+});
 </script>
 </body>
 </html>
