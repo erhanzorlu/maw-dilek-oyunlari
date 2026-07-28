@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make-A-Wish — Gönüllü Yol Haritası</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        maw: {
+                            darkblue: '#002F6C',
+                            blue: '#0055A4',
+                            lightblue: '#4A90D9',
+                            sky: '#E8F1FA',
+                            green: '#00A651',
+                            lightgreen: '#E6F7ED',
+                            gold: '#F5A623',
+                            white: '#FFFFFF',
+                            gray: '#F4F6F8',
+                            text: '#1A1A2E',
+                            muted: '#5A6577',
+                            card: '#FFFFFF',
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Nunito', 'sans-serif'],
+                        body: ['Source Sans 3', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --darkblue: #002F6C;
+            --blue: #0055A4;
+            --lightblue: #4A90D9;
+            --sky: #E8F1FA;
+            --green: #00A651;
+            --lightgreen: #E6F7ED;
+            --gold: #F5A623;
+            --text: #1A1A2E;
+            --muted: #5A6577;
+        }
+
+        * { box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            color: var(--text);
+            background: var(--sky);
+            overflow-x: hidden;
+        }
+
+        /* Arka plan deseni */
+        .bg-pattern {
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(0, 166, 81, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 85, 164, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(245, 166, 35, 0.04) 0%, transparent 50%);
+        }
+
+        /* Yüzen yıldızlar */
+        .floating-star {
+            position: absolute;
+            opacity: 0.07;
+            animation: floatStar 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .floating-star:nth-child(2) { animation-delay: -2s; animation-duration: 10s; }
+        .floating-star:nth-child(3) { animation-delay: -4s; animation-duration: 12s; }
+        .floating-star:nth-child(4) { animation-delay: -6s; animation-duration: 9s; }
+        .floating-star:nth-child(5) { animation-delay: -1s; animation-duration: 11s; }
+
+        @keyframes floatStar {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            33% { transform: translateY(-18px) rotate(8deg) scale(1.1); }
+            66% { transform: translateY(10px) rotate(-5deg) scale(0.95); }
+        }
+
+        /* Timeline çizgisi */
+        .timeline-line {
+            position: absolute;
+            left: 27px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            border-radius: 3px;
+            transition: background 0.5s ease;
+        }
+        .timeline-line.section1 {
+            background: linear-gradient(to bottom, var(--blue), var(--lightblue));
+        }
+        .timeline-line.section2 {
+            background: linear-gradient(to bottom, var(--green), #4ECB71);
+        }
+
+        /* Timeline adım numarası */
+        .step-number {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 2;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .step-number.blue {
+            background: linear-gradient(135deg, var(--blue), var(--lightblue));
+            color: white;
+        }
+        .step-number.green {
+            background: linear-gradient(135deg, var(--green), #4ECB71);
+            color: white;
+        }
+        .step-item:hover .step-number {
+            transform: scale(1.15);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+        }
+
+        /* Kart */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 28px 28px 24px;
+            box-shadow: 0 2px 12px rgba(0, 47, 108, 0.06), 0 0 0 1px rgba(0, 47, 108, 0.04);
+            transition: all 0.35s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            border-radius: 4px 0 0 4px;
+            transition: width 0.3s ease;
+        }
+        .step-card.blue-card::before { background: linear-gradient(to bottom, var(--blue), var(--lightblue)); }
+        .step-card.green-card::before { background: linear-gradient(to bottom, var(--green), #4ECB71); }
+        .step-card:hover::before { width: 6px; }
+        .step-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 47, 108, 0.1), 0 0 0 1px rgba(0, 47, 108, 0.06);
+            transform: translateY(-2px);
+        }
+
+        /* Kart içeriği */
+        .step-content {
+            max-height: 600px;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            opacity: 1;
+        }
+        .step-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        /* Expand ikonu */
+        .expand-icon {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* Önemli not kutusu */
+        .note-box {
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 0.925rem;
+            line-height: 1.65;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .note-box.warning {
+            background: #FFF8E6;
+            border: 1px solid #F5D580;
+            color: #7A5C00;
+        }
+        .note-box.info {
+            background: var(--sky);
+            border: 1px solid #B8D4F0;
+            color: var(--blue);
+        }
+        .note-box.success {
+            background: var(--lightgreen);
+            border: 1px solid #A3DFBA;
+            color: #0A5C2A;
+        }
+        .note-box.danger {
+            background: #FEECEC;
+            border: 1px solid #F5A3A3;
+            color: #8B1A1A;
+        }
+
+        /* Nav sticky */
+        .nav-sticky {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(0, 47, 108, 0.08);
+            transition: box-shadow 0.3s ease;
+        }
+        .nav-sticky.scrolled {
+            box-shadow: 0 4px 20px rgba(0, 47, 108, 0.08);
+        }
+
+        /* Bölüm başlık dekorasyon */
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .section-badge.blue {
+            background: linear-gradient(135deg, rgba(0, 85, 164, 0.1), rgba(74, 144, 217, 0.1));
+            color: var(--blue);
+            border: 1px solid rgba(0, 85, 164, 0.15);
+        }
+        .section-badge.green {
+            background: linear-gradient(135deg, rgba(0, 166, 81, 0.1), rgba(78, 203, 113, 0.1));
+            color: var(--green);
+            border: 1px solid rgba(0, 166, 81, 0.15);
+        }
+
+        /* İlerleme çubuğu */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue), var(--green));
+            z-index: 1000;
+            transition: width 0.15s ease;
+            border-radius: 0 3px 3px 0;
+        }
+
+        /* Checkbox animasyonu */
+        .check-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #CBD5E1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+        }
+        .check-circle:hover {
+            border-color: var(--green);
+            transform: scale(1.1);
+        }
+        .check-circle.checked {
+            background: var(--green);
+            border-color: var(--green);
+            animation: checkPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .check-circle.checked i {
+            color: white;
+            font-size: 0.7rem;
+        }
+        @keyframes checkPop {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Fade-in animasyonu */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero yıldız animasyonu */
+        .hero-star {
+            display: inline-block;
+            animation: heroStarPulse 3s ease-in-out infinite;
+        }
+        @keyframes heroStarPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 8px rgba(245, 166, 35, 0.3)); }
+            50% { transform: scale(1.08) rotate(5deg); filter: drop-shadow(0 0 16px rgba(245, 166, 35, 0.5)); }
+        }
+
+        /* Mobil düzeltmeler */
+        @media (max-width: 640px) {
+            .step-card { padding: 20px 18px 20px 16px; }
+            .step-number { width: 44px; height: 44px; font-size: 1rem; }
+            .timeline-line { left: 21px; }
+        }
+
+        /* Tooltip */
+        .tooltip-container {
+            position: relative;
+        }
+        .tooltip-container .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: var(--darkblue);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            white-space: nowrap;
+            transition: all 0.25s ease;
+            z-index: 10;
+            font-family: 'Source Sans 3', sans-serif;
+        }
+        .tooltip-container .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--darkblue);
+        }
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Yazdırma stilleri */
+        @media print {
+            .nav-sticky, .progress-bar, .floating-star, .no-print { display: none !important; }
+            .step-content.collapsed { max-height: 600px !important; opacity: 1 !important; }
+            .step-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+            body { background: white; }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen">
+
+    <!-- İlerleme Çubuğu -->
+    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+    <!-- Sticky Navigasyon -->
+    <nav class="nav-sticky fixed top-0 left-0 right-0 z-50" id="navbar">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-maw-blue to-maw-lightblue flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-star text-white text-sm"></i>
+                </div>
+                <span class="font-heading font-800 text-maw-darkblue text-sm sm:text-base tracking-tight">Gönüllü Yol Haritası</span>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Tümünü Aç/Kapat -->
+                <button onclick="toggleAll()" id="toggleAllBtn"
+                    class="no-print flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-700 text-maw-muted hover:text-maw-darkblue hover:bg-maw-sky transition-all"
+                    aria-label="Tüm adımları aç veya kapat">
+                    <i class="fa-solid fa-layer-group text-[0.7rem]"></i>
+                    <span class="hidden sm:inline" id="toggleAllText">Kapat</span>
+                </button>
+                <!-- Yazdır -->
+                <button onclick="window.print()"
+                    class="no-print flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-700 text-maw-muted hover:text-maw-darkblue hover:bg-maw-sky transition-all"
+                    aria-label="Sayfayı yazdır">
+                    <i class="fa-solid fa-print text-[0.7rem]"></i>
+                    <span class="hidden sm:inline">Yazdır</span>
+                </button>
+                <!-- İlerleme göstergesi -->
+                <div class="tooltip-container">
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-maw-lightgreen border border-green-200">
+                        <i class="fa-solid fa-check-double text-maw-green text-[0.7rem]"></i>
+                        <span class="text-xs font-heading font-800 text-maw-green" id="completedCount">0/11</span>
+                    </div>
+                    <span class="tooltip-text">Tamamlanan adımlar</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Bölümü -->
+    <header class="relative pt-24 pb-12 sm:pt-28 sm:pb-16 overflow-hidden">
+        <!-- Yüzen yıldızlar -->
+        <i class="floating-star fa-solid fa-star text-maw-gold text-3xl" style="top:15%;left:8%"></i>
+        <i class="floating-star fa-solid fa-star text-maw-blue text-xl" style="top:30%;right:12%"></i>
+        <i class="floating-star fa-solid fa-star text-maw-green text-2xl" style="top:60%;left:5%"></i>
+        <i class="floating-star fa-solid fa-star text-maw-gold text-lg" style="top:20%;right:25%"></i>
+        <i class="floating-star fa-solid fa-star text-maw-lightblue text-2xl" style="top:70%;right:8%"></i>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
+            <div class="hero-star inline-block mb-5">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-maw-gold to-yellow-400 flex items-center justify-center shadow-lg shadow-yellow-200/50">
+                    <i class="fa-solid fa-star text-white text-2xl sm:text-3xl"></i>
+                </div>
+            </div>
+            <h1 class="font-heading font-900 text-3xl sm:text-4xl lg:text-5xl text-maw-darkblue leading-tight mb-4">
+                Hastane Dilek Alımı<br class="sm:hidden">
+                <span class="bg-gradient-to-r from-maw-blue to-maw-green bg-clip-text text-transparent"> Yol Haritası</span>
+            </h1>
+            <p class="font-body text-maw-muted text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-8">
+                Hastanede dilek alım sürecinizi adım adım takip edin. Her adımı tamamlayarak
+                ilerlemenizi izleyebilir, önemli notları kaçırmadan süreci güvenle yürütebilirsiniz.
+            </p>
+
+            <!-- Hızlı bilgi kartları -->
+            <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mb-2">
+                <div class="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl shadow-sm border border-blue-100">
+                    <div class="w-8 h-8 rounded-lg bg-maw-sky flex items-center justify-center">
+                        <i class="fa-solid fa-clipboard-list text-maw-blue text-sm"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="text-xs text-maw-muted font-body">Bölüm 1</div>
+                        <div class="text-sm font-heading font-700 text-maw-darkblue">İlerleme Yönergesi</div>
+                    </div>
+                    <span class="ml-1 px-2 py-0.5 rounded-full bg-maw-sky text-maw-blue text-xs font-heading font-700">6 adım</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl shadow-sm border border-green-100">
+                    <div class="w-8 h-8 rounded-lg bg-maw-lightgreen flex items-center justify-center">
+                        <i class="fa-solid fa-file-signature text-maw-green text-sm"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="text-xs text-maw-muted font-body">Bölüm 2</div>
+                        <div class="text-sm font-heading font-700 text-maw-darkblue">Form Dolduruşu</div>
+                    </div>
+                    <span class="ml-1 px-2 py-0.5 rounded-full bg-maw-lightgreen text-maw-green text-xs font-heading font-700">5 adım</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
+
+        <!-- BÖLÜM 1: İlerleme Yönergesi -->
+        <section id="section1" class="mb-16 fade-in" aria-label="Hastane Dilek Alımları İlerleme Yönergesi">
+            <div class="mb-8">
+                <div class="section-badge blue mb-3">
+                    <i class="fa-solid fa-route text-xs"></i>
+                    Bölüm 1
+                </div>
+                <h2 class="font-heading font-900 text-2xl sm:text-3xl text-maw-darkblue mb-2">Hastane Dilek Alımları İlerleme Yönergesi</h2>
+                <p class="font-body text-maw-muted text-sm sm:text-base">Kata girdikten sonra sırasıyla izlemeniz gereken adımlar</p>
+            </div>
+
+            <div class="relative pl-16 sm:pl-20">
+                <div class="timeline-line section1"></div>
+
+                <!-- Adım 1 -->
+                <div class="step-item mb-6 relative" data-step="0">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number blue">1</div>
+                    </div>
+                    <div class="step-card blue-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 1'i tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Sorumlu Hemşireyi Bulun</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                Kattaki sorumlu hemşireyi bulun ve mevcut çocuk listesini rica edin.
+                                Bu liste, katta yatan tüm çocukların bilgilerini içerir ve sizin için
+                                ilk eleme adımını oluşturur.
+                            </p>
+                            <div class="note-box info mt-4 ml-9">
+                                <i class="fa-solid fa-circle-info mt-0.5 flex-shrink-0"></i>
+                                <span>Sorumlu hemşire genellikle kat başındaki hemşire masasında bulunur. Liste genellikle elektronik sistemde veya çıktı halinde mevcuttur.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="step-item mb-6 relative" data-step="1">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number blue">2</div>
+                    </div>
+                    <div class="step-card blue-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 2'yi tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Yaş Aralığını İşaretleyin</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                Liste geldiğinde <strong class="text-maw-darkblue">3–17 yaş arası</strong> olan çocukları işaretleyin.
+                            </p>
+                            <div class="note-box warning mt-4 ml-9">
+                                <i class="fa-solid fa-triangle-exclamation mt-0.5 flex-shrink-0"></i>
+                                <span>Katta bazen bebekler de yatıyor, yaşlara dikkat edin. Yaş dışı olan çocukları listeden eleyerek bir sonraki adıma geçin.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="step-item mb-6 relative" data-step="2">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number blue">3</div>
+                    </div>
+                    <div class="step-card blue-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 3'ü tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Dil Kontrolü Yapın</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                Çocuklar arasında <strong class="text-maw-darkblue">ana dili Türkçe olmayan</strong> var mı diye sorun.
+                            </p>
+                            <div class="mt-4 ml-9 space-y-3">
+                                <div class="note-box danger">
+                                    <i class="fa-solid fa-language mt-0.5 flex-shrink-0"></i>
+                                    <span><strong>Eğer tercüman yoksa ve anında destek olunamayacaksa:</strong> O aileye ayrıca bilgilendirme yapabileceklerini ve bize yönlendirebileceklerini iletin.</span>
+                                </div>
+                                <div class="note-box success">
+                                    <i class="fa-solid fa-phone-volume mt-0.5 flex-shrink-0"></i>
+                                    <span>Bize kendileri başvurursa <strong>tercüman eşliğinde sonradan destek</strong> sağlayabiliriz. Bu durumu aileye net iletin.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="step-item mb-6 relative" data-step="3">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number blue">4</div>
+                    </div>
+                    <div class="step-card blue-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 4'ü tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Listeyi Koordinasyona İletin</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                Kalan ve odasına girebileceğiniz söylenen çocukların isimlerini koordinatöre iletin.
+                                Aralarında <strong class="text-maw-darkblue">daha önce dileğini zaten aldığımız</strong> çocuklar olabilir — bu kontrol
+                                koordinatör tarafından yapılacaktır.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 5 -->
+                <div class="step-item mb-6 relative" data-step="4">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number blue">5</div>
+                    </div>
+                    <div class="step-card blue-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 5'i tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Zaman Planlaması Yapın</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                Nihai liste oluştuğunda, toplam kaç çocuk olduğuna bakın ve kendi vaktinizi değerlendirin.
+                            </p>
+                            <div class="note-box info mt-4 ml-9">
+                                <i class="fa-solid fa-calendar-days mt-0.5 flex-shrink-0"></i>
+                                <span><strong>Örnek:</strong> Dilek alabileceğiniz 6 çocuk var ve 2 ayrı gün gidecekseniz → 3 çocuk + 3 çocuk şeklinde bölüşebilirsiniz.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 6 -->
+                <div class="step-item mb-6 relative" data-step="5">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number blue">6</div>
+                    </div>
+                    <div class="step-card blue-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 6'yı tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Öncelik: Tüm Başvuruları Tamamlayın</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                Eğer vakit varsa <strong class="text-maw-darkblue">önce tüm başvuru evraklarını</strong> her aileyle doldurmayı öneriyoruz.
+                                Tüm başvurular bittiğinde istediğiniz bir odadan dilek alıma başlayabilirsiniz.
+                            </p>
+                            <div class="note-box danger mt-4 ml-9">
+                                <i class="fa-solid fa-clock mt-0.5 flex-shrink-0"></i>
+                                <span><strong>Dikkat:</strong> Direkt dilek alımlarına geçildiğinde, dilek alımı uzarsa diğer ailelere ulaşamayabiliyoruz, vakit kalmıyor. Sonra gittiğimizde yatışları bitmiş olabiliyor.</span>
+                            </div>
+                            <div class="note-box success mt-3 ml-9">
+                                <i class="fa-solid fa-bullseye mt-0.5 flex-shrink-0"></i>
+                                <span>Bir kata gittiğimizde oradaki <strong>herkese bu hizmeti sunmak</strong> nihai amacımız gibi düşünebilirsiniz.</span>
+                            </div>
+                            <div class="note-box warning mt-3 ml-9">
+                                <i class="fa-solid fa-phone mt-0.5 flex-shrink-0"></i>
+                                <span><strong>Yeterli vaktiniz yoksa:</strong> Dernek numarasını bırakarak arayıp başvuru yapabileceklerini söyleyin veya ailenin numarasını alıp bize iletin.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bölüm Geçiş Ayırıcı -->
+        <div class="flex items-center gap-4 my-10 fade-in">
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+            <div class="w-10 h-10 rounded-full bg-white shadow-md border border-green-100 flex items-center justify-center">
+                <i class="fa-solid fa-arrow-down text-maw-green text-sm"></i>
+            </div>
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-green-200 to-transparent"></div>
+        </div>
+
+        <!-- BÖLÜM 2: Formların Dolduruluşu -->
+        <section id="section2" class="fade-in" aria-label="Formların Dolduruluşu">
+            <div class="mb-8">
+                <div class="section-badge green mb-3">
+                    <i class="fa-solid fa-file-pen text-xs"></i>
+                    Bölüm 2
+                </div>
+                <h2 class="font-heading font-900 text-2xl sm:text-3xl text-maw-darkblue mb-2">Formların Dolduruluşu</h2>
+                <p class="font-body text-maw-muted text-sm sm:text-base">Aileyle karşılaştıktan sonra izlemeniz gereken adımlar</p>
+            </div>
+
+            <div class="relative pl-16 sm:pl-20">
+                <div class="timeline-line section2"></div>
+
+                <!-- Adım 7 -->
+                <div class="step-item mb-6 relative" data-step="6">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number green">1</div>
+                    </div>
+                    <div class="step-card green-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 1'i tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Aileyi Odanın Dışına Alın</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                Odanın kapısını açıp aileyi dışarı alarak konuşmanız gerekiyor.
+                            </p>
+                            <div class="note-box danger mt-4 ml-9">
+                                <i class="fa-solid fa-eye-slash mt-0.5 flex-shrink-0"></i>
+                                <span><strong>Çocuğun yanında derneği anlatmayın!</strong> Bu kurala mutlaka uyun. Konuşma çocuğun duymayacağı bir ortamda gerçekleşmeli.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 8 -->
+                <div class="step-item mb-6 relative" data-step="7">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number green">2</div>
+                    </div>
+                    <div class="step-card green-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 2'yi tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Süreci Anlatın ve Güven İnşası Yapın</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                "Böyle bir derneğiz, bunları yapıyoruz, başvurmak ister misiniz?" diyerek süreci anlatın.
+                            </p>
+                            <div class="note-box warning mt-4 ml-9">
+                                <i class="fa-solid fa-shield-halved mt-0.5 flex-shrink-0"></i>
+                                <span>Bu dönemde <strong>STK'lara güvensizlik</strong> olabiliyor. Sitemizi, Instagram hesabımızı, sitemizdeki faaliyet raporlarını inceletebilirsiniz.</span>
+                            </div>
+                            <div class="note-box info mt-3 ml-9">
+                                <i class="fa-solid fa-hourglass-half mt-0.5 flex-shrink-0"></i>
+                                <span>"Biz bir araştıralım" derlerse <strong>zaman tanıyın</strong> ve düşünme süresi vererek yanlarından ayrılın. Zorlamayın.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 9 -->
+                <div class="step-item mb-6 relative" data-step="8">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number green">3</div>
+                    </div>
+                    <div class="step-card green-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 3'ü tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Aydınlatma Metnini Verin</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                Başvurmak isterlerse, ilk olarak dernekte başvuru işlemini başlatabilmek ve bilgilerini alabilmek için
+                                <strong class="text-maw-darkblue">hukuki evraklarımız olduğunu</strong> söyleyin. Öncelikle aydınlatma metnini kendilerine verin.
+                            </p>
+                            <div class="note-box info mt-4 ml-9">
+                                <i class="fa-solid fa-book-open mt-0.5 flex-shrink-0"></i>
+                                <span><strong>Aydınlatma metni ailede kalacak</strong> — imza alınmıyor. Bu metin, kişinin bu konuya dair aydınlatıldığını kanıtlayan bir belgedir.</span>
+                            </div>
+                            <div class="note-box warning mt-3 ml-9">
+                                <i class="fa-solid fa-exclamation-circle mt-0.5 flex-shrink-0"></i>
+                                <span><strong>Önemli:</strong> Bu metni gitmeden önce lütfen okuyun! 7–8 sayfalık bir belge ve aileler genelde ne yazdığını soruyor. Hızlıca anlatabiliyor olun.</span>
+                            </div>
+                            <div class="mt-3 ml-9 p-3 bg-maw-gray rounded-lg text-sm font-body text-maw-muted leading-relaxed">
+                                <strong class="text-maw-text">Metinde neler var?</strong> Genel olarak hangi verileri neden aldığımız, saklama süresi, verilerin nerelerde saklanacağı gibi bilgilendirmeler mevcut.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 10 -->
+                <div class="step-item mb-6 relative" data-step="9">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number green">4</div>
+                    </div>
+                    <div class="step-card green-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 4'ü tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Açık Rıza Beyanı'nı İmzalatın</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                Açık Rıza Beyanı'nı imzalatın. Bu beyanı da <strong class="text-maw-darkblue">okumak ve nereye, neden imza atmaları gerektiğini
+                                anlatmak</strong> önemli.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 11 -->
+                <div class="step-item mb-6 relative" data-step="10">
+                    <div class="absolute left-[-40px] sm:left-[-48px] top-4">
+                        <div class="step-number green">5</div>
+                    </div>
+                    <div class="step-card green-card" onclick="toggleStep(this)">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="check-circle" onclick="event.stopPropagation(); toggleCheck(this)" role="checkbox" aria-checked="false" tabindex="0" aria-label="Adım 5'i tamamla">
+                                </div>
+                                <h3 class="font-heading font-800 text-base sm:text-lg text-maw-darkblue leading-snug">Dilek Başvuru Formunu Doldurun</h3>
+                            </div>
+                            <i class="fa-solid fa-chevron-down expand-icon mt-1"></i>
+                        </div>
+                        <div class="step-content mt-4">
+                            <p class="font-body text-maw-text text-[0.94rem] leading-relaxed pl-9">
+                                İmzaları aldığınızda Dilek Başvuru Formu'nu doldurabilirsiniz.
+                            </p>
+                            <div class="note-box warning mt-4 ml-9">
+                                <i class="fa-solid fa-pen-nib mt-0.5 flex-shrink-0"></i>
+                                <span><strong>Yazınız okunaklı olsun!</strong> Sayıları ve harfleri okunaklı yazan bir kişi bu formu doldursun. Emin olmadığınız her kelime için aileden <strong>doğru yazılışını</strong> rica edin.</span>
+                            </div>
+                            <div class="mt-4 ml-9">
+                                <p class="text-sm font-heading font-700 text-maw-darkblue mb-3">
+                                    <i class="fa-solid fa-list-check text-maw-green mr-1.5"></i>
+                                    Formda mutlaka doldurulması gereken alanlar:
+                                </p>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <div class="flex items-center gap-2 text-sm font-body text-maw-text">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-maw-green flex-shrink-0"></span>
+                                        Çocuk adı-soyadı
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm font-body text-maw-text">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-maw-green flex-shrink-0"></span>
+                                        Yaşı
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm font-body text-maw-text">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-maw-green flex-shrink-0"></span>
+                                        Cinsiyeti
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm font-body text-maw-text">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-maw-green flex-shrink-0"></span>
+                                        Konuştuğu dil
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm font-body text-maw-text">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-maw-green flex-shrink-0"></span>
+                                        Adres
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm font-body text-maw-text">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-maw-green flex-shrink-0"></span>
+                                        Mutlaka 2 ebeveyn/bakım veren bilgisi
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm font-body text-maw-text">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-maw-green flex-shrink-0"></span>
+                                        Evde kimlerin yaşadığı
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm font-body text-maw-text">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-maw-green flex-shrink-0"></span>
+                                        Bakım verenlerin konuştuğu dil
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alt Bilgi Notu -->
+        <footer class="mt-16 fade-in">
+            <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-blue-50">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-maw-blue to-maw-green flex items-center justify-center flex-shrink-0 shadow-md">
+                        <i class="fa-solid fa-heart text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-heading font-800 text-lg text-maw-darkblue mb-1">Unutmayın</h3>
+                        <p class="font-body text-maw-muted text-sm leading-relaxed">
+                            Her adımda emin olmadığınız bir durum olursa koordinatörünüze ulaşmaktan çekinmeyin.
+                            Amacımız her çocuğa ulaşmak ve süreçte aileleri doğru bilgilendirmek. Teşekkür ederiz, iyi dilekler!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Başarı Bildirimi (Toast) -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-maw-darkblue text-white px-5 py-3 rounded-xl shadow-xl font-heading font-700 text-sm flex items-center gap-2.5 transition-all duration-500 opacity-0 translate-y-4 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-maw-green"></i>
+        <span id="toastText">Adım tamamlandı!</span>
+    </div>
+
+    <script>
+        // ========================
+        // Adım Açma/Kapama
+        // ========================
+        function toggleStep(card) {
+            const content = card.querySelector('.step-content');
+            const icon = card.querySelector('.expand-icon');
+            const isCollapsed = content.classList.contains('collapsed');
+
+            if (isCollapsed) {
+                content.classList.remove('collapsed');
+                icon.classList.remove('rotated');
+            } else {
+                content.classList.add('collapsed');
+                icon.classList.add('rotated');
+            }
+        }
+
+        // ========================
+        // Tümünü Aç/Kapat
+        // ========================
+        let allCollapsed = false;
+
+        function toggleAll() {
+            allCollapsed = !allCollapsed;
+            const cards = document.querySelectorAll('.step-card');
+            const btnText = document.getElementById('toggleAllText');
+
+            cards.forEach(card => {
+                const content = card.querySelector('.step-content');
+                const icon = card.querySelector('.expand-icon');
+
+                if (allCollapsed) {
+                    content.classList.add('collapsed');
+                    icon.classList.add('rotated');
+                } else {
+                    content.classList.remove('collapsed');
+                    icon.classList.remove('rotated');
+                }
+            });
+
+            btnText.textContent = allCollapsed ? 'Aç' : 'Kapat';
+        }
+
+        // ========================
+        // Checkbox (Tamamlandı) İşlevi
+        // ========================
+        function toggleCheck(circle) {
+            const isChecked = circle.classList.toggle('checked');
+            circle.setAttribute('aria-checked', isChecked);
+
+            if (isChecked) {
+                circle.innerHTML = '<i class="fa-solid fa-check"></i>';
+                // Üst karta hafif gölge efekti
+                const card = circle.closest('.step-card');
+                card.style.opacity = '0.8';
+                card.style.borderColor = 'transparent';
+                showToast('Adım tamamlandı olarak işaretlendi');
+            } else {
+                circle.innerHTML = '';
+                const card = circle.closest('.step-card');
+                card.style.opacity = '1';
+            }
+
+            updateCompletedCount();
+        }
+
+        // Klavye desteği
+        document.addEventListener('keydown', function(e) {
+            if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('check-circle')) {
+                e.preventDefault();
+                toggleCheck(e.target);
+            }
+        });
+
+        // ========================
+        // Tamamlanan Adım Sayacı
+        // ========================
+        function updateCompletedCount() {
+            const total = document.querySelectorAll('.check-circle').length;
+            const checked = document.querySelectorAll('.check-circle.checked').length;
+            document.getElementById('completedCount').textContent = checked + '/' + total;
+
+            // Tümü tamamlandığında kutu rengini değiştir
+            const counter = document.getElementById('completedCount').parentElement;
+            if (checked === total) {
+                counter.classList.remove('bg-maw-lightgreen', 'border-green-200');
+                counter.classList.add('bg-maw-gold', 'border-yellow-300');
+                counter.querySelector('i').classList.remove('text-maw-green');
+                counter.querySelector('i').classList.add('text-white');
+                counter.querySelector('span').classList.remove('text-maw-green');
+                counter.querySelector('span').classList.add('text-white');
+                showToast('Tebrikler! Tüm adımları tamamladınız!');
+            } else {
+                counter.classList.add('bg-maw-lightgreen', 'border-green-200');
+                counter.classList.remove('bg-maw-gold', 'border-yellow-300');
+                counter.querySelector('i').classList.add('text-maw-green');
+                counter.querySelector('i').classList.remove('text-white');
+                counter.querySelector('span').classList.add('text-maw-green');
+                counter.querySelector('span').classList.remove('text-white');
+            }
+        }
+
+        // ========================
+        // Toast Bildirimi
+        // ========================
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toastText');
+            toastText.textContent = message;
+
+            clearTimeout(toastTimeout);
+            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2500);
+        }
+
+        // ========================
+        // Scroll İlerleme Çubuğu
+        // ========================
+        function updateProgressBar() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // ========================
+        // Navbar Gölge Efekti
+        // ========================
+        function updateNavShadow() {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 10) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        }
+
+        // ========================
+        // Scroll Fade-in Animasyonu
+        // ========================
+        function initFadeIn() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        }
+
+        // ========================
+        // Scroll Event Listener
+        // ========================
+        window.addEventListener('scroll', () => {
+            updateProgressBar();
+            updateNavShadow();
+        }, { passive: true });
+
+        // ========================
+        // Başlatma
+        // ========================
+        document.addEventListener('DOMContentLoaded', () => {
+            initFadeIn();
+            updateProgressBar();
+            updateNavShadow();
+            updateCompletedCount();
+        });
+    </script>
+</body>
+</html>
+
