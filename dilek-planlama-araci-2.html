@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dilek Tasarımı — Make-A-Wish Türkiye</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F8FC;
+    --surface:#FFFFFF;
+    --night:#003D82;
+    --ink:#0F2540;
+    --ink-soft:#4D6478;
+    --ink-faint:#93A3B8;
+    --gold:#FFD54A;
+    --gold-deep:#E0AD1E;
+    --teal:#00BAB3;
+    --teal-bg:#E3F7F6;
+    --rose:#E14B50;
+    --rose-bg:#FCEAEA;
+    --line:#DCE6F0;
+    --maw-blue:#0057B8;
+    --maw-blue-dark:#003D82;
+    --maw-blue-bg:#E9F1FB;
+    --maw-teal:#00BAB3;
+    --maw-teal-bg:#E3F7F6;
+    --maw-lightblue:#8DC8E8;
+    --maw-red:#E14B50;
+    --maw-red-bg:#FCEAEA;
+    --radius:14px;
+    --shadow: 0 1px 2px rgba(23,27,58,.04), 0 8px 24px rgba(23,27,58,.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    background:var(--night); color:#EFEEF6;
+    padding:22px 28px; display:flex; align-items:center; justify-content:space-between;
+    gap:16px; flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand-star{width:30px;height:30px; flex-shrink:0;}
+  .brand h1{font-size:20px; margin:0; font-weight:600; letter-spacing:.2px;}
+  .brand p{margin:2px 0 0; font-size:12.5px; color:#B9BBD9;}
+  .save-status{font-size:12.5px; color:#B9BBD9; display:flex; align-items:center; gap:6px;}
+  .save-dot{width:7px;height:7px;border-radius:50%; background:var(--gold); transition:background .3s;}
+  .save-dot.saved{background:var(--teal);}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:28px 20px 80px;}
+
+  /* ---------- dashboard ---------- */
+  .dash-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px;}
+  .dash-head h2{font-size:26px; margin:0 0 4px;}
+  .dash-head p{margin:0; color:var(--ink-soft); font-size:14px;}
+  .filters{display:flex; gap:8px; margin:18px 0;}
+  .chip{
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-soft);
+    padding:7px 14px; border-radius:100px; font-size:13px; cursor:pointer; font-weight:500;
+  }
+  .chip.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .btn{
+    border:none; cursor:pointer; font-family:inherit; font-weight:600; font-size:14px;
+    padding:11px 18px; border-radius:10px; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-gold{background:var(--gold); color:var(--night);}
+  .btn-gold:hover{background:var(--gold-deep);}
+  .btn-ghost{background:transparent; color:var(--ink-soft); border:1px solid var(--line);}
+  .btn-ghost:hover{color:var(--ink); border-color:var(--ink-faint);}
+  .btn-rose{background:var(--rose-bg); color:var(--rose);}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:16px; margin-top:6px;}
+  .wcard{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px; box-shadow:var(--shadow); cursor:pointer; transition:transform .15s ease, box-shadow .15s ease;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .wcard:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(23,27,58,.1);}
+  .wcard-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .type-badge{font-size:11px; font-weight:600; padding:4px 9px; border-radius:100px; letter-spacing:.3px;}
+  .type-ev{background:var(--teal-bg); color:#00807A;}
+  .type-disarida{background:#FFF1DC; color:#B5650A;}
+  .type-hastane{background:var(--maw-blue-bg); color:var(--maw-blue-dark);}
+  .wcard h3{margin:0; font-size:18px; font-weight:600;}
+  .wcard .sub{color:var(--ink-soft); font-size:12.5px;}
+  .stars-row{display:flex; gap:5px; margin-top:2px;}
+  .progress-line{height:6px; background:var(--line); border-radius:100px; overflow:hidden;}
+  .progress-fill{height:100%; background:linear-gradient(90deg, var(--gold), var(--teal)); border-radius:100px;}
+  .progress-pct{font-size:12px; color:var(--ink-soft); font-weight:600;}
+  .empty{
+    text-align:center; padding:60px 20px; color:var(--ink-soft);
+    border:1px dashed var(--line); border-radius:var(--radius); background:var(--surface);
+  }
+
+  /* ---------- modal ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(23,27,58,.45); display:flex; align-items:center; justify-content:center;
+    padding:20px; z-index:50;
+  }
+  .modal{
+    background:var(--surface); border-radius:16px; padding:26px; max-width:440px; width:100%;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+  }
+  .modal h3{margin:0 0 4px; font-size:20px;}
+  .modal p.hint{margin:0 0 18px; color:var(--ink-soft); font-size:13px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:5px;}
+  .field input[type=text], .field textarea, .field select{
+    width:100%; border:1px solid var(--line); border-radius:9px; padding:10px 12px;
+    font-family:inherit; font-size:14px; color:var(--ink); background:#fff;
+  }
+  .field textarea{resize:vertical; min-height:56px;}
+  .field select option, .field select optgroup{font-family:inherit; font-size:14px; font-weight:400;}
+  .type-pick{display:flex; gap:10px;}
+  .type-opt{
+    flex:1; border:1.5px solid var(--line); border-radius:10px; padding:12px; text-align:center; cursor:pointer; font-size:13px; font-weight:600; color:var(--ink-soft);
+  }
+  .type-opt.sel{border-color:var(--gold); background:#FFF6DA; color:var(--gold-deep);}
+  .modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:18px;}
+
+  /* ---------- detail ---------- */
+  .back-row{display:flex; align-items:center; gap:10px; margin-bottom:16px;}
+  .link-btn{background:none;border:none;color:var(--ink-soft);font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;font-weight:600;}
+  .link-btn:hover{color:var(--ink);}
+  .detail-head{
+    background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:22px 24px; margin-bottom:20px; box-shadow:var(--shadow);
+  }
+  .detail-top{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:flex-start;}
+  .detail-name-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .detail-name{font-size:24px; font-weight:600; border:none; background:transparent; font-family:'Fraunces',serif; color:var(--ink); min-width:120px;}
+  .detail-name:focus{outline:none; border-bottom:1.5px solid var(--gold);}
+  .resp-line{display:flex; align-items:center; gap:8px; margin-top:8px; font-size:13px; color:var(--ink-soft);}
+  .resp-line input{border:none; border-bottom:1px dashed var(--line); background:transparent; font-family:inherit; font-size:13px; color:var(--ink); padding:2px 0; min-width:160px;}
+  .starmap{display:flex; gap:7px; align-items:center;}
+  .starmap-label{font-size:11px; color:var(--ink-soft); margin-top:6px; text-align:right;}
+  .overall-pct{font-size:28px; font-weight:700; font-family:'Fraunces',serif; color:var(--ink); text-align:right;}
+
+  .legend{display:flex; gap:16px; font-size:12px; color:var(--ink-soft); margin-top:14px; flex-wrap:wrap;}
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .dot-critical{width:8px;height:8px;border-radius:50%; background:var(--rose);}
+
+  .section{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); margin-bottom:14px; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .section-head{
+    display:flex; align-items:center; justify-content:space-between; padding:16px 20px; cursor:pointer; gap:12px;
+  }
+  .section-head-left{display:flex; align-items:center; gap:12px;}
+  .section-star{width:20px;height:20px; flex-shrink:0;}
+  .section-head h4{margin:0; font-size:16.5px; font-weight:600;}
+  .section-progress{font-size:12px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;}
+  .chev{transition:transform .2s ease; color:var(--ink-faint);}
+  .section.open .chev{transform:rotate(180deg);}
+  .section-body{padding:0 20px 20px; display:none;}
+  .section.open .section-body{display:block;}
+  .fields-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:8px;}
+  .fields-grid .field.full{grid-column:1 / -1;}
+  @media(max-width:640px){.fields-grid{grid-template-columns:1fr;}}
+
+  .reminders{border-top:1px dashed var(--line); margin-top:14px; padding-top:14px;}
+  .reminders-title{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--ink-faint); margin-bottom:10px;}
+  .rem-item{display:flex; align-items:flex-start; gap:10px; padding:8px 10px; border-radius:9px; margin-bottom:6px;}
+  .rem-item:hover{background:#F0F5FA;}
+  .rem-item.critical{background:var(--rose-bg);}
+  .rem-item.done{background:var(--maw-blue-bg);}
+  .rem-item input{margin-top:3px; width:16px; height:16px; accent-color:var(--maw-blue); flex-shrink:0;}
+  .rem-text{font-size:13.5px; color:var(--ink); line-height:1.45;}
+  .rem-item.done .rem-text{color:var(--ink-soft); text-decoration:line-through; text-decoration-color:var(--ink-faint);}
+  .rem-crit-tag{font-size:10.5px; font-weight:700; color:var(--rose); background:#fff; border:1px solid var(--rose); padding:1px 6px; border-radius:100px; margin-left:6px; white-space:nowrap;}
+  .rem-req-tag{font-size:10.5px; font-weight:700; color:#fff; background:var(--night); padding:1px 6px; border-radius:100px; margin-left:6px; white-space:nowrap;}
+  .req-star{color:var(--rose); font-weight:700; margin-left:2px;}
+  .completed-badge{
+    display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--teal);
+    background:var(--teal-bg); padding:4px 10px; border-radius:100px;
+  }
+  .missing-toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--night); color:#fff;
+    padding:14px 20px; border-radius:12px; font-size:13.5px; box-shadow:0 10px 30px rgba(0,0,0,.3); z-index:100;
+    max-width:min(420px,90vw); line-height:1.5;
+  }
+  .missing-toast b{color:var(--gold);}
+  .rem-note{
+    width:calc(100% - 14px); margin:2px 6px 8px 30px; border:1px solid var(--line); border-radius:8px;
+    padding:10px 12px; font-family:inherit; font-size:13.5px; color:var(--ink); resize:vertical; min-height:42px; background:#fff;
+  }
+
+  /* plan table */
+  .plan-row{display:grid; grid-template-columns:110px 1fr 32px; gap:10px; margin-bottom:8px; align-items:start;}
+  .plan-row input[type=text]{border:1px solid var(--line); border-radius:8px; padding:9px 10px; font-family:inherit; font-size:13.5px;}
+  .plan-row .time{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+  .row-del{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:16px; padding:6px;}
+  .row-del:hover{color:var(--rose);}
+  .add-row{margin-top:4px;}
+
+  .toolbar-detail{display:flex; gap:10px; margin-top:14px;}
+
+  footer.note{text-align:center; color:var(--ink-faint); font-size:12px; margin-top:40px;}
+
+  /* ---------- ambient background stars ---------- */
+  #bgStars{position:fixed; inset:0; overflow:hidden; z-index:0; pointer-events:none;}
+  .bg-star{position:absolute; border-radius:50%; background:var(--gold);}
+  @keyframes twinkle{0%,100%{opacity:.12;} 50%{opacity:.55;}}
+  @keyframes drift{from{transform:translateY(0);} to{transform:translateY(-24px);}}
+  .topbar, .wrap{position:relative; z-index:1;}
+
+  /* ---------- level / gamification ---------- */
+  .level-badge{font-size:13px; font-weight:700; color:var(--gold-deep); margin-top:4px; text-align:right;}
+  .level-tag{
+    display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; color:var(--gold-deep);
+    background:#FFF6DA; padding:3px 9px; border-radius:100px; width:fit-content;
+  }
+  .mascot-wrap{position:relative; width:64px; height:64px; margin:0 0 4px auto;}
+  .mascot{width:100%; height:100%; animation: mascotFloat 3.2s ease-in-out infinite;}
+  .mascot.levelup{animation: mascotLevelUp .75s ease;}
+  .mascot-badge{
+    position:absolute; bottom:-2px; right:-4px; font-size:16px; background:#fff; border-radius:50%;
+    width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.18); border:2px solid var(--surface);
+  }
+  @keyframes mascotFloat{0%,100%{transform:translateY(0) rotate(-4deg);} 50%{transform:translateY(-7px) rotate(4deg);}}
+  @keyframes mascotLevelUp{
+    0%{transform:scale(1) rotate(0);}
+    25%{transform:scale(1.35) rotate(-12deg);}
+    55%{transform:scale(0.85) rotate(10deg);}
+    80%{transform:scale(1.1) rotate(-4deg);}
+    100%{transform:scale(1) rotate(0);}
+  }
+  .confetti-star{position:fixed; z-index:300; pointer-events:none; will-change:transform,opacity;
+    animation:confettiFly .9s ease-out forwards;}
+  @keyframes confettiFly{
+    0%{ transform:translate(0,0) scale(.5) rotate(0deg); opacity:1;}
+    100%{ transform:translate(var(--dx),var(--dy)) scale(1.15) rotate(180deg); opacity:0;}
+  }
+  .celebrate-toast{
+    position:fixed; top:22px; left:50%; transform:translateX(-50%); z-index:250;
+    background:linear-gradient(90deg,var(--gold),var(--teal)); color:#1B1F3A; font-weight:700; font-size:13.5px;
+    padding:12px 22px; border-radius:100px; box-shadow:0 10px 26px rgba(0,0,0,.22);
+    animation:toastPop .3s ease-out;
+  }
+  @keyframes toastPop{0%{transform:translateX(-50%) translateY(-14px); opacity:0;} 100%{transform:translateX(-50%) translateY(0); opacity:1;}}
+
+  /* ---------- full-screen level-up celebration ---------- */
+  .levelup-overlay{
+    position:fixed; inset:0; z-index:400; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:rgba(15,37,64,.38); pointer-events:none;
+  }
+  .levelup-mascot-stage{position:relative; width:180px; height:180px; display:flex; align-items:center; justify-content:center;}
+  .levelup-mascot{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
+  .levelup-mascot.spin-out{animation:levelupSpinOut .62s ease-in forwards;}
+  .levelup-mascot.pop-in{animation:levelupPopIn .55s cubic-bezier(.34,1.56,.64,1) forwards;}
+  @keyframes levelupSpinOut{
+    0%{transform:scale(1) rotate(0deg); opacity:1;}
+    100%{transform:scale(0) rotate(720deg); opacity:0;}
+  }
+  @keyframes levelupPopIn{
+    0%{transform:scale(0) rotate(-160deg); opacity:0;}
+    70%{transform:scale(1.15) rotate(10deg); opacity:1;}
+    100%{transform:scale(1) rotate(0deg); opacity:1;}
+  }
+  .levelup-caption{
+    margin-top:18px; font-family:'Fraunces',serif; font-weight:700; font-size:23px; color:#fff;
+    text-shadow:0 2px 10px rgba(0,0,0,.35); animation:toastPop .4s ease-out .5s both; text-align:center;
+  }
+  .confetti-balloon{position:fixed; z-index:390; pointer-events:none; font-size:30px; will-change:transform,opacity;
+    animation:balloonRise 2.1s ease-out forwards;}
+  @keyframes balloonRise{
+    0%{transform:translate(0,0) rotate(0deg); opacity:1;}
+    100%{transform:translate(var(--bx),-100vh) rotate(var(--br)); opacity:0;}
+  }
+
+  /* ---------- search & upcoming banner ---------- */
+  .search-bar{
+    width:100%; border:1px solid var(--line); border-radius:100px; padding:11px 18px; font-family:inherit;
+    font-size:14px; background:var(--surface); margin-bottom:4px;
+  }
+  .upcoming-banner{
+    background:var(--maw-blue-bg); border:1px solid var(--maw-lightblue); border-radius:14px;
+    padding:14px 18px; margin-bottom:16px;
+  }
+  .upcoming-title{font-weight:700; font-size:13.5px; color:var(--maw-blue-dark); margin-bottom:8px;}
+  .upcoming-item{
+    font-size:13px; color:var(--ink); padding:6px 4px; cursor:pointer; border-radius:8px;
+  }
+  .upcoming-item:hover{background:rgba(255,255,255,.6);}
+
+  /* ---------- health bubbles ---------- */
+  .health-bubbles{margin-top:8px;}
+  .bubble-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .health-bubble{
+    border:1.5px solid var(--line); background:#fff; border-radius:100px; padding:7px 14px; font-size:12.5px; font-weight:600;
+    cursor:pointer; color:var(--ink-soft); font-family:inherit;
+  }
+  .health-bubble.tone-blue{border-color:var(--maw-blue); color:var(--maw-blue);}
+  .health-bubble.tone-blue.active{background:var(--maw-blue); color:#fff;}
+  .health-bubble.tone-red{border-color:var(--maw-red); color:var(--maw-red);}
+  .health-bubble.tone-red.active{background:var(--maw-red); color:#fff;}
+  .health-bubble.tone-teal{border-color:var(--maw-teal); color:#00807A;}
+  .health-bubble.tone-teal.active{background:var(--maw-teal); color:#fff;}
+  .bubble-panels{margin-top:10px; display:flex; flex-direction:column; gap:10px;}
+  .bubble-panel{background:#fff; border:1px solid var(--line); box-shadow:var(--shadow); border-radius:10px; padding:16px 20px; font-size:13.5px; line-height:1.6;}
+  .bubble-panel b{display:block; margin-bottom:6px; color:var(--maw-blue-dark); font-size:12.5px; text-transform:uppercase; letter-spacing:.3px;}
+  .bubble-panel ul{margin:4px 0 0; padding-left:18px;}
+  .bubble-panel li{margin-bottom:4px;}
+
+  /* ---------- static field note (bubble-panel ile aynı şablon) ---------- */
+  .field-note{
+    grid-column:1/-1; background:#fff; border:1px solid var(--line); box-shadow:var(--shadow); border-radius:10px; padding:16px 20px;
+    font-size:13.5px; color:var(--ink); line-height:1.6; margin-top:14px;
+  }
+  .field-note b{display:block; margin-bottom:6px; color:var(--maw-blue-dark); font-size:12.5px; text-transform:uppercase; letter-spacing:.3px;}
+  .field-note ul{margin:4px 0 0; padding-left:18px;}
+  .field-note li{margin-bottom:4px;}
+
+  /* ---------- guide page (Make-A-Wish brand colors) ---------- */
+  .guide-page h2{color:var(--maw-blue-dark);}
+  .guide-page p{max-width:680px;}
+  .guide-subhead{
+    font-family:'Fraunces',serif; font-size:16px; font-weight:600; color:var(--maw-blue-dark);
+    margin:28px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--maw-blue);
+  }
+  .guide-section{border-left:4px solid var(--maw-blue);}
+  .guide-section .section-head h4{color:var(--maw-blue-dark);}
+  .guide-section .section-head{cursor:default;}
+
+  @media print{
+    .topbar,.filters,.dash-head .btn,.back-row,.toolbar-detail,.add-row,.row-del{display:none !important;}
+    .section-body{display:block !important;}
+    .chev{display:none;}
+    body{background:#fff;}
+    .section{box-shadow:none; break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <svg class="brand-star" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2 L14.6 9.2 L22 9.8 L16.3 14.6 L18.2 22 L12 17.8 L5.8 22 L7.7 14.6 L2 9.8 L9.4 9.2 Z" fill="#FFD54A"/>
+    </svg>
+    <div>
+      <h1>Dilek Tasarımı</h1>
+    </div>
+  </div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <button class="btn btn-ghost" id="editorBtn" style="padding:8px 14px; font-size:12.5px;">👤 Adınızı Girin</button>
+    <button class="btn btn-ghost" id="soundBtn" style="padding:8px 14px; font-size:12.5px;">🔊 Ses Açık</button>
+    <button class="btn btn-ghost" id="notifBtn" style="padding:8px 14px; font-size:12.5px;">🔔 Hatırlatıcıları Aç</button>
+    <button class="btn btn-ghost" id="guideBtn" style="padding:8px 14px; font-size:12.5px;">Saha Rehberi</button>
+    <div class="save-status"><span class="save-dot" id="saveDot"></span><span id="saveText">Hazır</span></div>
+  </div>
+</div>
+
+<div class="wrap" id="app"></div>
+
+<footer class="note">Tüm veriler gönüllü ekibiniz arasında paylaşılır. Aynı anda birden fazla kişi düzenliyorsa, en son kaydedilen değişiklik geçerli olur.</footer>
+
+<script>
+/* ================= STORAGE POLYFILL / FALLBACK ================= */
+if (!window.storage) {
+  (function() {
+    const _memStorage = {};
+    window.storage = {
+      async get(key, shared) {
+        try {
+          const val = localStorage.getItem(key);
+          return val !== null ? { value: val } : null;
+        } catch (e) {
+          return _memStorage[key] !== undefined ? { value: _memStorage[key] } : null;
+        }
+      },
+      async set(key, value, shared) {
+        try {
+          localStorage.setItem(key, value);
+        } catch (e) {
+          _memStorage[key] = value;
+        }
+      },
+      async delete(key, shared) {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {
+          delete _memStorage[key];
+        }
+      }
+    };
+  })();
+}
+
+/* ================= DATA MODEL ================= */
+const SECTION_ORDER = ['ozet','gunortam','atmosfer','surpriz','gorev','plan'];
+
+/* ================= SAĞLIK REHBERİ VERİ MODELİ ================= */
+const GOLDEN_RULES = [
+  'Mekân neresi olursa olsun (otel, stüdyo, park, sinema vb.), alanın hijyen standartlarına uygunluğu ve havalandırması önceden doğrulanmalıdır.',
+  '2 saatlik bir programa çok sayıda sürpriz sığdırmaya çalışmak çocuğu yorabilir. Programı 1 veya 2 ana odak üzerine kurun; akışı çocuğun enerjisine ve ilgisine göre esnetin.',
+];
+
+const MEDIA_RULES = [
+  'Çocuk yorgun, üzgün veya medikal müdahale anındayken fotoğraf/video çekimi yapılmamalıdır.',
+  'Tıbbi cihazlar, beden açıklığı veya hassas durumlar kadraja alınmamalıdır.',
+  'Çocuk kameradan rahatsız oluyorsa çekim yapılmamalıdır (PR izni olsa bile); çekimler yalnızca çocuk doğal ve rahat hissettiğinde, zorlanmadan ve hissettirmeden yapılmalıdır.',
+];
+
+const FIELD_CHECKLIST = [
+  {label:'Hijyen Ürünleri', text:'Dezenfektan / kolonya ve ıslak mendilinizi yanınıza aldığınızdan emin olun.'},
+  {label:'Maske', text:'İhtiyaç halinde kullanmak üzere yedekli tıbbi maske bulundurun.'},
+  {label:'Böcek / Kene İlacı', text:'Ormanlık veya çim alanlarda gerçekleşecek dileklerde uygun koruyucu sprey bulundurun.'},
+  {label:'Su', text:'Özellikle yaz aylarında hem ekip hem çocuk/aile için yanınızda yeterli su bulundurun.'},
+  {label:'Güneş Koruması (Aileye Hatırlatma)', text:'Özellikle diyabet ve güneş hassasiyeti olan çocuklarımız için aileye yanında şapka ve güneş gözlüğü getirmesini önceden hatırlatın.'},
+];
+
+const MASK_NOTE = 'Bu gruptaki çocuklarımız ve çocukla 2 metreden yakın temas kuracak tüm ekibin tıbbi maske takması zorunludur.';
+
+const GROUPS = {
+  a: {
+    chipLabel:'Hematoloji, Onkoloji & İmmünoloji', mask:true,
+    tips:[
+      'Bu gruptaki tüm çocuklarımız ve çocukla 2 metreden yakın temas kuracak tüm ekibin maske takması zorunludur.',
+      'Nöroblastom ve Osteosarkom (kemik kanserleri) tanı gruplarında tekerlekli sandalye erişimi ve engelsiz alan kurgusu şarttır.',
+      'İnsan trafiğinin ve sirkülasyonunun düşük olduğu, iyi havalandırılan veya açık ama kesinlikle gölgeli alanlar tercih edilmelidir. Kalabalık AVM gibi kapalı ve yoğun alanlardan kaçınılmalıdır.',
+      'Çocuğumuzun enerjisi aniden düşebileceğinden, akışın ortasına 15-20 dakikalık esnek mola alanları dahil edilmelidir.',
+    ]
+  },
+  b: {
+    chipLabel:'Organ Nakli Geçiren Çocuklar', mask:true,
+    tips:[
+      'Çocuğumuzun ve çocukla 2 metreden yakın temas kuracak tüm ekibin tıbbi maske takması zorunludur.',
+      'Nakil sonrası bağışıklık baskılandığı için mekânın hijyenik koşulları, havalandırması ve kalabalıktan uzak oluşu kritik önem taşır.',
+    ]
+  },
+  c: {
+    chipLabel:'Romatoloji & Kas-İskelet Sistemik Hastalıklar', mask:false,
+    tips:[
+      'DMD, Miyopati, Friedreich Ataksisi ve Spina Bifida tanı gruplarında alanın tamamen tekerlekli sandalye kullanımına uygun, rampa erişimli ve engelsiz olması zorunludur.',
+      'Lupus ve vaskülit hastalarında doğrudan güneş ışığı atağı tetikleyebilir. Dış mekân kurgularında alanın %100 gölgede olması ve geçiş rotalarının tenteli alanlardan seçilmesi gerekir.',
+      'Soğuk hava ve klimanın doğrudan üflemesi eklem kilitlenmelerine ve ağrıya yol açar. İç mekânda sıcaklık sabit (oda sıcaklığında) tutulmalıdır.',
+      'Oturmalı kurgular planlanmalı; atölye veya oyun materyalleri yumuşak ve eklemleri yormayan yapıda seçilmelidir.',
+    ]
+  },
+  d: {
+    chipLabel:'Nöroloji', mask:false,
+    tips:[
+      'Serebral Palsi, Rett Sendromu, Lökodistrofi, Alpers ve Leigh Sendromu tanı gruplarında alanın tekerlekli sandalye ve özel puset erişimine %100 uygun olması gerekmektedir.',
+      'Epilepsi geçmişinde çakar/flaş ışıklar, stroboskop ve aniden yükselen bas sesler nöbeti tetikleyebilir. Aydınlatma sabit ve yumuşak, ses seviyesi her zaman orta-düşük ayarda tutulmalıdır.',
+      'Uyaranları işleme süresi farklılık gösterebilir. Çocuğa soru sorulduğunda veya bir etkinlik yapıldığında acele ettirilmeden geniş zaman boşlukları bırakılmalıdır.',
+    ]
+  },
+  e: {
+    chipLabel:'Kardiyoloji', mask:false,
+    tips:[
+      'Ani yüksek sesler, konfeti patlamaları veya arkadan aniden çıkan karakterler ritim bozukluğunu tetikleyebilir. Sürprizler kademeli, sakin ve çocuğun görerek yaklaşacağı şekilde tasarlanmalıdır.',
+      'Koşma, yarışma veya uzun yürüme içeren aktiviteler yerine; çocuğun keyifle izleyici olabileceği (sihirbazlık, tiyatro, özel gösteriler vb.) kurgular yapılmalıdır.',
+      'Kalp pili veya medikal cihazı olan çocuklar için hoparlör ve ses sistemleri çocuğun oturduğu yerden en az 2-3 metre uzakta konumlandırılmalıdır.',
+    ]
+  },
+  f: {
+    chipLabel:'Nefroloji, Gastroenteroloji & Diyabet', mask:false,
+    tips:[
+      'Diyaliz, TPN ve kronik yetmezlik grubunda alanın en fazla 10-15 saniye yürüme mesafesinde son derece temiz ve özel bir WC bulunmalıdır.',
+      'Diyabet grubunda aşırı sıcak/nemli havalarda uzun dış mekân rotalarından kaçınılmalı; kan şekerini aniden düşürebilecek yüksek eforlu aktiviteler yerine dengeli bir tempo tercih edilmelidir.',
+    ]
+  },
+};
+
+const DISEASE_OPTIONS = [
+  {group:'A. Hematoloji, Onkoloji & İmmünoloji', items:['Lösemi','Kanser (genel)','Aplastik Anemi','Kök Hücre / Kemik İliği Nakli (ilk 1 yıl)','SCID (Ağır Kombine İmmün Yetmezlik)','Primer Bağışıklık Yetmezliği','Nöroblastom','Osteosarkom']},
+  {group:'B. Organ Nakli (ilk 1 yıl)', items:['Organ Nakli — Böbrek','Organ Nakli — Karaciğer','Organ Nakli — Kalp','Organ Nakli — Bağırsak']},
+  {group:'C. Romatoloji & Kas-İskelet Sistemik Hastalıklar', items:['Lupus','Vaskülit','Jüvenil Artrit','Duchenne Kas Distrofisi (DMD)','Miyopati','Friedreich Ataksisi','Spina Bifida']},
+  {group:'D. Nöroloji', items:['Serebral Palsi','Rett Sendromu','Lökodistrofi','Alpers Sendromu','Leigh Sendromu','Epilepsi']},
+  {group:'E. Kardiyoloji', items:['Kalp Yetmezliği','Kalp Pili','Pulmoner Hipertansiyon']},
+  {group:'F. Nefroloji, Gastroenteroloji & Diyabet', items:['Diyaliz','TPN (Total Parenteral Nutrisyon)','Kronik Böbrek Yetmezliği','Diyabet']},
+  {group:'Diğer', items:['Diğer / Belirtilmemiş']},
+];
+
+const DISEASE_MAP = {
+  'Lösemi':['a'], 'Kanser (genel)':['a'], 'Aplastik Anemi':['a'], 'Kök Hücre / Kemik İliği Nakli (ilk 1 yıl)':['a'],
+  'SCID (Ağır Kombine İmmün Yetmezlik)':['a'], 'Primer Bağışıklık Yetmezliği':['a'],
+  'Nöroblastom':['a'], 'Osteosarkom':['a'],
+  'Organ Nakli — Böbrek':['b'], 'Organ Nakli — Karaciğer':['b'], 'Organ Nakli — Kalp':['b'], 'Organ Nakli — Bağırsak':['b'],
+  'Lupus':['c'], 'Vaskülit':['c'], 'Jüvenil Artrit':['c'],
+  'Duchenne Kas Distrofisi (DMD)':['c'], 'Miyopati':['c'], 'Friedreich Ataksisi':['c'], 'Spina Bifida':['c','d'],
+  'Serebral Palsi':['d'], 'Rett Sendromu':['d'], 'Lökodistrofi':['d'], 'Alpers Sendromu':['d'], 'Leigh Sendromu':['d'], 'Epilepsi':['d'],
+  'Kalp Yetmezliği':['e'], 'Kalp Pili':['e'], 'Pulmoner Hipertansiyon':['e'],
+  'Diyaliz':['f'], 'TPN (Total Parenteral Nutrisyon)':['f'], 'Kronik Böbrek Yetmezliği':['f'], 'Diyabet':['f'],
+};
+
+function computeChips(diseaseName){
+  const chips = [{id:'genel', label:'Genel Altın Kurallar', tips:GOLDEN_RULES, tone:'blue'}];
+  const tags = DISEASE_MAP[diseaseName];
+  if(tags && tags.length){
+    if(tags.some(t=>GROUPS[t] && GROUPS[t].mask)){
+      chips.push({id:'mask', label:'Maske Zorunlu', tips:[MASK_NOTE], tone:'red'});
+    }
+    tags.forEach(t=>{
+      if(GROUPS[t]) chips.push({id:t, label:GROUPS[t].chipLabel, tips:GROUPS[t].tips, tone:'teal'});
+    });
+  }
+  return chips;
+}
+
+function renderHealthBubbles(container, diseaseName){
+  const chipsData = computeChips(diseaseName);
+  container.innerHTML = `
+    <div class="bubble-row">${chipsData.map(c=>`<button type="button" class="health-bubble tone-${c.tone}" data-cid="${c.id}">${c.label}</button>`).join('')}</div>
+    <div class="bubble-panels"></div>
+  `;
+  const panelsHost = container.querySelector('.bubble-panels');
+  container.querySelectorAll('.health-bubble').forEach(btn=>{
+    btn.onclick = ()=>{
+      const cid = btn.dataset.cid;
+      const existing = panelsHost.querySelector(`[data-panel="${cid}"]`);
+      if(existing){ existing.remove(); btn.classList.remove('active'); return; }
+      const c = chipsData.find(x=>x.id===cid);
+      const panel = document.createElement('div');
+      panel.className = 'bubble-panel';
+      panel.dataset.panel = cid;
+      panel.innerHTML = `<b>${c.label}</b><ul>${c.tips.map(t=>`<li>${t}</li>`).join('')}</ul>`;
+      panelsHost.appendChild(panel);
+      btn.classList.add('active');
+    };
+  });
+}
+
+const GUIDE_SECTIONS = [
+  { title:'A. Çocuk Hematolojisi, Onkoloji & İmmünoloji', sub:'Kanser hastalıkları, lösemi, aplastik anemi, kök hücre / iliği nakli, SCID, primer bağışıklık yetmezlikleri, nöroblastom, osteosarkom vb.', items: GROUPS.a.tips },
+  { title:'B. Organ Nakli Geçiren Çocuklar', sub:'Böbrek, karaciğer, kalp veya bağırsak nakli — nakil sonrası ilk 1 yıl.', items: GROUPS.b.tips },
+  { title:'C. Çocuk Romatolojisi & Kas-İskelet Sistemik Hastalıklar', sub:'Lupus, vaskülit, jüvenil artrit, Duchenne kas distrofisi (DMD), miyopati, Friedreich ataksisi, spina bifida vb.', items: GROUPS.c.tips },
+  { title:'D. Çocuk Nörolojisi', sub:'Serebral palsi, Rett sendromu, lökodistrofi, Alpers, Leigh sendromu, epilepsi, spina bifida vb.', items: GROUPS.d.tips },
+  { title:'E. Çocuk Kardiyolojisi', sub:'Kalp yetmezliği, kalp pili, pulmoner hipertansiyon vb.', items: GROUPS.e.tips },
+  { title:'F. Çocuk Nefrolojisi, Gastroenteroloji & Diyabet', sub:'Diyaliz, TPN, kronik yetmezlikler, diyabet.', items: GROUPS.f.tips },
+];
+
+function renderGuide(){
+  viewingGuide = true;
+  currentId = null;
+  app.innerHTML = `
+    <div class="back-row"><button class="link-btn" id="guideBack">← Panoya Dön</button></div>
+    <div class="dash-head guide-page">
+      <div>
+        <h2 class="display">Dilek Tasarımcıları İçin Saha Rehberi</h2>
+        <p>Bu rehber; dilek çocuklarımızın medikal durumlarına duyarlı, güvenli, konforlu ve unutulmaz bir dilek günü kurgulamanız için hazırlanmıştır. Sahadaki her adımımızda çocuklarımızın sağlığı ve mutluluğu önceliğimizdir.</p>
+        <input type="text" id="guideSearch" class="search-bar" placeholder="Hastalık adı yazın (örn. Diyabet, Epilepsi, Lupus, Kalp Pili…)" style="max-width:480px;">
+      </div>
+    </div>
+    <div id="guideHost"></div>
+    <div id="guideEmpty" style="display:none; text-align:center; color:var(--ink-soft); padding:30px 0;">Aramanızla eşleşen bir sonuç bulunamadı.</div>
+  `;
+  document.getElementById('guideBack').onclick = ()=>{ viewingGuide=false; renderDashboard(); };
+  const host = document.getElementById('guideHost');
+
+  const groupHeader = document.createElement('h3');
+  groupHeader.className = 'guide-subhead';
+  groupHeader.textContent = 'Tanı Gruplarına Göre Hassasiyetler ve Saha Yönetimi';
+  host.appendChild(groupHeader);
+
+  GUIDE_SECTIONS.forEach(sec=>{
+    const card = document.createElement('div');
+    card.className = 'section open guide-section';
+    card.dataset.search = (sec.title+' '+(sec.sub||'')+' '+sec.items.join(' ')).toLocaleLowerCase('tr');
+    card.innerHTML = `
+      <div class="section-head" style="cursor:default;"><div class="section-head-left"><h4>${sec.title}</h4></div></div>
+      <div class="section-body" style="display:block;">
+        ${sec.sub ? `<p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 10px;font-style:italic;">${sec.sub}</p>` : ''}
+        <ul style="margin:0;padding-left:20px;line-height:1.65;font-size:13.5px;">${sec.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>`;
+    host.appendChild(card);
+  });
+
+  const extraHeader = document.createElement('h3');
+  extraHeader.className = 'guide-subhead';
+  extraHeader.textContent = 'Her Dilek İçin Altın Kurallar';
+  host.appendChild(extraHeader);
+  const rulesCard = document.createElement('div');
+  rulesCard.className = 'section open guide-section';
+  rulesCard.dataset.search = ('Her Dilek İçin Altın Kurallar '+GOLDEN_RULES.join(' ')).toLocaleLowerCase('tr');
+  rulesCard.innerHTML = `<div class="section-body" style="display:block; padding-top:20px;">
+    <ul style="margin:0;padding-left:20px;line-height:1.65;font-size:13.5px;">${GOLDEN_RULES.map(i=>`<li>${i}</li>`).join('')}</ul>
+  </div>`;
+  host.appendChild(rulesCard);
+
+  const mediaHeader = document.createElement('h3');
+  mediaHeader.className = 'guide-subhead';
+  mediaHeader.textContent = 'Medya ve Fotoğraf Etik Kuralları';
+  host.appendChild(mediaHeader);
+  const mediaCard = document.createElement('div');
+  mediaCard.className = 'section open guide-section';
+  mediaCard.dataset.search = ('Medya ve Fotoğraf Etik Kuralları '+MEDIA_RULES.join(' ')).toLocaleLowerCase('tr');
+  mediaCard.innerHTML = `<div class="section-body" style="display:block; padding-top:20px;">
+    <ul style="margin:0;padding-left:20px;line-height:1.65;font-size:13.5px;">${MEDIA_RULES.map(i=>`<li>${i}</li>`).join('')}</ul>
+  </div>`;
+  host.appendChild(mediaCard);
+
+  const checklistHeader = document.createElement('h3');
+  checklistHeader.className = 'guide-subhead';
+  checklistHeader.textContent = 'Saha Hatırlatma Köşesi (Gönüllü Çantası Check-List)';
+  host.appendChild(checklistHeader);
+  const checklistCard = document.createElement('div');
+  checklistCard.className = 'section open guide-section';
+  checklistCard.dataset.search = ('Saha Hatırlatma Köşesi Gönüllü Çantası Check-List '+FIELD_CHECKLIST.map(i=>i.label+' '+i.text).join(' ')).toLocaleLowerCase('tr');
+  checklistCard.innerHTML = `<div class="section-body" style="display:block; padding-top:20px;">
+    <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 10px;">Saha çalışmasına çıkmadan önce çantanızda ve planınızda bulunması gerekenler:</p>
+    <ul style="margin:0;padding-left:20px;line-height:1.7;font-size:13.5px;">${FIELD_CHECKLIST.map(i=>`<li><b>${i.label}:</b> ${i.text}</li>`).join('')}</ul>
+  </div>`;
+  host.appendChild(checklistCard);
+
+  const searchInput = document.getElementById('guideSearch');
+  const emptyMsg = document.getElementById('guideEmpty');
+  searchInput.oninput = ()=>{
+    const q = searchInput.value.toLocaleLowerCase('tr').trim();
+    let anyVisible = false;
+    host.querySelectorAll('.guide-section').forEach(card=>{
+      const match = !q || (card.dataset.search||'').includes(q);
+      card.style.display = match ? '' : 'none';
+      if(match) anyVisible = true;
+    });
+    host.querySelectorAll('.guide-subhead').forEach(h=> h.style.display = q ? 'none' : '');
+    emptyMsg.style.display = (q && !anyVisible) ? 'block' : 'none';
+  };
+}
+
+/* ================= ŞABLONLAR ================= */
+const TEMPLATES = {
+  ev: {
+    label: 'Evde', icon:'🏠',
+    sections: {
+      ozet: {
+        title: 'Dileğin Özeti',
+        fields: [
+          {id:'ad', label:'Dilek Çocuğunun Adı', type:'text'},
+          {id:'yas', label:'Yaşı', type:'text'},
+          {id:'dilek', label:'Dileği', type:'textarea', full:true},
+          {id:'tema', label:'Dileğin Teması', type:'text', placeholder:'Örn. Uzay, prensesler, süper kahramanlar, doğa'},
+          {id:'kisilik', label:'Çocuğun Kişiliği', type:'textarea', placeholder:'Neşeli, utangaç, konuşkan, hayalperest vb.', full:true},
+          {id:'hastalik', label:'Çocuğun Mücadele Ettiği Hastalık', type:'select-grouped', optgroups: DISEASE_OPTIONS, full:true},
+        ],
+        reminders:[
+          {id:'r1', text:'Çocuğun sağlık durumu ve fiziksel kısıtları (hareket kısıtı vb.) öğrenildi mi?', note:true, notePlaceholder:'Varsa fiziksel kısıtları veya dikkat edilmesi gereken durumları kısaca açıklayın (Örn. bacağında platin varsa hareketli oyunlar oynanmamalı, yorucu etkinliklerden kaçınılmalı)'},
+        ]
+      },
+      gunortam: {
+        title: 'Dilek Günü ve Ev Ortamı',
+        fields: [
+          {id:'tarih', label:'Planlanan Tarih ve Saat', type:'text', placeholder:'Varsa alternatif tarih/saatleri de yazınız', full:true},
+          {id:'kesin_tarih', label:'Dilek Günü (Anımsatıcı İçin Tarih)', type:'date', full:true},
+          {id:'kardes', label:'Evde Başka Kardeş/Çocuk Var mı?', type:'textarea', placeholder:'Varsa yaşlarını ve onlar için neler planladığınızı yazın'},
+          {id:'altplan', label:'B Planı', type:'textarea', placeholder:'Planlandığı gibi olmazsa denenecek somut alternatifler — Örn. farklı bir aktiviteye geçilir, alan/oda değiştirilir, süre kısaltılır (tarih ertelemek son çare olmalı)', full:true},
+        ],
+        reminders:[
+          {id:'r1', text:'Dilek günü tarih ve saati için aileden teyit alındı mı?', critical:true, note:true, notePlaceholder:'Uygun değilse nedenini (tedavi günü, değişen sağlık koşulları, yatış vs.) ve alternatif saatleri yazınız.'},
+          {id:'r2', text:'Evin adresi/kat, daire bilgisi teyit edildi mi?'},
+          {id:'r3', text:'Dilek çocuk için sürpriz olacaksa, gün teyidi alınırken ailenin bunu çocuğa söylememesi gerektiği hatırlatıldı mı?'},
+        ]
+      },
+      atmosfer: {
+        title: 'Atmosfer ve Deneyim Tasarımı',
+        fields: [
+          {id:'giris', label:'Girişte Süsleme / Sürpriz Fikirleri', type:'textarea', placeholder:'Örn. Balonlar, kırmızı halı, yazılı pankart, ışıklandırma', full:true},
+          {id:'duzen', label:'Oda / Alan Düzeni', type:'textarea', placeholder:'Örn. Oturma düzeni, karşılama köşesi, sahne alanı'},
+          {id:'renk', label:'Renk Paleti', type:'text', placeholder:'Örn. Pastel tonlar, çocuğun sevdiği renkler'},
+          {id:'muzik', label:'Müzik / Sesler', type:'text', placeholder:'Örn. Çocuğun sevdiği şarkılar, tema müziği'},
+          {id:'kostum', label:'Kostüm / Aksesuar Fikirleri', type:'textarea', placeholder:'Örn. Karakter kostümü, taç, pelerin'},
+          {id:'medya', label:'Fotoğraf / Video Çekim Planı', type:'textarea', placeholder:'Kim çekecek?', staticNote: MEDIA_RULES},
+          {id:'pr_izni', label:'PR İzni (Fotoğraf/Video Kullanım İzni)', type:'select', options:['Var','Yok']},
+        ],
+        reminders:[
+          {id:'r1', text:'Dekor ve malzemeler için önce sponsor/bağış imkânı değerlendirildi mi?'},
+          {id:'r2', text:'Kullanılacak dekor ve malzemelerde (balon, çiçek vb.) alerji riski göz önünde bulunduruldu mu?'},
+          {id:'r3', text:'Kostüm/aksesuar bedenleri çocuğa uygun mu kontrol edildi mi?'},
+          {id:'r4', text:'Müzik/ses içeriği çocuğun yaşına uygun mu? (Irkçı, cinsiyetçi, şiddet ya da küfür içeren ifadeler bulunmamalı)'},
+        ]
+      },
+      surpriz: {
+        title: 'Sürpriz ve Duygusal Bağ',
+        fields: [
+          {id:'surpriz', label:'Planlanan Özel Sürpriz', type:'textarea', placeholder:'Mektup, video, kostümlü karakter, şarkı, sembolik hediye vb.', full:true},
+          {id:'ozel', label:'Çocuğun Kendini Özel Hissetmesini Sağlayacak Detaylar', type:'textarea', placeholder:'Örn. Adının bir yerde yazılı olması, ona özel bir şarkı söylenmesi, kahraman gibi karşılanması, herkesin alkışla karşılaması', full:true},
+        ],
+        reminders:[
+          {id:'r1', text:'Dilek çocuk için sürpriz olacaksa, gün teyidi alınırken ailenin bunu çocuğa söylememesi gerektiği hatırlatıldı mı?'},
+        ]
+      },
+      gorev: {
+        title: 'Görev Dağılımı',
+        fields: [
+          {id:'aile', label:'Aile ile İletişim', type:'text'},
+          {id:'organizasyon', label:'Genel Organizasyon Sorumlusu', type:'text'},
+          {id:'cocuk', label:'Çocukla Birebir İlgilenecek Kişi/Kişiler', type:'text'},
+          {id:'kardes', label:'Kardeş Varsa İlgilenecek Kişi/Kişiler', type:'text'},
+          {id:'medya', label:'Fotoğraf / Video Çekimi', type:'text'},
+          {id:'ulasim', label:'Ulaşım Sorumlusu / Araçlı Gönüllü', type:'text'},
+          {id:'sponsor', label:'(Varsa) Sponsor / Ek Destek İletişimi', type:'text'},
+        ],
+        reminders:[
+          {id:'r1', text:'Araçlı gönüllünün plakası Nurcan\'a özelden iletildi mi?', critical:true},
+        ]
+      },
+      plan: {
+        title:'Detaylı Gün Planı',
+        isPlan:true,
+      }
+    }
+  },
+  disarida: {
+    label:'Dışarıda', icon:'🌳',
+    sections:{
+      ozet: {
+        title: 'Dileğin Özeti',
+        fields: [
+          {id:'ad', label:'Dilek Çocuğunun Adı', type:'text'},
+          {id:'yas', label:'Yaşı', type:'text'},
+          {id:'dilek', label:'Dileği', type:'textarea', full:true},
+          {id:'tema', label:'Dileğin Teması', type:'text', placeholder:'Örn. Uzay, prensesler, süper kahramanlar, doğa'},
+          {id:'kisilik', label:'Çocuğun Kişiliği', type:'textarea', placeholder:'Neşeli, utangaç, konuşkan, hayalperest vb.', full:true},
+          {id:'hastalik', label:'Çocuğun Mücadele Ettiği Hastalık', type:'select-grouped', optgroups: DISEASE_OPTIONS, full:true},
+        ],
+        reminders:[
+          {id:'r1', text:'Çocuğun sağlık durumu ve fiziksel kısıtları (kalabalıkta olma/olmama durumu, hareket kısıtı vb.) öğrenildi mi?', note:true, notePlaceholder:'Varsa fiziksel kısıtları veya dikkat edilmesi gereken durumları kısaca açıklayın (Örn. bacağında platin varsa hareketli oyunlar oynanmamalı, yorucu etkinliklerden kaçınılmalı)'},
+        ]
+      },
+      gunortam: {
+        title: 'Dilek Günü ve Mekân Bilgileri',
+        fields: [
+          {id:'tarih', label:'Planlanan Tarih ve Saat', type:'text', placeholder:'Alternatif tarihleri ekleyiniz', full:true},
+          {id:'kesin_tarih', label:'Dilek Günü (Anımsatıcı İçin Tarih)', type:'date', full:true},
+          {id:'mekan', label:'Mekân', type:'text', placeholder:'Örn. Şehir parkı, oyun salonu, sinema'},
+          {id:'cocukdostu', label:'Mekânın Çocuk Dostu Olma Durumu', type:'textarea', placeholder:'Erişilebilirlik, güvenlik, hijyen koşulları vb.'},
+          {id:'saglik', label:'Sağlık Açısından Dikkat Edilmesi Gerekenler', type:'textarea', staticNote: FIELD_CHECKLIST.map(i=>`<b>${i.label}:</b> ${i.text}`)},
+          {id:'altplan', label:'B Planı', type:'textarea', placeholder:'Planlandığı gibi olmazsa denenecek somut alternatifler — Örn. farklı bir aktiviteye geçilir, kapalı alana taşınır, süre kısaltılır (tarih ertelemek son çare olmalı)', full:true},
+          {id:'katilimci', label:'Tüm Katılımcıların Ad-Soyadları', type:'textarea', placeholder:'Ad soyad olacak şekilde tüm katılımcıları yazın', full:true},
+        ],
+        reminders:[
+          {id:'r1', text:'Dilek günü tarih ve saati için aileden teyit alındı mı?', critical:true, note:true, notePlaceholder:'Uygun değilse nedenini (tedavi günü, değişen sağlık koşulları, yatış vs.) ve alternatif saatleri yazınız.'},
+          {id:'r2', text:'Mekânla rezervasyon/izin yazılı ya da sözlü olarak teyit edildi mi?'},
+          {id:'r3', text:'Mekânın erişilebilirliği (tekerlekli sandalye, asansör vb.) kontrol edildi mi?'},
+          {id:'r4', text:'Hava durumu, dilek gününe yakın bir tarihte tekrar kontrol edildi mi?'},
+          {id:'r5', text:'Kalabalık yoğunluğu ve güvenlik önlemleri değerlendirildi mi?'},
+          {id:'r6', text:'Dilek çocuk için sürpriz olacaksa, gün teyidi alınırken ailenin bunu çocuğa söylememesi gerektiği hatırlatıldı mı?'},
+        ]
+      },
+      atmosfer: {
+        title: 'Atmosfer ve Deneyim Tasarımı',
+        fields: [
+          {id:'susleme', label:'Mekân Süsleme / Düzenleme Fikirleri', type:'textarea', placeholder:'Örn. Balonlar, pankart, ışıklandırma, karşılama alanı', full:true},
+          {id:'renk', label:'Renk Paleti', type:'text', placeholder:'Örn. Pastel tonlar, çocuğun sevdiği renkler'},
+          {id:'muzik', label:'Müzik / Sesler', type:'text', placeholder:'Örn. Çocuğun sevdiği şarkılar, tema müziği'},
+          {id:'kostum', label:'Kostüm / Aksesuar Fikirleri', type:'textarea', placeholder:'Örn. Karakter kostümü, taç, pelerin'},
+          {id:'medya', label:'Fotoğraf / Video Çekim Planı', type:'textarea', placeholder:'Kim çekecek?', staticNote: MEDIA_RULES},
+          {id:'pr_izni', label:'PR İzni (Fotoğraf/Video Kullanım İzni)', type:'select', options:['Var','Yok']},
+        ],
+        reminders:[
+          {id:'r1', text:'Dekor ve malzemeler için önce sponsor/bağış imkânı değerlendirildi mi?'},
+          {id:'r2', text:'Kullanılacak dekor ve malzemelerde (balon, çiçek vb.) alerji riski göz önünde bulunduruldu mu?'},
+          {id:'r3', text:'Kostüm/aksesuar bedenleri çocuğa uygun mu kontrol edildi mi?'},
+        ]
+      },
+      surpriz: {
+        title: 'Sürpriz ve Duygusal Bağ',
+        fields: [
+          {id:'surpriz', label:'Planlanan Özel Sürpriz', type:'textarea', placeholder:'Mektup, video, kostümlü karakter, şarkı, sembolik hediye vb.', full:true},
+          {id:'ozel', label:'Çocuğun Kendini Özel Hissetmesini Sağlayacak Detaylar', type:'textarea', placeholder:'Örn. Adının bir yerde yazılı olması, ona özel bir şarkı söylenmesi, kahraman gibi karşılanması, herkesin alkışla karşılaması', full:true},
+        ],
+        reminders:[
+          {id:'r1', text:'Dilek çocuk için sürpriz olacaksa, gün teyidi alınırken ailenin bunu çocuğa söylememesi gerektiği hatırlatıldı mı?'},
+        ]
+      },
+      gorev: {
+        title: 'Görev Dağılımı',
+        fields: [
+          {id:'aile', label:'Aile ile İletişim', type:'text'},
+          {id:'mekaniletisim', label:'Mekân Bulunması / Mekânla İletişim', type:'text'},
+          {id:'organizasyon', label:'Genel Organizasyon Sorumlusu', type:'text'},
+          {id:'cocuk', label:'Çocukla Birebir İlgilenecek Kişi/Kişiler', type:'text'},
+          {id:'kardes', label:'Kardeş Varsa İlgilenecek Kişi/Kişiler', type:'text'},
+          {id:'medya', label:'Fotoğraf / Video Çekimi', type:'text'},
+          {id:'ulasim', label:'Ulaşım Sorumlusu / Araçlı Gönüllü', type:'text'},
+          {id:'sponsor', label:'(Varsa) Sponsor / Destekçi İletişimi', type:'text'},
+        ],
+        reminders:[
+          {id:'r1', text:'Araçlı gönüllünün plakası Nurcan\'a özelden iletildi mi?', critical:true},
+          {id:'r2', text:'Mekân bilgisi (adres, buluşma noktası vb.) aileyle paylaşıldı mı?'},
+        ]
+      },
+      plan: {
+        title:'Detaylı Gün Planı',
+        isPlan:true,
+      }
+    }
+  },
+  hastane: {
+    label:'Hastane', icon:'🏥',
+    sections:{
+      ozet: {
+        title: 'Dileğin Özeti',
+        fields: [
+          {id:'ad', label:'Dilek Çocuğunun Adı', type:'text'},
+          {id:'yas', label:'Yaşı', type:'text'},
+          {id:'dilek', label:'Dileği', type:'textarea', full:true},
+          {id:'tema', label:'Dileğin Teması', type:'text', placeholder:'Örn. Uzay, prensesler, süper kahramanlar, doğa'},
+          {id:'kisilik', label:'Çocuğun Kişiliği', type:'textarea', placeholder:'Neşeli, utangaç, konuşkan, hayalperest vb.', full:true},
+          {id:'hastalik', label:'Çocuğun Mücadele Ettiği Hastalık', type:'select-grouped', optgroups: DISEASE_OPTIONS, full:true},
+        ],
+        reminders:[
+          {id:'r1', text:'Çocuğun sağlık durumu ve fiziksel kısıtları (kalabalıkta olma/olmama durumu, hareket kısıtı vb.) öğrenildi mi?', note:true, notePlaceholder:'Varsa fiziksel kısıtları veya dikkat edilmesi gereken durumları kısaca açıklayın (Örn. bacağında platin varsa hareketli oyunlar oynanmamalı, yorucu etkinliklerden kaçınılmalı)'},
+        ]
+      },
+      gunortam: {
+        title: 'Dilek Günü ve Hastane Ortamı',
+        fields: [
+          {id:'tarih', label:'Planlanan Tarih ve Saat', type:'text', placeholder:'Varsa alternatif tarih/saatleri de yazınız', full:true},
+          {id:'kesin_tarih', label:'Dilek Günü (Anımsatıcı İçin Tarih)', type:'date', full:true},
+          {id:'altplan', label:'B Planı', type:'textarea', placeholder:'Planlandığı gibi olmazsa denenecek somut alternatifler — Örn. farklı bir aktiviteye geçilir, süre kısaltılır (tarih ertelemek son çare olmalı)', full:true},
+        ],
+        reminders:[
+          {id:'r1', text:'Dilek günü tarih ve saati için aileden teyit alındı mı?', critical:true, note:true, notePlaceholder:'Uygun değilse nedenini (tedavi günü, değişen sağlık koşulları, yatış vs.) ve alternatif saatleri yazınız.'},
+          {id:'r2', text:'Tedavi durumunda değişiklik olup olmadığı ve doktor/hemşireden oda girişi izni alınıp alınmadığı teyit edildi mi?', critical:true, note:true, notePlaceholder:'Gün, kat veya nöbetçi hemşire değişikliklerine göre giriş izni değişebilir; dilek gününe yakın tarihte tekrar kontrol edin'},
+          {id:'r3', text:'Kat ve oda numarası teyit edildi mi?'},
+          {id:'r4', text:'Dilek çocuk için sürpriz olacaksa, gün teyidi alınırken ailenin bunu çocuğa söylememesi gerektiği hatırlatıldı mı?'},
+        ]
+      },
+      atmosfer: {
+        title: 'Atmosfer ve Deneyim Tasarımı',
+        fields: [
+          {id:'giris', label:'Oda Süsleme / Sürpriz Fikirleri', type:'textarea', placeholder:'Örn. Balonlar, pankart, küçük süsler (hastane kurallarına uygun olmalı)', full:true},
+          {id:'renk', label:'Renk Paleti', type:'text', placeholder:'Örn. Pastel tonlar, çocuğun sevdiği renkler'},
+          {id:'muzik', label:'Müzik / Sesler', type:'text', placeholder:'Örn. Çocuğun sevdiği şarkılar, tema müziği'},
+          {id:'kostum', label:'Kostüm / Aksesuar Fikirleri', type:'textarea', placeholder:'Örn. Karakter kostümü, taç, pelerin (hastane kurallarına uygun olmalı)'},
+          {id:'medya', label:'Fotoğraf / Video Çekim Planı', type:'textarea', placeholder:'Kim çekecek?', staticNote: MEDIA_RULES},
+          {id:'pr_izni', label:'PR İzni (Fotoğraf/Video Kullanım İzni)', type:'select', options:['Var','Yok']},
+        ],
+        reminders:[
+          {id:'r1', text:'Dekor ve malzemeler için önce sponsor/bağış imkânı değerlendirildi mi?'},
+          {id:'r2', text:'Kostüm/aksesuar ve dekorun hastane hijyen/güvenlik kurallarına ve alerji risklerine uygunluğu kontrol edildi mi?'},
+        ]
+      },
+      surpriz: {
+        title: 'Sürpriz ve Duygusal Bağ',
+        fields: [
+          {id:'surpriz', label:'Planlanan Özel Sürpriz', type:'textarea', placeholder:'Mektup, video, kostümlü karakter, şarkı, sembolik hediye vb.', full:true},
+          {id:'ozel', label:'Çocuğun Kendini Özel Hissetmesini Sağlayacak Detaylar', type:'textarea', placeholder:'Örn. Adının bir yerde yazılı olması, ona özel bir şarkı söylenmesi, kahraman gibi karşılanması, herkesin alkışla karşılaması', full:true},
+        ],
+        reminders:[
+          {id:'r1', text:'Dilek çocuk için sürpriz olacaksa, gün teyidi alınırken ailenin bunu çocuğa söylememesi gerektiği hatırlatıldı mı?'},
+        ]
+      },
+      gorev: {
+        title: 'Görev Dağılımı',
+        fields: [
+          {id:'aile', label:'Aile ile İletişim', type:'text'},
+          {id:'hastane_iletisim', label:'Hastane / Doktor-Hemşire ile İletişim', type:'text'},
+          {id:'organizasyon', label:'Genel Organizasyon Sorumlusu', type:'text'},
+          {id:'cocuk', label:'Çocukla Birebir İlgilenecek Kişi/Kişiler', type:'text'},
+          {id:'kardes', label:'Kardeş Varsa İlgilenecek Kişi/Kişiler', type:'text'},
+          {id:'medya', label:'Fotoğraf / Video Çekimi', type:'text'},
+          {id:'ulasim', label:'Ulaşım Sorumlusu / Araçlı Gönüllü', type:'text'},
+          {id:'sponsor', label:'(Varsa) Sponsor / Destekçi İletişimi', type:'text'},
+        ],
+        reminders:[
+          {id:'r1', text:'Araçlı gönüllünün plakası Nurcan\'a özelden iletildi mi?', critical:true},
+        ]
+      },
+      plan: {
+        title:'Detaylı Gün Planı',
+        isPlan:true,
+      }
+    }
+  }
+};
+
+/* ================= STATE ================= */
+let wishesIndex = [];      // [{id,type,createdAt}]
+let wishCache = {};         // id -> full data
+let currentId = null;
+let viewingGuide = false;
+let currentFilter = 'all';
+let openSections = {};      // sectionId -> bool (per current wish view)
+let lastEditTs = 0;
+let pollTimer = null;
+let sectionCompleteTracker = {}; // "wishId:sectionId" -> bool
+let soundEnabled = true;
+let audioCtx = null;
+let editorName = '';
+
+const LEVELS = [
+  {min:0,   name:'Dilek Çırağı',    icon:'🌱'},
+  {min:20,  name:'Hayal Mimarı',    icon:'🎨'},
+  {min:40,  name:'Sürpriz Ustası',  icon:'🎁'},
+  {min:60,  name:'Yıldız Avcısı',   icon:'⭐'},
+  {min:80,  name:'Dilek Kahramanı', icon:'🦸'},
+  {min:100, name:'Dilek Yıldızı',   icon:'🌟'},
+];
+function getLevel(pct){
+  let lvl = LEVELS[0];
+  LEVELS.forEach(l=>{ if(pct>=l.min) lvl=l; });
+  return lvl;
+}
+function levelIndexOf(name){
+  return LEVELS.findIndex(l=>l.name===name);
+}
+function completedSectionsCount(tpl, data){
+  return SECTION_ORDER.filter(sid=> sectionProgress(tpl, sid, data) >= 0.999).length;
+}
+function currentLevelIdx(tpl, data){
+  return Math.min(completedSectionsCount(tpl, data), LEVELS.length-1);
+}
+
+/* ---------- maskot: seviyeye göre değişen, hafif animasyonlu karakter ---------- */
+const MASCOT_COLORS = ['#AEB9C7','#8DC8E8','#00BAB3','#0057B8','#E0AD1E','#FFD54A'];
+function mascotSVG(levelIdx, size=64){
+  const color = MASCOT_COLORS[levelIdx] || MASCOT_COLORS[0];
+  const glow = levelIdx>=5 ? `filter:drop-shadow(0 0 7px ${color});` : '';
+  const face = `<circle cx="40" cy="47" r="4.2" fill="#0F2540"/><circle cx="60" cy="47" r="4.2" fill="#0F2540"/><path d="M38 59 Q50 69 62 59" stroke="#0F2540" stroke-width="3.4" fill="none" stroke-linecap="round"/>`;
+  let body;
+  if(levelIdx===0){
+    // Dilek Çırağı — filiz
+    body = `
+      <path d="M50 82 L50 30" stroke="${color}" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M50 42 C33 42 24 29 24 14 C41 14 50 27 50 42 Z" fill="${color}"/>
+      <path d="M50 50 C67 50 78 37 78 22 C59 22 50 35 50 50 Z" fill="${color}"/>
+      <circle cx="50" cy="80" r="20" fill="${color}"/>`;
+  } else if(levelIdx===1){
+    // Hayal Mimarı — palet
+    body = `
+      <path d="M50 12 C74 12 92 28 92 47 C92 59 83 65 73 65 C67 65 65 60 69 56 C73 52 69 47 64 47 C45 47 30 58 30 46 C13 46 12 29 26 19 C33 14 41 12 50 12 Z" fill="${color}"/>
+      <circle cx="41" cy="30" r="5" fill="#E14B50" opacity=".85"/>
+      <circle cx="60" cy="25" r="5" fill="#FFD54A" opacity=".9"/>
+      <circle cx="74" cy="39" r="5" fill="#00BAB3" opacity=".9"/>
+      <circle cx="58" cy="80" r="18" fill="${color}"/>`;
+  } else if(levelIdx===2){
+    // Sürpriz Ustası — hediye kutusu
+    body = `
+      <rect x="20" y="44" width="60" height="44" rx="6" fill="${color}"/>
+      <rect x="20" y="44" width="60" height="13" fill="#fff" opacity=".25"/>
+      <rect x="44" y="44" width="12" height="44" fill="#fff" opacity=".35"/>
+      <path d="M50 44 C40 32 24 32 24 19 C38 17 48 29 50 44 Z" fill="${color}"/>
+      <path d="M50 44 C60 32 76 32 76 19 C62 17 52 29 50 44 Z" fill="${color}"/>`;
+  } else if(levelIdx===3){
+    // Yıldız Avcısı — kuyruklu yıldız
+    body = `
+      <path d="M6 88 L32 64 L44 72 Z" fill="${color}" opacity=".5"/>
+      <path d="M50 20 L59 42 L83 45 L64 60 L70 84 L50 71 L30 84 L36 60 L17 45 L41 42 Z" fill="${color}"/>`;
+  } else if(levelIdx===4){
+    // Dilek Kahramanı — pelerinli kahraman
+    body = `
+      <path d="M50 28 L80 80 L20 80 Z" fill="${color}" opacity=".45"/>
+      <path d="M50 5 L61 38 L96 40 L68 61 L78 95 L50 75 L22 95 L32 61 L4 40 L39 38 Z" fill="${color}"/>
+      <rect x="29" y="44" width="42" height="9" rx="4" fill="#0F2540" opacity=".65"/>`;
+  } else {
+    // Dilek Yıldızı — parlayan büyük yıldız
+    body = `
+      <g stroke="${color}" stroke-width="3" stroke-linecap="round" opacity=".8">
+        <line x1="50" y1="0" x2="50" y2="13"/><line x1="50" y1="87" x2="50" y2="100"/>
+        <line x1="0" y1="50" x2="13" y2="50"/><line x1="87" y1="50" x2="100" y2="50"/>
+        <line x1="15" y1="15" x2="24" y2="24"/><line x1="76" y1="76" x2="85" y2="85"/>
+        <line x1="85" y1="15" x2="76" y2="24"/><line x1="24" y1="76" x2="15" y2="85"/>
+      </g>
+      <path d="M50 5 L61 38 L96 40 L68 61 L78 95 L50 75 L22 95 L32 61 L4 40 L39 38 Z" fill="${color}"/>`;
+  }
+  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="${glow}">${body}${face}</svg>`;
+}
+function mascotHTML(levelIdx){
+  return `<div class="mascot-wrap"><div class="mascot" id="mascotBody">${mascotSVG(levelIdx)}</div><div class="mascot-badge" id="mascotBadge">${LEVELS[levelIdx].icon}</div></div>`;
+}
+function bounceMascot(){
+  const el = document.getElementById('mascotBody');
+  if(!el) return;
+  el.classList.remove('levelup');
+  void el.offsetWidth;
+  el.classList.add('levelup');
+}
+
+/* ---------- ses efektleri (Web Audio API — dosya gerekmez) ---------- */
+function getAudioCtx(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; }
+  }
+  return audioCtx;
+}
+function playTone(freq, start, dur, type='sine', peak=0.16){
+  const ctx = getAudioCtx();
+  if(!ctx) return;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  const t0 = ctx.currentTime + start;
+  gain.gain.setValueAtTime(0, t0);
+  gain.gain.linearRampToValueAtTime(peak, t0+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0+dur);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0+dur+0.05);
+}
+function playSound(kind){
+  if(!soundEnabled) return;
+  try{
+    if(kind==='tick'){ playTone(880,0,0.09,'sine',0.12); }
+    else if(kind==='section'){ playTone(523.25,0,0.12); playTone(659.25,0.1,0.14); playTone(783.99,0.2,0.22); }
+    else if(kind==='levelup'){ playTone(523.25,0,0.1); playTone(659.25,0.09,0.1); playTone(783.99,0.18,0.1); playTone(1046.5,0.27,0.32); }
+    else if(kind==='complete'){ playTone(523.25,0,0.1); playTone(659.25,0.08,0.1); playTone(783.99,0.16,0.1); playTone(1046.5,0.24,0.1); playTone(1318.5,0.34,0.42); }
+  }catch(e){}
+}
+function toggleSound(){
+  soundEnabled = !soundEnabled;
+  window.storage.set('sound-pref', JSON.stringify(soundEnabled), false).catch(()=>{});
+  const btn = document.getElementById('soundBtn');
+  if(btn) btn.textContent = soundEnabled ? '🔊 Ses Açık' : '🔇 Ses Kapalı';
+  if(soundEnabled) playSound('tick');
+}
+
+function initBgStars(){
+  const host = document.createElement('div');
+  host.id = 'bgStars';
+  for(let i=0;i<36;i++){
+    const s = document.createElement('div');
+    s.className = 'bg-star';
+    const size = (Math.random()*2.4+1).toFixed(1);
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.left = (Math.random()*100)+'vw';
+    s.style.top = (Math.random()*100)+'vh';
+    const twinkleDur = (2.5+Math.random()*3).toFixed(1);
+    const driftDur = (30+Math.random()*40).toFixed(0);
+    s.style.animation = `twinkle ${twinkleDur}s ease-in-out infinite ${(Math.random()*4).toFixed(1)}s, drift ${driftDur}s linear infinite alternate`;
+    host.appendChild(s);
+  }
+  document.body.prepend(host);
+}
+
+function spawnStars(x, y, count=8, spread=60){
+  const glyphs = ['✨','⭐','🌟'];
+  for(let i=0;i<count;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-star';
+    el.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+    const angle = Math.random()*Math.PI*2;
+    const dist = spread*0.5 + Math.random()*spread;
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist - 16;
+    el.style.left = x+'px';
+    el.style.top = y+'px';
+    el.style.setProperty('--dx', dx+'px');
+    el.style.setProperty('--dy', dy+'px');
+    el.style.fontSize = (11+Math.random()*9)+'px';
+    document.body.appendChild(el);
+    setTimeout(()=> el.remove(), 950);
+  }
+}
+
+function confettiRain(){
+  const w = window.innerWidth;
+  const points = 6;
+  for(let i=0;i<points;i++){
+    setTimeout(()=>{
+      spawnStars((w/(points+1))*(i+1), -10, 7, 90);
+    }, i*70);
+  }
+}
+
+function showCelebrationToast(msg){
+  document.querySelectorAll('.celebrate-toast').forEach(t=>t.remove());
+  const toast = document.createElement('div');
+  toast.className = 'celebrate-toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(()=> toast.remove(), 3800);
+}
+
+function spawnBalloon(x, y){
+  const el = document.createElement('div');
+  el.className = 'confetti-balloon';
+  el.textContent = ['🎈','🎉','🎊'][Math.floor(Math.random()*3)];
+  el.style.left = x+'px';
+  el.style.top = y+'px';
+  el.style.setProperty('--bx', ((Math.random()*160)-80)+'px');
+  el.style.setProperty('--br', (Math.random()*60-30)+'deg');
+  document.body.appendChild(el);
+  setTimeout(()=> el.remove(), 2200);
+}
+
+function spawnFullScreenBurst(){
+  const w = window.innerWidth, h = window.innerHeight;
+  for(let i=0;i<10;i++){
+    setTimeout(()=> spawnStars(Math.random()*w, -20, 5, 170), i*55);
+  }
+  for(let i=0;i<8;i++){
+    setTimeout(()=> spawnBalloon(Math.random()*w, h+30), i*90);
+  }
+}
+
+function showLevelUpCelebration(oldIdx, newIdx){
+  document.querySelectorAll('.levelup-overlay').forEach(o=>o.remove());
+  const overlay = document.createElement('div');
+  overlay.className = 'levelup-overlay';
+  overlay.innerHTML = `
+    <div class="levelup-mascot-stage">
+      <div class="levelup-mascot spin-out" id="oldMascotBig">${mascotSVG(oldIdx,150)}</div>
+      <div class="levelup-mascot pop-in" id="newMascotBig" style="display:none;">${mascotSVG(newIdx,150)}</div>
+    </div>
+    <div class="levelup-caption">✨ Seviye atladın! ✨<br>${LEVELS[newIdx].icon} ${LEVELS[newIdx].name}</div>
+  `;
+  document.body.appendChild(overlay);
+  spawnFullScreenBurst();
+  playSound('levelup');
+  setTimeout(()=>{
+    const oldEl = document.getElementById('oldMascotBig');
+    const newEl = document.getElementById('newMascotBig');
+    if(oldEl) oldEl.style.display = 'none';
+    if(newEl) newEl.style.display = '';
+  }, 600);
+  setTimeout(()=> overlay.remove(), 2700);
+}
+
+function refreshHeader(tpl, data, wishId){
+  const pct = overallProgress(tpl, data);
+  const pctEl = document.getElementById('overallPct');
+  const starmapEl = document.getElementById('starmapHost');
+  const levelEl = document.getElementById('levelBadge');
+  const lvlIdx = currentLevelIdx(tpl, data);
+  const lvl = LEVELS[lvlIdx];
+  if(pctEl) pctEl.textContent = '%'+pct;
+  if(starmapEl) starmapEl.innerHTML = SECTION_ORDER.map(sid=>starSVG(sectionProgress(tpl,sid,data),22)).join('');
+  if(levelEl) levelEl.innerHTML = `${lvl.icon} ${lvl.name}`;
+  const mascotBody = document.getElementById('mascotBody');
+  const mascotBadge = document.getElementById('mascotBadge');
+  if(mascotBody) mascotBody.innerHTML = mascotSVG(lvlIdx);
+  if(mascotBadge) mascotBadge.textContent = lvl.icon;
+
+  const prevName = data.lastCelebratedLevel;
+  if(prevName){
+    const prevIdx = levelIndexOf(prevName);
+    if(lvlIdx > prevIdx){
+      showLevelUpCelebration(prevIdx, lvlIdx);
+      bounceMascot();
+      data.lastCelebratedLevel = lvl.name;
+      markSaving();
+      saveWish(wishId, data).then(markSaved);
+    }
+  } else {
+    data.lastCelebratedLevel = lvl.name;
+  }
+}
+
+const app = document.getElementById('app');
+const saveDot = document.getElementById('saveDot');
+const saveText = document.getElementById('saveText');
+
+/* ================= STORAGE HELPERS ================= */
+async function loadIndex(){
+  try{
+    const res = await window.storage.get('wishes-index', true);
+    return res ? JSON.parse(res.value) : [];
+  }catch(e){ return []; }
+}
+async function saveIndex(idx){
+  try{
+    await window.storage.set('wishes-index', JSON.stringify(idx), true);
+  }catch(e){ console.warn('saveIndex error:', e); }
+}
+async function loadWish(id){
+  try{
+    const res = await window.storage.get('wish-data:'+id, true);
+    return res ? JSON.parse(res.value) : null;
+  }catch(e){ return null; }
+}
+async function saveWish(id, data){
+  try{
+    data.updatedAt = Date.now();
+    data.updatedBy = editorName || data.updatedBy || 'Bilinmeyen';
+    await window.storage.set('wish-data:'+id, JSON.stringify(data), true);
+  }catch(e){ console.warn('saveWish error:', e); }
+}
+async function deleteWishStorage(id){
+  try{ await window.storage.delete('wish-data:'+id, true); }catch(e){}
+}
+
+function markSaving(){
+  saveDot.classList.remove('saved');
+  saveText.textContent = 'Kaydediliyor…';
+}
+function markSaved(){
+  saveDot.classList.add('saved');
+  saveText.textContent = 'Kaydedildi ✓';
+}
+
+function debounce(fn, wait){
+  let t;
+  return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), wait); };
+}
+
+/* ================= PROGRESS CALC ================= */
+function sectionProgress(tpl, sectionId, data){
+  const sec = tpl.sections[sectionId];
+  const secData = (data.sections && data.sections[sectionId]) || {};
+  let total = 0, filled = 0;
+  if(sec.isPlan){
+    total = 1;
+    const rows = (data.gunPlani||[]);
+    filled = rows.some(r=> (r.time||'').trim() || (r.desc||'').trim()) ? 1 : 0;
+  } else {
+    (sec.fields||[]).forEach(f=>{
+      total++;
+      const v = (secData.fields && secData.fields[f.id]) || '';
+      if(v.trim()) filled++;
+    });
+  }
+  (sec.reminders||[]).forEach(r=>{
+    total++;
+    if(secData.reminders && secData.reminders[r.id]) filled++;
+  });
+  return total ? filled/total : 0;
+}
+function overallProgress(tpl, data){
+  let sum=0;
+  SECTION_ORDER.forEach(id=> sum += sectionProgress(tpl, id, data));
+  return Math.round((sum/SECTION_ORDER.length)*100);
+}
+
+function getMissingRequired(tpl, data){
+  const missing = [];
+  SECTION_ORDER.forEach(sid=>{
+    const sec = tpl.sections[sid];
+    const secData = (data.sections && data.sections[sid]) || {fields:{}, reminders:{}};
+    (sec.fields||[]).forEach(f=>{
+      if(f.required){
+        const v = (secData.fields && secData.fields[f.id]) || '';
+        if(!v.trim()) missing.push({sectionTitle:sec.title, label:f.label});
+      }
+    });
+    (sec.reminders||[]).forEach(r=>{
+      if(r.required){
+        if(!(secData.reminders && secData.reminders[r.id])) missing.push({sectionTitle:sec.title, label:r.text});
+      }
+    });
+  });
+  return missing;
+}
+
+/* ================= STAR SVGs ================= */
+function starSVG(ratio, size=20){
+  ratio = Math.max(0, Math.min(1, ratio));
+  const full = ratio >= 0.999;
+  const color = ratio===0 ? '#D7DEE8' : '#FFD54A';
+  const glow = full ? 'filter:drop-shadow(0 0 3px rgba(255,213,74,.7));' : '';
+  return `<svg class="section-star" style="${glow}" width="${size}" height="${size}" viewBox="0 0 24 24">
+    <defs><clipPath id="clip-${Math.random().toString(36).slice(2)}"><rect x="0" y="0" width="${24*ratio}" height="24"/></clipPath></defs>
+    <path d="M12 2 L14.6 9.2 L22 9.8 L16.3 14.6 L18.2 22 L12 17.8 L5.8 22 L7.7 14.6 L2 9.8 L9.4 9.2 Z" fill="none" stroke="${ratio>0?'#E0AD1E':'#C7D0DC'}" stroke-width="1.2"/>
+    <path d="M12 2 L14.6 9.2 L22 9.8 L16.3 14.6 L18.2 22 L12 17.8 L5.8 22 L7.7 14.6 L2 9.8 L9.4 9.2 Z" fill="${color}" opacity="${ratio>0?ratio:0}"/>
+  </svg>`;
+}
+
+/* ================= INIT ================= */
+async function init(){
+  initBgStars();
+  try{
+    const sp = await window.storage.get('sound-pref', false);
+    if(sp) soundEnabled = JSON.parse(sp.value);
+  }catch(e){}
+  const soundBtn = document.getElementById('soundBtn');
+  soundBtn.textContent = soundEnabled ? '🔊 Ses Açık' : '🔇 Ses Kapalı';
+  soundBtn.onclick = toggleSound;
+
+  try{
+    const en = await window.storage.get('editor-name', false);
+    if(en) editorName = JSON.parse(en.value);
+  }catch(e){}
+  const editorBtn = document.getElementById('editorBtn');
+  editorBtn.textContent = editorName ? `👤 ${editorName}` : '👤 Adınızı Girin';
+  editorBtn.onclick = async ()=>{
+    const val = prompt('Adınızı girin (güncellemelerde "son güncelleyen" olarak görünecek):', editorName||'');
+    if(val && val.trim()){
+      editorName = val.trim();
+      editorBtn.textContent = `👤 ${editorName}`;
+      try{ await window.storage.set('editor-name', JSON.stringify(editorName), false); }catch(e){}
+    }
+  };
+
+  document.getElementById('guideBtn').onclick = renderGuide;
+
+  const notifBtn = document.getElementById('notifBtn');
+  if(typeof Notification !== 'undefined' && Notification.permission === 'granted'){
+    notifBtn.textContent = '🔔 Hatırlatıcılar Açık';
+  }
+  notifBtn.onclick = async ()=>{
+    if(typeof Notification === 'undefined'){
+      showCelebrationToast('Bu tarayıcı bildirimleri desteklemiyor.');
+      return;
+    }
+    const perm = await Notification.requestPermission();
+    if(perm === 'granted'){
+      notifBtn.textContent = '🔔 Hatırlatıcılar Açık';
+      checkAndNotify();
+    } else {
+      notifBtn.textContent = '🔕 İzin Verilmedi';
+    }
+  };
+
+  wishesIndex = await loadIndex();
+  renderDashboard();
+  checkAndNotify();
+  clearInterval(pollTimer);
+  pollTimer = setInterval(async ()=>{
+    if(!viewingGuide && currentId===null){
+      wishesIndex = await loadIndex();
+      renderDashboard();
+    } else if(currentId!==null && Date.now()-lastEditTs > 6000){
+      const fresh = await loadWish(currentId);
+      if(fresh){ wishCache[currentId] = fresh; renderDetail(currentId, true); }
+    }
+  }, 12000);
+  setInterval(checkAndNotify, 5*60*1000);
+}
+
+function daysUntil(dateStr){
+  if(!dateStr) return null;
+  const target = new Date(dateStr+'T00:00:00');
+  if(isNaN(target.getTime())) return null;
+  const now = new Date();
+  const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.round((target - todayMid)/86400000);
+}
+
+async function checkAndNotify(){
+  let tracker = {};
+  try{ const r = await window.storage.get('notif-tracker', false); tracker = r ? JSON.parse(r.value) : {}; }catch(e){}
+  const todayStr = new Date().toDateString();
+  const idx = wishesIndex.length ? wishesIndex : await loadIndex();
+  for(const w of idx){
+    let data = wishCache[w.id];
+    if(!data){ data = await loadWish(w.id); if(data) wishCache[w.id] = data; }
+    if(!data || data.completed) continue;
+    const dateStr = data.sections?.gunortam?.fields?.kesin_tarih;
+    const days = daysUntil(dateStr);
+    if(days===null || days<0 || days>3) continue;
+    if(tracker[w.id]===todayStr) continue;
+    const name = data.sections?.ozet?.fields?.ad || 'İsimsiz Dilek';
+    const dayLabel = days===0 ? 'bugün' : days===1 ? 'yarın' : `${days} gün sonra`;
+    const body = `${name} — dilek günü ${dayLabel}. Son güncellemeleri kontrol edin.`;
+    if(typeof Notification !== 'undefined' && Notification.permission === 'granted'){
+      try{ new Notification('Dilek Tasarımı — Anımsatıcı', {body}); }catch(e){}
+    }
+    tracker[w.id] = todayStr;
+  }
+  try{ await window.storage.set('notif-tracker', JSON.stringify(tracker), false); }catch(e){}
+}
+
+function typeBadge(type){
+  const t = TEMPLATES[type];
+  return t ? `${t.icon} ${t.label}` : type;
+}
+
+/* ================= DASHBOARD ================= */
+async function renderDashboard(){
+  currentId = null;
+  viewingGuide = false;
+  const filtered = currentFilter==='all' ? wishesIndex : wishesIndex.filter(w=>w.type===currentFilter);
+
+  app.innerHTML = `
+    <div class="dash-head">
+      <div>
+        <h2 class="display">Dilekler Panosu</h2>
+        <p>Ekibinizin üzerinde çalıştığı tüm dilekleri buradan takip edin.</p>
+      </div>
+      <button class="btn btn-gold" id="newWishBtn">✨ Yeni Dilek Oluştur</button>
+    </div>
+    <input type="text" class="search-bar" id="searchInput" placeholder="🔍 Dilek çocuğunun ismine göre ara…">
+    <div class="filters">
+      <button class="chip ${currentFilter==='all'?'active':''}" data-f="all">Tümü (${wishesIndex.length})</button>
+      <button class="chip ${currentFilter==='ev'?'active':''}" data-f="ev">🏠 Evde (${wishesIndex.filter(w=>w.type==='ev').length})</button>
+      <button class="chip ${currentFilter==='disarida'?'active':''}" data-f="disarida">🌳 Dışarıda (${wishesIndex.filter(w=>w.type==='disarida').length})</button>
+      <button class="chip ${currentFilter==='hastane'?'active':''}" data-f="hastane">🏥 Hastane (${wishesIndex.filter(w=>w.type==='hastane').length})</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  `;
+  document.getElementById('newWishBtn').onclick = openNewWishModal;
+  document.querySelectorAll('.chip').forEach(c=> c.onclick = ()=>{ currentFilter = c.dataset.f; renderDashboard(); });
+  document.getElementById('searchInput').oninput = (e)=>{
+    const q = e.target.value.toLocaleLowerCase('tr').trim();
+    document.querySelectorAll('.wcard').forEach(c=>{
+      const n = c.dataset.name || '';
+      c.style.display = (!q || n.includes(q)) ? '' : 'none';
+    });
+  };
+
+  const grid = document.getElementById('grid');
+  if(filtered.length===0){
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">Henüz bir dilek eklenmemiş. “Yeni Dilek Oluştur” ile başlayın.</div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(w=>`<div class="wcard" data-id="${w.id}"><div class="skeleton">Yükleniyor…</div></div>`).join('');
+  await Promise.all(filtered.map(async w=>{
+    let data = wishCache[w.id];
+    if(!data){ data = await loadWish(w.id) || emptyWishData(); wishCache[w.id]=data; }
+    const tpl = TEMPLATES[w.type];
+    const pct = overallProgress(tpl, data);
+    const lvl = LEVELS[currentLevelIdx(tpl, data)];
+    const name = (data.sections?.ozet?.fields?.ad) || 'İsimsiz Dilek';
+    const card = document.querySelector(`.wcard[data-id="${w.id}"]`);
+    if(!card) return;
+    card.dataset.name = name.toLocaleLowerCase('tr');
+    const updatedLine = data.updatedAt
+      ? `<div class="sub">Son güncelleme: ${escapeHtml(data.updatedBy||'—')} · ${new Date(data.updatedAt).toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>`
+      : '';
+    card.innerHTML = `
+      <div class="wcard-top">
+        <span class="type-badge type-${w.type}">${typeBadge(w.type)}</span>
+        <span class="sub">${new Date(w.createdAt).toLocaleDateString('tr-TR')}</span>
+      </div>
+      <h3 class="display">${escapeHtml(name)}</h3>
+      <div class="sub">Sorumlu: ${escapeHtml(data.sorumlu||'—')}</div>
+      ${data.completed ? `<div class="completed-badge" style="width:fit-content">✓ Tamamlandı</div>` : `<div class="level-tag">${lvl.icon} ${lvl.name}</div>`}
+      <div class="stars-row">${SECTION_ORDER.map(id=>starSVG(sectionProgress(tpl,id,data),16)).join('')}</div>
+      <div class="progress-line"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-pct">%${pct} tamamlandı</div>
+      ${updatedLine}
+    `;
+    card.onclick = ()=> openWish(w.id);
+  }));
+
+  const upcoming = filtered.map(w=>{
+    const data = wishCache[w.id];
+    if(!data) return null;
+    const dateStr = data.sections?.gunortam?.fields?.kesin_tarih;
+    const days = daysUntil(dateStr);
+    return {w, data, days};
+  }).filter(x=> x && x.days!==null && x.days>=0 && x.days<=3 && !x.data.completed)
+    .sort((a,b)=>a.days-b.days);
+
+  if(upcoming.length){
+    const banner = document.createElement('div');
+    banner.className = 'upcoming-banner';
+    banner.innerHTML = `<div class="upcoming-title">Yaklaşan Dilekler</div>` +
+      upcoming.map(u=>{
+        const name = u.data.sections?.ozet?.fields?.ad || 'İsimsiz Dilek';
+        const dayLabel = u.days===0 ? 'Bugün' : u.days===1 ? 'Yarın' : `${u.days} gün kaldı`;
+        return `<div class="upcoming-item" data-id="${u.w.id}"><b>${escapeHtml(name)}</b> — ${dayLabel} · ${typeBadge(u.w.type)}</div>`;
+      }).join('');
+    grid.insertAdjacentElement('beforebegin', banner);
+    banner.querySelectorAll('.upcoming-item').forEach(el=> el.onclick = ()=> openWish(el.dataset.id));
+  }
+}
+function emptyWishData(){
+  return { sorumlu:'', sections:{}, gunPlani:[{time:'',desc:''}], completed:false, completedAt:null, lastCelebratedLevel:null };
+}
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ================= NEW WISH MODAL ================= */
+function openNewWishModal(){
+  let picked = 'ev';
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <h3 class="display">Yeni Dilek Oluştur</h3>
+      <p class="hint">Temel bilgileri girin, detayları sonra birlikte dolduracaksınız.</p>
+      <div class="field">
+        <label>Dilek Türü</label>
+        <div class="type-pick">
+          <div class="type-opt sel" data-t="ev">🏠 Evde</div>
+          <div class="type-opt" data-t="disarida">🌳 Dışarıda</div>
+          <div class="type-opt" data-t="hastane">🏥 Hastane</div>
+        </div>
+      </div>
+      <div class="field"><label>Dilek Çocuğunun Adı (opsiyonel)</label><input type="text" id="nwName" placeholder="Örn. Ayşe"></div>
+      <div class="field"><label>Dilek Sorumlusu</label><input type="text" id="nwResp" placeholder="Şablonu dolduran / süreci takip eden kişi"></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="nwCancel">Vazgeç</button>
+        <button class="btn btn-gold" id="nwCreate">Oluştur</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelectorAll('.type-opt').forEach(o=> o.onclick = ()=>{
+    overlay.querySelectorAll('.type-opt').forEach(x=>x.classList.remove('sel'));
+    o.classList.add('sel'); picked = o.dataset.t;
+  });
+  overlay.querySelector('#nwCancel').onclick = ()=> overlay.remove();
+  overlay.onclick = (e)=>{ if(e.target===overlay) overlay.remove(); };
+  overlay.querySelector('#nwCreate').onclick = async ()=>{
+    const name = overlay.querySelector('#nwName').value.trim();
+    const resp = overlay.querySelector('#nwResp').value.trim();
+    const id = 'w_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+    const data = emptyWishData();
+    data.sorumlu = resp;
+    if(name){ data.sections.ozet = { fields:{ad:name}, reminders:{} }; }
+    wishesIndex.push({id, type:picked, createdAt:Date.now()});
+    wishCache[id] = data;
+    await saveIndex(wishesIndex);
+    await saveWish(id, data);
+    overlay.remove();
+    openSections = {};
+    openSections[SECTION_ORDER[0]] = true;
+    await openWish(id);
+    const firstField = document.querySelector('#sectionsHost [data-path]');
+    if(firstField) firstField.focus();
+  };
+}
+
+/* ================= DETAIL VIEW ================= */
+async function openWish(id){
+  currentId = id;
+  viewingGuide = false;
+  if(!wishCache[id]){
+    wishCache[id] = await loadWish(id) || emptyWishData();
+  }
+  if(Object.keys(openSections).length===0){ openSections[SECTION_ORDER[0]] = true; }
+  renderDetail(id);
+}
+
+const debouncedSave = debounce(async (id)=>{
+  markSaving();
+  await saveWish(id, wishCache[id]);
+  markSaved();
+}, 700);
+
+function ensureSection(data, sid){
+  if(!data.sections) data.sections = {};
+  if(!data.sections[sid]) data.sections[sid] = {fields:{}, reminders:{}, notes:{}};
+  if(!data.sections[sid].fields) data.sections[sid].fields = {};
+  if(!data.sections[sid].reminders) data.sections[sid].reminders = {};
+  if(!data.sections[sid].notes) data.sections[sid].notes = {};
+  return data.sections[sid];
+}
+
+function renderDetail(id, silent){
+  const meta = wishesIndex.find(w=>w.id===id);
+  if(!meta){ renderDashboard(); return; }
+  const tpl = TEMPLATES[meta.type];
+  const data = wishCache[id];
+  const pct = overallProgress(tpl, data);
+  const activeEl = document.activeElement;
+  const activeInfo = (activeEl && activeEl.dataset && activeEl.dataset.path) ? {path:activeEl.dataset.path, start:activeEl.selectionStart} : null;
+
+  app.innerHTML = `
+    <div class="back-row">
+      <button class="link-btn" id="backBtn">← Panoya Dön</button>
+    </div>
+    <div class="detail-head">
+      <div class="detail-top">
+        <div>
+          <div class="detail-name-row">
+            <span class="type-badge type-${meta.type}">${typeBadge(meta.type)}</span>
+            <input class="detail-name" id="wishNameInput" value="${escapeHtml(data.sections?.ozet?.fields?.ad||'')}" placeholder="Dilek çocuğunun adı…">
+          </div>
+          <div class="resp-line">Dilek Sorumlusu: <input id="respInput" value="${escapeHtml(data.sorumlu||'')}" placeholder="isim girin"></div>
+          ${data.updatedAt ? `<div class="resp-line" style="margin-top:2px;">Son güncelleme: ${escapeHtml(data.updatedBy||'—')} · ${new Date(data.updatedAt).toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>` : ''}
+        </div>
+        <div>
+          ${mascotHTML(currentLevelIdx(tpl, data))}
+          <div class="overall-pct" id="overallPct">%${pct}</div>
+          <div class="level-badge" id="levelBadge">${LEVELS[currentLevelIdx(tpl, data)].icon} ${LEVELS[currentLevelIdx(tpl, data)].name}</div>
+          <div class="starmap" id="starmapHost">${SECTION_ORDER.map(sid=>starSVG(sectionProgress(tpl,sid,data),22)).join('')}</div>
+          <div class="starmap-label">6 bölümün tamamlanma durumu</div>
+        </div>
+      </div>
+      <div class="toolbar-detail">
+        ${data.completed
+          ? `<span class="completed-badge">✓ Tamamlandı</span><button class="btn btn-ghost" id="uncompleteBtn">Tamamlandı İşaretini Kaldır</button>`
+          : `<button class="btn btn-gold" id="completeBtn">✓ Dileği Tamamlandı Olarak İşaretle</button>`}
+        <button class="btn btn-ghost" id="printBtn">🖨️ Yazdır / PDF</button>
+        <button class="btn btn-rose" id="delWishBtn">Dileği Sil</button>
+      </div>
+    </div>
+    <div id="sectionsHost"></div>
+  `;
+  document.getElementById('backBtn').onclick = ()=> renderDashboard();
+  document.getElementById('printBtn').onclick = ()=> window.print();
+  document.getElementById('delWishBtn').onclick = ()=> confirmDelete(id);
+  const completeBtn = document.getElementById('completeBtn');
+  if(completeBtn){
+    completeBtn.onclick = async ()=>{
+      const missing = getMissingRequired(tpl, data);
+      if(missing.length){
+        showMissingToast(missing);
+        return;
+      }
+      data.completed = true;
+      data.completedAt = Date.now();
+      markSaving();
+      await saveWish(id, data);
+      markSaved();
+      playSound('complete');
+      confettiRain();
+      renderDetail(id);
+    };
+  }
+  const uncompleteBtn = document.getElementById('uncompleteBtn');
+  if(uncompleteBtn){
+    uncompleteBtn.onclick = async ()=>{
+      data.completed = false;
+      markSaving();
+      await saveWish(id, data);
+      markSaved();
+      renderDetail(id);
+    };
+  }
+
+  const nameInput = document.getElementById('wishNameInput');
+  nameInput.oninput = ()=>{
+    lastEditTs = Date.now();
+    ensureSection(data,'ozet').fields.ad = nameInput.value;
+    debouncedSave(id);
+  };
+  const respInput = document.getElementById('respInput');
+  respInput.oninput = ()=>{
+    lastEditTs = Date.now();
+    data.sorumlu = respInput.value;
+    debouncedSave(id);
+  };
+
+  const host = document.getElementById('sectionsHost');
+  SECTION_ORDER.forEach(sid=>{
+    const key = id+':'+sid;
+    if(sectionCompleteTracker[key]===undefined){
+      sectionCompleteTracker[key] = sectionProgress(tpl, sid, data) >= 0.999;
+    }
+    host.appendChild(buildSectionEl(tpl, sid, data, id));
+  });
+  refreshHeader(tpl, data, id);
+
+  if(activeInfo){
+    const el = host.querySelector(`[data-path="${activeInfo.path}"]`);
+    if(el){ el.focus(); try{ el.setSelectionRange(activeInfo.start, activeInfo.start); }catch(e){} }
+  }
+}
+
+function buildSectionEl(tpl, sid, data, wishId){
+  const sec = tpl.sections[sid];
+  const ratio = sectionProgress(tpl, sid, data);
+  const secData = ensureSection(data, sid);
+  const isOpen = !!openSections[sid];
+
+  const wrap = document.createElement('div');
+  wrap.className = 'section' + (isOpen?' open':'');
+
+  const head = document.createElement('div');
+  head.className = 'section-head';
+  head.innerHTML = `
+    <div class="section-head-left">${starSVG(ratio,20)}<h4>${sec.title}</h4></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="section-progress">${Math.round(ratio*100)}%</span>
+      <span class="chev">▾</span>
+    </div>`;
+  head.onclick = ()=>{ openSections[sid] = !openSections[sid]; renderDetail(wishId, true); };
+  wrap.appendChild(head);
+
+  const body = document.createElement('div');
+  body.className = 'section-body';
+
+  if(sec.isPlan){
+    body.appendChild(buildPlanTable(tpl, data, wishId, wrap));
+  } else {
+    const fg = document.createElement('div');
+    fg.className = 'fields-grid';
+    let bubbleHost = null;
+    if(sid==='ozet'){
+      bubbleHost = document.createElement('div');
+      bubbleHost.className = 'health-bubbles full';
+    }
+    sec.fields.forEach(f=>{
+      const fieldDiv = document.createElement('div');
+      fieldDiv.className = 'field' + ((f.full||f.staticNote)?' full':'');
+      const path = `${sid}.${f.id}`;
+      const val = secData.fields[f.id] || '';
+      const labelHtml = f.label + (f.required ? ' <span class="req-star">*</span>' : '');
+      if(f.type==='textarea'){
+        fieldDiv.innerHTML = `<label>${labelHtml}</label><textarea data-path="${path}" placeholder="${f.placeholder||''}">${escapeHtml(val)}</textarea>`;
+      } else if(f.type==='select'){
+        const opts = f.options||[];
+        fieldDiv.innerHTML = `<label>${labelHtml}</label><select data-path="${path}"><option value="">Seçiniz</option>${opts.map(o=>`<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select>`;
+      } else if(f.type==='select-grouped'){
+        const groups = f.optgroups||[];
+        const optHtml = groups.map(g=>`<optgroup label="${g.group}">${g.items.map(o=>`<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</optgroup>`).join('');
+        fieldDiv.innerHTML = `<label>${labelHtml}</label><select data-path="${path}"><option value="">Belirtilmedi</option>${optHtml}</select>`;
+      } else if(f.type==='date'){
+        fieldDiv.innerHTML = `<label>${labelHtml}</label><input type="date" data-path="${path}" value="${escapeHtml(val)}">`;
+      } else {
+        fieldDiv.innerHTML = `<label>${labelHtml}</label><input type="text" data-path="${path}" placeholder="${f.placeholder||''}" value="${escapeHtml(val)}">`;
+      }
+      if(f.staticNote){
+        const noteEl = document.createElement('div');
+        noteEl.className = 'field-note';
+        noteEl.innerHTML = `<b>İpuçları</b><ul>${f.staticNote.map(t=>`<li>${t}</li>`).join('')}</ul>`;
+        fieldDiv.appendChild(noteEl);
+      }
+      const inputEl = fieldDiv.querySelector('[data-path]');
+      const useChange = f.type==='select' || f.type==='select-grouped' || f.type==='date';
+      inputEl[useChange ? 'onchange' : 'oninput'] = ()=>{
+        lastEditTs = Date.now();
+        secData.fields[f.id] = inputEl.value;
+        updateSectionProgressUI(wrap, tpl, sid, data);
+        checkSectionCelebration(tpl, sid, data, wishId, wrap);
+        refreshHeader(tpl, data, wishId);
+        if(sid==='ozet' && f.id==='hastalik' && bubbleHost){
+          renderHealthBubbles(bubbleHost, inputEl.value);
+        }
+        debouncedSave(wishId);
+      };
+      fg.appendChild(fieldDiv);
+    });
+    body.appendChild(fg);
+    if(bubbleHost){
+      body.appendChild(bubbleHost);
+      renderHealthBubbles(bubbleHost, secData.fields['hastalik']||'');
+    }
+  }
+
+  if(sec.reminders && sec.reminders.length){
+    const rem = document.createElement('div');
+    rem.className = 'reminders';
+    rem.innerHTML = `<div class="reminders-title">Hatırlatıcılar</div>`;
+    sec.reminders.forEach(r=>{
+      const checked = !!secData.reminders[r.id];
+      const itemWrap = document.createElement('div');
+      const item = document.createElement('label');
+      item.className = 'rem-item' + (r.critical?' critical':'') + (checked?' done':'');
+      item.innerHTML = `<input type="checkbox" ${checked?'checked':''}><span class="rem-text">${r.text}${r.critical?'<span class="rem-crit-tag">KRİTİK</span>':''}${r.required?'<span class="rem-req-tag">ZORUNLU</span>':''}</span>`;
+      const cb = item.querySelector('input');
+      cb.onchange = async ()=>{
+        secData.reminders[r.id] = cb.checked;
+        item.classList.toggle('done', cb.checked);
+        updateSectionProgressUI(wrap, tpl, sid, data);
+        if(cb.checked){
+          const rect = cb.getBoundingClientRect();
+          spawnStars(rect.left+8, rect.top+8, 6, 40);
+          playSound('tick');
+        }
+        checkSectionCelebration(tpl, sid, data, wishId, wrap);
+        refreshHeader(tpl, data, wishId);
+        markSaving();
+        await saveWish(wishId, data);
+        markSaved();
+      };
+      itemWrap.appendChild(item);
+      if(r.note){
+        const noteBox = document.createElement('textarea');
+        noteBox.className = 'rem-note';
+        noteBox.placeholder = r.notePlaceholder || 'Açıklama ekleyin';
+        noteBox.value = secData.notes[r.id] || '';
+        noteBox.oninput = ()=>{
+          lastEditTs = Date.now();
+          secData.notes[r.id] = noteBox.value;
+          debouncedSave(wishId);
+        };
+        itemWrap.appendChild(noteBox);
+      }
+      rem.appendChild(itemWrap);
+    });
+    body.appendChild(rem);
+  }
+
+  wrap.appendChild(body);
+  return wrap;
+}
+
+function updateSectionProgressUI(wrap, tpl, sid, data){
+  const ratio = sectionProgress(tpl, sid, data);
+  wrap.querySelector('.section-progress').textContent = Math.round(ratio*100)+'%';
+  const starHolder = wrap.querySelector('.section-head-left');
+  starHolder.querySelector('svg').outerHTML = starSVG(ratio,20);
+}
+
+function checkSectionCelebration(tpl, sid, data, wishId, wrap){
+  const key = wishId+':'+sid;
+  const nowRatio = sectionProgress(tpl, sid, data);
+  const wasComplete = sectionCompleteTracker[key];
+  if(nowRatio >= 0.999 && !wasComplete){
+    sectionCompleteTracker[key] = true;
+    const sec = tpl.sections[sid];
+    showCelebrationToast(`✨ ${sec.title} tamamlandı!`);
+    const rect = wrap.getBoundingClientRect();
+    spawnStars(rect.left+30, rect.top+20, 10, 70);
+    playSound('section');
+  } else if(nowRatio < 0.999){
+    sectionCompleteTracker[key] = false;
+  }
+}
+
+function buildPlanTable(tpl, data, wishId, wrap){
+  const container = document.createElement('div');
+  if(!data.gunPlani || data.gunPlani.length===0) data.gunPlani = [{time:'',desc:''}];
+
+  function onPlanChange(){
+    updateSectionProgressUI(wrap, tpl, 'plan', data);
+    checkSectionCelebration(tpl, 'plan', data, wishId, wrap);
+    refreshHeader(tpl, data, wishId);
+    debouncedSave(wishId);
+  }
+
+  function renderRows(){
+    container.querySelectorAll('.plan-row').forEach(r=>r.remove());
+    const addBtn = container.querySelector('.add-row');
+    data.gunPlani.forEach((row, idx)=>{
+      const rEl = document.createElement('div');
+      rEl.className = 'plan-row';
+      rEl.innerHTML = `
+        <input type="text" class="time" placeholder="Saat" value="${escapeHtml(row.time)}">
+        <input type="text" placeholder="Bu saatte ne yapılacak?" value="${escapeHtml(row.desc)}">
+        <button class="row-del" title="Satırı sil">✕</button>`;
+      const [timeInp, descInp] = rEl.querySelectorAll('input');
+      timeInp.oninput = ()=>{ lastEditTs=Date.now(); row.time = timeInp.value; onPlanChange(); };
+      descInp.oninput = ()=>{ lastEditTs=Date.now(); row.desc = descInp.value; onPlanChange(); };
+      rEl.querySelector('.row-del').onclick = ()=>{
+        data.gunPlani.splice(idx,1);
+        if(data.gunPlani.length===0) data.gunPlani.push({time:'',desc:''});
+        renderRows();
+        onPlanChange();
+      };
+      container.insertBefore(rEl, addBtn);
+    });
+  }
+
+  const addBtn = document.createElement('button');
+  addBtn.className = 'btn btn-ghost add-row';
+  addBtn.textContent = '+ Satır Ekle';
+  addBtn.onclick = ()=>{ data.gunPlani.push({time:'',desc:''}); renderRows(); };
+  container.appendChild(addBtn);
+  renderRows();
+  return container;
+}
+
+function showMissingToast(missing){
+  document.querySelectorAll('.missing-toast').forEach(t=>t.remove());
+  const toast = document.createElement('div');
+  toast.className = 'missing-toast';
+  const list = missing.slice(0,4).map(m=>`<b>${escapeHtml(m.label)}</b> (${escapeHtml(m.sectionTitle)})`).join(', ');
+  const extra = missing.length>4 ? ` ve ${missing.length-4} madde daha` : '';
+  toast.innerHTML = `Tamamlamak için önce şunlar gerekli: ${list}${extra}.`;
+  document.body.appendChild(toast);
+  setTimeout(()=> toast.remove(), 5000);
+}
+
+function confirmDelete(id){
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <h3 class="display">Dileği silmek istediğinize emin misiniz?</h3>
+      <p class="hint">Bu işlem geri alınamaz. Tüm bilgiler ekip için kalıcı olarak silinecek.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancelDel">Vazgeç</button>
+        <button class="btn btn-rose" id="confirmDel">Evet, Sil</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#cancelDel').onclick = ()=> overlay.remove();
+  overlay.onclick = e=>{ if(e.target===overlay) overlay.remove(); };
+  overlay.querySelector('#confirmDel').onclick = async ()=>{
+    wishesIndex = wishesIndex.filter(w=>w.id!==id);
+    delete wishCache[id];
+    await saveIndex(wishesIndex);
+    await deleteWishStorage(id);
+    overlay.remove();
+    renderDashboard();
+  };
+}
+
+init();
+</script>
+</body>
+</html>
