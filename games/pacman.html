@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Make a Wish - Dilek Labirenti 🧚‍♀️</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=Roboto:ital,wght@0,400;0,500;0,700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -12,10 +14,12 @@
             -webkit-user-select: none;
             user-select: none;
             touch-action: manipulation;
+            font-style: normal !important;
         }
 
         body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            font-style: normal;
             background: linear-gradient(135deg, #1a0033 0%, #2d1b4e 50%, #0a1628 100%);
             min-height: 100vh;
             display: flex;
@@ -23,9 +27,11 @@
             align-items: center;
             justify-content: flex-start;
             color: #fff;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             padding-top: 10px;
-            touch-action: none;
+            padding-bottom: 25px;
+            touch-action: manipulation;
         }
 
         .game-container {
@@ -82,7 +88,7 @@
             justify-content: center;
             gap: 8px;
             margin: 4px 0 8px 0;
-            min-height: 40px;
+            min-height: 0;
             flex-wrap: wrap;
         }
 
@@ -97,7 +103,7 @@
             box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4);
             transition: all 0.2s ease;
             width: auto;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-family: inherit;
             font-weight: bold;
         }
 
@@ -163,9 +169,96 @@
         }
 
         .controls-text {
-            margin-top: 12px;
-            font-size: 0.9em;
+            margin-top: 10px;
+            font-size: 0.88em;
             color: #aaa;
+        }
+
+        @media (max-width: 600px) {
+            body.tutorial-mode {
+                padding-top: 4px;
+                padding-bottom: 8px;
+            }
+            body.tutorial-mode h1 {
+                font-size: 1.35em !important;
+                margin-bottom: 2px !important;
+            }
+            body.tutorial-mode .stats {
+                margin: 4px 0 !important;
+                gap: 6px !important;
+                font-size: 0.9em !important;
+            }
+            body.tutorial-mode .stat-item {
+                padding: 4px 10px !important;
+                border-radius: 12px !important;
+            }
+            body.tutorial-mode #tutorialBanner {
+                padding: 5px 10px !important;
+                margin-bottom: 4px !important;
+                font-size: 0.82em !important;
+            }
+            body.tutorial-mode .controls-text {
+                margin-top: 6px !important;
+                font-size: 0.82em !important;
+            }
+            body.tutorial-mode .skills-bar {
+                margin: 2px 0 4px 0 !important;
+                min-height: 0 !important;
+            }
+            body.tutorial-mode .skill-btn {
+                padding: 5px 10px !important;
+                font-size: 0.8em !important;
+            }
+        }
+
+        /* --- ALIŞTIRMA POP-UP MODAL STILLERİ --- */
+        .tutorial-modal-content {
+            max-width: 440px;
+            width: 92%;
+            padding: 22px 18px;
+            background: linear-gradient(135deg, #2d1b4e 0%, #1a0033 100%);
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 35px rgba(255, 215, 0, 0.4);
+            border-radius: 20px;
+        }
+
+        .tutorial-modal-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .tutorial-modal-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .tut-icon {
+            font-size: 1.6em;
+            line-height: 1;
+            padding-top: 2px;
+        }
+
+        .tut-title {
+            font-weight: 700;
+            font-size: 0.95em;
+            color: #ffd700;
+            margin-bottom: 3px;
+        }
+
+        .tut-text {
+            font-size: 0.83em;
+            color: #e0e0e0;
+            line-height: 1.4;
         }
 
         /* --- MODAL STILLERİ --- */
@@ -222,7 +315,7 @@
             font-size: 1.1em;
             border-radius: 50px;
             cursor: pointer;
-            font-family: 'Comic Sans MS', cursive;
+            font-family: inherit;
             box-shadow: 0 5px 20px rgba(255, 105, 180, 0.6);
             width: 100%;
         }
@@ -291,6 +384,56 @@
         
         <div class="controls-text">
             👆 Ekranda kaydırarak veya ⌨️ Yön tuşlarıyla hareket et • Kapıya ulaş! 🚪✨
+        </div>
+    </div>
+
+    <div id="tutorialModal" class="modal" style="display: none;">
+        <div class="modal-content tutorial-modal-content">
+            <h2 style="color: #ffd700; font-size: 1.35em; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                🎮 Nasıl Oynanır? 🎓
+            </h2>
+            <p style="color: #00c6ff; font-size: 0.95em; font-weight: 600; margin-bottom: 14px;">
+                Alıştırma Seviyesine Hoş Geldin!
+            </p>
+            
+            <div class="tutorial-modal-grid">
+                <div class="tutorial-modal-card">
+                    <div class="tut-icon">🕹️</div>
+                    <div>
+                        <div class="tut-title">Kontroller</div>
+                        <div class="tut-text">
+                            • <b>Mobil / Tablet:</b> Parmağını ekranda yukarı, aşağı, sola veya sağa kaydır.<br>
+                            • <b>Bilgisayar:</b> Yön (Ok ⬆️⬇️⬅️➡️) veya W-A-S-D tuşlarını kullan.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tutorial-modal-card">
+                    <div class="tut-icon">⭐</div>
+                    <div>
+                        <div class="tut-title">Amaç &amp; Hedefler</div>
+                        <div class="tut-text">
+                            • Labirentteki <b>yıldızları (⭐)</b> toplayarak puan kazan.<br>
+                            • <b>Çıkış Kapısına (🚪)</b> ulaşarak bölümü tamamla!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tutorial-modal-card">
+                    <div class="tut-icon">💡</div>
+                    <div>
+                        <div class="tut-title">İpuçları</div>
+                        <div class="tut-text">
+                            • Süre dolmadan kapıya ulaşmayı unutma! ⏰<br>
+                            • Bölüm sonlarında süper güçler kazanacaksın! ✨
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="closeTutorialModal()" style="margin-top: 16px; font-size: 1.1em; font-weight: bold; background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); box-shadow: 0 4px 15px rgba(0,198,255,0.4);">
+                👍 Anladım
+            </button>
         </div>
     </div>
 
@@ -621,6 +764,12 @@
             const invisBtn = document.getElementById('skillInvisBtn');
             const huntBtn = document.getElementById('skillHuntBtn');
 
+            const hasAnySkill = unlockedSkills.freeze || unlockedSkills.eat || unlockedSkills.invisible || unlockedSkills.hunt;
+            const skillsBar = document.getElementById('skillsBar');
+            if (skillsBar) {
+                skillsBar.style.display = hasAnySkill ? 'flex' : 'none';
+            }
+
             if (freezeBtn) {
                 if (unlockedSkills.freeze) {
                     freezeBtn.style.display = 'inline-block';
@@ -707,18 +856,59 @@
         }
 
         function resizeCanvas() {
-            let width = Math.min(window.innerWidth - 20, 600);
-            CELL_SIZE = Math.floor(width / MAZE_COLS);
-            
-            let isMobile = window.innerWidth <= 768;
-            let availableHeight = Math.min(window.innerHeight - 200, 800);
-            
-            if (isMobile) {
-                MAZE_ROWS = Math.floor(availableHeight / CELL_SIZE);
+            const isMobile = window.innerWidth <= 768;
+            const config = LEVEL_CONFIGS[currentLevelIndex];
+            const isTutorial = config && config.isTutorial;
+
+            if (isTutorial && isMobile) {
+                // SADECE ALIŞTIRMA SEVİYESİ İÇİN MOBİL EKRANA SIĞDIRMA HESABI
+                const maxW = Math.min(window.innerWidth - 16, 600);
+                let topElementsHeight = 100;
+                const titleEl = document.querySelector('.game-container > div:first-child');
+                const statsEl = document.querySelector('.stats');
+                const tutBannerEl = document.getElementById('tutorialBanner');
+                const skillsBarEl = document.getElementById('skillsBar');
+                const controlsTextEl = document.querySelector('.controls-text');
+                
+                if (titleEl && statsEl) {
+                    topElementsHeight = titleEl.offsetHeight + statsEl.offsetHeight + 12;
+                    if (tutBannerEl && tutBannerEl.style.display !== 'none' && tutBannerEl.offsetHeight > 0) {
+                        topElementsHeight += tutBannerEl.offsetHeight + 4;
+                    }
+                    if (skillsBarEl && skillsBarEl.style.display !== 'none' && skillsBarEl.offsetHeight > 0) {
+                        topElementsHeight += skillsBarEl.offsetHeight + 4;
+                    }
+                }
+                
+                let controlsTextHeight = (controlsTextEl && controlsTextEl.offsetHeight > 0) ? controlsTextEl.offsetHeight + 8 : 25;
+                let availableH = window.innerHeight - topElementsHeight - controlsTextHeight - 16;
+                if (availableH < 180) availableH = 180;
+
+                let cellW = Math.floor(maxW / MAZE_COLS);
+                let maxPossibleRows = Math.floor(availableH / cellW);
+                if (maxPossibleRows < 6) {
+                    CELL_SIZE = Math.max(16, Math.floor(availableH / 6));
+                    MAZE_ROWS = 6;
+                } else {
+                    CELL_SIZE = cellW;
+                    MAZE_ROWS = Math.min(maxPossibleRows, MAZE_COLS + 2);
+                }
+
+                CELL_SIZE = Math.max(CELL_SIZE, 16);
             } else {
-                MAZE_ROWS = MAZE_COLS;
+                // DİĞER SEVİYELER İÇİN ORİJİNAL HESAPLAMA
+                let width = Math.min(window.innerWidth - 20, 600);
+                CELL_SIZE = Math.floor(width / MAZE_COLS);
+                
+                let availableHeight = Math.min(window.innerHeight - 200, 800);
+                
+                if (isMobile) {
+                    MAZE_ROWS = Math.floor(availableHeight / CELL_SIZE);
+                } else {
+                    MAZE_ROWS = MAZE_COLS;
+                }
             }
-            
+
             canvas.width = MAZE_COLS * CELL_SIZE;
             canvas.height = MAZE_ROWS * CELL_SIZE;
             bgCanvas.width = canvas.width;
@@ -1131,6 +1321,8 @@
             currentLevelIndex = Math.min(index, LEVEL_CONFIGS.length - 1);
             const config = LEVEL_CONFIGS[currentLevelIndex];
 
+            document.body.classList.toggle('tutorial-mode', !!config.isTutorial);
+
             const tutBanner = document.getElementById('tutorialBanner');
             if (tutBanner) {
                 tutBanner.style.display = config.isTutorial ? 'block' : 'none';
@@ -1180,8 +1372,26 @@
             document.getElementById('timer').textContent = timer;
 
             gameStartTimestamp = 0;
-            gameRunning = true;
+
+            const tutModal = document.getElementById('tutorialModal');
+            if (tutModal && config.isTutorial) {
+                tutModal.style.display = 'block';
+                gameRunning = false;
+            } else {
+                if (tutModal) tutModal.style.display = 'none';
+                gameRunning = true;
+            }
+            
             startTimer();
+        }
+
+        function closeTutorialModal() {
+            const tutModal = document.getElementById('tutorialModal');
+            if (tutModal) tutModal.style.display = 'none';
+            gameRunning = true;
+            const now = performance.now();
+            lastPlayerMove = now;
+            lastEnemyMove = now;
         }
 
         /* --- AUDİO MOTORU --- */
