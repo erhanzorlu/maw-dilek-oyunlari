@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make-A-Wish | Hastane Dilek Alımı</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+  :root {
+    --primary: #0065c3; --primary-dark: #003d7a; --primary-light: #e8f3ff;
+    --gold: #f59e0b; --gold-light: #fffbeb;
+    --green: #10b981; --green-light: #ecfdf5;
+    --bg: #f4f7fb; --card: #ffffff; --border: #e8edf5;
+    --text: #1e293b; --muted: #64748b;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 16px rgba(0,60,140,0.08);
+    --shadow-lg: 0 12px 40px rgba(0,60,140,0.13);
+    --shadow-xl: 0 24px 60px rgba(0,60,140,0.16);
+    --radius: 16px; --radius-sm: 10px;
+
+    --status-green: #10b981;
+    --status-green-bg: #ecfdf5;
+    --status-green-border: #a7f3d0;
+    --status-yellow: #f59e0b;
+    --status-yellow-bg: #fffbeb;
+    --status-yellow-border: #fde68a;
+    --status-red: #ef4444;
+    --status-red-bg: #fef2f2;
+    --status-red-border: #fecaca;
+    --status-blue: #3b82f6;
+    --status-blue-bg: #eff6ff;
+    --status-blue-border: #bfdbfe;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
+  a { text-decoration: none; color: inherit; }
+  .hidden { display: none !important; }
+
+  /* ─── MAIN ─── */
+  .main-wrapper { display: flex; flex-direction: column; overflow: hidden; min-width: 0; height: 100vh; }
+
+  /* ─── TOP BAR ─── */
+  .top-bar { background: var(--card); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); gap: 16px; flex-shrink: 0; }
+  .top-bar-left { display: flex; align-items: center; gap: 12px; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; }
+  .top-bar-right { display: flex; align-items: center; gap: 8px; }
+  .icon-btn { width: 38px; height: 38px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--muted); transition: 0.18s; position: relative; }
+  .icon-btn:hover { background: var(--primary-light); color: var(--primary); border-color: #bbd8ff; }
+  .top-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,101,195,0.3); }
+
+  .btn-add-top {
+    display: flex; align-items: center; gap: 7px;
+    background: linear-gradient(135deg, var(--green), #059669);
+    color: white; border: none; padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13.5px;
+    cursor: pointer; transition: 0.2s; white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+  }
+  .btn-add-top:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.3); }
+
+  /* ─── MAIN CONTENT ─── */
+  .main-content { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+  /* ─── HERO STRIP ─── */
+  .hero-strip {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, #1a7fd4 100%);
+    border-radius: var(--radius); padding: 26px 30px;
+    margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    position: relative; overflow: hidden;
+  }
+  .hero-strip::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+  .hero-text { position: relative; }
+  .hero-text h2 { font-family: 'Playfair Display', serif; font-size: 22px; color: white; margin-bottom: 6px; }
+  .hero-text p { font-size: 13.5px; color: rgba(255,255,255,0.75); line-height: 1.6; max-width: 440px; }
+  .hero-stats { display: flex; gap: 20px; flex-shrink: 0; position: relative; }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 800; color: white; }
+  .hero-stat-label { font-size: 11px; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-top: 2px; }
+  .hero-divider { width: 1px; background: rgba(255,255,255,0.2); }
+
+  /* ─── STATUS LEGEND ─── */
+  .legend-bar {
+    display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;
+    padding: 14px 20px;
+    background: var(--card);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+  }
+  .legend-dot {
+    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+  .legend-dot.green { background: var(--status-green); }
+  .legend-dot.yellow { background: var(--status-yellow); }
+  .legend-dot.red { background: var(--status-red); }
+  .legend-dot.blue { background: var(--status-blue); }
+
+  /* ─── MOBILE CARDS (hidden on desktop) ─── */
+  .mobile-cards { display: none; }
+
+  .m-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 16px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--border);
+    transition: all 0.25s ease;
+    position: relative;
+  }
+  .m-card.status-green { background: var(--status-green-bg); border-left-color: var(--status-green); }
+  .m-card.status-yellow { background: var(--status-yellow-bg); border-left-color: var(--status-yellow); }
+  .m-card.status-red { background: var(--status-red-bg); border-left-color: var(--status-red); opacity: 0.8; }
+  .m-card.status-blue { background: var(--status-blue-bg); border-left-color: var(--status-blue); }
+
+  .m-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; gap: 8px;
+  }
+  .m-card-num {
+    width: 28px; height: 28px;
+    background: var(--bg); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: var(--muted);
+    flex-shrink: 0;
+  }
+  .m-card-name {
+    flex: 1;
+    font-size: 16px; font-weight: 700;
+    outline: none; padding: 4px 8px; border-radius: 8px;
+    transition: background 0.2s; cursor: text;
+    min-height: 28px;
+  }
+  .m-card-name:focus { background: rgba(0,101,195,0.08); box-shadow: 0 0 0 2px rgba(0,101,195,0.15); }
+  .m-card-name[data-placeholder]:empty::before {
+    content: attr(data-placeholder); color: #cbd5e1; font-style: italic; font-weight: 500; pointer-events: none;
+  }
+  .m-card-delete {
+    width: 32px; height: 32px;
+    border: none; border-radius: 8px;
+    background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: #cbd5e1;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .m-card-delete:hover { background: #fef2f2; color: #ef4444; }
+
+  .m-card-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 12px;
+  }
+  .m-card-field {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .m-card-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--muted);
+  }
+  .m-card-value {
+    font-size: 14px; font-weight: 600;
+    outline: none; padding: 8px 10px;
+    background: rgba(0,0,0,0.02);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.2s; cursor: text;
+    min-height: 36px;
+  }
+  .m-card-value:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,101,195,0.1); }
+  .m-card-value[data-placeholder]:empty::before {
+    content: attr(data-placeholder); color: #cbd5e1; font-style: italic; font-weight: 500; pointer-events: none;
+  }
+
+  .m-card-checks {
+    display: flex; gap: 16px; margin-bottom: 12px;
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.02);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .m-check-item {
+    display: flex; align-items: center; gap: 10px;
+    flex: 1;
+  }
+  .m-check-item label {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    cursor: pointer; user-select: none;
+  }
+
+  .m-card-notes {
+    margin-bottom: 12px;
+  }
+  .m-card-notes .m-card-value {
+    min-height: 44px;
+    line-height: 1.5;
+  }
+
+  .m-card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+  }
+  .m-card-status-actions {
+    display: flex; gap: 6px;
+  }
+  .m-status-btn {
+    height: 34px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 12px; font-weight: 700;
+    transition: all 0.2s;
+    background: white;
+    color: var(--muted);
+    padding: 0 12px;
+  }
+  .m-status-btn i { font-size: 15px; }
+  .m-status-btn.yellow-btn:hover, .m-status-btn.yellow-btn.active { background: var(--status-yellow-bg); border-color: var(--status-yellow); color: #b45309; }
+  .m-status-btn.red-btn:hover, .m-status-btn.red-btn.active { background: var(--status-red-bg); border-color: var(--status-red); color: #dc2626; }
+
+  /* ─── TABLE ─── */
+  .table-wrapper {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+  .table-scroll {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%; border-collapse: collapse; min-width: 820px;
+  }
+  thead {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-bottom: 2px solid var(--border);
+  }
+  thead th {
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-align: left;
+    white-space: nowrap;
+    position: sticky; top: 0; z-index: 5;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  }
+  thead th:first-child { padding-left: 20px; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: all 0.25s ease;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(0,101,195,0.03); }
+
+  tbody td {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    vertical-align: middle;
+  }
+  tbody td:first-child { padding-left: 20px; }
+
+  /* Row status colors */
+  tr.status-green { background: var(--status-green-bg) !important; }
+  tr.status-green td { border-color: var(--status-green-border); }
+  tr.status-yellow { background: var(--status-yellow-bg) !important; }
+  tr.status-yellow td { border-color: var(--status-yellow-border); }
+  tr.status-red { background: var(--status-red-bg) !important; opacity: 0.75; }
+  tr.status-red td { border-color: var(--status-red-border); text-decoration: line-through; text-decoration-color: rgba(239,68,68,0.3); }
+  tr.status-red td:nth-child(4), tr.status-red td:nth-child(5), tr.status-red td:nth-child(6), tr.status-red td:nth-child(7) { text-decoration: none; }
+  tr.status-blue { background: var(--status-blue-bg) !important; }
+  tr.status-blue td { border-color: var(--status-blue-border); }
+
+  /* ─── STATUS BADGE ─── */
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 100px;
+    font-size: 12px; font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+  .status-badge.green { background: var(--status-green-bg); color: #047857; border: 1.5px solid var(--status-green-border); }
+  .status-badge.yellow { background: var(--status-yellow-bg); color: #b45309; border: 1.5px solid var(--status-yellow-border); }
+  .status-badge.red { background: var(--status-red-bg); color: #dc2626; border: 1.5px solid var(--status-red-border); }
+  .status-badge.blue { background: var(--status-blue-bg); color: #1d4ed8; border: 1.5px solid var(--status-blue-border); }
+
+  .status-badge i { font-size: 14px; }
+
+  /* ─── CHECKBOX CUSTOM ─── */
+  .custom-check {
+    display: flex; align-items: center; justify-content: center;
+  }
+  .custom-check input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    background: white;
+  }
+  .custom-check input[type="checkbox"]:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0,101,195,0.1);
+  }
+  .custom-check input[type="checkbox"]:checked {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0,101,195,0.3);
+  }
+  .custom-check input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 6px;
+    width: 6px; height: 10px;
+    border: solid white;
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+  }
+  .custom-check input[type="checkbox"]:disabled {
+    opacity: 0.5; cursor: not-allowed;
+  }
+
+  /* ─── EDITABLE CELLS ─── */
+  .editable-cell {
+    min-width: 60px;
+    outline: none;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    cursor: text;
+  }
+  .editable-cell:hover { background: rgba(0,101,195,0.04); }
+  .editable-cell:focus { background: rgba(0,101,195,0.08); box-shadow: 0 0 0 2px rgba(0,101,195,0.15); }
+  .editable-cell[data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: #cbd5e1;
+    font-style: italic;
+    pointer-events: none;
+  }
+
+  /* ─── STATUS ACTIONS ─── */
+  .status-actions {
+    display: flex; gap: 4px;
+  }
+  .status-btn {
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+    background: white;
+    color: var(--muted);
+  }
+  .status-btn:hover { transform: scale(1.1); }
+  .status-btn.yellow-btn:hover, .status-btn.yellow-btn.active { background: var(--status-yellow-bg); border-color: var(--status-yellow); color: #b45309; box-shadow: 0 2px 8px rgba(245,158,11,0.25); }
+  .status-btn.red-btn:hover, .status-btn.red-btn.active { background: var(--status-red-bg); border-color: var(--status-red); color: #dc2626; box-shadow: 0 2px 8px rgba(239,68,68,0.25); }
+
+  /* ─── DELETE ROW BUTTON ─── */
+  .delete-row-btn {
+    width: 28px; height: 28px;
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+    background: transparent;
+    color: #cbd5e1;
+    margin-left: 4px;
+  }
+  .delete-row-btn:hover { background: #fef2f2; border-color: #fecaca; color: #ef4444; }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty-state i { font-size: 48px; color: #cbd5e1; margin-bottom: 16px; display: block; }
+  .empty-state h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .empty-state p { font-size: 14px; margin-bottom: 20px; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed; bottom: 32px; right: 32px;
+    background: var(--text); color: white;
+    padding: 14px 24px; border-radius: var(--radius-sm);
+    font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(100px); opacity: 0;
+    transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+    z-index: 999;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast i { font-size: 20px; color: var(--green); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .top-bar { padding: 0 16px; }
+    .page-title span { display: none; }
+    .btn-add-top span { display: none; }
+    .main-content { padding: 14px; }
+    .hero-strip { flex-direction: column; align-items: flex-start; gap: 14px; padding: 18px; }
+    .hero-text h2 { font-size: 18px; }
+    .hero-text p { font-size: 12.5px; }
+    .hero-stats { gap: 14px; }
+    .hero-stat-num { font-size: 22px; }
+    .legend-bar {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; padding: 12px 14px;
+    }
+    .legend-item { font-size: 11.5px; gap: 6px; }
+    .legend-dot { width: 10px; height: 10px; }
+
+    /* Hide table, show cards */
+    .table-wrapper { display: none !important; }
+    .mobile-cards { display: block !important; }
+
+    .toast { bottom: 16px; right: 16px; left: 16px; }
+  }
+  @media (max-width: 400px) {
+    .m-card-row { grid-template-columns: 1fr; }
+    .m-card-checks { flex-direction: column; gap: 10px; }
+    .hero-stats { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ANA WRAPPER -->
+<div class="main-wrapper">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="page-title">
+        <i class="ph-fill ph-hospital" style="color:var(--primary);font-size:22px;"></i>
+        <span>Hastane Dilek Alımı</span>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <button class="btn-add-top" onclick="addRow()"><i class="ph-bold ph-plus"></i> <span>Yeni Kayıt</span></button>
+      <div class="top-avatar">E</div>
+    </div>
+  </div>
+
+  <!-- ANA İÇERİK -->
+  <div class="main-content">
+
+    <!-- HERO -->
+    <div class="hero-strip">
+      <div class="hero-text">
+        <h2>Hastane Dilek Alım Formu 🏥</h2>
+        <p>Hastane ziyaretlerinde dilek alım sürecini takip edin. Her çocuğun başvuru ve dilek durumunu buradan yönetebilirsiniz.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="heroTotal">0</div>
+          <div class="hero-stat-label">Toplam</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="heroReady">0</div>
+          <div class="hero-stat-label">Müsait</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="heroDone">0</div>
+          <div class="hero-stat-label">Tamamlandı</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS LEGEND -->
+    <div class="legend-bar">
+      <div class="legend-item"><div class="legend-dot green"></div> Başvuru alındı, dilek alımına müsait</div>
+      <div class="legend-item"><div class="legend-dot yellow"></div> Şu an müsait değil</div>
+      <div class="legend-item"><div class="legend-dot red"></div> Dilek alınmayacak</div>
+      <div class="legend-item"><div class="legend-dot blue"></div> Herşey tamam</div>
+    </div>
+
+    <!-- TABLE (Desktop) -->
+    <div class="table-wrapper">
+      <div class="table-scroll">
+        <table id="dilekTable">
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th>Adı Soyadı</th>
+              <th style="width:60px;">Yaş</th>
+              <th style="width:100px;">Oda No</th>
+              <th style="width:100px; text-align:center;">Başvuru Formu</th>
+              <th style="width:80px; text-align:center;">Dilek</th>
+              <th>Notlar</th>
+              <th style="width:180px;">Statü</th>
+              <th style="width:80px;"></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Rows will be added dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- EMPTY STATE (inside table wrapper) -->
+      <div class="empty-state" id="emptyState">
+        <i class="ph-duotone ph-clipboard-text"></i>
+        <h3>Henüz kayıt eklenmedi</h3>
+        <p>Hastane ziyareti için yeni kayıt eklemek için yukarıdaki butonu kullanın.</p>
+        <button class="btn-add-top" onclick="addRow()" style="margin: 0 auto;"><i class="ph-bold ph-plus"></i> <span>İlk Kaydı Ekle</span></button>
+      </div>
+    </div>
+
+    <!-- MOBILE CARDS -->
+    <div class="mobile-cards" id="mobileCards">
+      <div class="empty-state" id="emptyStateMobile">
+        <i class="ph-duotone ph-clipboard-text"></i>
+        <h3>Henüz kayıt eklenmedi</h3>
+        <p>Yeni kayıt eklemek için + butonuna dokunun.</p>
+        <button class="btn-add-top" onclick="addRow()" style="margin: 0 auto;"><i class="ph-bold ph-plus"></i> <span>İlk Kaydı Ekle</span></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="ph-fill ph-check-circle"></i> <span></span></div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+let rows = [];
+let nextId = 1;
+
+// ─── LOCAL STORAGE ───────────────────────────────────────────────────────────
+const STORAGE_KEY = 'maw_hastane_dilek';
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ rows, nextId }));
+}
+
+function loadData() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (data && Array.isArray(data.rows)) {
+      rows = data.rows;
+      nextId = data.nextId || (rows.length ? Math.max(...rows.map(r => r.id)) + 1 : 1);
+    }
+  } catch(e) { /* ignore corrupt data */ }
+}
+
+// ─── ADD ROW ─────────────────────────────────────────────────────────────────
+function addRow() {
+  const id = nextId++;
+  rows.push({
+    id,
+    name: '',
+    age: '',
+    room: '',
+    basvuru: false,
+    dilek: false,
+    notes: '',
+    manualStatus: null // null = auto, 'yellow', 'red'
+  });
+  renderTable();
+  saveData();
+
+  // Focus on name cell after render
+  setTimeout(() => {
+    const nameCell = document.querySelector(`[data-id="${id}"] .cell-name`);
+    if (nameCell) nameCell.focus();
+  }, 100);
+}
+
+// ─── GET STATUS ──────────────────────────────────────────────────────────────
+function getStatus(row) {
+  if (row.manualStatus === 'red') return 'red';
+  if (row.manualStatus === 'yellow') return 'yellow';
+  if (row.basvuru && row.dilek) return 'blue';
+  if (row.basvuru) return 'green';
+  return null;
+}
+
+function getStatusLabel(status) {
+  switch(status) {
+    case 'green': return '<i class="ph-fill ph-check-circle"></i> Müsait';
+    case 'yellow': return '<i class="ph-fill ph-warning-circle"></i> Müsait Değil';
+    case 'red': return '<i class="ph-fill ph-x-circle"></i> Alınmayacak';
+    case 'blue': return '<i class="ph-fill ph-star"></i> Tamamlandı';
+    default: return '<i class="ph-duotone ph-minus-circle"></i> Beklemede';
+  }
+}
+
+// ─── RENDER TABLE ────────────────────────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  const emptyState = document.getElementById('emptyState');
+  const mobileCards = document.getElementById('mobileCards');
+  const emptyStateMobile = document.getElementById('emptyStateMobile');
+
+  if (rows.length === 0) {
+    tbody.innerHTML = '';
+    emptyState.style.display = '';
+    emptyStateMobile.style.display = '';
+    // Clear mobile cards except empty state
+    mobileCards.querySelectorAll('.m-card').forEach(c => c.remove());
+    updateStats();
+    return;
+  }
+
+  emptyState.style.display = 'none';
+  emptyStateMobile.style.display = 'none';
+
+  // ── Desktop table rows ──
+  tbody.innerHTML = rows.map((row, idx) => {
+    const status = getStatus(row);
+    const statusClass = status ? `status-${status}` : '';
+    const badgeClass = status || '';
+    const isManualYellow = row.manualStatus === 'yellow';
+    const isManualRed = row.manualStatus === 'red';
+    const basvuruDisabled = isManualRed ? 'disabled' : '';
+    const dilekDisabled = (isManualRed || !row.basvuru) ? 'disabled' : '';
+
+    return `
+      <tr class="${statusClass}" data-id="${row.id}">
+        <td style="color:var(--muted); font-weight:700; font-size:13px;">${idx + 1}</td>
+        <td>
+          <div class="editable-cell cell-name" contenteditable="true" data-field="name" data-id="${row.id}" data-placeholder="Ad Soyad yazın...">${row.name}</div>
+        </td>
+        <td>
+          <div class="editable-cell" contenteditable="true" data-field="age" data-id="${row.id}" data-placeholder="—" style="text-align:center;">${row.age}</div>
+        </td>
+        <td>
+          <div class="editable-cell" contenteditable="true" data-field="room" data-id="${row.id}" data-placeholder="—" style="text-align:center;">${row.room}</div>
+        </td>
+        <td style="text-align:center;">
+          <div class="custom-check">
+            <input type="checkbox" ${row.basvuru ? 'checked' : ''} ${basvuruDisabled} onchange="toggleCheck(${row.id}, 'basvuru', this.checked)" />
+          </div>
+        </td>
+        <td style="text-align:center;">
+          <div class="custom-check">
+            <input type="checkbox" ${row.dilek ? 'checked' : ''} ${dilekDisabled} onchange="toggleCheck(${row.id}, 'dilek', this.checked)" />
+          </div>
+        </td>
+        <td>
+          <div class="editable-cell" contenteditable="true" data-field="notes" data-id="${row.id}" data-placeholder="Not ekleyin..." style="min-width:120px;">${row.notes}</div>
+        </td>
+        <td>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="status-badge ${badgeClass}">${getStatusLabel(status)}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display:flex; align-items:center;">
+            <div class="status-actions">
+              <button class="status-btn yellow-btn ${isManualYellow ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'yellow')" title="Müsait Değil">
+                <i class="ph-fill ph-warning-circle"></i>
+              </button>
+              <button class="status-btn red-btn ${isManualRed ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'red')" title="Alınmayacak">
+                <i class="ph-fill ph-x-circle"></i>
+              </button>
+            </div>
+            <button class="delete-row-btn" onclick="deleteRow(${row.id})" title="Sil">
+              <i class="ph-bold ph-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  // ── Mobile cards ──
+  // Remove old cards but keep empty state
+  mobileCards.querySelectorAll('.m-card').forEach(c => c.remove());
+
+  rows.forEach((row, idx) => {
+    const status = getStatus(row);
+    const statusClass = status ? `status-${status}` : '';
+    const badgeClass = status || '';
+    const isManualYellow = row.manualStatus === 'yellow';
+    const isManualRed = row.manualStatus === 'red';
+    const basvuruDisabled = isManualRed ? 'disabled' : '';
+    const dilekDisabled = (isManualRed || !row.basvuru) ? 'disabled' : '';
+
+    const card = document.createElement('div');
+    card.className = `m-card ${statusClass}`;
+    card.dataset.id = row.id;
+    card.innerHTML = `
+      <div class="m-card-header">
+        <div class="m-card-num">${idx + 1}</div>
+        <div class="m-card-name" contenteditable="true" data-field="name" data-id="${row.id}" data-placeholder="Ad Soyad yazın...">${row.name}</div>
+        <span class="status-badge ${badgeClass}" style="font-size:11px; padding:4px 10px;">${getStatusLabel(status)}</span>
+        <button class="m-card-delete" onclick="deleteRow(${row.id})" title="Sil">
+          <i class="ph-bold ph-trash"></i>
+        </button>
+      </div>
+
+      <div class="m-card-row">
+        <div class="m-card-field">
+          <div class="m-card-label">Yaş</div>
+          <div class="m-card-value" contenteditable="true" data-field="age" data-id="${row.id}" data-placeholder="—">${row.age}</div>
+        </div>
+        <div class="m-card-field">
+          <div class="m-card-label">Oda No</div>
+          <div class="m-card-value" contenteditable="true" data-field="room" data-id="${row.id}" data-placeholder="—">${row.room}</div>
+        </div>
+      </div>
+
+      <div class="m-card-checks">
+        <div class="m-check-item">
+          <div class="custom-check">
+            <input type="checkbox" ${row.basvuru ? 'checked' : ''} ${basvuruDisabled} onchange="toggleCheck(${row.id}, 'basvuru', this.checked)" />
+          </div>
+          <label onclick="this.previousElementSibling.querySelector('input').click()">Başvuru</label>
+        </div>
+        <div class="m-check-item">
+          <div class="custom-check">
+            <input type="checkbox" ${row.dilek ? 'checked' : ''} ${dilekDisabled} onchange="toggleCheck(${row.id}, 'dilek', this.checked)" />
+          </div>
+          <label onclick="this.previousElementSibling.querySelector('input').click()">Dilek</label>
+        </div>
+      </div>
+
+      <div class="m-card-notes">
+        <div class="m-card-label" style="margin-bottom:4px;">Notlar</div>
+        <div class="m-card-value" contenteditable="true" data-field="notes" data-id="${row.id}" data-placeholder="Not ekleyin...">${row.notes}</div>
+      </div>
+
+      <div class="m-card-footer">
+        <div class="m-card-status-actions">
+          <button class="m-status-btn yellow-btn ${isManualYellow ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'yellow')">
+            <i class="ph-fill ph-warning-circle"></i> Müsait Değil
+          </button>
+          <button class="m-status-btn red-btn ${isManualRed ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'red')">
+            <i class="ph-fill ph-x-circle"></i> Alınmayacak
+          </button>
+        </div>
+      </div>
+    `;
+    mobileCards.appendChild(card);
+  });
+
+  // Attach blur listeners for ALL editable cells (desktop + mobile)
+  document.querySelectorAll('.editable-cell, .m-card-name, .m-card-value').forEach(cell => {
+    cell.addEventListener('blur', function() {
+      const id = parseInt(this.dataset.id);
+      const field = this.dataset.field;
+      if (!field) return;
+      const row = rows.find(r => r.id === id);
+      if (row) {
+        row[field] = this.innerText.trim();
+        saveData();
+      }
+    });
+    // Prevent enter from adding new lines in single-line fields
+    cell.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && this.dataset.field !== 'notes') {
+        e.preventDefault();
+        this.blur();
+      }
+    });
+  });
+
+  updateStats();
+}
+
+// ─── TOGGLE CHECKBOX ─────────────────────────────────────────────────────────
+function toggleCheck(id, field, checked) {
+  const row = rows.find(r => r.id === id);
+  if (!row) return;
+
+  row[field] = checked;
+
+  // If basvuru is unchecked, also uncheck dilek
+  if (field === 'basvuru' && !checked) {
+    row.dilek = false;
+  }
+
+  // If a checkbox is being checked, clear any manual status
+  if (checked && row.manualStatus) {
+    row.manualStatus = null;
+  }
+
+  renderTable();
+  saveData();
+}
+
+// ─── MANUAL STATUS ───────────────────────────────────────────────────────────
+function setManualStatus(id, status) {
+  const row = rows.find(r => r.id === id);
+  if (!row) return;
+
+  // Toggle: if already this status, clear it
+  if (row.manualStatus === status) {
+    row.manualStatus = null;
+  } else {
+    row.manualStatus = status;
+    // If setting red, uncheck both
+    if (status === 'red') {
+      row.basvuru = false;
+      row.dilek = false;
+    }
+  }
+
+  renderTable();
+  saveData();
+}
+
+// ─── DELETE ROW ──────────────────────────────────────────────────────────────
+function deleteRow(id) {
+  const row = rows.find(r => r.id === id);
+  const name = row && row.name ? row.name : 'Bu kayıt';
+  if (!confirm(`"${name}" silinsin mi?`)) return;
+  rows = rows.filter(r => r.id !== id);
+  renderTable();
+  saveData();
+  showToast('Kayıt silindi');
+}
+
+// ─── UPDATE STATS ────────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('heroTotal').textContent = rows.length;
+  document.getElementById('heroReady').textContent = rows.filter(r => getStatus(r) === 'green').length;
+  document.getElementById('heroDone').textContent = rows.filter(r => getStatus(r) === 'blue').length;
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.querySelector('span').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+loadData();
+renderTable();
+</script>
+</body>
+</html>
