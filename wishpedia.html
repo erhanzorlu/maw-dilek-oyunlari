@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wishpedia — Karakter Kütüphanesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+/* ─────────────────────────────────────────
+   HEART INTRO OVERLAY
+───────────────────────────────────────── */
+#heartIntro {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #07001a;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  transition: opacity .5s ease;
+}
+#heartIntro.fade-out { opacity: 0; pointer-events: none; }
+
+#heartBurst {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 160px; height: 160px;
+  margin-left: -80px; margin-top: -80px;
+  background: #fdf4ff; /* var(--bg-base) fallback */
+  clip-path: path("M80,150 C80,150 10,100 10,50 C10,20 40,0 60,0 C75,0 80,10 80,20 C80,10 85,0 100,0 C120,0 150,20 150,50 C150,100 80,150 80,150 Z");
+  transform: scale(0);
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 0 80px 40px rgba(255,150,200,.9), 0 0 200px 100px rgba(236,72,153,.6);
+}
+#heartBurst.go {
+  animation: burstGrow .8s cubic-bezier(.55,0,.1,1) forwards;
+}
+@keyframes burstGrow {
+  0%   { transform: scale(0);   opacity: 1; }
+  100% { transform: scale(55);  opacity: 1; }
+}
+
+:root {
+  --ink:        #1e0a3c;
+  --ink-mid:    #4a2c6e;
+  --ink-dim:    rgba(75,30,110,.65);
+  --ink-faint:  rgba(75,30,110,.35);
+  --bg-base:    #fdf4ff;
+  --bg-card:    rgba(255,255,255,.75);
+  --border:     rgba(180,100,255,.18);
+  --accent-1:   #9333ea;
+  --accent-2:   #6366f1;
+  --accent-3:   #ec4899;
+  --accent-4:   #10b981;
+  --accent-5:   #f59e0b;
+  --accent-6:   #3b82f6;
+  --glow-1:     rgba(147,51,234,.4);
+  --glow-2:     rgba(99,102,241,.35);
+  --glow-3:     rgba(236,72,153,.35);
+  --card-radius: 20px;
+  --ease-out: cubic-bezier(.22,1,.36,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-base);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  cursor: default;
+}
+
+/* ─── SIDEBAR & MAIN WRAPPER ─── */
+.sidebar {
+  width: 268px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(180, 100, 255, 0.2);
+  padding: 28px 16px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 30;
+  position: relative;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  margin-bottom: 24px;
+}
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0065c3, #004b93);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #ffb800;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,101,195,0.3);
+}
+.brand-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #004b93;
+  line-height: 1.2;
+}
+.brand-text span {
+  display: block;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  margin-bottom: 2px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.18s;
+  text-decoration: none;
+}
+.menu-item i {
+  font-size: 19px;
+  transition: transform 0.18s;
+}
+.menu-item:hover {
+  background: rgba(147, 51, 234, 0.08);
+  color: var(--accent-1);
+}
+.menu-item:hover i {
+  transform: translateX(2px);
+}
+.menu-item.active {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(236, 72, 153, 0.15));
+  color: var(--accent-1);
+  box-shadow: inset 3px 0 0 var(--accent-1);
+}
+.sidebar-close {
+  display: none;
+  position: absolute;
+  top: 18px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  background: #fdf4ff;
+  border: none;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 15px;
+  transition: 0.2s;
+}
+.sidebar-close:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 29;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.sidebar-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  position: relative;
+  z-index: 10;
+}
+.top-bar-mobile {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(180, 100, 255, 0.18);
+  z-index: 20;
+}
+.hamburger {
+  width: 38px;
+  height: 38px;
+  background: none;
+  border: 1px solid rgba(180, 100, 255, 0.25);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 18px;
+  transition: 0.2s;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 30;
+    transform: translateX(-100%);
+    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-overlay {
+    display: block;
+  }
+  .sidebar-close {
+    display: flex !important;
+  }
+  .top-bar-mobile {
+    display: flex;
+  }
+}
+
+.cosmos { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.cosmos-layer { position: absolute; inset: 0; }
+.cosmos-nebula {
+  background:
+    radial-gradient(ellipse 70% 55% at 8% 15%,  rgba(216,180,254,.55) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 92% 20%,  rgba(251,207,232,.6)  0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 80% 85%,  rgba(165,180,252,.45) 0%, transparent 55%),
+    radial-gradient(ellipse 65% 45% at 15% 85%,  rgba(167,243,208,.4)  0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 50% 50%,  rgba(253,224,255,.35) 0%, transparent 60%),
+    linear-gradient(160deg, #fff8fe 0%, #f3e8ff 30%, #fce7f3 55%, #ede9fe 80%, #f0fdf4 100%);
+  animation: nebulaShift 20s ease-in-out infinite alternate;
+}
+@keyframes nebulaShift {
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.03) rotate(.5deg); }
+  100% { transform: scale(1.015) rotate(-.4deg); }
+}
+.cosmos-blobs { position: absolute; inset: 0; }
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: .35;
+  animation: blobDrift var(--bd,18s) ease-in-out infinite alternate var(--bdl,0s);
+}
+@keyframes blobDrift {
+  0%   { transform: translate(0,0) scale(1); }
+  100% { transform: translate(var(--bx,30px), var(--by,20px)) scale(1.08); }
+}
+
+.page { position: relative; z-index: 10; }
+
+.hero {
+  min-height: 80svh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 6rem 1.5rem 4rem;
+  position: relative;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: linear-gradient(135deg, rgba(147,51,234,.12), rgba(236,72,153,.1));
+  border: 1.5px solid rgba(147,51,234,.3);
+  border-radius: 100px;
+  padding: .4rem 1.2rem;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .07em;
+  color: var(--accent-1);
+  margin-bottom: 2.5rem;
+  animation: fadeSlideUp .9s var(--ease-out) both;
+  box-shadow: 0 4px 20px rgba(147,51,234,.12);
+}
+.hero-badge-dot {
+  width: 7px; height: 7px;
+  background: var(--accent-3);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--accent-3);
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+.hero-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1.2;
+  max-width: 820px;
+  margin-bottom: 1.8rem;
+  animation: fadeSlideUp 1s var(--ease-out) .2s both;
+  background: linear-gradient(135deg, #5b21b6 0%, #9333ea 35%, #ec4899 65%, #f59e0b 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-title em { font-style: italic; }
+.hero-sub {
+  font-size: clamp(.95rem, 2vw, 1.15rem);
+  font-weight: 400;
+  color: var(--ink-mid);
+  max-width: 600px;
+  line-height: 1.8;
+  animation: fadeSlideUp 1s var(--ease-out) .4s both;
+  margin-bottom: 3rem;
+}
+
+.search-container {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    animation: fadeSlideUp 1s var(--ease-out) .6s both;
+}
+
+.search-input-wrapper {
+    position: relative;
+    background: rgba(255,255,255,0.7);
+    border-radius: 30px;
+    padding: 6px;
+    display: flex;
+    box-shadow: 0 8px 32px rgba(147,51,234,.15);
+    border: 1.5px solid rgba(147,51,234,.2);
+    backdrop-filter: blur(12px);
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1rem;
+    border-radius: 25px;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    background: transparent;
+}
+
+.search-input::placeholder { color: var(--ink-dim); }
+
+.search-btn {
+    background: linear-gradient(135deg, #9333ea, #ec4899);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 0 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+}
+.search-btn:hover { box-shadow: 0 4px 15px rgba(147,51,234,.4); transform: scale(1.02); }
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+.section-label { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-2); margin-bottom: .6rem; font-weight: 600; text-align: center; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 300; margin-bottom: 3rem; color: var(--ink); text-align: center;}
+
+.tags-bar { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-bottom: 3rem; }
+.tag-chip {
+  background: rgba(255,255,255,.6); border: 1.5px solid rgba(147,51,234,.2);
+  border-radius: 100px; padding: .55rem 1.2rem; font-size: .85rem; color: var(--ink-mid);
+  cursor: pointer; transition: all .25s var(--ease-out);
+  font-family: 'DM Sans', sans-serif; font-weight: 500; backdrop-filter: blur(8px);
+}
+.tag-chip:hover { border-color: var(--accent-1); color: var(--accent-1); background: rgba(147,51,234,.08); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(147,51,234,.15); }
+.tag-chip.active { background: linear-gradient(135deg, rgba(147,51,234,.15), rgba(236,72,153,.12)); border-color: var(--accent-1); color: var(--accent-1); box-shadow: 0 4px 16px rgba(147,51,234,.2); font-weight: 600; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.8rem; }
+
+.card {
+  background: var(--bg-card); border: 1.5px solid rgba(180,100,255,.15);
+  border-radius: var(--card-radius); overflow: hidden; cursor: pointer;
+  transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out), border-color .3s;
+  position: relative; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(147,51,234,.07), 0 1px 4px rgba(0,0,0,.06);
+}
+.card:hover {
+  transform: translateY(-8px) scale(1.02) rotate(.2deg);
+  box-shadow: 0 20px 60px rgba(147,51,234,.2), 0 0 0 2px rgba(147,51,234,.3), 0 0 40px var(--card-glow, var(--glow-1));
+  border-color: rgba(147,51,234,.4);
+}
+
+.card-poster { width: 100%; aspect-ratio: 4/3; object-fit: cover; object-position: top center; display: block; transition: transform .6s var(--ease-out); }
+.card:hover .card-poster { transform: scale(1.05); }
+
+.card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: .7rem;
+    font-weight: 600;
+    z-index: 5;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.card-body { padding: 1.2rem 1.2rem; background: rgba(255,255,255,.6); position: relative; z-index: 2; }
+.card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: .5rem; line-height: 1.3; }
+.card-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: 1rem; }
+.card-tag { font-size: .65rem; padding: .25rem .7rem; border-radius: 100px; border: 1.5px solid; letter-spacing: .04em; font-weight: 600; }
+.card-tag.prenses   { border-color: #ec4899; color: #be185d; background: #fce7f3; }
+.card-tag.sihir     { border-color: #9333ea; color: #7e22ce; background: #f3e8ff; }
+.card-tag.kahraman  { border-color: #3b82f6; color: #1d4ed8; background: #dbeafe; }
+.card-tag.aksiyon   { border-color: #f59e0b; color: #b45309; background: #fef3c7; }
+.card-tag.oyun      { border-color: #10b981; color: #047857; background: #d1fae5; }
+
+.card-footer { font-size: .78rem; color: var(--accent-1); border-top: 1px solid rgba(147,51,234,.12); padding-top: .75rem; display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.card-footer-icon { font-size: 1rem; }
+.card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,.4) 0%, transparent 50%); pointer-events: none; z-index: 1; border-radius: var(--card-radius); }
+
+.card-edit-btn {
+  position: absolute; top: 12px; left: 12px; z-index: 5;
+  background: rgba(255,255,255,.85); backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(147,51,234,.25); border-radius: 10px;
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  color: var(--accent-1); font-size: .9rem; cursor: pointer;
+  opacity: 0; transform: translateY(-5px);
+  transition: all .3s var(--ease-out);
+}
+.card:hover .card-edit-btn { opacity: 1; transform: translateY(0); }
+.card-edit-btn:hover { background: var(--accent-1); color: white; border-color: var(--accent-1); }
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display: flex; justify-content: center; gap: 3rem;
+  padding: 2.5rem 1.5rem;
+  max-width: 800px; margin: 0 auto;
+  animation: fadeSlideUp 1s var(--ease-out) .8s both;
+}
+.stat-item { text-align: center; }
+.stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem; font-weight: 600;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+.stat-label {
+  font-size: .8rem; color: var(--ink-dim); font-weight: 500;
+  margin-top: .3rem; letter-spacing: .05em;
+}
+@media (max-width: 500px) {
+  .stats-bar { gap: 1.5rem; }
+  .stat-number { font-size: 1.8rem; }
+}
+
+
+/* --- MODAL (CHARACTER DETAILS) --- */
+.modal-bg {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(100,30,150,.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  align-items: center; justify-content: center; padding: 1.5rem;
+  animation: fadeIn .3s ease;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: rgba(255,255,255,.92); border: 1.5px solid rgba(147,51,234,.25);
+  border-radius: 24px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 40px 100px rgba(147,51,234,.25), 0 8px 32px rgba(0,0,0,.1);
+  animation: modalPop .45s var(--ease-out) both; position: relative; backdrop-filter: blur(20px);
+}
+@keyframes modalPop { from { opacity:0; transform: scale(.88) translateY(20px); } to { opacity:1; transform: scale(1) translateY(0); } }
+
+.modal-close {
+  position: absolute; top: 1.2rem; right: 1.2rem;
+  background: rgba(147,51,234,.12); border: 1px solid rgba(147,51,234,.2); z-index: 10;
+  border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; color: var(--accent-1);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s;
+}
+.modal-close:hover { background: rgba(147,51,234,.3); color: white; }
+
+.modal-hero { height: 250px; background-size: cover; background-position: top center; position: relative; }
+.modal-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to top, rgba(255,255,255,.92), transparent); }
+
+.modal-body { padding: 0 2rem 2rem; position: relative; z-index: 2; margin-top: -50px; }
+
+.modal-header-group { display: flex; gap: 20px; align-items: flex-end; margin-bottom: 2rem; }
+.modal-avatar { width: 120px; height: 120px; border-radius: 20px; border: 4px solid rgba(255,255,255,.92); box-shadow: 0 10px 25px rgba(147,51,234,.2); background-size: cover; background-position: top center; }
+.modal-title-wrap h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 600; color: var(--ink); line-height: 1.1; margin-bottom: .2rem; }
+.modal-title-wrap p { font-size: .9rem; color: var(--accent-1); letter-spacing: .05em; font-weight: 600; text-transform: uppercase; }
+
+.modal-grid { display: grid; grid-template-columns: 2fr 1.2fr; gap: 2rem; }
+@media (max-width: 768px) {
+    .modal-grid { grid-template-columns: 1fr; }
+    .modal-header-group { flex-direction: column; align-items: center; text-align: center; }
+}
+
+.box { background: rgba(255,255,255,.6); border: 1.5px solid rgba(147,51,234,.15); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.box.highlight { background: linear-gradient(to right bottom, rgba(243,232,255,.7), rgba(252,231,243,.7)); border-color: rgba(147,51,234,.3); }
+
+.box-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
+.highlight .box-title { color: var(--accent-1); }
+
+.box-list { list-style: none; }
+.box-list li { position: relative; padding-left: 1.5rem; margin-bottom: .8rem; font-size: .9rem; color: var(--ink-mid); line-height: 1.6; }
+.box-list li::before { content: '✦'; position: absolute; left: 0; color: var(--accent-1); font-size: .8rem; top: 2px; }
+
+.faq-item { margin-bottom: 1.2rem; border-bottom: 1px solid rgba(147,51,234,.1); padding-bottom: 1.2rem; }
+.faq-item:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+.faq-q { font-weight: 600; color: var(--ink); margin-bottom: .4rem; font-size: .95rem; }
+.faq-a { font-size: .85rem; color: var(--ink-mid); line-height: 1.6; }
+
+/* ── INLINE EDIT MODE ── */
+.edit-field {
+    background: rgba(255,255,255,0.7);
+    border: 1.5px solid rgba(147,51,234,0.2);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.3s;
+    width: 100%;
+    resize: vertical;
+}
+.edit-field:focus { border-color: var(--accent-1); box-shadow: 0 0 0 3px rgba(147,51,234,0.1); }
+.edit-field-label { font-size: .78rem; font-weight: 600; color: var(--accent-1); margin-bottom: .4rem; display: block; letter-spacing: .04em; }
+
+.modal-view-mode { display: block; }
+.modal-edit-mode { display: none; }
+.modal.editing .modal-view-mode { display: none; }
+.modal.editing .modal-edit-mode { display: block; }
+
+.edit-actions { display: flex; gap: .8rem; margin-top: 1.5rem; }
+.btn-save {
+    flex: 1; background: linear-gradient(135deg, #9333ea, #ec4899);
+    color: white; border: none; border-radius: 100px;
+    padding: 12px 20px; font-size: .95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.3s var(--ease-out);
+}
+.btn-save:hover { box-shadow: 0 4px 15px rgba(147,51,234,.4); transform: translateY(-2px); }
+.btn-cancel {
+    flex: 1; background: rgba(147,51,234,.08);
+    color: var(--accent-1); border: 1.5px solid rgba(147,51,234,.2); border-radius: 100px;
+    padding: 12px 20px; font-size: .95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.3s var(--ease-out);
+}
+.btn-cancel:hover { background: rgba(147,51,234,.15); }
+
+.modal-edit-toggle {
+    position: absolute; top: 1.2rem; right: 4rem; z-index: 10;
+    background: rgba(147,51,234,.12); border: 1px solid rgba(147,51,234,.2);
+    border-radius: 50%; width: 40px; height: 40px; font-size: 1rem; color: var(--accent-1);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s;
+}
+.modal-edit-toggle:hover { background: var(--accent-1); color: white; }
+.modal.editing .modal-edit-toggle { display: none; }
+
+.edit-notice {
+    background: linear-gradient(135deg, rgba(147,51,234,.08), rgba(236,72,153,.06));
+    border: 1.5px solid rgba(147,51,234,.2); border-radius: 12px;
+    padding: .8rem 1rem; font-size: .78rem; color: var(--ink-mid); margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: .5rem;
+}
+.edit-notice i { color: var(--accent-1); }
+
+/* ── FOOTER & SUGGEST ── */
+.footer { text-align: center; padding: 3rem 1.5rem; font-size: .82rem; color: var(--ink-dim); border-top: 1px solid rgba(147,51,234,.1); background: linear-gradient(to bottom, rgba(243,232,255,.3), transparent); }
+.suggest-link { display: inline-flex; align-items: center; gap: .6rem; background: linear-gradient(135deg, rgba(147,51,234,.1), rgba(236,72,153,.08)); border: 1.5px solid rgba(147,51,234,.25); border-radius: 100px; padding: .65rem 1.6rem; font-size: .85rem; font-weight: 600; color: var(--accent-1); text-decoration: none; transition: all .3s var(--ease-out); box-shadow: 0 4px 20px rgba(147,51,234,.1); letter-spacing: .02em; margin-bottom: 1.5rem; cursor: pointer; }
+.suggest-link:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(147,51,234,.22); border-color: rgba(147,51,234,.45); background: linear-gradient(135deg, rgba(147,51,234,.15), rgba(236,72,153,.12)); }
+</style>
+</head>
+<body>
+
+<!-- HEART INTRO -->
+<div id="heartIntro">
+  <div id="heartBurst"></div>
+</div>
+
+<!-- COSMOS BACKGROUND -->
+<div class="cosmos">
+  <div class="cosmos-layer cosmos-nebula"></div>
+  <div class="cosmos-blobs">
+    <div class="blob" style="width:500px;height:500px;top:-100px;left:-150px;background:rgba(216,180,254,.5);--bd:22s;--bx:40px;--by:30px;"></div>
+    <div class="blob" style="width:400px;height:400px;top:20%;right:-100px;background:rgba(251,207,232,.55);--bd:17s;--bdl:-5s;--bx:-30px;--by:50px;"></div>
+    <div class="blob" style="width:350px;height:350px;bottom:10%;left:10%;background:rgba(167,243,208,.45);--bd:19s;--bdl:-8s;--bx:60px;--by:-20px;"></div>
+  </div>
+</div>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- SOL MENÜ -->
+<div class="sidebar" id="sidebar">
+  <button class="sidebar-close" id="sidebarClose" onclick="closeSidebar()"><i class="ph-bold ph-x"></i></button>
+
+  <div class="brand">
+    <div class="brand-icon"><i class="ph-fill ph-star"></i></div>
+    <div class="brand-text">Make-A-Wish <span>Türkiye</span></div>
+  </div>
+
+  <a href="guvenli-mekanlar.html" class="menu-item"><i class="ph-fill ph-shield-check"></i> Güvenli Mekanlar</a>
+  <a href="duyurular.html" class="menu-item"><i class="ph-fill ph-megaphone"></i> Duyurular</a>
+  <a href="wishpedia.html" class="menu-item active"><i class="ph-fill ph-sparkle"></i> Wishpedia</a>
+  <a href="hastane-dilek.html" class="menu-item"><i class="ph-fill ph-hospital"></i> Hastane Dilek Alımı</a>
+</div>
+
+<!-- ANA WRAPPER -->
+<div class="main-wrapper">
+  <!-- TOP BAR MOBILE -->
+  <div class="top-bar-mobile">
+    <button class="hamburger" id="hamburgerBtn" onclick="openSidebar()"><i class="ph-bold ph-list"></i></button>
+    <div style="font-family:'Playfair Display',serif; font-weight:700; color:#004b93; font-size:17px;">Make-A-Wish</div>
+  </div>
+
+  <div class="page" style="flex:1; overflow-y:auto;">
+  <!-- HERO (compact) -->
+  <section class="hero" style="min-height: auto; padding: 3.5rem 1.5rem 2rem;">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Wishpedia: Karakter Kütüphanesi
+    </div>
+
+    <div class="search-container">
+        <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:20px; top:50%; transform:translateY(-50%); color:var(--ink-dim);"></i>
+            <input type="text" class="search-input" style="padding-left: 45px;" placeholder="Elsa, Spiderman, Mario...">
+            <button class="search-btn">Keşfet</button>
+        </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-number">142</div>
+      <div class="stat-label">Karakter</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">580+</div>
+      <div class="stat-label">Dilek İpucu</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">12</div>
+      <div class="stat-label">Evren</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">94</div>
+      <div class="stat-label">Gönüllü Katkısı</div>
+    </div>
+  </div>
+
+  <!-- CATALOG -->
+  <section class="section">
+    <p class="section-label">✦ Karakter Arşivi</p>
+    <h2 class="section-title">Hayal Gücünün Sınırlarında Gezinin</h2>
+
+    <div class="tags-bar">
+      <button class="tag-chip active">✦ Tümü</button>
+      <button class="tag-chip">🏰 Çizgi Film & Animasyon</button>
+      <button class="tag-chip">🦸 Süper Kahramanlar</button>
+      <button class="tag-chip">🎮 Oyun Evreni</button>
+      <button class="tag-chip">👑 Prensesler</button>
+    </div>
+
+    <div class="grid">
+      <!-- Card 1 -->
+      <div class="card" style="--card-glow: rgba(192,132,252,.3);" onclick="openModal('elsa')">
+        <button class="card-edit-btn" onclick="event.stopPropagation(); openModal('elsa', true)" title="Güncelle"><i class="fa-solid fa-pen"></i></button>
+        <span class="card-badge">Karlar Ülkesi</span>
+        <img class="card-poster" src="https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_.jpg" alt="Elsa">
+        <div class="card-body">
+            <h3 class="card-title">Elsa</h3>
+            <div class="card-tags">
+                <span class="card-tag prenses">Prenses</span>
+                <span class="card-tag sihir">Sihir</span>
+            </div>
+            <div class="card-footer">
+                <span>✦ Film Özeti</span>
+                <span>İncele <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card" style="--card-glow: rgba(59,130,246,.3);" onclick="openModal('spiderman')">
+        <button class="card-edit-btn" onclick="event.stopPropagation(); openModal('spiderman', true)" title="Güncelle"><i class="fa-solid fa-pen"></i></button>
+        <span class="card-badge">Marvel</span>
+        <img class="card-poster" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYsl9S-Vbt1KQ3JrV7LtobF7-reqz9VU61wK28NZDvGQ&s=10" alt="Spiderman">
+        <div class="card-body">
+            <h3 class="card-title">Spider-Man</h3>
+            <div class="card-tags">
+                <span class="card-tag kahraman">Kahraman</span>
+                <span class="card-tag aksiyon">Aksiyon</span>
+            </div>
+            <div class="card-footer">
+                <span>✦ 8 Dilek İpucu</span>
+                <span>İncele <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card" style="--card-glow: rgba(16,185,129,.3);" onclick="openModal('mario')">
+        <button class="card-edit-btn" onclick="event.stopPropagation(); openModal('mario', true)" title="Güncelle"><i class="fa-solid fa-pen"></i></button>
+        <span class="card-badge">Nintendo</span>
+        <img class="card-poster" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWfJy3Z4wrtywJgcJ6QeLHrF5-aLYOP6MByDds13WUjw&s=10" alt="Super Mario">
+        <div class="card-body">
+            <h3 class="card-title">Super Mario</h3>
+            <div class="card-tags">
+                <span class="card-tag oyun">Oyun</span>
+                <span class="card-tag aksiyon">Macera</span>
+            </div>
+            <div class="card-footer">
+                <span>✦ 5 Dilek İpucu</span>
+                <span>İncele <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+        </div>
+      </div>
+      
+      <!-- Card 4 -->
+      <div class="card" style="--card-glow: rgba(245,158,11,.3);" onclick="openModal('harrypotter')">
+        <button class="card-edit-btn" onclick="event.stopPropagation(); openModal('harrypotter', true)" title="Güncelle"><i class="fa-solid fa-pen"></i></button>
+        <span class="card-badge">Harry Potter</span>
+        <img class="card-poster" src="https://static.independent.co.uk/s3fs-public/thumbnails/image/2013/09/12/17/potter.jpg?width=1200" alt="Harry Potter">
+        <div class="card-body">
+            <h3 class="card-title">Harry Potter</h3>
+            <div class="card-tags">
+                <span class="card-tag sihir">Büyücü</span>
+                <span class="card-tag aksiyon">Fantastik</span>
+            </div>
+            <div class="card-footer">
+                <span>✦ 15 Dilek İpucu</span>
+                <span>İncele <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div style="margin-bottom: 1.8rem;">
+      <a class="suggest-link" onclick="openModalNew()">
+        <span>✦</span>
+        Yeni Bir Karakter Öner
+        <span style="opacity:.65;">→</span>
+      </a>
+    </div>
+    <p>✦ Wishpedia — Gönüllüler için sevgiyle hazırlandı ✦</p>
+  </footer>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <button class="modal-edit-toggle" onclick="toggleEditMode()" title="Düzenle"><i class="fa-solid fa-pen"></i></button>
+    
+    <div class="modal-hero" id="mHero" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_.jpg');"></div>
+    
+    <div class="modal-body">
+        <div class="modal-header-group">
+            <div class="modal-avatar" id="mAvatar" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_.jpg');"></div>
+            <div class="modal-title-wrap">
+                <!-- VIEW MODE -->
+                <div class="modal-view-mode">
+                    <p id="mUniverse">Karlar Ülkesi Evreni</p>
+                    <h2 id="mTitle">Elsa</h2>
+                </div>
+                <!-- EDIT MODE -->
+                <div class="modal-edit-mode" style="flex:1; width:100%;">
+                    <label class="edit-field-label">Karakter Adı</label>
+                    <input class="edit-field" id="editTitle" placeholder="Karakter adı">
+                    <label class="edit-field-label" style="margin-top:.8rem;">Evren / Yapım</label>
+                    <input class="edit-field" id="editUniverse" placeholder="Örn: Karlar Ülkesi (Frozen)">
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-grid">
+            <div>
+                <!-- VIEW: Dilek İpuçları / Özet -->
+                <div class="box highlight modal-view-mode">
+                    <h3 class="box-title" id="mIdeasTitle">✦ Dilek & Etkinlik İpuçları</h3>
+                    <p style="font-size:.85rem; color:var(--ink-dim); margin-bottom: 1rem;" id="mIdeasSubtext">Gönüllülerimizden altın değerinde fikirler:</p>
+                    <div id="mIdeas"></div>
+                </div>
+                <!-- EDIT: Dilek İpuçları -->
+                <div class="box highlight modal-edit-mode">
+                    <h3 class="box-title">✦ Dilek & Etkinlik İpuçları</h3>
+                    <label class="edit-field-label">Her ipucu yeni bir satırda:</label>
+                    <textarea class="edit-field" id="editIdeas" rows="5" placeholder="Hediyeyi verirken 'Sana Olaf'tan kargo getirdim' diyebilirsiniz.&#10;Mekanı mavi balonlarla süsleyebilirsiniz."></textarea>
+                </div>
+
+                <!-- VIEW: SSS -->
+                <div class="box modal-view-mode">
+                    <h3 class="box-title">❓ Sıkça Sorulan Sorular</h3>
+                    <div id="mFaqs"></div>
+                </div>
+                <!-- EDIT: SSS -->
+                <div class="box modal-edit-mode">
+                    <h3 class="box-title">❓ Sıkça Sorulan Sorular</h3>
+                    <label class="edit-field-label">Soru</label>
+                    <input class="edit-field" id="editFaqQ1" placeholder="Çocuğun sorabileceği bir soru">
+                    <label class="edit-field-label" style="margin-top:.6rem;">Cevap</label>
+                    <textarea class="edit-field" id="editFaqA1" rows="2" placeholder="Gönüllünün verebileceği yaratıcı cevap"></textarea>
+                    <label class="edit-field-label" style="margin-top:1rem;">Soru 2 (Opsiyonel)</label>
+                    <input class="edit-field" id="editFaqQ2" placeholder="İkinci soru">
+                    <label class="edit-field-label" style="margin-top:.6rem;">Cevap 2</label>
+                    <textarea class="edit-field" id="editFaqA2" rows="2" placeholder="İkinci cevap"></textarea>
+                </div>
+            </div>
+
+            <div>
+                <!-- VIEW: Profil -->
+                <div class="box modal-view-mode">
+                    <h3 class="box-title">✦ Profil Özeti</h3>
+                    <ul class="box-list" id="mProfile" style="margin-bottom: 1.5rem;"></ul>
+                    <a class="suggest-link" style="width:100%; justify-content:center; margin:0;" onclick="toggleEditMode()">✏️ Düzenle / Katkıda Bulun</a>
+                </div>
+                <!-- EDIT: Profil -->
+                <div class="box modal-edit-mode">
+                    <h3 class="box-title">✦ Profil Özeti</h3>
+                    <label class="edit-field-label">Kişilik</label>
+                    <input class="edit-field" id="editPersonality" placeholder="Koruyucu, asil, cesur...">
+                    <label class="edit-field-label" style="margin-top:.6rem;">Özel Güç</label>
+                    <input class="edit-field" id="editPower" placeholder="Buz ve kar yaratabilme...">
+                    <label class="edit-field-label" style="margin-top:.6rem;">Dostlar / Aile</label>
+                    <input class="edit-field" id="editFriends" placeholder="Anna, Olaf, Kristoff...">
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT MODE: Actions -->
+        <div class="modal-edit-mode">
+            <div class="edit-notice">
+                <i class="fa-solid fa-circle-info"></i>
+                Yaptığınız değişiklikler editör onayından sonra yayınlanacaktır.
+            </div>
+            <div class="edit-actions">
+                <button class="btn-cancel" onclick="toggleEditMode()">İptal</button>
+                <button class="btn-save" onclick="saveEdits()">Gönder ✦</button>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Heart Intro Animation
+setTimeout(() => {
+  const intro = document.getElementById('heartIntro');
+  const burst = document.getElementById('heartBurst');
+  burst.classList.add('go');
+  setTimeout(() => { intro.classList.add('fade-out'); }, 600);
+}, 300);
+
+// Modal Data
+const charData = {
+    elsa: {
+        title: "Elsa",
+        universe: "Karlar Ülkesi (Frozen) Evreni",
+        image: "https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_.jpg",
+        isSummary: true,
+        boxTitle: "✦ Yapım Özeti (Karlar Ülkesi)",
+        boxSubtext: "Animasyon filminin kısa hikaye özeti:",
+        summaryText: "Karlar Ülkesi (Frozen), krallıkları sonsuz bir kışa mahkûm olan Arendelle'de geçer. Doğuştan buz ve kar yaratma sihrine sahip olan Elsa, gücünü kontrol etmekte zorlanıp istemeden krallığı dondurur ve Kuzey Dağı'na çekilir. Cesur kız kardeşi Anna; sevimli kardan adam Olaf, dağ adamı Kristoff ve sadık geyiği Sven ile birlikte ablası Elsa'yı bulup krallığa yaz mevsimini geri getirmek için büyülü bir yolculuğa çıkar. Film, kardeş sevgisinin ve kendini kabul etmenin en güçlü sihir olduğunu anlatır.",
+        faqs: [
+            {q: "Elsa'nın sihirli güçleri nereden geliyor?", a: "Elsa doğuştan bu güçlere sahip. Doğanın bir armağanı ve sevgiyle kontrol edilebiliyor."},
+            {q: "Olaf nerede, neden gelmedi?", a: "Olaf dışarıda sıcak çikolata içiyordu, güneşte erimesin diye onu Arendelle'de bıraktık ama sana çok selam söyledi!"}
+        ],
+        profile: {
+            personality: "Koruyucu, asil, cesur.",
+            power: "Buz ve kar yaratabilme.",
+            friends: "Anna, Olaf, Kristoff."
+        }
+    },
+    spiderman: {
+        title: "Spider-Man",
+        universe: "Marvel Evreni",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYsl9S-Vbt1KQ3JrV7LtobF7-reqz9VU61wK28NZDvGQ&s=10",
+        ideas: [
+            'Hediyeyi teslim ederken ona gizli bir ajan/kahraman görev mektubu verebilirsiniz: <strong>"Nick Fury seni takıma çağırıyor!"</strong>',
+            'Hediye kutusunun etrafını beyaz iplerle (ağ gibi) sarıp, <strong>"Spider-Man buradaydı, ağlarına takılmış!"</strong> diyebilirsiniz.'
+        ],
+        faqs: [
+            {q: "Gerçek ağ atabiliyor musun?", a: "Şu an ağ atıcılarımın şarjı bitti (veya sıvısı tükendi), o yüzden yedek ekipmanla geldim!"},
+            {q: "Peter Parker sen misin?", a: "Şşşt, bu gizli bir bilgi! Ama evet, aramızda kalsın."}
+        ],
+        profile: {
+            personality: "Esprili, zeki, sorumluluk sahibi.",
+            power: "Ağ atma, duvara tırmanma, örümcek hissi.",
+            friends: "Ned, MJ, Iron Man."
+        }
+    },
+    mario: {
+        title: "Super Mario",
+        universe: "Nintendo Evreni",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWfJy3Z4wrtywJgcJ6QeLHrF5-aLYOP6MByDds13WUjw&s=10",
+        ideas: [
+            'Çocuğa hediye kutusunu verirken <strong>"Soru İşareti Kutusu (?) temalı"</strong> özel bir kutu hazırlayabilirsiniz.',
+            'Etkinlikte mantar ve yıldız figürleri kullanarak <strong>Mantar Krallığı</strong> atmosferi yaratabilirsiniz.'
+        ],
+        faqs: [
+            {q: "Mario'nun şapkası neden kırmızı?", a: "Tesisatçı Mario'nun imza rengidir ve gücünü temsil eder!"}
+        ],
+        profile: {
+            personality: "Cesur, enerjik, neşeli.",
+            power: "Zıplama, mantar güçleri.",
+            friends: "Luigi, Prenses Peach, Yoshi."
+        }
+    },
+    harrypotter: {
+        title: "Harry Potter",
+        universe: "Wizarding World (Hogwarts)",
+        image: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2013/09/12/17/potter.jpg?width=1200",
+        ideas: [
+            'Çocuğa teslim edilecek hediyenin yanına <strong>Hogwarts Kabul Mektubu</strong> (mühürlü) ekleyebilirsiniz.',
+            'Sihirli değnek eşliğinde <strong>"Lumos"</strong> veya <strong>"Expecto Patronum"</strong> diyerek sürprizi başlatabilirsiniz.'
+        ],
+        faqs: [
+            {q: "Hangi binadansın?", a: "Gryffindor! Cesurların binası!"}
+        ],
+        profile: {
+            personality: "Sadık, cesur, mütevazı.",
+            power: "Büyü yapma, süpürge uçurma.",
+            friends: "Ron Weasley, Hermione Granger, Hagrid."
+        }
+    }
+};
+
+let currentCharId = null;
+
+function openModal(id, editMode = false) {
+    const data = charData[id];
+    const modal = document.getElementById('modal');
+    modal.classList.remove('editing');
+    currentCharId = id;
+
+    if(data) {
+        // Fill view mode
+        document.getElementById('mTitle').innerText = data.title;
+        document.getElementById('mUniverse').innerText = data.universe;
+        document.getElementById('mHero').style.backgroundImage = `url('${data.image}')`;
+        document.getElementById('mAvatar').style.backgroundImage = `url('${data.image}')`;
+        
+        if(data.isSummary) {
+            document.getElementById('mIdeasTitle').innerText = data.boxTitle || '✦ Yapım Özeti';
+            document.getElementById('mIdeasSubtext').innerText = data.boxSubtext || 'Hikaye özeti:';
+            document.getElementById('mIdeas').innerHTML = `<p style="font-size:.9rem; color:var(--ink-mid); line-height:1.7;">${data.summaryText}</p>`;
+            document.getElementById('editIdeas').value = data.summaryText;
+        } else {
+            document.getElementById('mIdeasTitle').innerText = '✦ Dilek & Etkinlik İpuçları';
+            document.getElementById('mIdeasSubtext').innerText = 'Gönüllülerimizden altın değerinde fikirler:';
+            document.getElementById('mIdeas').innerHTML = `<ul class="box-list">${data.ideas.map(i => `<li>${i}</li>`).join('')}</ul>`;
+            document.getElementById('editIdeas').value = (data.ideas || []).map(i => i.replace(/<[^>]*>/g, '')).join('\n');
+        }
+        document.getElementById('editPersonality').value = data.profile.personality;
+        document.getElementById('editPower').value = data.profile.power;
+        document.getElementById('editFriends').value = data.profile.friends;
+        document.getElementById('editFaqQ1').value = data.faqs[0] ? data.faqs[0].q : '';
+        document.getElementById('editFaqA1').value = data.faqs[0] ? data.faqs[0].a : '';
+        document.getElementById('editFaqQ2').value = data.faqs[1] ? data.faqs[1].q : '';
+        document.getElementById('editFaqA2').value = data.faqs[1] ? data.faqs[1].a : '';
+    }
+
+    document.getElementById('modalBg').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    if(editMode) {
+        setTimeout(() => modal.classList.add('editing'), 100);
+    }
+}
+
+function openModalNew() {
+    const modal = document.getElementById('modal');
+    modal.classList.remove('editing');
+    currentCharId = null;
+
+    document.getElementById('mTitle').innerText = 'Yeni Karakter';
+    document.getElementById('mUniverse').innerText = 'Evren Belirtilmedi';
+    document.getElementById('mHero').style.backgroundImage = 'linear-gradient(135deg, #f3e8ff, #fce7f3, #ede9fe)';
+    document.getElementById('mAvatar').style.backgroundImage = 'linear-gradient(135deg, #f3e8ff, #fce7f3)';
+    document.getElementById('mIdeas').innerHTML = '<li style="color:var(--ink-dim); font-style:italic;">Henüz ipucu eklenmemiş.</li>';
+    document.getElementById('mFaqs').innerHTML = '<p style="color:var(--ink-dim); font-style:italic; font-size:.85rem;">Henüz SSS eklenmemiş.</p>';
+    document.getElementById('mProfile').innerHTML = '<li style="color:var(--ink-dim); font-style:italic;">Henüz bilgi girilmemiş.</li>';
+
+    // Clear edit fields
+    ['editTitle','editUniverse','editIdeas','editPersonality','editPower','editFriends','editFaqQ1','editFaqA1','editFaqQ2','editFaqA2'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el.tagName === 'TEXTAREA') el.value = '';
+        else el.value = '';
+    });
+
+    document.getElementById('modalBg').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => modal.classList.add('editing'), 100);
+}
+
+function toggleEditMode() {
+    document.getElementById('modal').classList.toggle('editing');
+}
+
+function saveEdits() {
+    const isNew = !currentCharId;
+    const msg = isNew
+        ? '✦ Karakter öneriniz başarıyla alındı! Editör onayından sonra yayınlanacaktır.'
+        : '✦ Güncelleme öneriniz başarıyla alındı! Editör onayından sonra yayınlanacaktır.';
+    alert(msg);
+    closeModalDirect();
+}
+
+function closeModalDirect() {
+    document.getElementById('modal').classList.remove('editing');
+    document.getElementById('modalBg').classList.remove('open');
+    document.body.style.overflow = 'auto';
+}
+
+function closeModal(e) {
+    if(e.target.id === 'modalBg') closeModalDirect();
+}
+
+// ─── SIDEBAR CONTROL ──────────────────────────────────────────────────────────
+function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('open');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) closeSidebar();
+});
+</script>
+</body>
+</html>

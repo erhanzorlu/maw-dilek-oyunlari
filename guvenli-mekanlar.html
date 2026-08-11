@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make-A-Wish | Güvenli Mekanlar</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+  :root {
+    --primary: #0065c3; --primary-dark: #003d7a; --primary-light: #e8f3ff;
+    --gold: #f59e0b; --gold-light: #fffbeb;
+    --green: #10b981; --green-light: #ecfdf5;
+    --bg: #f4f7fb; --card: #ffffff; --border: #e8edf5;
+    --text: #1e293b; --muted: #64748b;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 16px rgba(0,60,140,0.08);
+    --shadow-lg: 0 12px 40px rgba(0,60,140,0.13);
+    --shadow-xl: 0 24px 60px rgba(0,60,140,0.16);
+    --radius: 16px; --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+  a { text-decoration: none; color: inherit; }
+  .hidden { display: none !important; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 268px; background: var(--card);
+    border-right: 1px solid var(--border);
+    padding: 28px 16px;
+    display: flex; flex-direction: column;
+    flex-shrink: 0; z-index: 20; position: relative;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; margin-bottom: 32px; }
+  .brand-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--gold); flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,101,195,0.3); }
+  .brand-text { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--primary-dark); line-height: 1.2; }
+  .brand-text span { display: block; font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 1px; }
+
+  .nav-section-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0 12px; margin: 8px 0 6px; }
+
+  .menu-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; margin-bottom: 2px; border-radius: var(--radius-sm); cursor: pointer; color: var(--muted); font-weight: 600; font-size: 14px; transition: all 0.18s; }
+  .menu-item i { font-size: 19px; transition: transform 0.18s; }
+  .menu-item:hover { background: var(--primary-light); color: var(--primary); }
+  .menu-item:hover i { transform: translateX(2px); }
+  .menu-item.active { background: linear-gradient(135deg, var(--primary-light), #dceeff); color: var(--primary); box-shadow: inset 3px 0 0 var(--primary); }
+
+  .sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
+  .user-mini { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: 0.18s; margin-bottom: 4px; }
+  .user-mini:hover { background: var(--bg); }
+  .user-mini-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary-light), #c3dcff); color: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; }
+  .user-mini-info strong { display: block; font-size: 13px; color: var(--text); }
+  .user-mini-info span { font-size: 11px; color: var(--muted); }
+
+  .sidebar-close { display: none; position: absolute; top: 18px; right: 14px; width: 30px; height: 30px; background: var(--bg); border: none; border-radius: 8px; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 15px; transition: 0.2s; }
+  .sidebar-close:hover { background: #fee2e2; color: #dc2626; }
+
+  /* ─── MAIN ─── */
+  .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+  /* ─── TOP BAR ─── */
+  .top-bar { background: var(--card); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); gap: 16px; flex-shrink: 0; position: relative; }
+  .top-bar-left { display: flex; align-items: center; gap: 12px; }
+  .hamburger { display: none; width: 38px; height: 38px; background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); align-items: center; justify-content: center; cursor: pointer; color: var(--text); font-size: 18px; transition: 0.2s; }
+  .hamburger:hover { background: var(--bg); }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; }
+  .top-bar-right { display: flex; align-items: center; gap: 8px; }
+  .icon-btn { width: 38px; height: 38px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--muted); transition: 0.18s; position: relative; }
+  .icon-btn:hover { background: var(--primary-light); color: var(--primary); border-color: #bbd8ff; }
+  .icon-btn .dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid white; }
+  .top-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,101,195,0.3); }
+
+  .btn-add-top {
+    display: flex; align-items: center; gap: 7px;
+    background: linear-gradient(135deg, var(--green), #059669);
+    color: white; border: none; padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13.5px;
+    cursor: pointer; transition: 0.2s; white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+  }
+  .btn-add-top:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.3); }
+
+  /* ─── MAIN CONTENT ─── */
+  .main-content { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+  /* ─── HERO STRIP ─── */
+  .hero-strip {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, #1a7fd4 100%);
+    border-radius: var(--radius); padding: 26px 30px;
+    margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    position: relative; overflow: hidden;
+  }
+  .hero-strip::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+  .hero-text { position: relative; }
+  .hero-text h2 { font-family: 'Playfair Display', serif; font-size: 22px; color: white; margin-bottom: 6px; }
+  .hero-text p { font-size: 13.5px; color: rgba(255,255,255,0.75); line-height: 1.6; max-width: 440px; }
+  .hero-stats { display: flex; gap: 20px; flex-shrink: 0; position: relative; }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--gold); font-weight: 700; line-height: 1; }
+  .hero-stat-label { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-divider { width: 1px; background: rgba(255,255,255,0.15); align-self: stretch; }
+
+  /* ─── STAT KARTLARI ─── */
+  .stats-row { display: flex; gap: 14px; margin-bottom: 22px; }
+  .stat-card { background: var(--card); border-radius: var(--radius-sm); padding: 16px 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 14px; flex: 1; box-shadow: var(--shadow-sm); transition: 0.18s; }
+  .stat-card:hover { box-shadow: var(--shadow-md); border-color: #d4e5f7; }
+  .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 21px; flex-shrink: 0; }
+  .stat-icon.green { background: var(--green-light); color: var(--green); }
+  .stat-icon.blue  { background: var(--primary-light); color: var(--primary); }
+  .stat-icon.gold  { background: var(--gold-light); color: var(--gold); }
+  .stat-label { font-size: 11.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .stat-value { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--primary-dark); font-weight: 700; line-height: 1.1; }
+
+  /* ─── FİLTRE SATIRI ─── */
+  .filter-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+  .search-box { position: relative; flex: 1; min-width: 200px; }
+  .search-box i { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; pointer-events: none; }
+  .search-box input { width: 100%; padding: 10px 14px 10px 39px; border: 1.5px solid var(--border); border-radius: 30px; font-family: 'Nunito', sans-serif; font-size: 13.5px; background: var(--card); color: var(--text); outline: none; transition: 0.2s; }
+  .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,101,195,0.08); }
+  .search-box input::placeholder { color: #94a3b8; }
+  .filter-select { padding: 10px 13px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 13.5px; background: var(--card); color: var(--text); outline: none; cursor: pointer; transition: 0.2s; font-weight: 600; }
+  .filter-select:focus { border-color: var(--primary); }
+  .btn-add { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: 0.2s; white-space: nowrap; }
+  .btn-add:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,101,195,0.25); }
+
+  /* ─── ETİKET FİLTRELERİ ─── */
+  .tag-filter-row { display: flex; gap: 7px; margin-bottom: 18px; align-items: center; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+  .tag-filter-row::-webkit-scrollbar { display: none; }
+  .tag-filter-row > span { font-size: 12px; font-weight: 800; color: var(--muted); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; }
+  .tag-filter-btn { background: var(--card); border: 1.5px solid var(--border); padding: 6px 13px; border-radius: 30px; font-size: 12.5px; font-weight: 700; color: var(--muted); cursor: pointer; transition: 0.18s; font-family: 'Nunito', sans-serif; display: flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }
+  .tag-filter-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+  .tag-filter-btn.active { background: var(--primary-dark); color: white; border-color: var(--primary-dark); box-shadow: 0 2px 8px rgba(0,61,122,0.2); }
+
+  /* ─── SONUÇ BAŞLIĞI ─── */
+  .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .results-header p { font-size: 13.5px; color: var(--muted); font-weight: 600; }
+  .results-header strong { color: var(--text); }
+  .sort-select { padding: 8px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 13px; background: var(--card); color: var(--muted); outline: none; cursor: pointer; font-weight: 600; }
+
+  /* ─── KARTLAR ─── */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(295px, 1fr)); gap: 18px; padding-bottom: 40px; }
+  .place-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; transition: all 0.22s; animation: fadeUp 0.35s ease both; box-shadow: var(--shadow-sm); cursor: pointer; }
+  .place-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: #d4e5f7; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card-img-wrap { position: relative; height: 170px; overflow: hidden; background: #f1f5f9; }
+  .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.32s; }
+  .place-card:hover .card-img-wrap img { transform: scale(1.05); }
+  .card-badge { position: absolute; top: 11px; left: 11px; background: rgba(255,255,255,0.92); backdrop-filter: blur(6px); border-radius: 20px; padding: 4px 11px; font-size: 11.5px; font-weight: 800; color: var(--primary); border: 1px solid rgba(0,101,195,0.15); }
+  .card-fav { position: absolute; top: 9px; right: 9px; width: 34px; height: 34px; background: rgba(255,255,255,0.92); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: 0.2s; }
+  .card-fav:hover { transform: scale(1.12); background: white; }
+  .card-fav.faved { background: #fff1f2; border-color: #fca5a5; }
+
+  .card-body { padding: 15px 17px 13px; }
+  .card-location { font-size: 11.5px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--primary-dark); margin-bottom: 6px; line-height: 1.3; }
+  .card-address { font-size: 12.5px; color: var(--muted); margin-bottom: 9px; display: flex; align-items: flex-start; gap: 5px; }
+  .card-desc { font-size: 13px; color: #475569; line-height: 1.65; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .ctag { border-radius: 20px; padding: 3px 9px; font-size: 11.5px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+  .ctag.green  { background: var(--green-light); color: #059669; }
+  .ctag.blue   { background: var(--primary-light); color: var(--primary); }
+  .ctag.orange { background: var(--gold-light); color: #d97706; }
+  .ctag.purple { background: #f5f3ff; color: #7c3aed; }
+
+  /* ─── KART FOOTER ─── */
+  .card-footer { padding: 11px 17px; border-top: 1px solid var(--border); background: #fafbfc; display: flex; align-items: center; justify-content: space-between; }
+  .btn-comments { background: none; border: none; color: var(--muted); font-family: 'Nunito', sans-serif; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 4px 0; transition: 0.18s; }
+  .btn-comments:hover { color: var(--primary); }
+  .comment-count-badge { background: var(--primary-light); color: var(--primary); border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 800; }
+
+  /* ─── BOŞ SONUÇ ─── */
+  .no-results { grid-column: 1/-1; text-align: center; padding: 60px 20px; }
+  .no-results i { font-size: 52px; color: #cbd5e1; margin-bottom: 14px; display: block; }
+  .no-results h3 { font-size: 18px; color: var(--text); margin-bottom: 6px; font-family: 'Playfair Display', serif; }
+  .no-results p { font-size: 14px; color: var(--muted); }
+
+  /* ─── DETAY PANELİ ─── */
+  .detail-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); z-index: 150; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .detail-overlay.open { opacity: 1; pointer-events: all; }
+  .detail-panel { position: relative; width: 100%; max-width: 640px; max-height: 90vh; background: var(--card); border-radius: var(--radius); z-index: 151; display: flex; flex-direction: column; box-shadow: var(--shadow-xl); overflow: hidden; transform: translateY(20px); transition: transform 0.25s ease-out; }
+  .detail-overlay.open .detail-panel { transform: translateY(0); }
+
+  .detail-header { padding: 0; flex-shrink: 0; }
+  .detail-hero { position: relative; height: 210px; overflow: hidden; background: #f1f5f9; }
+  .detail-hero img { width: 100%; height: 100%; object-fit: cover; }
+  .detail-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%); }
+  .detail-hero-info { position: absolute; bottom: 16px; left: 22px; right: 55px; color: white; }
+  .detail-hero-info h2 { font-family: 'Playfair Display', serif; font-size: 21px; text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  .detail-hero-info p { font-size: 12.5px; opacity: 0.88; margin-top: 3px; }
+  .detail-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; background: rgba(255,255,255,0.9); border: none; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); font-size: 16px; transition: 0.2s; z-index: 2; }
+  .detail-close:hover { background: white; }
+
+  .detail-meta { padding: 14px 22px; border-bottom: 1px solid var(--border); display: flex; gap: 7px; flex-wrap: wrap; }
+  .detail-body { flex: 1; overflow-y: auto; padding: 0 22px 24px; }
+  .detail-section { margin-top: 20px; }
+  .detail-section-title { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 11px; display: flex; align-items: center; gap: 6px; }
+  .detail-desc { font-size: 14px; color: #475569; line-height: 1.7; }
+
+  /* ─── YORUMLAR ─── */
+  .comment-list { display: flex; flex-direction: column; gap: 12px; }
+  .comment-item { background: var(--bg); border-radius: var(--radius-sm); padding: 13px 15px; border: 1px solid var(--border); }
+  .comment-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .comment-avatar { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; flex-shrink: 0; }
+  .comment-author { font-size: 13px; font-weight: 700; color: var(--primary-dark); }
+  .comment-role { font-size: 11px; color: var(--muted); }
+  .comment-date { font-size: 11px; color: #94a3b8; margin-left: auto; }
+  .comment-stars { display: flex; gap: 2px; margin-bottom: 6px; }
+  .comment-stars i { font-size: 13px; color: #fbbf24; }
+  .comment-text { font-size: 13.5px; color: #475569; line-height: 1.65; }
+  .comment-wish-tag { display: inline-flex; align-items: center; gap: 4px; background: var(--gold-light); border: 1px solid #fde68a; border-radius: 20px; padding: 3px 9px; font-size: 11px; color: #d97706; font-weight: 700; margin-top: 8px; }
+
+  /* ─── YORUM FORMU ─── */
+  .comment-form { background: var(--bg); border-radius: var(--radius-sm); padding: 15px; margin-top: 14px; border: 1px solid var(--border); }
+  .comment-form-title { font-size: 13px; font-weight: 800; color: var(--primary-dark); margin-bottom: 11px; display: flex; align-items: center; gap: 6px; }
+  .star-picker { display: flex; gap: 4px; margin-bottom: 10px; }
+  .star-picker i { font-size: 22px; color: #cbd5e1; cursor: pointer; transition: 0.15s; }
+  .star-picker i.active, .star-picker i:hover { color: #fbbf24; }
+  .comment-form textarea { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 13.5px; color: var(--text); outline: none; background: white; resize: vertical; min-height: 80px; transition: 0.2s; }
+  .comment-form textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,101,195,0.08); }
+  .comment-form textarea::placeholder { color: #94a3b8; }
+  .comment-form-footer { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .btn-comment-submit { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; padding: 9px 20px; border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+  .btn-comment-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,101,195,0.25); }
+
+  /* ─── MODAL ─── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--card); border-radius: var(--radius); width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; transform: translateY(20px); transition: transform 0.25s; box-shadow: var(--shadow-xl); }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header { padding: 24px 26px 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .modal-header h2 { font-family: 'Playfair Display', serif; font-size: 19px; color: var(--primary-dark); display: flex; align-items: center; gap: 9px; }
+  .modal-header h2 i { color: var(--green); }
+  .modal-close { width: 32px; height: 32px; background: var(--bg); border: none; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 16px; transition: 0.2s; }
+  .modal-close:hover { background: #fee2e2; color: #dc2626; }
+  .modal-body { padding: 0 26px 26px; }
+  .form-group { margin-bottom: 13px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 800; color: var(--text); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 13.5px; color: var(--text); outline: none; transition: 0.2s; background: #fafbfc; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(0,101,195,0.08); }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: #94a3b8; }
+  .form-group textarea { resize: vertical; min-height: 85px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 7px; }
+  .checkbox-group input { display: none; }
+  .checkbox-group label { background: var(--bg); border: 1.5px solid var(--border); border-radius: 20px; padding: 6px 13px; font-size: 12.5px; font-weight: 700; color: var(--muted); cursor: pointer; transition: 0.18s; font-family: 'Nunito', sans-serif; display: flex; align-items: center; gap: 5px; }
+  .checkbox-group input:checked + label { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+  .btn-submit { width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; padding: 13px; border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; cursor: pointer; margin-top: 8px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,101,195,0.3); }
+
+  /* ─── TOAST ─── */
+  .toast { position: fixed; bottom: 28px; right: 28px; background: var(--primary-dark); color: white; border-radius: var(--radius-sm); padding: 13px 20px; font-size: 14px; font-weight: 600; z-index: 300; transform: translateY(80px); opacity: 0; transition: all 0.3s; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-lg); }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast i { color: var(--green); font-size: 20px; }
+
+  /* ─── SIDEBAR OVERLAY ─── */
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 29; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .sidebar-overlay.open { opacity: 1; pointer-events: all; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .sidebar { position: fixed; top: 0; left: 0; height: 100vh; z-index: 30; transform: translateX(-100%); transition: transform 0.32s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 24px rgba(0,0,0,0.1); }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay { display: block; }
+    .sidebar-close { display: flex !important; }
+    .hamburger { display: flex; }
+    .top-bar { padding: 0 16px; }
+    .page-title span { display: none; }
+    .btn-add-top span { display: none; }
+    .main-content { padding: 16px; }
+    .hero-strip { flex-direction: column; align-items: flex-start; gap: 14px; padding: 20px; }
+    .hero-stats { gap: 14px; }
+    .stats-row { gap: 10px; }
+    .stat-card { padding: 12px 14px; }
+    .stat-value { font-size: 20px; }
+    .filter-row { gap: 8px; }
+    .filter-row .filter-select { flex: 1; min-width: calc(50% - 8px); font-size: 13px; }
+    .filter-row .search-box { min-width: 100%; order: -1; }
+    .btn-add { width: 100%; justify-content: center; }
+    .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+    .detail-overlay { padding: 12px; }
+    .detail-panel { width: 100%; max-width: 100%; max-height: 90vh; }
+    .modal { max-height: 95vh; border-radius: var(--radius) var(--radius) 0 0; }
+    .modal-overlay { align-items: flex-end; padding: 0; }
+    .toast { bottom: 16px; right: 16px; left: 16px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 400px) {
+    .stats-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- SOL MENÜ -->
+<div class="sidebar" id="sidebar">
+  <button class="sidebar-close" id="sidebarClose" onclick="closeSidebar()"><i class="ph-bold ph-x"></i></button>
+
+  <div class="brand">
+    <div class="brand-icon"><i class="ph-fill ph-star"></i></div>
+    <div class="brand-text">Make-A-Wish <span>Türkiye</span></div>
+  </div>
+
+  <a href="guvenli-mekanlar.html" class="menu-item active"><i class="ph-fill ph-shield-check"></i> Güvenli Mekanlar</a>
+  <a href="duyurular.html" class="menu-item"><i class="ph-fill ph-megaphone"></i> Duyurular</a>
+  <a href="wishpedia.html" class="menu-item"><i class="ph-fill ph-sparkle"></i> Wishpedia</a>
+  <a href="hastane-dilek.html" class="menu-item"><i class="ph-fill ph-hospital"></i> Hastane Dilek Alımı</a>
+</div>
+
+<!-- ANA WRAPPER -->
+<div class="main-wrapper">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <button class="hamburger" id="hamburgerBtn" onclick="openSidebar()"><i class="ph-bold ph-list"></i></button>
+      <div class="page-title">
+        <i class="ph-fill ph-shield-check" style="color:var(--green);font-size:22px;"></i>
+        <span>Güvenli Mekanlar</span>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <div class="icon-btn"><i class="ph-fill ph-bell"></i><div class="dot"></div></div>
+      <div class="icon-btn"><i class="ph-bold ph-gear"></i></div>
+      <button class="btn-add-top" onclick="openModal()"><i class="ph-bold ph-plus"></i> <span>Mekan Ekle</span></button>
+      <div class="top-avatar">E</div>
+    </div>
+  </div>
+
+  <!-- ANA İÇERİK -->
+  <div class="main-content">
+
+    <!-- HERO -->
+    <div class="hero-strip">
+      <div class="hero-text">
+        <h2>Güvenli & Onaylı Mekanlar 🛡️</h2>
+        <p>Topluluğumuzun önerdiği ve titizlikle incelenmiş mekanlar. Dilek çocukları için her zaman en güvenli ortamı sunuyoruz.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="heroTotal">8</div>
+          <div class="hero-stat-label">Mekan</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="heroIl">3</div>
+          <div class="hero-stat-label">Şehir</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">24</div>
+          <div class="hero-stat-label">Yorum</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="ph-fill ph-map-pin"></i></div>
+        <div><div class="stat-label">Toplam Mekan</div><div class="stat-value" id="statTotal">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="ph-fill ph-buildings"></i></div>
+        <div><div class="stat-label">İl Sayısı</div><div class="stat-value" id="statIl">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gold"><i class="ph-fill ph-heart"></i></div>
+        <div><div class="stat-label">Favorilerim</div><div class="stat-value" id="statFav">0</div></div>
+      </div>
+    </div>
+
+    <!-- FİLTRELER -->
+    <div class="filter-row">
+      <div class="search-box">
+        <i class="ph-bold ph-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Mekan adı veya adres ara...">
+      </div>
+      <select class="filter-select" id="filterIl">
+        <option value="">Tüm İller</option>
+      </select>
+      <select class="filter-select" id="filterIlce">
+        <option value="">Tüm İlçeler</option>
+      </select>
+      <select class="filter-select" id="filterTur">
+        <option value="">Tüm Türler</option>
+        <option>Eğlence Merkezi</option>
+        <option>Tema Parkı</option>
+        <option>Akvaryum</option>
+        <option>Oyun & İnternet Kafe</option>
+        <option>Kültür Parkı</option>
+        <option>Bilim Merkezi</option>
+        <option>Hayvanat Bahçesi</option>
+        <option>Spor Tesisi</option>
+        <option>Diğer</option>
+      </select>
+      <button class="btn-add" onclick="openModal()">
+        <i class="ph-bold ph-plus"></i> Mekan Ekle
+      </button>
+    </div>
+
+    <!-- ETİKET FİLTRELERİ -->
+    <div class="tag-filter-row">
+      <span>Özellik:</span>
+      <button class="tag-filter-btn" onclick="toggleTag(this,'Çocuk Dostu')"><i class="ph-fill ph-smiley"></i> Çocuk Dostu</button>
+      <button class="tag-filter-btn" onclick="toggleTag(this,'Engelli Erişimi')"><i class="ph-fill ph-wheelchair"></i> Engelli Erişimi</button>
+      <button class="tag-filter-btn" onclick="toggleTag(this,'Kapalı Alan')"><i class="ph-fill ph-house"></i> Kapalı Alan</button>
+      <button class="tag-filter-btn" onclick="toggleTag(this,'Açık Alan')"><i class="ph-fill ph-tree"></i> Açık Alan</button>
+      <button class="tag-filter-btn" onclick="toggleTag(this,'Ücretsiz')"><i class="ph-fill ph-currency-circle-dollar"></i> Ücretsiz</button>
+      <button class="tag-filter-btn" onclick="toggleTag(this,'Wifi')"><i class="ph-fill ph-wifi-high"></i> Wifi</button>
+      <button class="tag-filter-btn" onclick="toggleTag(this,'7/24 Açık')"><i class="ph-fill ph-clock"></i> 7/24 Açık</button>
+      <button class="tag-filter-btn" onclick="toggleTag(this,'Özel Organizasyon')"><i class="ph-fill ph-star"></i> Özel Org.</button>
+    </div>
+
+    <!-- SONUÇ BAŞLIĞI -->
+    <div class="results-header">
+      <p><strong id="shownCount">0</strong> mekan gösteriliyor</p>
+      <select class="sort-select" onchange="sortAndRender(this.value)">
+        <option value="default">Varsayılan Sıralama</option>
+        <option value="name">Ada Göre (A-Z)</option>
+        <option value="il">İle Göre</option>
+      </select>
+    </div>
+
+    <!-- KARTLAR -->
+    <div class="cards-grid" id="cardsGrid"></div>
+
+  </div>
+</div>
+
+<!-- DETAY PANELİ -->
+<div class="detail-overlay" id="detailOverlay" onclick="handleDetailOverlay(event)">
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <div class="detail-hero">
+        <img id="dHero" src="" alt="">
+        <div class="detail-hero-overlay"></div>
+        <div class="detail-hero-info">
+          <h2 id="dName"></h2>
+          <p id="dLocation"></p>
+        </div>
+        <button class="detail-close" onclick="closeDetail()"><i class="ph-bold ph-x"></i></button>
+      </div>
+    </div>
+    <div class="detail-meta" id="dMeta"></div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <div class="detail-section-title"><i class="ph-fill ph-info"></i> Hakkında</div>
+        <div class="detail-desc" id="dDesc"></div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title"><i class="ph-fill ph-map-pin"></i> Adres</div>
+        <div class="detail-desc" id="dAdres"></div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i class="ph-fill ph-chat-circle-text"></i> Yorumlar &amp; Deneyimler
+          <span class="comment-count-badge" id="dCommentCount">0</span>
+        </div>
+        <div class="comment-list" id="dCommentList"></div>
+        <div class="comment-form">
+          <div class="comment-form-title"><i class="ph-fill ph-pencil-simple"></i> Deneyimini Paylaş</div>
+          <div class="star-picker" id="starPicker">
+            <i class="ph-fill ph-star" onclick="setStar(1)"></i>
+            <i class="ph-fill ph-star" onclick="setStar(2)"></i>
+            <i class="ph-fill ph-star" onclick="setStar(3)"></i>
+            <i class="ph-fill ph-star" onclick="setStar(4)"></i>
+            <i class="ph-fill ph-star" onclick="setStar(5)"></i>
+          </div>
+          <textarea id="commentText" placeholder="Bu mekanla ilgili deneyimini paylaş. Dilek gerçekleştirme için uygun mu? Ortam nasıl?"></textarea>
+          <div class="comment-form-footer">
+            <button class="btn-comment-submit" onclick="submitComment()">
+              <i class="ph-bold ph-paper-plane-tilt"></i> Gönder
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MEKAN EKLEME MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlay(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2><i class="ph-fill ph-shield-check"></i> Yeni Mekan Ekle</h2>
+      <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Mekan Adı *</label>
+        <input type="text" id="fName" placeholder="örn. Huzur Kafe">
+      </div>
+      <div class="form-group">
+        <label>Mekan Türü *</label>
+        <select id="fTur">
+          <option value="">Seçiniz...</option>
+          <option>Eğlence Merkezi</option>
+          <option>Tema Parkı</option>
+          <option>Akvaryum</option>
+          <option>Oyun & İnternet Kafe</option>
+          <option>Kültür Parkı</option>
+          <option>Bilim Merkezi</option>
+          <option>Hayvanat Bahçesi</option>
+          <option>Spor Tesisi</option>
+          <option>Diğer</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>İl *</label>
+          <select id="fIl" onchange="updateModalIlce()">
+            <option value="">Seçiniz...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>İlçe *</label>
+          <select id="fIlce">
+            <option value="">Önce il seçin</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Tam Adres *</label>
+        <input type="text" id="fAdres" placeholder="Mahalle, sokak, numara...">
+      </div>
+      <div class="form-group">
+        <label>Fotoğraf URL (opsiyonel)</label>
+        <input type="text" id="fFoto" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label>Açıklama *</label>
+        <textarea id="fDesc" placeholder="Bu mekan neden güvenli? Nasıl bir destek sunuyor?"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Özellikler</label>
+        <div class="checkbox-group">
+          <input type="checkbox" id="t1" value="Çocuk Dostu"><label for="t1"><i class="ph-fill ph-smiley"></i> Çocuk Dostu</label>
+          <input type="checkbox" id="t2" value="Engelli Erişimi"><label for="t2"><i class="ph-fill ph-wheelchair"></i> Engelli Erişimi</label>
+          <input type="checkbox" id="t3" value="Kapalı Alan"><label for="t3"><i class="ph-fill ph-house"></i> Kapalı Alan</label>
+          <input type="checkbox" id="t4" value="Açık Alan"><label for="t4"><i class="ph-fill ph-tree"></i> Açık Alan</label>
+          <input type="checkbox" id="t5" value="Ücretsiz"><label for="t5"><i class="ph-fill ph-currency-circle-dollar"></i> Ücretsiz</label>
+          <input type="checkbox" id="t6" value="Wifi"><label for="t6"><i class="ph-fill ph-wifi-high"></i> Wifi</label>
+          <input type="checkbox" id="t7" value="7/24 Açık"><label for="t7"><i class="ph-fill ph-clock"></i> 7/24 Açık</label>
+          <input type="checkbox" id="t8" value="Özel Organizasyon"><label for="t8"><i class="ph-fill ph-star"></i> Özel Org.</label>
+        </div>
+      </div>
+      <button class="btn-submit" onclick="addPlace()">
+        <i class="ph-bold ph-check-circle"></i> Mekanı Ekle
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <i class="ph-fill ph-check-circle"></i> Mekan başarıyla eklendi!
+</div>
+
+
+<script>
+// ─── TÜRKİYE İL/İLÇE VERİSİ ──────────────────────────────────────────────────
+// İlçeler JSON'ını buraya yükle. Format: { "İl Adı": ["ilce1","ilce2",...], ... }
+// JSON dosyasını projenin aynı klasörüne koy ve aşağıdaki fetch'i etkinleştir.
+// Şimdilik örnek data kullanılıyor.
+
+const ilceler = {
+  "Adana":["Aladağ","Ceyhan","Çukurova","Feke","İmamoğlu","Karaisalı","Karataş","Kozan","Pozantı","Saimbeyli","Sarıçam","Seyhan","Tufanbeyli","Yumurtalık","Yüreğir"],
+  "Adıyaman":["Adıyaman","Besni","Çelikhan","Gerger","Gölbaşı","Kahta","Samsat","Sincik","Tut"],
+  "Afyonkarahisar":["Afyonkarahisar","Başmakçı","Bayat","Bolvadin","Çay","Çobanlar","Dazkırı","Dinar","Emirdağ","Evciler","Hocalar","İhsaniye","İscehisar","Kızılören","Sandıklı","Sinanpaşa","Sultandağı","Şuhut"],
+  "Ağrı":["Ağrı","Diyadin","Doğubayazıt","Eleşkirt","Hamur","Patnos","Taşlıçay","Tutak"],
+  "Aksaray":["Ağaçören","Aksaray","Eskil","Gülağaç","Güzelyurt","Ortaköy","Sarıyahşi","Sultanhanı"],
+  "Amasya":["Amasya","Göynücek","Gümüşhacıköy","Hamamözü","Merzifon","Suluova","Taşova"],
+  "Ankara":["Akyurt","Altındağ","Ayaş","Bala","Beypazarı","Çamlıdere","Çankaya","Çubuk","Elmadağ","Etimesgut","Evren","Gölbaşı","Güdül","Haymana","Kalecik","Kazan","Keçiören","Kızılcahamam","Mamak","Nallıhan","Polatlı","Pursaklar","Sincan","Şereflikoçhisar","Yenimahalle"],
+  "Antalya":["Akseki","Aksu","Alanya","Demre","Döşemealtı","Elmalı","Finike","Gazipaşa","Gündoğmuş","İbradı","Kaş","Kemer","Kepez","Konyaaltı","Korkuteli","Kumluca","Manavgat","Muratpaşa","Serik"],
+  "Ardahan":["Ardahan","Çıldır","Damal","Göle","Hanak","Posof"],
+  "Artvin":["Ardanuç","Arhavi","Artvin","Borçka","Hopa","Kemalpaşa","Murgul","Şavşat","Yusufeli"],
+  "Aydın":["Bozdoğan","Buharkent","Çine","Didim","Efeler","Germencik","İncirliova","Karacasu","Karpuzlu","Koçarlı","Köşk","Kuşadası","Kuyucak","Nazilli","Söke","Sultanhisar","Yenipazar"],
+  "Balıkesir":["Altıeylül","Ayvalık","Balya","Bandırma","Bigadiç","Burhaniye","Dursunbey","Edremit","Erdek","Gömeç","Gönen","Havran","İvrindi","Karesi","Kepsut","Manyas","Marmara","Savaştepe","Sındırgı","Susurluk"],
+  "Bartın":["Amasra","Bartın","Kurucaşile","Ulus"],
+  "Batman":["Beşiri","Gercüş","Hasankeyf","Kozluk","Sason","Batman"],
+  "Bayburt":["Aydıntepe","Bayburt","Demirözü"],
+  "Bilecik":["Bilecik","Bozüyük","Gölpazarı","İnhisar","Osmaneli","Pazaryeri","Söğüt","Yenipazar"],
+  "Bingöl":["Adaklı","Bingöl","Genç","Karlıova","Kiğı","Merkez","Solhan","Yayladere","Yedisu"],
+  "Bitlis":["Adilcevaz","Ahlat","Bitlis","Güroymak","Hizan","Mutki","Tatvan"],
+  "Bolu":["Bolu","Dörtdivan","Gerede","Göynük","Kıbrıscık","Mengen","Mudurnu","Seben","Yeniçağa"],
+  "Burdur":["Ağlasun","Altınyayla","Bucak","Burdur","Çavdır","Çeltikçi","Gölhisar","Karamanlı","Kemer","Merkez","Tefenni","Yeşilova"],
+  "Bursa":["Büyükorhan","Gemlik","Görükle","Gürsu","Harmancık","İnegöl","İznik","Karacabey","Keles","Kestel","Mudanya","Mustafakemalpaşa","Nilüfer","Orhaneli","Orhangazi","Osmangazi","Yenişehir","Yıldırım"],
+  "Çanakkale":["Ayvacık","Bayramiç","Biga","Bozcaada","Çan","Çanakkale","Eceabat","Ezine","Gelibolu","Gökçeada","Lapseki","Merkez","Yenice"],
+  "Çankırı":["Atkaracalar","Bayramören","Çankırı","Eldivan","Ilgaz","Khaniye","Korgun","Kurşunlu","Merkez","Orta","Şabanözü","Yapraklı"],
+  "Çorum":["Alaca","Bayat","Boğazkale","Dodurga","İskilip","Kargı","Laçin","Mecitözü","Merkez","Oğuzlar","Ortaköy","Osmancık","Sungurlu","Uğurludağ"],
+  "Denizli":["Acıpayam","Babadağ","Baklan","Bekilli","Beyağaç","Bozkurt","Buldan","Çal","Çameli","Çardak","Çivril","Güney","Honaz","Kale","Merkezefendi","Pamukkale","Sarayköy","Serinhisar","Tavas"],
+  "Diyarbakır":["Bağlar","Bismil","Çermik","Çınar","Çüngüş","Dicle","Eğil","Ergani","Hani","Hazro","Kayapınar","Kocaköy","Kulp","Lice","Silvan","Sur","Yenişehir"],
+  "Düzce":["Akçakoca","Cumayeri","Çilimli","Düzce","Gölyaka","Gümüşova","Kaynaşlı","Yığılca"],
+  "Edirne":["Edirne","Enez","Havsa","İpsala","Keşan","Lalapaşa","Merkez","Meriç","Süloğlu","Uzunköprü"],
+  "Elâzığ":["Ağın","Alacakaya","Arıcak","Baskil","Elazığ","Karakoçan","Keban","Kovancılar","Maden","Merkez","Palu","Sivrice"],
+  "Erzincan":["Çayırlı","Erzincan","İliç","Kemah","Kemaliye","Merkez","Otlukbeli","Refahiye","Tercan","Üzümlü"],
+  "Erzurum":["Aşkale","Aziziye","Çat","Hınıs","Horasan","İspir","Karaçoban","Karayazı","Köprüköy","Narman","Oltu","Olur","Palandöken","Pasinler","Pazaryolu","Şenkaya","Tekman","Tortum","Uzundere","Yakutiye"],
+  "Eskişehir":["Alpu","Beylikova","Çifteler","Eskişehir","Günyüzü","Han","İnönü","Mahmudiye","Mihalgazi","Mihalıççık","Odunpazarı","Sarıcakaya","Seyitgazi","Sivrihisar","Tepebaşı"],
+  "Gaziantep":["Araban","İslahiye","Karkamış","Nizip","Nurdağı","Oğuzeli","Şahinbey","Şehitkamil","Yavuzeli"],
+  "Giresun":["Alucra","Bulancak","Çamoluk","Çanakçı","Dereli","Doğankent","Espiye","Eynesil","Giresun","Görele","Güce","Keşap","Merkez","Piraziz","Şebinkarahisar","Tirebolu","Yağlıdere"],
+  "Gümüşhane":["Gümüşhane","Kelkit","Köse","Kürtün","Merkez","Şiran","Torul"],
+  "Hakkari":["Çukurca","Hakkari","Merkez","Şemdinli","Yüksekova"],
+  "Hatay":["Altınözü","Antakya","Arsuz","Belen","Defne","Dörtyol","Erzin","Hassa","İskenderun","Kırıkhan","Kumlu","Payas","Reyhanlı","Samandağ","Yayladağı"],
+  "Iğdır":["Aralık","Iğdır","Karakoyunlu","Merkez","Tuzluca"],
+  "Isparta":["Aksu","Atabey","Eğirdir","Gelendost","Gönen","Isparta","Keçiborlu","Merkez","Senirkent","Sütçüler","Şarkikaraağaç","Uluborlu","Yalvaç","Yenişarbademli"],
+  "İstanbul":["Adalar","Arnavutköy","Ataşehir","Avcılar","Bağcılar","Bahçelievler","Bakırköy","Başakşehir","Bayrampaşa","Beşiktaş","Beykoz","Beylikdüzü","Beyoğlu","Büyükçekmece","Çatalca","Çekmeköy","Esenler","Esenyurt","Eyüpsultan","Fatih","Gaziosmanpaşa","Güngören","Kadıköy","Kağıthane","Kartal","Küçükçekmece","Maltepe","Pendik","Sancaktepe","Sarıyer","Silivri","Sultanbeyli","Sultangazi","Şile","Şişli","Tuzla","Ümraniye","Üsküdar","Zeytinburnu"],
+  "İzmir":["Aliağa","Balçova","Bayındır","Bayraklı","Bergama","Beydağ","Bornova","Buca","Çeşme","Çiğli","Dikili","Foça","Gaziemir","Güzelbahçe","Karabağlar","Karaburun","Karşıyaka","Kemalpaşa","Kınık","Kiraz","Konak","Menderes","Menemen","Narlıdere","Ödemiş","Seferihisar","Selçuk","Tire","Torbalı","Urla"],
+  "Kahramanmaraş":["Afşin","Andırın","Çağlayancerit","Dulkadiroğlu","Ekinözü","Elbistan","Göksun","Merkez","Nurhak","Onikişubat","Pazarcık","Türkoğlu"],
+  "Karabük":["Eflani","Eskipazar","Karabük","Merkez","Ovacık","Safranbolu","Yenice"],
+  "Karaman":["Ayrancı","Başyayla","Ermenek","Karaman","Kazımkarabekir","Merkez","Sarıveliler"],
+  "Kars":["Akyaka","Arpaçay","Digor","Kağızman","Kars","Sarıkamış","Selim","Susuz"],
+  "Kastamonu":["Abana","Ağlı","Araç","Azdavay","Bozkurt","Çatalzeytin","Cide","Daday","Devrekani","Doğanyurt","Hanönü","İhsangazi","İnebolu","Kastamonu","Küre","Merkez","Pınarbaşı","Seydiler","Şenpazar","Taşköprü","Tosya"],
+  "Kayseri":["Akkışla","Bünyan","Develi","Felahiye","Hacılar","İncesu","Kocasinan","Melikgazi","Özvatan","Pınarbaşı","Sarıoğlan","Sarız","Talas","Tomarza","Yahyalı","Yeşilhisar"],
+  "Kırıkkale":["Bahşili","Balışeyh","Çelebi","Delice","Karakeçili","Keskin","Kırıkkale","Merkez","Sulakyurt","Yahşihan"],
+  "Kırklareli":["Babaeski","Demirköy","Kırklareli","Kofçaz","Lüleburgaz","Merkez","Pehlivanköy","Pınarhisar","Vize"],
+  "Kırşehir":["Akçakent","Akpınar","Boztepe","Çiçekdağı","Kaman","Kırşehir","Merkez","Mucur"],
+  "Kilis":["Elbeyli","Kilis","Merkez","Musabeyli","Polateli"],
+  "Kocaeli":["Başiskele","Çayırova","Darıca","Derince","Dilovası","Gebze","Gölcük","İzmit","Kandıra","Karamürsel","Kartepe","Körfez"],
+  "Konya":["Ahırlı","Akören","Akşehir","Altınekin","Beyşehir","Bozkır","Cihanbeyli","Çeltik","Çumra","Derbent","Derebucak","Doğanhisar","Emirgazi","Ereğli","Güneysınır","Hadim","Halkapınar","Hüyük","Ilgın","Kadınhanı","Karapınar","Karatay","Kulu","Meram","Sarayönü","Selçuklu","Seydişehir","Taşkent","Tuzlukçu","Yalıhüyük","Yunak"],
+  "Kütahya":["Altıntaş","Aslanapa","Çavdarhisar","Domaniç","Dumlupınar","Emet","Gediz","Hisarcık","Kütahya","Merkez","Pazarlar","Simav","Şaphane","Tavşanlı"],
+  "Malatya":["Akçadağ","Arapgir","Arguvan","Battalgazi","Darende","Doğanşehir","Doğanyol","Hekimhan","Kale","Kuluncak","Pütürge","Yeşilyurt"],
+  "Manisa":["Ahmetli","Akhisar","Alaşehir","Demirci","Gölmarmara","Gördes","Kırkağaç","Köprübaşı","Kula","Merkez","Salihli","Sarıgöl","Saruhanlı","Selendi","Soma","Turgutlu","Yunusemre"],
+  "Mardin":["Artuklu","Dargeçit","Derik","Kızıltepe","Mazıdağı","Midyat","Nusaybin","Ömerli","Savur","Yeşilli"],
+  "Mersin":["Akdeniz","Anamur","Aydıncık","Bozyazı","Çamlıyayla","Erdemli","Gülnar","Mezitli","Mut","Silifke","Tarsus","Toroslar","Yenişehir"],
+  "Muğla":["Bodrum","Dalaman","Datça","Fethiye","Kavaklıdere","Köyceğiz","Marmaris","Menteşe","Milas","Ortaca","Seydikemer","Ula","Yatağan"],
+  "Muş":["Bulanık","Hasköy","Korkut","Malazgirt","Merkez","Muş","Varto"],
+  "Nevşehir":["Acıgöl","Avanos","Derinkuyu","Gülşehir","Hacıbektaş","Kozaklı","Nevşehir","Ürgüp"],
+  "Niğde":["Altunhisar","Bor","Çamardı","Çiftlik","Merkez","Niğde","Ulukışla"],
+  "Ordu":["Akkuş","Altınordu","Aybastı","Çamaş","Çatalpınar","Çaybaşı","Fatsa","Gölköy","Gülyalı","Gürgentepe","İkizce","Kabadüz","Kabataş","Korgan","Kumru","Mesudiye","Perşembe","Ulubey","Ünye"],
+  "Osmaniye":["Bahçe","Düziçi","Hasanbeyli","Kadirli","Merkez","Osmaniye","Sumbas","Toprakkale"],
+  "Rize":["Ardeşen","Çamlıhemşin","Çayeli","Derepazarı","Fındıklı","Güneysu","Hemşin","İkizdere","İyidere","Kalkandere","Merkez","Pazar","Rize"],
+  "Sakarya":["Adapazarı","Akyazı","Arifiye","Erenler","Ferizli","Geyve","Hendek","Karapürçek","Karasu","Kaynarca","Kocaali","Mithatpaşa","Pamukova","Sapanca","Serdivan","Söğütlü","Taraklı"],
+  "Samsun":["Alaçam","Asarcık","Atakum","Ayvacık","Bafra","Canik","Çarşamba","İlkadım","Kavak","Ladik","Merkez","19 Mayıs","Ondokuzmayıs","Salıpazarı","Tekkeköy","Terme","Vezirköprü","Yakakent"],
+  "Şanlıurfa":["Akçakale","Birecik","Bozova","Ceylanpınar","Eyyübiye","Halfeti","Haliliye","Harran","Hilvan","Karaköprü","Merkez","Siverek","Suruç","Viranşehir"],
+  "Siirt":["Baykan","Eruh","Kurtalan","Merkez","Pervari","Şirvan","Tillo"],
+  "Sinop":["Ayancık","Boyabat","Dikmen","Durağan","Erfelek","Gerze","Merkez","Saraydüzü","Türkeli"],
+  "Sivas":["Akıncılar","Altınyayla","Divriği","Doğanşar","Gemerek","Gölova","Gürün","Hafik","İmranlı","Kangal","Koyulhisar","Merkez","Şarkışla","Suşehri","Ulaş","Yıldızeli","Zara"],
+  "Şırnak":["Beytüşşebap","Cizre","Güçlükonak","İdil","Merkez","Silopi","Uludere"],
+  "Tekirdağ":["Çerkezköy","Çorlu","Ergene","Hayrabolu","Kapaklı","Malkara","Marmaraereğlisi","Muratlı","Saray","Süleymanpaşa","Şarköy"],
+  "Tokat":["Almus","Artova","Başçiftlik","Erbaa","Merkez","Niksar","Pazar","Reşadiye","Sulusaray","Tokat","Turhal","Yeşilyurt","Zile"],
+  "Trabzon":["Akçaabat","Araklı","Arsin","Beşikdüzü","Çarşıbaşı","Çaykara","Dernekpazarı","Düzköy","Hayrat","Köprübaşı","Maçka","Of","Ortahisar","Sürmene","Şalpazarı","Tonya","Vakfıkebir","Yomra"],
+  "Tunceli":["Çemişgezek","Hozat","Mazgirt","Merkez","Nazımiye","Ovacık","Pertek","Pülümür"],
+  "Uşak":["Banaz","Eşme","Karahallı","Merkez","Sivaslı","Ulubey"],
+  "Van":["Bahçesaray","Başkale","Çatak","Çaldıran","Edremit","Erciş","Gevaş","Gürpınar","İpekyolu","Muradiye","Özalp","Saray","Tuşba"],
+  "Yalova":["Altınova","Armutlu","Çınarcık","Çiftlikköy","Merkez","Termal"],
+  "Yozgat":["Akdağmadeni","Aydıncık","Boğazlıyan","Çandır","Çayıralan","Çekerek","Kadışehri","Merkez","Saraykent","Sarıkaya","Şefaatli","Sorgun","Yenifakılı","Yerköy","Yozgat"],
+  "Zonguldak":["Alaplı","Çaycuma","Devrek","Ereğli","Gökçebey","Kilimli","Kozlu","Merkez","Zonguldak"]
+};
+
+// ─── MEKAN VERİSİ ─────────────────────────────────────────────────────────────
+let places = [
+  {
+    id:1, name:"KidzMania İstanbul", tur:"Eğlence Merkezi",
+    il:"İstanbul", ilce:"Ümraniye",
+    adres:"Kanyon AVM, Ümraniye / İstanbul",
+    foto:"https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=600&q=80",
+    desc:"Çocuklara yönelik mesleki rol yapma deneyimleri sunan kapalı eğlence parkı. Dilek çocukları için özel VIP girişi ve organizasyon desteği mevcut.",
+    tags:["Çocuk Dostu","Kapalı Alan","Engelli Erişimi","Özel Organizasyon"], faved:false
+  },
+  {
+    id:2, name:"Kidzania İstanbul", tur:"Eğlence Merkezi",
+    il:"İstanbul", ilce:"Bakırköy",
+    adres:"Aqua Florya AVM, Bakırköy / İstanbul",
+    foto:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+    desc:"Çocukların gerçek hayat mesleklerini deneyimleyebildiği dünyaca ünlü eğlence merkezi. Make-A-Wish iş ortağı olarak özel dilek programlarına ev sahipliği yapıyor.",
+    tags:["Çocuk Dostu","Kapalı Alan","Engelli Erişimi","Özel Organizasyon"], faved:false
+  },
+  {
+    id:3, name:"Wonderland Eurasia", tur:"Tema Parkı",
+    il:"Ankara", ilce:"Etimesgut",
+    adres:"Mevlana Bulvarı No:119, Etimesgut / Ankara",
+    foto:"https://images.unsplash.com/photo-1513889961551-628c1e5e2ee9?w=600&q=80",
+    desc:"Türkiye'nin en büyük tema parklarından biri. Heyecan verici sürüşler, performans gösterileri ve özel etkinlik alanları ile dilek çocukları için unutulmaz bir deneyim.",
+    tags:["Çocuk Dostu","Açık Alan","Engelli Erişimi","Özel Organizasyon"], faved:false
+  },
+  {
+    id:4, name:"Sea Life İstanbul Akvaryum", tur:"Akvaryum",
+    il:"İstanbul", ilce:"Bakırköy",
+    adres:"Capacity AVM, Bakırköy / İstanbul",
+    foto:"https://images.unsplash.com/photo-1519197924294-4ba991a11128?w=600&q=80",
+    desc:"Binlerce deniz canlısıyla dolu büyülü bir sualtı dünyası. Deniz sevgisi olan dilek çocukları için tünel akvaryumda özel tur ve denizkızı/dalgıç deneyimleri ayarlanabiliyor.",
+    tags:["Çocuk Dostu","Kapalı Alan","Engelli Erişimi"], faved:false
+  },
+  {
+    id:5, name:"Viaport Marina İnternet Kafe", tur:"Oyun & İnternet Kafe",
+    il:"İstanbul", ilce:"Ümraniye",
+    adres:"Viaport AVM, Ümraniye / İstanbul",
+    foto:"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80",
+    desc:"Yüksek teknoloji oyun bilgisayarları, VR simülatörleri ve konsol alanlarıyla donanmış modern oyun merkezi. Oyun seven dilek çocukları için VIP paket hazırlanabiliyor.",
+    tags:["Çocuk Dostu","Kapalı Alan","Wifi","Özel Organizasyon"], faved:false
+  },
+  {
+    id:6, name:"Miniatürk", tur:"Kültür Parkı",
+    il:"İstanbul", ilce:"Eyüpsultan",
+    adres:"İmrahor Cad. No:2, Eyüpsultan / İstanbul",
+    foto:"https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80",
+    desc:"Türkiye'nin ve dünyanın minyatür modellerini bir arada sunan açık hava müzesi. Meraklı çocuklar için eğitici ve eğlenceli bir gün geçirme imkânı. Engelli erişimi mükemmel.",
+    tags:["Çocuk Dostu","Açık Alan","Engelli Erişimi","Ücretsiz"], faved:false
+  },
+  {
+    id:7, name:"Ankapark", tur:"Tema Parkı",
+    il:"Ankara", ilce:"Keçiören",
+    adres:"Atatürk Bulvarı, Keçiören / Ankara",
+    foto:"https://images.unsplash.com/photo-1536882240095-0379873feb4e?w=600&q=80",
+    desc:"Dev dinozor heykelleri, eğlence sürüşleri ve tropikal sera ile Ankara'nın en popüler aile parkı. Doğa ve hayvan seven çocuklar için ideal bir dilek mekanı.",
+    tags:["Çocuk Dostu","Açık Alan","Engelli Erişimi"], faved:false
+  },
+  {
+    id:8, name:"Teknokent Bilim Merkezi", tur:"Bilim Merkezi",
+    il:"İzmir", ilce:"Konak",
+    adres:"Kültürpark içi, Konak / İzmir",
+    foto:"https://images.unsplash.com/photo-1518152006812-edab29b069ac?w=600&q=80",
+    desc:"İnteraktif bilim deneyleri, planetaryum gösterileri ve robot atölyeleriyle çocukların merakını besleyen modern bilim merkezi. Bilim sever dilek çocukları için birebir.",
+    tags:["Çocuk Dostu","Kapalı Alan","Engelli Erişimi","Özel Organizasyon"], faved:false
+  }
+];
+
+let activeTagFilters = [];
+let currentSort = 'default';
+
+// ─── İL/İLÇE SELECTLERİ ──────────────────────────────────────────────────────
+function buildIlSelects() {
+  const iller = Object.keys(ilceler).sort((a,b) => a.localeCompare(b,'tr'));
+  const fs = document.getElementById('filterIl');
+  const ms = document.getElementById('fIl');
+  const currentF = fs.value;
+  const currentM = ms.value;
+  fs.innerHTML = '<option value="">Tüm İller</option>';
+  ms.innerHTML = '<option value="">Seçiniz...</option>';
+  iller.forEach(il => {
+    fs.innerHTML += `<option value="${il}">${il}</option>`;
+    ms.innerHTML += `<option value="${il}">${il}</option>`;
+  });
+  fs.value = currentF;
+  ms.value = currentM;
+}
+
+function updateFilterIlce() {
+  const il = document.getElementById('filterIl').value;
+  const sel = document.getElementById('filterIlce');
+  sel.innerHTML = '<option value="">Tüm İlçeler</option>';
+  const list = il && ilceler[il] ? ilceler[il] : [...new Set(places.map(p=>p.ilce))].sort((a,b)=>a.localeCompare(b,'tr'));
+  list.forEach(ilce => { sel.innerHTML += `<option value="${ilce}">${ilce}</option>`; });
+}
+
+function updateModalIlce() {
+  const il = document.getElementById('fIl').value;
+  const sel = document.getElementById('fIlce');
+  sel.innerHTML = '<option value="">Seçiniz...</option>';
+  if (il && ilceler[il]) {
+    ilceler[il].forEach(ilce => { sel.innerHTML += `<option value="${ilce}">${ilce}</option>`; });
+  }
+}
+
+// ─── FİLTRE & RENDER ──────────────────────────────────────────────────────────
+function getFiltered() {
+  const il = document.getElementById('filterIl').value;
+  const ilce = document.getElementById('filterIlce').value;
+  const tur = document.getElementById('filterTur').value;
+  const s = document.getElementById('searchInput').value.toLowerCase().trim();
+  return places.filter(p =>
+    (!il || p.il === il) && (!ilce || p.ilce === ilce) && (!tur || p.tur === tur) &&
+    (!s || p.name.toLowerCase().includes(s) || p.adres.toLowerCase().includes(s)) &&
+    activeTagFilters.every(t => p.tags.includes(t))
+  );
+}
+
+function getSorted(data) {
+  if (currentSort === 'name') return [...data].sort((a,b) => a.name.localeCompare(b.name,'tr'));
+  if (currentSort === 'il') return [...data].sort((a,b) => a.il.localeCompare(b.il,'tr'));
+  return data;
+}
+
+function filterCards() { renderCards(getSorted(getFiltered())); }
+function sortAndRender(v) { currentSort = v; filterCards(); }
+
+function toggleTag(btn, tag) {
+  btn.classList.toggle('active');
+  activeTagFilters = activeTagFilters.includes(tag) ? activeTagFilters.filter(t=>t!==tag) : [...activeTagFilters, tag];
+  filterCards();
+}
+
+function tagClass(t) {
+  if (['Çocuk Dostu','Açık Alan'].includes(t)) return 'green';
+  if (['Engelli Erişimi','Kapalı Alan','Wifi'].includes(t)) return 'blue';
+  if (['Ücretsiz','7/24 Açık'].includes(t)) return 'orange';
+  if (t === 'Özel Organizasyon') return 'purple';
+  return 'blue';
+}
+function tagIcon(t) {
+  return {
+    'Çocuk Dostu':'<i class="ph-fill ph-smiley"></i>',
+    'Engelli Erişimi':'<i class="ph-fill ph-wheelchair"></i>',
+    'Kapalı Alan':'<i class="ph-fill ph-house"></i>',
+    'Açık Alan':'<i class="ph-fill ph-tree"></i>',
+    'Ücretsiz':'<i class="ph-fill ph-currency-circle-dollar"></i>',
+    'Wifi':'<i class="ph-fill ph-wifi-high"></i>',
+    '7/24 Açık':'<i class="ph-fill ph-clock"></i>',
+    'Özel Organizasyon':'<i class="ph-fill ph-star"></i>'
+  }[t] || '';
+}
+
+function renderCards(data) {
+  document.getElementById('shownCount').textContent = data.length;
+  updateStats();
+  const grid = document.getElementById('cardsGrid');
+  if (!data.length) {
+    grid.innerHTML = `<div class="no-results"><i class="ph-light ph-magnifying-glass"></i><h3>Mekan bulunamadı</h3><p>Farklı filtreler deneyin veya yeni bir mekan ekleyin.</p></div>`;
+    return;
+  }
+  grid.innerHTML = data.map(p => {
+    const cnt = (comments[p.id]||[]).length;
+    const avgStar = cnt ? Math.round((comments[p.id]||[]).reduce((s,c)=>s+c.star,0)/cnt) : 0;
+    const starsHtml = avgStar ? `<span style="color:#fbbf24;font-size:12px;">${'★'.repeat(avgStar)}${'☆'.repeat(5-avgStar)}</span>` : '';
+    return `
+    <div class="place-card" onclick="openDetail(${p.id})">
+      <div class="card-img-wrap">
+        <img src="${p.foto||'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80'}" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80'">
+        <div class="card-badge">${p.tur}</div>
+        <div class="card-fav${p.faved?' faved':''}" onclick="toggleFav(event,${p.id})">
+          ${p.faved?'<i class="ph-fill ph-heart" style="color:#ef4444"></i>':'<i class="ph-bold ph-heart" style="color:#94a3b8"></i>'}
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-location"><i class="ph-fill ph-map-pin"></i> ${p.il} · ${p.ilce}</div>
+        <div class="card-title">${p.name}</div>
+        <div class="card-address"><i class="ph-bold ph-map-pin" style="color:#94a3b8;margin-top:1px;flex-shrink:0"></i> ${p.adres}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-tags">${p.tags.map(t=>`<span class="ctag ${tagClass(t)}">${tagIcon(t)} ${t}</span>`).join('')}</div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-comments" onclick="openDetail(${p.id});event.stopPropagation()">
+          <i class="ph-fill ph-chat-circle-text"></i> Yorumlar
+          <span class="comment-count-badge">${cnt}</span>
+        </button>
+        <span style="font-size:13px;">${starsHtml}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = places.length;
+  document.getElementById('statIl').textContent = new Set(places.map(p=>p.il)).size;
+  document.getElementById('statFav').textContent = places.filter(p=>p.faved).length;
+}
+
+// ─── SIDEBAR MOBILE ──────────────────────────────────────────────────────────
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('open');
+  document.getElementById('sidebarClose').style.display = 'flex';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+  document.getElementById('sidebarClose').style.display = 'none';
+}
+// Ekran büyüyünce sidebar'ı sıfırla
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 768) closeSidebar();
+});
+
+// ─── YORUM VERİSİ ─────────────────────────────────────────────────────────────
+const avatarColors = ['#0065c3','#10b981','#7c3aed','#d97706','#e11d48','#0891b2'];
+function avatarColor(name) { let h=0; for(let c of name) h+=c.charCodeAt(0); return avatarColors[h%avatarColors.length]; }
+function initials(name) { return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+
+const comments = {
+  1: [
+    { id:101, author:"Zeynep A.", role:"Gönüllü", star:5, text:"Küçük Emre'nin dileği burada gerçekleşti. Personel organizasyon öncesinde bizimle çok detaylı koordinasyon yaptı, her şey mükemmeldi. Kesinlikle tekrar kullanırız.", wish:"🌟 Dilek Gerçekleştirmesi", date:"12 Ocak 2025" },
+    { id:102, author:"Mert K.", role:"Make-A-Wish Ekibi", star:5, text:"VIP karşılama, özel alan ayarladılar. Dilek çocukları için gerçekten çok anlayışlılar. Yönetimle iletişim çok kolaydı.", wish:null, date:"3 Şubat 2025" },
+    { id:103, author:"Selin T.", role:"Aile", star:4, text:"Kızımız hayatında böyle eğlenceli bir gün geçirmemişti. Gözleri fal taşı gibi açıldı. Tek eksiği park yeri biraz dar.", wish:"🎉 Doğum Günü Dileği", date:"28 Şubat 2025" }
+  ],
+  2: [
+    { id:201, author:"Hakan D.", role:"Gönüllü", star:5, text:"Kidzania zaten dünyanın en iyi çocuk mekanlarından biri, Make-A-Wish iş birliğiyle ayrı bir anlam kazanıyor. İki dilek gerçekleştirmesi yaptık burada, ikisi de mükemmeldi.", wish:"🌟 Dilek Gerçekleştirmesi", date:"5 Kasım 2024" },
+    { id:202, author:"Ayşe M.", role:"Gönüllü Koordinatör", star:5, text:"Kidzania ekibi gerçekten profesyonel. Dilek çocuğumuza özel kostüm ve karşılama hazırladılar. Ailenin yüzündeki ifadeyi unutmak mümkün değil.", wish:"👨‍🚒 İtfaiyeci Dileği", date:"18 Aralık 2024" }
+  ],
+  3: [
+    { id:301, author:"Can B.", role:"Gönüllü", star:5, text:"Wonderland Eurasia inanılmaz büyük. Hız treni seven Ahmet için harika bir gündü, kendisi de ailesi de çok mutluydu. Engelli erişimi konusunda da gayet başarılılar.", wish:"🎢 Hız Treni Dileği", date:"7 Mart 2025" },
+    { id:302, author:"Elif Ş.", role:"Make-A-Wish Ekibi", star:4, text:"Çok geniş bir alan olduğu için yorucu olabiliyor ama verilen deneyim açısından 5 yıldızı hak ediyor. Tekerlekli sandalye için yollar uygun.", wish:null, date:"1 Nisan 2025" }
+  ],
+  4: [
+    { id:401, author:"Burak A.", role:"Gönüllü", star:5, text:"Deniz canlılarına meraklı küçük Defne için birebir bir mekan. Dalgıçla el sıkışma anını organize ettiler, çocuk gözyaşlarına boğuldu (mutluluktan!).", wish:"🐠 Denizkızı Dileği", date:"20 Ocak 2025" },
+    { id:402, author:"Nur H.", role:"Aile", star:5, text:"Tünel akvaryumda yürürken kızımın yüzündeki ifadeyi bir ömür unutamam. Bu mekanı tüm ailelere öneriyorum.", wish:null, date:"3 Mart 2025" }
+  ],
+  5: [
+    { id:501, author:"Pınar C.", role:"Gönüllü", star:5, text:"Gamer olan dilek çocukları için bu mekan tam isabet. Özel VR deneyimi hazırlandı, çocuk saatlerce oynamak istedi. Personel çok ilgili.", wish:"🎮 Oyun Dileği", date:"9 Aralık 2024" },
+    { id:502, author:"Leyla M.", role:"Make-A-Wish Ekibi", star:4, text:"İnternet kafe konsepti büyük çocuklar için çok uygun. Ekip özel turnuva bile organize etti bizim için.", wish:"🏆 E-Spor Dileği", date:"22 Ocak 2025" }
+  ],
+  6: [
+    { id:601, author:"Ahmet Y.", role:"Gönüllü", star:4, text:"Tarihe meraklı çocuklar için Miniatürk harika bir seçim. Rehber eşliğinde tur yaptırdılar, çocuk her modeli sordu, hepsini anlattılar.", wish:"🏛️ Tarih Turu Dileği", date:"15 Şubat 2025" },
+    { id:602, author:"Fatma K.", role:"Aile", star:5, text:"Engelli arabasıyla her yere rahatça girebildik. Mekânın engelli erişimi gerçekten düşünülmüş. Çok keyifli bir gündü.", wish:null, date:"28 Mart 2025" }
+  ],
+  7: [
+    { id:701, author:"Erhan", role:"Gönüllü Ekibi", star:5, text:"Ankapark'taki dinozor alanı çocukları büyülüyor. Paleontoloji seven küçük Kerem için özel rehberli tur ayarladık, inanılmaz bir gündü.", wish:"🦕 Dinozor Dileği", date:"10 Şubat 2025" }
+  ],
+  8: [
+    { id:801, author:"Mert K.", role:"Make-A-Wish Ekibi", star:5, text:"Bilim meraklısı dilek çocukları için bu merkez birebir. Planetaryum gösterisi sırasında çocuğun gözlerindeki ışıltıyı görmek her şeye değer.", wish:"🔭 Astronot Dileği", date:"5 Nisan 2025" },
+    { id:802, author:"Selin T.", role:"Gönüllü", star:5, text:"Robot atölyesinde kendi robotunu yapan çocuğun gurur dolu yüzü... Ekip çok sabırlı ve ilgili. Kesinlikle tavsiye ediyorum.", wish:"🤖 Robot Dileği", date:"19 Nisan 2025" }
+  ]
+};
+
+let currentPlaceId = null;
+let currentStar = 5;
+
+// ─── DETAY PANELİ ─────────────────────────────────────────────────────────────
+function openDetail(id) {
+  const p = places.find(pl=>pl.id===id);
+  if (!p) return;
+  currentPlaceId = id;
+  currentStar = 5;
+
+  document.getElementById('dHero').src = p.foto || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80';
+  document.getElementById('dName').textContent = p.name;
+  document.getElementById('dLocation').textContent = `${p.il} · ${p.ilce} · ${p.tur}`;
+  document.getElementById('dDesc').textContent = p.desc;
+  document.getElementById('dAdres').innerHTML = `<i class="ph-fill ph-map-pin" style="color:var(--primary-blue);flex-shrink:0"></i> ${p.adres}`;
+
+  // meta tags
+  document.getElementById('dMeta').innerHTML = p.tags.map(t=>`<span class="ctag ${tagClass(t)}">${tagIcon(t)} ${t}</span>`).join('');
+
+  // yıldızları sıfırla
+  setStar(5);
+  document.getElementById('commentText').value = '';
+
+  renderComments(id);
+  document.getElementById('detailOverlay').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('open');
+  currentPlaceId = null;
+}
+
+function handleDetailOverlay(e) {
+  if (e.target === document.getElementById('detailOverlay')) closeDetail();
+}
+
+function renderComments(id) {
+  const list = comments[id] || [];
+  document.getElementById('dCommentCount').textContent = list.length;
+  if (!list.length) {
+    document.getElementById('dCommentList').innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:14px;"><i class="ph-light ph-chat-circle" style="font-size:32px;display:block;margin-bottom:8px;color:#cbd5e1;"></i>Henüz yorum yok. İlk yorumu sen yap!</div>`;
+    return;
+  }
+  document.getElementById('dCommentList').innerHTML = list.map(c => `
+    <div class="comment-item">
+      <div class="comment-top">
+        <div class="comment-avatar" style="background:${avatarColor(c.author)}">${initials(c.author)}</div>
+        <div>
+          <div class="comment-author">${c.author}</div>
+          <div class="comment-role">${c.role}</div>
+        </div>
+        <div class="comment-date">${c.date}</div>
+      </div>
+      <div class="comment-stars">${'<i class="ph-fill ph-star"></i>'.repeat(c.star)}${'<i class="ph-regular ph-star" style="color:#e2e8f0"></i>'.repeat(5-c.star)}</div>
+      <div class="comment-text">${c.text}</div>
+      ${c.wish ? `<div class="comment-wish-tag"><i class="ph-fill ph-star"></i> ${c.wish}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function setStar(n) {
+  currentStar = n;
+  document.querySelectorAll('#starPicker i').forEach((el,i) => {
+    el.classList.toggle('active', i < n);
+  });
+}
+
+function submitComment() {
+  const text = document.getElementById('commentText').value.trim();
+  if (!text) { document.getElementById('commentText').focus(); return; }
+  if (!currentPlaceId) return;
+
+  if (!comments[currentPlaceId]) comments[currentPlaceId] = [];
+  comments[currentPlaceId].push({
+    id: Date.now(),
+    author: "Erhan",
+    role: "Gönüllü Ekibi",
+    star: currentStar,
+    text,
+    wish: null,
+    date: new Date().toLocaleDateString('tr-TR', { day:'numeric', month:'long', year:'numeric' })
+  });
+
+  document.getElementById('commentText').value = '';
+  setStar(5);
+  renderComments(currentPlaceId);
+  filterCards(); // kart yorum sayısını güncelle
+  showCommentToast();
+}
+
+function showCommentToast() {
+  const t = document.getElementById('toast');
+  t.innerHTML = '<i class="ph-fill ph-check-circle"></i> Yorumun eklendi, teşekkürler!';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// ─── FAVORİ ──────────────────────────────────────────────────────────────────
+function toggleFav(e, id) {
+  e.stopPropagation();
+  const p = places.find(p=>p.id===id);
+  if (p) { p.faved = !p.faved; filterCards(); }
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function handleOverlay(e) { if (e.target===document.getElementById('modalOverlay')) closeModal(); }
+
+function addPlace() {
+  const name  = document.getElementById('fName').value.trim();
+  const tur   = document.getElementById('fTur').value;
+  const il    = document.getElementById('fIl').value;
+  const ilce  = document.getElementById('fIlce').value;
+  const adres = document.getElementById('fAdres').value.trim();
+  const desc  = document.getElementById('fDesc').value.trim();
+  const foto  = document.getElementById('fFoto').value.trim();
+  if (!name||!tur||!il||!ilce||!adres||!desc) { alert('Lütfen * ile işaretli zorunlu alanları doldurun.'); return; }
+  const tags = ['t1','t2','t3','t4','t5','t6','t7','t8'].filter(id=>document.getElementById(id).checked).map(id=>document.getElementById(id).value);
+  places.push({ id:Date.now(), name, tur, il, ilce, adres, desc, foto, tags, faved:false });
+  ['fName','fAdres','fDesc','fFoto'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fTur').value='';
+  document.getElementById('fIl').value='';
+  document.getElementById('fIlce').innerHTML='<option value="">Önce il seçin</option>';
+  ['t1','t2','t3','t4','t5','t6','t7','t8'].forEach(id=>document.getElementById(id).checked=false);
+  buildIlSelects();
+  updateFilterIlce();
+  closeModal();
+  filterCards();
+  showToast();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.innerHTML = '<i class="ph-fill ph-check-circle"></i> Mekan başarıyla eklendi!';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+// ─── EVENT LISTENERS ─────────────────────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('input', filterCards);
+document.getElementById('filterIl').addEventListener('change', ()=>{ updateFilterIlce(); filterCards(); });
+document.getElementById('filterIlce').addEventListener('change', filterCards);
+document.getElementById('filterTur').addEventListener('change', filterCards);
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+buildIlSelects();
+updateFilterIlce();
+filterCards();
+</script>
+</body>
+</html>

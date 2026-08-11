@@ -1,0 +1,3005 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make-A-Wish | Duyurular & Eğitimler</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    :root {
+      --primary: #0065c3;
+      --primary-dark: #003d7a;
+      --primary-light: #e8f3ff;
+      --gold: #f59e0b;
+      --gold-light: #fffbeb;
+      --green: #10b981;
+      --green-light: #ecfdf5;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
+      --red: #ef4444;
+      --red-light: #fef2f2;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --border: #e8edf5;
+      --text: #1e293b;
+      --muted: #64748b;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 16px rgba(0, 60, 140, 0.08);
+      --shadow-lg: 0 12px 40px rgba(0, 60, 140, 0.13);
+      --shadow-xl: 0 24px 60px rgba(0, 60, 140, 0.16);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      width: 268px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 28px 16px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 20;
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px;
+      margin-bottom: 24px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--gold);
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 101, 195, 0.3);
+    }
+
+    .brand-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      line-height: 1.2;
+    }
+
+    .brand-text span {
+      display: block;
+      font-family: 'Nunito', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding: 0 12px;
+      margin: 8px 0 6px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      margin-bottom: 2px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.18s;
+    }
+
+    .menu-item i {
+      font-size: 19px;
+      transition: transform 0.18s;
+    }
+
+    .menu-item:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .menu-item:hover i {
+      transform: translateX(2px);
+    }
+
+    .menu-item.active {
+      background: linear-gradient(135deg, var(--primary-light), #dceeff);
+      color: var(--primary);
+      box-shadow: inset 3px 0 0 var(--primary);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .user-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: 0.18s;
+      margin-bottom: 4px;
+    }
+
+    .user-mini:hover {
+      background: var(--bg);
+    }
+
+    .user-mini-avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary-light), #c3dcff);
+      color: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .user-mini-info strong {
+      display: block;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .user-mini-info span {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 18px;
+      right: 14px;
+      width: 30px;
+      height: 30px;
+      background: var(--bg);
+      border: none;
+      border-radius: 8px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .sidebar-close:hover {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    /* ─── MAIN WRAPPER ─── */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    /* ─── TOP BAR ─── */
+    .top-bar {
+      background: var(--card);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hamburger {
+      display: none;
+      width: 38px;
+      height: 38px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 18px;
+      transition: 0.2s;
+    }
+
+    .hamburger:hover {
+      background: var(--bg);
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--muted);
+      transition: 0.18s;
+      position: relative;
+    }
+
+    .icon-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: #bbd8ff;
+    }
+
+    .icon-btn .dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 7px;
+      height: 7px;
+      background: #ef4444;
+      border-radius: 50%;
+      border: 1.5px solid white;
+    }
+
+    .top-avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 101, 195, 0.3);
+    }
+
+    .btn-add-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0, 101, 195, 0.25);
+    }
+
+    .btn-add-top:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 101, 195, 0.3);
+    }
+
+    /* ─── MAIN CONTENT ─── */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px;
+    }
+
+    /* ─── HERO STRIP ─── */
+    .hero-strip {
+      background: linear-gradient(135deg, #0f172a 0%, var(--primary-dark) 50%, var(--primary) 100%);
+      border-radius: var(--radius);
+      padding: 26px 30px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .hero-strip::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-text {
+      position: relative;
+    }
+
+    .hero-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 23px;
+      color: white;
+      margin-bottom: 6px;
+    }
+
+    .hero-text p {
+      font-size: 13.5px;
+      color: rgba(255, 255, 255, 0.78);
+      line-height: 1.6;
+      max-width: 520px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 22px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      color: var(--gold);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .hero-stat-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-divider {
+      width: 1px;
+      background: rgba(255, 255, 255, 0.15);
+      align-self: stretch;
+    }
+
+    /* ─── TAB FILTER BAR ─── */
+    .tab-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tab-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 10px 18px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: -2px;
+    }
+
+    .tab-btn i {
+      font-size: 17px;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-count {
+      background: var(--bg);
+      color: var(--muted);
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      transition: 0.2s;
+    }
+
+    .tab-btn.active .tab-count {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* ─── FILTERS ROW ─── */
+    .filter-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 22px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 17px;
+      pointer-events: none;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 11px 14px 11px 42px;
+      border: 1.5px solid var(--border);
+      border-radius: 30px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13.5px;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 101, 195, 0.08);
+    }
+
+    .search-box input::placeholder {
+      color: #94a3b8;
+    }
+
+    .filter-select {
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13.5px;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 600;
+    }
+
+    .filter-select:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-toggle-filter {
+      padding: 11px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn-toggle-filter:hover,
+    .btn-toggle-filter.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .filter-count-badge {
+      background: var(--primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 12px;
+    }
+
+    /* DETAYLI KART FİLTRELEME PANELİ STİLLERİ */
+    .advanced-filter-panel {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow-sm);
+      animation: fadeUp 0.25s ease both;
+    }
+
+    .filter-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-panel-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px 14px;
+      align-items: end;
+    }
+
+    .f-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .f-item label {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .f-item input,
+    .f-item select {
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      background: #fafbfc;
+      color: var(--text);
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .f-item input:focus,
+    .f-item select:focus {
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(0, 101, 195, 0.08);
+    }
+
+    .btn-reset-filters {
+      padding: 9px 14px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 37px;
+    }
+
+    .btn-reset-filters:hover {
+      background: #fee2e2;
+      color: #dc2626;
+      border-color: #fca5a5;
+    }
+
+    /* KART META ROZETLERİ (YAŞ VE ARABA İHTİYACI) */
+    .meta-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .meta-pill.age {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .meta-pill.car-needed {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .meta-pill.car-not-needed {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* ACİL KART VE BAŞLIK STİLLERİ */
+    .anc-card.urgent-card {
+      border: 1.5px solid #fca5a5 !important;
+      box-shadow: 0 4px 18px rgba(239, 68, 68, 0.12) !important;
+      background: linear-gradient(180deg, #ffffff 0%, #fff8f8 100%) !important;
+    }
+
+    .anc-title.urgent-title {
+      color: #dc2626 !important;
+      background: rgba(254, 242, 242, 0.7);
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+      /* CHECKBOX STİLİ */
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        user-select: none;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--text);
+        background: #fafbfc;
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        border: 1.5px solid var(--border);
+        transition: all 0.2s;
+      }
+
+      .checkbox-container:hover {
+        border-color: var(--primary);
+        background: white;
+      }
+
+      .checkbox-container input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--primary);
+        cursor: pointer;
+      }
+
+      /* ─── ANNOUNCEMENT CARDS GRID ─── */
+      .announcement-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+        padding-bottom: 40px;
+      }
+
+      .anc-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.22s;
+        box-shadow: var(--shadow-sm);
+        cursor: pointer;
+        position: relative;
+        animation: fadeUp 0.35s ease both;
+      }
+
+      .anc-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+        border-color: #d4e5f7;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .anc-card-header {
+        padding: 18px 20px 14px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .badge-tag {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11.5px;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .badge-tag.egitim {
+        background: var(--purple-light);
+        color: var(--purple);
+        border: 1px solid #ddd6fe;
+      }
+
+      .badge-tag.duyuru {
+        background: var(--primary-light);
+        color: var(--primary);
+        border: 1px solid #bfdbfe;
+      }
+
+      .badge-tag.acil {
+        background: var(--red-light);
+        color: var(--red);
+        border: 1px solid #fca5a5;
+      }
+
+      .badge-tag.etkinlik {
+        background: var(--green-light);
+        color: #059669;
+        border: 1px solid #a7f3d0;
+      }
+
+      .anc-date {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .anc-card-body {
+        padding: 0 20px 16px;
+        flex: 1;
+      }
+
+      .anc-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 17.5px;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 8px;
+        line-height: 1.35;
+      }
+
+      .anc-desc {
+        font-size: 13.5px;
+        color: #475569;
+        line-height: 1.65;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+
+      .anc-desc b,
+      .anc-desc strong {
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .anc-desc i,
+      .anc-desc em {
+        font-style: italic;
+      }
+
+      .anc-desc u {
+        text-decoration: underline;
+      }
+
+      .anc-desc h3 {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--primary-dark);
+        margin: 4px 0 2px;
+      }
+
+      .anc-desc ul,
+      .anc-desc ol {
+        padding-left: 18px;
+        margin: 4px 0;
+      }
+
+      .anc-desc a {
+        color: var(--primary);
+        text-decoration: underline;
+        font-weight: 700;
+      }
+
+      /* ─── EĞİTİM ÖZEL BİLGİ KUTUSU ─── */
+      .training-info-box {
+        background: var(--bg);
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 12.5px;
+        color: var(--text);
+      }
+
+      .t-info-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-weight: 600;
+      }
+
+      .t-info-item i {
+        color: var(--primary);
+        font-size: 15px;
+      }
+
+      /* ─── DİLEK GERÇEKLEŞTİRME KART ÖZEL STİLLERİ ─── */
+      .badge-tag.dilek {
+        background: linear-gradient(135deg, #fffbeb, #fef3c7);
+        color: #b45309;
+        border: 1px solid #fde68a;
+      }
+
+      .anc-card.dilek-card {
+        border: 1.5px solid #fde68a;
+        background: linear-gradient(180deg, #ffffff 0%, #fffdfa 100%);
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);
+      }
+
+      .anc-card.dilek-card:hover {
+        border-color: #f59e0b;
+        box-shadow: 0 8px 30px rgba(245, 158, 11, 0.16);
+      }
+
+      .child-wish-pill {
+        background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        border: 1px solid #bfdbfe;
+        border-radius: var(--radius-sm);
+        padding: 9px 12px;
+        margin-bottom: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .interest-tags-wrapper {
+        margin-bottom: 12px;
+      }
+
+      .interest-title {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .interest-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .interest-pill {
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 11.5px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .criteria-box {
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        font-size: 12px;
+      }
+
+      .criteria-title {
+        font-weight: 800;
+        color: #047857;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .criteria-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        color: #065f46;
+      }
+
+      .criteria-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        line-height: 1.4;
+        font-weight: 600;
+      }
+
+      .criteria-list li i {
+        color: #10b981;
+        font-size: 14px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+
+      .needs-box {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        font-size: 12px;
+      }
+
+      .needs-title {
+        font-weight: 800;
+        color: #c2410c;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .needs-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        color: #9a3412;
+        font-weight: 700;
+      }
+
+      .needs-list li {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .anc-card-footer {
+        padding: 14px 20px;
+        border-top: 1px solid var(--border);
+        background: #fafbfc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .anc-author {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .anc-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--primary-light), #c3dcff);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .btn-join {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border: none;
+        padding: 7px 14px;
+        border-radius: var(--radius-sm);
+        font-family: 'Nunito', sans-serif;
+        font-size: 12.5px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .btn-join:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 101, 195, 0.25);
+      }
+
+      .btn-join.joined {
+        background: var(--green);
+        color: white;
+      }
+
+      /* ─── BOŞ SONUÇ ─── */
+      .no-results {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 60px 20px;
+      }
+
+      .no-results i {
+        font-size: 52px;
+        color: #cbd5e1;
+        margin-bottom: 14px;
+        display: block;
+      }
+
+      .no-results h3 {
+        font-size: 18px;
+        color: var(--text);
+        margin-bottom: 6px;
+        font-family: 'Playfair Display', serif;
+      }
+
+      .no-results p {
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      /* ─── TAM ORTALANMIŞ DETAY POP-UP MODAL ─── */
+      .detail-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(4px);
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+      }
+
+      .detail-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .detail-panel {
+        position: relative;
+        width: 100%;
+        max-width: 650px;
+        max-height: 90vh;
+        background: var(--card);
+        border-radius: var(--radius);
+        z-index: 201;
+        display: flex;
+        flex-direction: column;
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        transform: translateY(20px);
+        transition: transform 0.25s ease-out;
+      }
+
+      .detail-overlay.open .detail-panel {
+        transform: translateY(0);
+      }
+
+      .detail-modal-header {
+        padding: 22px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        background: #fafbfc;
+        flex-shrink: 0;
+      }
+
+      .detail-modal-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 20px;
+        color: var(--primary-dark);
+        line-height: 1.3;
+      }
+
+      .modal-close-btn {
+        width: 34px;
+        height: 34px;
+        background: var(--bg);
+        border: none;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 16px;
+        transition: 0.2s;
+        flex-shrink: 0;
+      }
+
+      .modal-close-btn:hover {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+
+      .detail-modal-body {
+        padding: 22px 24px;
+        overflow-y: auto;
+        flex: 1;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .modal-meta-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+
+      .modal-desc {
+        font-size: 14.5px;
+        color: #334155;
+        line-height: 1.75;
+        margin-bottom: 20px;
+      }
+
+      .training-details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        margin-bottom: 20px;
+      }
+
+      .td-item strong {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--muted);
+        letter-spacing: 0.05em;
+        margin-bottom: 3px;
+      }
+
+      .td-item span {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .detail-modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--border);
+        background: #fafbfc;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+
+      .btn-modal-action {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border: none;
+        padding: 10px 22px;
+        border-radius: var(--radius-sm);
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-modal-action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 101, 195, 0.25);
+      }
+
+      /* ─── YENİ DUYURU MODAL ─── */
+      .form-group {
+        margin-bottom: 14px;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px 13px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: 'Nunito', sans-serif;
+        font-size: 13.5px;
+        color: var(--text);
+        outline: none;
+        transition: 0.2s;
+        background: #fafbfc;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(0, 101, 195, 0.08);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      /* ─── RICH TEXT EDITOR ─── */
+      .rich-editor-wrap {
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        background: #fafbfc;
+        transition: 0.2s;
+      }
+
+      .rich-editor-wrap:focus-within {
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(0, 101, 195, 0.08);
+      }
+
+      .rich-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 10px;
+        background: #f1f5f9;
+        border-bottom: 1.5px solid var(--border);
+        flex-wrap: wrap;
+      }
+
+      .rich-toolbar button {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text);
+        font-size: 15px;
+        transition: 0.18s;
+      }
+
+      .rich-toolbar button:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: #bfdbfe;
+      }
+
+      .rich-toolbar button.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary-dark);
+        box-shadow: 0 2px 6px rgba(0, 101, 195, 0.25);
+      }
+
+      .tb-divider {
+        width: 1px;
+        height: 20px;
+        background: var(--border);
+        margin: 0 4px;
+      }
+
+      .rich-editor-content {
+        min-height: 140px;
+        max-height: 240px;
+        padding: 12px 14px;
+        font-family: 'Nunito', sans-serif;
+        font-size: 14px;
+        color: var(--text);
+        outline: none;
+        overflow-y: auto;
+        line-height: 1.65;
+        background: white;
+      }
+
+      .rich-editor-content[data-placeholder]:empty::before {
+        content: attr(data-placeholder);
+        color: #94a3b8;
+        pointer-events: none;
+      }
+
+      .rich-editor-content h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 17px;
+        color: var(--primary-dark);
+        margin: 8px 0 4px;
+      }
+
+      .rich-editor-content ul,
+      .rich-editor-content ol {
+        padding-left: 20px;
+        margin: 6px 0;
+      }
+
+      .rich-editor-content a {
+        color: var(--primary);
+        text-decoration: underline;
+      }
+
+      /* ─── TOAST ─── */
+      .toast {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        background: var(--primary-dark);
+        color: white;
+        border-radius: var(--radius-sm);
+        padding: 13px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 300;
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .toast i {
+        color: var(--green);
+        font-size: 20px;
+      }
+
+      /* ─── SIDEBAR OVERLAY ─── */
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 29;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+
+      .sidebar-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      /* ─── RESPONSIVE ─── */
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100vh;
+          z-index: 30;
+          transform: translateX(-100%);
+          transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .sidebar-overlay {
+          display: block;
+        }
+
+        .sidebar-close {
+          display: flex !important;
+        }
+
+        .hamburger {
+          display: flex;
+        }
+
+        .top-bar {
+          padding: 0 16px;
+        }
+
+        .main-content {
+          padding: 16px;
+        }
+
+        .hero-strip {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 14px;
+          padding: 20px;
+        }
+
+        .hero-stats {
+          gap: 14px;
+        }
+
+        .announcement-grid {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .detail-overlay {
+          padding: 8px;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .detail-panel {
+          width: 100%;
+          max-width: 100%;
+          max-height: 85vh;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .detail-modal-header {
+          padding: 14px 16px;
+          flex-shrink: 0;
+        }
+
+        .detail-modal-body {
+          padding: 14px 16px;
+          flex: 1;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .detail-modal-footer {
+          padding: 12px 16px;
+          flex-shrink: 0;
+        }
+
+        .btn-modal-action {
+          width: 100%;
+          justify-content: center;
+          padding: 12px;
+          font-size: 14.5px;
+        }
+
+        .rich-editor-content {
+          min-height: 100px;
+          max-height: 130px;
+        }
+
+        .training-details-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+
+        .form-group {
+          margin-bottom: 10px;
+        }
+      }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- SOL MENÜ -->
+  <div class="sidebar" id="sidebar">
+    <button class="sidebar-close" id="sidebarClose" onclick="closeSidebar()"><i class="ph-bold ph-x"></i></button>
+
+    <div class="brand">
+      <div class="brand-icon"><i class="ph-fill ph-star"></i></div>
+      <div class="brand-text">Make-A-Wish <span>Türkiye</span></div>
+    </div>
+
+    <a href="guvenli-mekanlar.html" class="menu-item"><i class="ph-fill ph-shield-check"></i> Güvenli Mekanlar</a>
+    <a href="duyurular.html" class="menu-item active"><i class="ph-fill ph-megaphone"></i> Duyurular</a>
+    <a href="wishpedia.html" class="menu-item"><i class="ph-fill ph-sparkle"></i> Wishpedia</a>
+    <a href="hastane-dilek.html" class="menu-item"><i class="ph-fill ph-hospital"></i> Hastane Dilek Alımı</a>
+  </div>
+
+  <!-- ANA WRAPPER -->
+  <div class="main-wrapper">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="hamburger" id="hamburgerBtn" onclick="openSidebar()"><i class="ph-bold ph-list"></i></button>
+        <div class="page-title">
+          <i class="ph-fill ph-megaphone" style="color:var(--primary);font-size:22px;"></i>
+          <span>Duyurular & Eğitimler</span>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <div class="icon-btn"><i class="ph-fill ph-bell"></i>
+          <div class="dot"></div>
+        </div>
+        <div class="icon-btn"><i class="ph-bold ph-gear"></i></div>
+        <button class="btn-add-top" onclick="openAddModal()"><i class="ph-bold ph-plus"></i> <span>Duyuru
+            Ekle</span></button>
+        <div class="top-avatar">E</div>
+      </div>
+    </div>
+
+    <!-- ANA İÇERİK -->
+    <div class="main-content">
+
+      <!-- HERO -->
+      <div class="hero-strip">
+        <div class="hero-text">
+          <h2>Duyurular & Gönüllü Eğitimleri 📢</h2>
+          <p>Make-A-Wish Türkiye topluluğumuz için güncel haberler, etkinlik duyuruları ve mesleki/gönüllü gelişim
+            eğitim takvimi.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num" id="statTotalAnc">6</div>
+            <div class="hero-stat-label">Toplam Duyuru</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-num" id="statTrainingAnc">3</div>
+            <div class="hero-stat-label">Aktif Eğitim</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEKMELER (TABS) -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="setTab('all', this)">
+          <i class="ph-fill ph-squares-four"></i> Tüm Yayınlar <span class="tab-count" id="cAll">0</span>
+        </button>
+        <button class="tab-btn" onclick="setTab('dilek', this)">
+          <i class="ph-fill ph-sparkle" style="color:var(--gold);"></i> Dilek Duyuruları <span class="tab-count"
+            id="cDilek">0</span>
+        </button>
+        <button class="tab-btn" onclick="setTab('egitim', this)">
+          <i class="ph-fill ph-student"></i> Eğitim Duyuruları <span class="tab-count" id="cEgitim">0</span>
+        </button>
+        <button class="tab-btn" onclick="setTab('duyuru', this)">
+          <i class="ph-fill ph-megaphone"></i> Genel Duyurular <span class="tab-count" id="cDuyuru">0</span>
+        </button>
+      </div>
+
+      <!-- FİLTRE & ARAMA SATIRI -->
+      <div class="filter-row">
+        <div class="search-box">
+          <i class="ph-bold ph-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Duyuru başlığı, şehir, ilgi alanı veya eğitim ara...">
+        </div>
+        <select class="filter-select" id="filterCategory">
+          <option value="">Tüm Kategoriler</option>
+          <option value="dilek">✨ Dilek Gerçekleştirme</option>
+          <option value="egitim">🎓 Eğitim</option>
+          <option value="duyuru">📢 Genel Duyuru</option>
+          <option value="etkinlik">🎉 Etkinlik</option>
+        </select>
+        <button type="button" class="btn-toggle-filter" id="btnToggleFilter" onclick="toggleAdvancedFilters()">
+          <i class="ph-bold ph-sliders-horizontal"></i> Detaylı Filtrele
+          <span class="filter-count-badge hidden" id="activeFilterBadge">0</span>
+        </button>
+      </div>
+
+      <!-- DETAYLI KART FİLTRELEME PANELİ -->
+      <div class="advanced-filter-panel hidden" id="advancedFilterPanel">
+        <div class="filter-panel-header">
+          <div class="filter-panel-title">
+            <i class="ph-bold ph-sliders-horizontal" style="color:var(--primary);"></i> Detaylı Kart Filtreleme
+          </div>
+          <button type="button" class="btn-reset-filters" onclick="resetFilters()">
+            <i class="ph-bold ph-arrow-counter-clockwise"></i> Filtreleri Sıfırla
+          </button>
+        </div>
+        <div class="filter-grid">
+          <div class="f-item">
+            <label>İl</label>
+            <input type="text" id="filterCity" placeholder="Örn: İzmir">
+          </div>
+          <div class="f-item">
+            <label>İlçe</label>
+            <input type="text" id="filterDistrict" placeholder="Örn: Buca">
+          </div>
+          <div class="f-item">
+            <label>Başlangıç Tarihi</label>
+            <input type="date" id="filterStartDate">
+          </div>
+          <div class="f-item">
+            <label>Bitiş Tarihi</label>
+            <input type="date" id="filterEndDate">
+          </div>
+          <div class="f-item">
+            <label>Çocuk Yaşı</label>
+            <input type="number" id="filterAgeGroup" min="1" max="18" placeholder="Örn: 7">
+          </div>
+          <div class="f-item">
+            <label>İlgi Alanı</label>
+            <input type="text" id="filterInterest" placeholder="Örn: Gitar, Tekvando">
+          </div>
+          <div class="f-item" style="grid-column: span 2;">
+            <label class="checkbox-container" style="background:#fafbfc; padding:9px 12px; margin-top:5px;">
+              <input type="checkbox" id="filterCarNeed">
+              <span>🚗 Sadece Araba İhtiyacı Olanları Göster</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- DUYURU VE EĞİTİM KARTLARI BÖLÜMÜ -->
+      <div class="announcement-grid" id="announcementGrid">
+        <!-- Kartlar JS ile yüklenecektir -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAM ORTALANMIŞ DETAY POP-UP MODALI -->
+  <div class="detail-overlay" id="detailModal" onclick="handleModalOverlay(event)">
+    <div class="detail-panel">
+      <div class="detail-modal-header">
+        <div>
+          <div style="margin-bottom: 6px;" id="mBadgeContainer"></div>
+          <h2 id="mTitle">Duyuru Başlığı</h2>
+        </div>
+        <button class="modal-close-btn" onclick="closeDetailModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <div class="detail-modal-body">
+        <div class="modal-meta-row">
+          <div class="anc-author">
+            <div class="anc-avatar" id="mAvatar">M</div>
+            <span id="mAuthor">Yayınlayan</span>
+          </div>
+          <span style="color:var(--border);">•</span>
+          <div class="anc-date" id="mDate"><i class="ph-bold ph-calendar-blank"></i> Tarih</div>
+        </div>
+
+        <div id="mTrainingGrid" class="training-details-grid hidden">
+          <div class="td-item">
+            <strong>Tarih &amp; Saat</strong>
+            <span id="mTTime"><i class="ph-fill ph-clock"></i> -</span>
+          </div>
+          <div class="td-item">
+            <strong>Lokasyon / Platform</strong>
+            <span id="mTLocation"><i class="ph-fill ph-video-camera"></i> -</span>
+          </div>
+          <div class="td-item">
+            <strong>Eğitmen</strong>
+            <span id="mTEgitmen"><i class="ph-fill ph-user-circle"></i> -</span>
+          </div>
+          <div class="td-item">
+            <strong>Kontenjan</strong>
+            <span id="mTKontenjan"><i class="ph-fill ph-users"></i> -</span>
+          </div>
+        </div>
+
+        <div class="modal-desc" id="mDesc">
+          İçerik buraya yüklenecektir.
+        </div>
+      </div>
+      <div class="detail-modal-footer">
+        <button class="btn-modal-action"
+          style="background:var(--bg); color:var(--text); border:1.5px solid var(--border);"
+          onclick="openEditModalFromDetail()">
+          <i class="ph-bold ph-pencil-simple"></i> Güncelle
+        </button>
+        <button class="btn-modal-action" id="mActionBtn" onclick="handleModalAction()">
+          <i class="ph-bold ph-check"></i> Katıl / Kaydol
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- YENİ DUYURU / EĞİTİM EKLEME POP-UP MODALI -->
+  <div class="detail-overlay" id="addModal" onclick="handleAddOverlay(event)">
+    <div class="detail-panel" style="max-width: 580px;">
+      <div class="detail-modal-header">
+        <h2 id="addModalTitle"><i class="ph-fill ph-plus-circle" style="color:var(--primary);"></i> Yeni Duyuru / Eğitim
+          Yayınla</h2>
+        <button class="modal-close-btn" onclick="closeAddModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <div class="detail-modal-body">
+        <div class="form-group">
+          <label>Başlık *</label>
+          <input type="text" id="fTitle" placeholder="Duyuru veya eğitim başlığı yazın...">
+        </div>
+        <div class="form-group">
+          <label>Kategori *</label>
+          <select id="fCategory" onchange="toggleCategoryFields()">
+            <option value="dilek">✨ Dilek Gerçekleştirme Duyurusu</option>
+            <option value="duyuru">Genel Duyuru</option>
+            <option value="egitim">Eğitim Duyurusu</option>
+            <option value="etkinlik">Etkinlik</option>
+          </select>
+        </div>
+
+        <div id="addDilekFields">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Yer / Şehir - İlçe *</label>
+              <input type="text" id="fDLocation" placeholder="Örn: İzmir / Buca">
+            </div>
+            <div class="form-group">
+              <label>Çocuk Yaşı</label>
+              <input type="number" id="fDAgeGroup" min="1" max="18" placeholder="Örn: 7">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Etkinlik Başlangıç Tarihi 📅 *</label>
+              <input type="date" id="fDStartDate">
+            </div>
+            <div class="form-group">
+              <label>Etkinlik Bitiş Tarihi 📅 (Opsiyonel)</label>
+              <input type="date" id="fDEndDate">
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:14px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="checkbox-container">
+                <input type="checkbox" id="fDNeedsCar" checked>
+                <span>🚗 Araba İhtiyacı Var</span>
+              </label>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="checkbox-container" style="border-color:#fca5a5; background:#fef2f2;">
+                <input type="checkbox" id="fDIsUrgent">
+                <span style="color:#dc2626; font-weight:800;"><i class="ph-bold ph-warning-circle"></i> Acil Duyuru /
+                  Çağrı</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Dilek Açıklaması *</label>
+            <div class="rich-editor-wrap">
+              <div class="rich-toolbar">
+                <button type="button" id="btnBoldD" title="Kalın" onclick="execDilekCmd('bold')"><i
+                    class="ph-bold ph-text-b"></i></button>
+                <button type="button" id="btnItalicD" title="İtalik" onclick="execDilekCmd('italic')"><i
+                    class="ph-bold ph-text-italic"></i></button>
+                <button type="button" id="btnUnderlineD" title="Altı Çizili" onclick="execDilekCmd('underline')"><i
+                    class="ph-bold ph-text-underline"></i></button>
+                <div class="tb-divider"></div>
+                <button type="button" id="btnULD" title="Madde İşaretli Liste"
+                  onclick="execDilekCmd('insertUnorderedList')"><i class="ph-bold ph-list-bullets"></i></button>
+                <button type="button" id="btnOLD" title="Numaralı Liste" onclick="execDilekCmd('insertOrderedList')"><i
+                    class="ph-bold ph-list-numbers"></i></button>
+                <div class="tb-divider"></div>
+                <button type="button" title="Temizle" onclick="execDilekCmd('removeFormat')"><i
+                    class="ph-bold ph-arrow-counter-clockwise"></i></button>
+              </div>
+              <div class="rich-editor-content" id="fDDescEditor" contenteditable="true"
+                data-placeholder="Dilek çocuğumuz hakkında detaylı bilgi ve dilek günü planı yazınız..."></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>İlgi Alanları (En az 1, en fazla 5 adet - virgülle ayırın)</label>
+            <input type="text" id="fDInterests"
+              placeholder="Örn: 🥋 Tekvando, 💃 Halk Oyunları, 🪆 Barbie, 🎸 Gitar, 🃏 Vampir Köylü">
+          </div>
+          <div class="form-group">
+            <label>Kimler Katılmalı? (Her satıra bir kriter yazın, ekleyip çıkarabilirsiniz)</label>
+            <textarea id="fDCriteria" rows="4" placeholder="Her satıra bir kriter yazın..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>İhtiyaçlar &amp; Lojistik (Boş bırakılırsa kartta gizlenir - her satıra bir ihtiyaç yazın)</label>
+            <textarea id="fDNeeds" rows="3" placeholder="Her satıra bir ihtiyaç yazın..."></textarea>
+          </div>
+        </div>
+
+        <div id="addTrainingFields" class="hidden">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Eğitim Tarihi &amp; Saati 📅</label>
+              <input type="datetime-local" id="fTTime">
+            </div>
+            <div class="form-group">
+              <label>Platform / Mekan</label>
+              <input type="text" id="fTLocation" placeholder="Örn: Zoom Online veya Genel Merkez">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Eğitmen Adı</label>
+              <input type="text" id="fTEgitmen" placeholder="Örn: Dr. Ayşe Yılmaz">
+            </div>
+            <div class="form-group">
+              <label>Kontenjan</label>
+              <input type="text" id="fTKontenjan" placeholder="Örn: 40 Gönüllü">
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="detail-modal-footer">
+        <button class="btn-modal-action" id="addModalSubmitBtn" onclick="submitNewAnnouncement()">
+          <i class="ph-bold ph-paper-plane-tilt"></i> Yayınla
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DİLEK EKİBİNE KATILIM POP-UP MODALI -->
+  <div class="detail-overlay" id="joinModal" onclick="handleJoinOverlay(event)">
+    <div class="detail-panel" style="max-width: 520px;">
+      <div class="detail-modal-header" style="background: linear-gradient(135deg, #fffdfa 0%, #fff7ed 100%); border-bottom: 1.5px solid #fed7aa;">
+        <h2><i class="ph-fill ph-hand-heart" style="color:#d97706;"></i> Dilek Ekibine Katılım Başvurusu</h2>
+        <button class="modal-close-btn" onclick="closeJoinModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <div class="detail-modal-body">
+        <div id="joinModalAncTitle" style="font-family:'Playfair Display',serif; font-size:15.5px; font-weight:700; color:var(--primary-dark); margin-bottom:18px; padding:12px 16px; background:var(--gold-light); border:1px solid #fde68a; border-radius:var(--radius-sm); display:flex; align-items:center; gap:8px;">
+          <i class="ph-fill ph-sparkle" style="color:var(--gold);"></i> <span>Dilek Başlığı</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom:18px;">
+          <label class="checkbox-container" style="border-color:#fde68a; background:#fffdfa; padding:12px 14px;">
+            <input type="checkbox" id="jHasCar">
+            <span style="color:#b45309; font-weight:700;"><i class="ph-bold ph-car"></i> 🚗 Araba / Araç Desteği Sağlayabilirim</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span>Eklemek İstediğiniz Notlar</span>
+            <span style="font-size:11px; font-weight:800; color:var(--muted); text-transform:none; letter-spacing:0;">(Opsiyonel)</span>
+          </label>
+          <textarea id="jNotes" rows="4" placeholder="Dilek günü ile ilgili eklemek istediğiniz notlar, saat tercihleriniz veya lojistik imkanlarınız varsa buraya yazabilirsiniz..."></textarea>
+        </div>
+      </div>
+      <div class="detail-modal-footer" style="background:#fafbfc;">
+        <button class="btn-modal-action" style="background:linear-gradient(135deg, #f59e0b, #d97706);" onclick="submitJoinApplication()">
+          <i class="ph-bold ph-paper-plane-tilt"></i> Başvur
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ─── VERİ SETİ ─────────────────────────────────────────────────────────────────
+    let announcements = [
+      {
+        id: 100,
+        title: "DİLEK GERÇEKLEŞTİRME DUYURUSU",
+        category: "dilek",
+        date: "15-16 Ağustos",
+        eventDate: "15-16 Ağustos",
+        startDate: "2026-08-15",
+        endDate: "2026-08-16",
+        location: "İzmir / Buca",
+        city: "İzmir",
+        district: "Buca",
+        author: "İzmir Gönüllü Ekibi",
+        ageGroup: "8",
+        needsCar: true,
+        childInfo: "8 Yaşında Kız Çocuğu · Genç Odası Dileği & Kuromi Partisi 🎈",
+        desc: "Dilek çocuğumuz 8 yaşında pırıl pırıl bir kız çocuğu. En büyük hayali kendisine ait bir <b>genç odasına</b> sahip olmak! Dilek gününde dışarı çıkabilir, açık alanda <b>Kuromi temalı neşeli bir parti</b> düzenlemek istiyoruz. Tüm gönüllülerimizin desteğini bekliyoruz!",
+        interests: [
+          "🥋 Tekvando Kursu",
+          "💃 Dans & Halk Oyunları",
+          "🪆 Barbie Oyunları",
+          "🎸 Gitar Öğreniyor",
+          "🃏 Manifest & Vampir Köylü"
+        ],
+        criteria: [
+          "Uçuk, grip, nezle, öksürük vb. herhangi bir hastalığı veya belirtisi olmayan",
+          "Küçük çocuklarla iletişimi ve frekansı yüksek olan",
+          "Dilek tasarım ve hazırlık sürecinde aktif olabilecek olan"
+        ],
+        needs: [
+          "🚗 Lojistik / Araba Desteği (Malzeme & Dekorasyon Taşıma)",
+          "🎈 Kuromi Temalı Parti Süsleme & Konsept Desteği",
+          "🎸 Gitar / Müzik İçi Aktivite Desteği"
+        ],
+        joined: false
+      },
+      {
+        id: 1,
+        title: "Dilek Çocukları Psikolojik Yaklaşım ve İletişim Eğitimi",
+        category: "egitim",
+        date: "12 Ağustos 2026",
+        startDate: "2026-08-12",
+        endDate: "2026-08-12",
+        location: "Online (Zoom)",
+        city: "Online",
+        district: "Zoom",
+        author: "Make-A-Wish Akademi",
+        desc: "Ağır hastalık geçiren çocuklarla ilk temas, iletişim kurma teknikleri ve aile içi psikolojik hassasiyetler üzerine uzman psikologlar eşliğinde online eğitim gerçekleştirilecektir.",
+        time: "12 Ağustos 2026 · 19:00 - 21:00",
+        egitmen: "Uzman Psk. Selin Arslan",
+        kontenjan: "50 Gönüllü (Son 8 Yer)",
+        joined: false
+      },
+      {
+        id: 2,
+        title: "2026 Sonbahar Dönemi Gönüllü Buluşması ve Oryantasyon",
+        category: "duyuru",
+        date: "10 Ağustos 2026",
+        startDate: "2026-08-10",
+        endDate: "2026-08-10",
+        location: "İstanbul / Kadıköy",
+        city: "İstanbul",
+        district: "Kadıköy",
+        author: "Gönüllü İlişkileri Ekibi",
+        desc: "Yeni katılan ve deneyimli tüm gönüllülerimizin bir araya geleceği yıllık vizyon ve paylaşım toplantısı hibrit formatta düzenlenecektir. Tüm saha ekibimizin katılımı beklenmektedir.",
+        time: null,
+        egitmen: null,
+        kontenjan: null,
+        joined: false
+      },
+      {
+        id: 3,
+        title: "Medikal Dilek Süreçleri ve Hastane Kuralları Sertifika Programı",
+        category: "egitim",
+        date: "8 Ağustos 2026",
+        startDate: "2026-08-16",
+        endDate: "2026-08-16",
+        location: "İstanbul / Beşiktaş",
+        city: "İstanbul",
+        district: "Beşiktaş",
+        author: "Medikal Danışma Kurulu",
+        desc: "Hastane ziyaretlerinde hijyen protokolleri, enfeksiyon riski yönetimi ve doktor-gönüllü koordinasyon kurallarını kapsayan zorunlu sertifika eğitimi.",
+        time: "16 Ağustos 2026 · 14:00 - 17:00",
+        egitmen: "Prof. Dr. Mehmet Kaya",
+        kontenjan: "35 Gönüllü",
+        joined: false
+      },
+      {
+        id: 4,
+        title: "Dilek Gerçekleştirme Ekibi İhtiyacı - Ankara",
+        category: "dilek",
+        date: "5 Ağustos 2026",
+        startDate: "2026-08-20",
+        endDate: "2026-08-21",
+        location: "Ankara / Çankaya",
+        city: "Ankara",
+        district: "Çankaya",
+        author: "Saha Operasyon",
+        ageGroup: "7",
+        needsCar: true,
+        isUrgent: true,
+        childInfo: "7 Yaşında Erkek Çocuğu · Astronot Temalı Dilek 🚀",
+        desc: "Ankara'da tedavi gören 7 yaşındaki çocuk için hazırlanan astronot temalı dilek organizasyonunda lojistik ve kostüm desteği verebilecek gönüllüler aranıyor.",
+        interests: ["🚀 Uzay", "🎨 Resim", "🧩 Lego"],
+        criteria: ["Ankara'da ikamet eden", "Lojistik süreçlere katılabilecek olan"],
+        needs: ["🚗 Araba Desteği", "🚀 Uzay Konseptli Süsleme"],
+        time: null,
+        egitmen: null,
+        kontenjan: null,
+        joined: false
+      },
+      {
+        id: 5,
+        title: "Dilek Fotoğrafçılığı ve Dijital Medya Atölyesi",
+        category: "egitim",
+        date: "2 Ağustos 2026",
+        startDate: "2026-08-22",
+        endDate: "2026-08-22",
+        location: "Online (Teams)",
+        city: "Online",
+        district: "Teams",
+        author: "Medya & İletişim",
+        desc: "Dilek günlerinde çocukların anılarını en etik ve profesyonel şekilde ölümsüzleştirmek isteyen gönüllülerimiz için fotoğraf ve kısa video içerik üretimi atölyesi.",
+        time: "22 Ağustos 2026 · 11:00 - 15:00",
+        egitmen: "Burak Deniz (Fotoğraf Sanatçısı)",
+        kontenjan: "25 Gönüllü",
+        joined: false
+      }
+    ];
+
+    let activeTab = 'all';
+    let currentActiveModalId = null;
+
+    // ─── KARTLARI RENDER ET ────────────────────────────────────────────────────────
+    function renderAnnouncements() {
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+      const categoryFilter = document.getElementById('filterCategory').value;
+
+      const fCity = (document.getElementById('filterCity')?.value || '').toLowerCase().trim();
+      const fDistrict = (document.getElementById('filterDistrict')?.value || '').toLowerCase().trim();
+      const fStartDate = document.getElementById('filterStartDate')?.value || '';
+      const fEndDate = document.getElementById('filterEndDate')?.value || '';
+      const fAgeGroup = (document.getElementById('filterAgeGroup')?.value || '').toLowerCase().trim();
+      const fInterest = (document.getElementById('filterInterest')?.value || '').toLowerCase().trim();
+      const fCarNeed = document.getElementById('filterCarNeed')?.checked || false;
+
+      // Aktif detaylı filtre sayısını hesapla
+      let activeFilterCount = 0;
+      if (fCity) activeFilterCount++;
+      if (fDistrict) activeFilterCount++;
+      if (fStartDate) activeFilterCount++;
+      if (fEndDate) activeFilterCount++;
+      if (fAgeGroup) activeFilterCount++;
+      if (fInterest) activeFilterCount++;
+      if (fCarNeed) activeFilterCount++;
+
+      const badgeEl = document.getElementById('activeFilterBadge');
+      if (badgeEl) {
+        if (activeFilterCount > 0) {
+          badgeEl.textContent = activeFilterCount;
+          badgeEl.classList.remove('hidden');
+        } else {
+          badgeEl.classList.add('hidden');
+        }
+      }
+
+      const filtered = announcements.filter(a => {
+        // Sekme Filtresi
+        if (activeTab === 'dilek' && a.category !== 'dilek') return false;
+        if (activeTab === 'egitim' && a.category !== 'egitim') return false;
+        if (activeTab === 'duyuru' && (a.category === 'egitim' || a.category === 'dilek')) return false;
+
+        // Kategori Dropdown
+        if (categoryFilter && a.category !== categoryFilter) return false;
+
+        // Genel Arama
+        if (search) {
+          const matchTitle = a.title.toLowerCase().includes(search);
+          const matchDesc = a.desc.toLowerCase().includes(search);
+          const matchEgitmen = a.egitmen && a.egitmen.toLowerCase().includes(search);
+          const matchAuthor = a.author && a.author.toLowerCase().includes(search);
+          const matchLoc = a.location && a.location.toLowerCase().includes(search);
+          const matchInterests = a.interests && a.interests.some(i => i.toLowerCase().includes(search));
+          const matchAge = a.ageGroup && a.ageGroup.toLowerCase().includes(search);
+          if (!matchTitle && !matchDesc && !matchEgitmen && !matchAuthor && !matchLoc && !matchInterests && !matchAge) return false;
+        }
+
+        // İl Filtresi
+        if (fCity) {
+          const loc = ((a.city || '') + ' ' + (a.location || '')).toLowerCase();
+          if (!loc.includes(fCity)) return false;
+        }
+
+        // İlçe Filtresi
+        if (fDistrict) {
+          const loc = ((a.district || '') + ' ' + (a.location || '')).toLowerCase();
+          if (!loc.includes(fDistrict)) return false;
+        }
+
+        // Tarih Filtreleri (Başlangıç - Bitiş)
+        if (fStartDate) {
+          if (a.startDate && a.startDate < fStartDate) return false;
+        }
+        if (fEndDate) {
+          if (a.endDate && a.endDate > fEndDate) return false;
+          else if (a.startDate && a.startDate > fEndDate) return false;
+        }
+
+        // Yaş Grubu Filtresi
+        if (fAgeGroup) {
+          const ageStr = ((a.ageGroup || '') + ' ' + (a.childInfo || '')).toLowerCase();
+          if (!ageStr.includes(fAgeGroup)) return false;
+        }
+
+        // İlgi Alanı Filtresi
+        if (fInterest) {
+          const hasInterest = a.interests && a.interests.some(i => i.toLowerCase().includes(fInterest));
+          if (!hasInterest) return false;
+        }
+
+        // Araba İhtiyacı Checkbox Filtresi
+        if (fCarNeed) {
+          const needsCarFlag = a.needsCar === true || (a.needs && a.needs.some(n => n.toLowerCase().includes('araba') || n.toLowerCase().includes('lojistik')));
+          if (!needsCarFlag) return false;
+        }
+
+        return true;
+      });
+
+      // ACİL DUYURULARI EN ÜSTE SIRALA
+      filtered.sort((a, b) => (b.isUrgent ? 1 : 0) - (a.isUrgent ? 1 : 0));
+
+      const grid = document.getElementById('announcementGrid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+      <div class="no-results">
+        <i class="ph-light ph-megaphone"></i>
+        <h3>Aramanıza Uygun Duyuru Bulunamadı</h3>
+        <p>Farklı bir arama terimi veya filtre seçmeyi deneyebilirsiniz.</p>
+      </div>
+    `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(a => {
+        const cardAuthor = a.location ? `Adres: ${a.location}` : a.author;
+        const authorChar = a.location ? a.location.charAt(0) : a.author.charAt(0);
+        const urgentClass = a.isUrgent ? 'urgent-card' : '';
+        const urgentBadge = a.isUrgent ? `<span class="badge-tag acil" style="margin-left:6px;"><i class="ph-fill ph-warning-circle"></i> ACİL</span>` : '';
+
+        if (a.category === 'dilek') {
+          const displayInterests = a.interests ? a.interests.slice(0, 5) : [];
+          const hasNeeds = a.needs && a.needs.length && a.needs.some(n => n && n.trim().length > 0);
+
+          const ageDisplay = a.ageGroup ? `<span class="meta-pill age"><i class="ph-bold ph-baby"></i> Çocuk Yaşı: ${a.ageGroup}</span>` : '';
+          const carDisplay = a.needsCar !== undefined
+            ? (a.needsCar
+              ? `<span class="meta-pill car-needed"><i class="ph-bold ph-car"></i> 🚗 Araba İhtiyacı Var</span>`
+              : `<span class="meta-pill car-not-needed"><i class="ph-bold ph-check"></i> 🚗 Araba İhtiyacı Yok</span>`)
+            : '';
+
+          return `
+        <div class="anc-card dilek-card ${urgentClass}" onclick="openDetailModal(${a.id})">
+          <div class="anc-card-header">
+            <div>
+              <span class="badge-tag dilek"><i class="ph-fill ph-sparkle"></i> Dilek Gerçekleştirme</span>
+              ${urgentBadge}
+            </div>
+            <span class="anc-date"><i class="ph-bold ph-map-pin" style="color:var(--primary);"></i> ${a.location || 'İzmir'} · ${a.eventDate || a.date}</span>
+          </div>
+          <div class="anc-card-body">
+            <div class="anc-title ${a.isUrgent ? 'urgent-title' : ''}">${a.title}</div>
+            
+            ${(ageDisplay || carDisplay) ? `<div class="meta-pills-row">${ageDisplay} ${carDisplay}</div>` : ''}
+
+            ${a.childInfo ? `<div class="child-wish-pill"><i class="ph-fill ph-heart" style="color:#ef4444;"></i> ${a.childInfo}</div>` : ''}
+
+            <div class="anc-desc">${a.desc}</div>
+
+            ${displayInterests.length ? `
+              <div class="interest-tags-wrapper">
+                <div class="interest-title"><i class="ph-bold ph-palette"></i> İlgi Alanları (${displayInterests.length}/5):</div>
+                <div class="interest-pills">
+                  ${displayInterests.map(i => `<span class="interest-pill">${i}</span>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            ${a.criteria && a.criteria.length ? `
+              <div class="criteria-box">
+                <div class="criteria-title"><i class="ph-bold ph-user-check"></i> Kimler Katılmalı?</div>
+                <ul class="criteria-list">
+                  ${a.criteria.map(c => `<li><i class="ph-bold ph-check-circle"></i> ${c}</li>`).join('')}
+                </ul>
+              </div>
+            ` : ''}
+
+            ${hasNeeds ? `
+              <div class="needs-box">
+                <div class="needs-title"><i class="ph-bold ph-truck"></i> İhtiyaçlar &amp; Lojistik:</div>
+                <ul class="needs-list">
+                  ${a.needs.filter(n => n && n.trim().length > 0).map(n => `<li><i class="ph-bold ph-hand-heart"></i> ${n}</li>`).join('')}
+                </ul>
+              </div>
+            ` : ''}
+          </div>
+          <div class="anc-card-footer" onclick="event.stopPropagation()">
+            <button class="btn-join ${a.joined ? 'joined' : ''}" style="background:${a.joined ? 'var(--green)' : 'linear-gradient(135deg, #f59e0b, #d97706)'}" onclick="toggleJoin(event, ${a.id})">
+              <i class="ph-bold ${a.joined ? 'ph-check' : 'ph-hand-heart'}"></i>
+              ${a.joined ? 'Başvurunuz Alınmıştır' : 'Dilek Ekibine Katıl'}
+            </button>
+            <button class="btn-modal-action" style="background:var(--bg); color:var(--text); border:1.5px solid var(--border); padding:8px 14px; border-radius:10px; font-weight:700; font-size:13px; display:inline-flex; align-items:center; gap:6px; cursor:pointer;" onclick="openEditModal(${a.id})">
+              <i class="ph-bold ph-pencil-simple"></i> Güncelle
+            </button>
+          </div>
+        </div>
+      `;
+        }
+
+        return `
+      <div class="anc-card ${urgentClass}" onclick="openDetailModal(${a.id})">
+        <div class="anc-card-header">
+          <div>
+            <span class="badge-tag ${a.category}">${getCategoryLabel(a.category)}</span>
+            ${urgentBadge}
+          </div>
+          <span class="anc-date"><i class="ph-bold ph-calendar-blank"></i> ${a.date}</span>
+        </div>
+        <div class="anc-card-body">
+          <div class="anc-title ${a.isUrgent ? 'urgent-title' : ''}">${a.title}</div>
+          <div class="anc-desc">${a.desc}</div>
+
+          ${a.category === 'egitim' ? `
+            <div class="training-info-box">
+              <div class="t-info-item"><i class="ph-fill ph-clock"></i> ${a.time || 'Tarih Belirtilecek'}</div>
+              <div class="t-info-item"><i class="ph-fill ph-video-camera"></i> ${a.location || 'Online'}</div>
+            </div>
+          ` : ''}
+        </div>
+        <div class="anc-card-footer" onclick="event.stopPropagation()">
+          ${a.category === 'egitim' ? `
+            <button class="btn-join ${a.joined ? 'joined' : ''}" onclick="toggleJoin(event, ${a.id})">
+              <i class="ph-bold ${a.joined ? 'ph-check' : 'ph-user-plus'}"></i>
+              ${a.joined ? 'Kayıtlı' : 'Eğitime Kaydol'}
+            </button>
+          ` : `
+            <button class="btn-join" style="background:var(--primary-light);color:var(--primary);" onclick="openDetailModal(${a.id})">
+              <i class="ph-bold ph-arrow-right"></i> Detay
+            </button>
+          `}
+          <button class="btn-modal-action" style="background:var(--bg); color:var(--text); border:1.5px solid var(--border); padding:8px 14px; border-radius:10px; font-weight:700; font-size:13px; display:inline-flex; align-items:center; gap:6px; cursor:pointer;" onclick="openEditModal(${a.id})">
+            <i class="ph-bold ph-pencil-simple"></i> Güncelle
+          </button>
+        </div>
+      </div>
+    `;
+      }).join('');
+
+      updateCounts();
+    }
+
+    function getCategoryLabel(cat) {
+      switch (cat) {
+        case 'dilek': return '<i class="ph-fill ph-sparkle"></i> Dilek Gerçekleştirme';
+        case 'egitim': return '<i class="ph-fill ph-student"></i> Eğitim';
+        case 'duyuru': return '<i class="ph-fill ph-megaphone"></i> Duyuru';
+        case 'acil': return '<i class="ph-fill ph-warning-circle"></i> Acil Çağrı';
+        case 'etkinlik': return '<i class="ph-fill ph-sparkle"></i> Etkinlik';
+        default: return cat;
+      }
+    }
+
+    function updateCounts() {
+      document.getElementById('statTotalAnc').textContent = announcements.length;
+      document.getElementById('statTrainingAnc').textContent = announcements.filter(a => a.category === 'egitim').length;
+
+      document.getElementById('cAll').textContent = announcements.length;
+      if (document.getElementById('cDilek')) document.getElementById('cDilek').textContent = announcements.filter(a => a.category === 'dilek').length;
+      if (document.getElementById('cDuyuru')) document.getElementById('cDuyuru').textContent = announcements.filter(a => a.category === 'duyuru' || a.category === 'acil' || a.category === 'etkinlik').length;
+      if (document.getElementById('cEgitim')) document.getElementById('cEgitim').textContent = announcements.filter(a => a.category === 'egitim').length;
+    }
+
+    // ─── TAB VE FİLTRE KONTROLLERİ ───────────────────────────────────────────────
+    function setTab(tab, el) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      renderAnnouncements();
+    }
+
+    document.getElementById('searchInput').addEventListener('input', renderAnnouncements);
+    document.getElementById('filterCategory').addEventListener('change', renderAnnouncements);
+
+    let joiningAnnouncementId = null;
+
+    // ─── EĞİTİME / DİLEĞE KAYIT TOGGLE ──────────────────────────────────────────
+    function toggleJoin(e, id) {
+      if (e) e.stopPropagation();
+      const item = announcements.find(a => a.id === id);
+      if (item) {
+        if (item.category === 'dilek' && !item.joined) {
+          openJoinModal(id);
+          return;
+        }
+
+        item.joined = !item.joined;
+        renderAnnouncements();
+        const msg = item.category === 'dilek'
+          ? (item.joined ? 'Dilek gerçekleştirme ekibine katıldınız! Teşekkürler ✨' : 'Dilek ekibinden ayrıldınız.')
+          : (item.joined ? 'Eğitim kaydınız oluşturuldu! Katılım bilgileri iletilecektir.' : 'Eğitim kaydınız iptal edildi.');
+        showToast(msg);
+        if (currentActiveModalId === id) {
+          updateModalActionBtn(item);
+        }
+      }
+    }
+
+    function openJoinModal(id) {
+      const item = announcements.find(a => a.id === id);
+      if (!item) return;
+
+      joiningAnnouncementId = id;
+      document.getElementById('joinModalAncTitle').innerHTML = `<i class="ph-fill ph-sparkle" style="color:var(--gold);"></i> <span>${item.title}</span>`;
+      
+      const jHasCar = document.getElementById('jHasCar');
+      if (jHasCar) jHasCar.checked = false;
+
+      const jNotes = document.getElementById('jNotes');
+      if (jNotes) jNotes.value = '';
+
+      document.getElementById('joinModal').classList.add('open');
+    }
+
+    function closeJoinModal() {
+      document.getElementById('joinModal').classList.remove('open');
+      joiningAnnouncementId = null;
+    }
+
+    function handleJoinOverlay(e) {
+      if (e.target === document.getElementById('joinModal')) closeJoinModal();
+    }
+
+    function submitJoinApplication() {
+      if (!joiningAnnouncementId) return;
+      const item = announcements.find(a => a.id === joiningAnnouncementId);
+      if (item) {
+        item.joined = true;
+        item.userHasCar = document.getElementById('jHasCar')?.checked ?? false;
+        item.userNotes = document.getElementById('jNotes')?.value.trim() || '';
+
+        renderAnnouncements();
+        if (currentActiveModalId === item.id) {
+          updateModalActionBtn(item);
+        }
+        closeJoinModal();
+        showToast('Başvurunuz başarıyla alınmıştır. Yönetici onayından sonra katılabilirsiniz.');
+      }
+    }
+
+    // ─── DETAY MODALI ─────────────────────────────────────────────────────────────
+    function openDetailModal(id) {
+      const item = announcements.find(a => a.id === id);
+      if (!item) return;
+      currentActiveModalId = id;
+
+      const cardAuthor = item.location ? `Adres: ${item.location}` : item.author;
+
+      const urgentBadgeHtml = item.isUrgent ? ` <span class="badge-tag acil" style="margin-left:4px;"><i class="ph-fill ph-warning-circle"></i> ACİL</span>` : '';
+      document.getElementById('mBadgeContainer').innerHTML = `<span class="badge-tag ${item.category}">${getCategoryLabel(item.category)}</span>${urgentBadgeHtml}`;
+      document.getElementById('mTitle').textContent = item.title;
+      document.getElementById('mAvatar').textContent = item.location ? item.location.charAt(0) : item.author.charAt(0);
+      document.getElementById('mAuthor').textContent = cardAuthor;
+      document.getElementById('mDate').innerHTML = `<i class="ph-bold ph-calendar-blank"></i> ${item.date}`;
+
+      let bodyHtml = item.desc;
+
+      if (item.category === 'dilek') {
+        const displayInterests = item.interests ? item.interests.slice(0, 5) : [];
+        const hasNeeds = item.needs && item.needs.length && item.needs.some(n => n && n.trim().length > 0);
+
+        const mAgeDisplay = item.ageGroup ? `<span class="meta-pill age"><i class="ph-bold ph-baby"></i> Çocuk Yaşı: ${item.ageGroup}</span>` : '';
+        const mCarDisplay = item.needsCar !== undefined
+          ? (item.needsCar
+            ? `<span class="meta-pill car-needed"><i class="ph-bold ph-car"></i> 🚗 Araba İhtiyacı Var</span>`
+            : `<span class="meta-pill car-not-needed"><i class="ph-bold ph-check"></i> 🚗 Araba İhtiyacı Yok</span>`)
+          : '';
+
+        bodyHtml = `
+      ${(mAgeDisplay || mCarDisplay) ? `<div class="meta-pills-row" style="margin-bottom:14px;">${mAgeDisplay} ${mCarDisplay}</div>` : ''}
+      ${item.childInfo ? `<div class="child-wish-pill" style="margin-bottom:16px;"><i class="ph-fill ph-heart" style="color:#ef4444;"></i> ${item.childInfo}</div>` : ''}
+      <div style="font-size:14.5px;color:#334155;line-height:1.75;margin-bottom:18px;">${item.desc}</div>
+      ${displayInterests.length ? `
+        <div class="interest-tags-wrapper" style="margin-bottom:18px;">
+          <div class="interest-title"><i class="ph-bold ph-palette"></i> İlgi Alanları (${displayInterests.length}/5):</div>
+          <div class="interest-pills">
+            ${displayInterests.map(i => `<span class="interest-pill">${i}</span>`).join('')}
+          </div>
+        </div>
+      ` : ''}
+      ${item.criteria && item.criteria.length ? `
+        <div class="criteria-box" style="margin-bottom:16px;">
+          <div class="criteria-title"><i class="ph-bold ph-user-check"></i> Kimler Katılmalı?</div>
+          <ul class="criteria-list">
+            ${item.criteria.map(c => `<li><i class="ph-bold ph-check-circle"></i> ${c}</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+      ${hasNeeds ? `
+        <div class="needs-box" style="margin-bottom:16px;">
+          <div class="needs-title"><i class="ph-bold ph-truck"></i> İhtiyaçlar &amp; Lojistik:</div>
+          <ul class="needs-list">
+            ${item.needs.filter(n => n && n.trim().length > 0).map(n => `<li><i class="ph-bold ph-hand-heart"></i> ${n}</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+    `;
+      }
+
+      document.getElementById('mDesc').innerHTML = bodyHtml;
+
+      const tGrid = document.getElementById('mTrainingGrid');
+      if (item.category === 'egitim') {
+        tGrid.classList.remove('hidden');
+        document.getElementById('mTTime').innerHTML = `<i class="ph-fill ph-clock"></i> ${item.time || 'Belirtilmedi'}`;
+        document.getElementById('mTLocation').innerHTML = `<i class="ph-fill ph-video-camera"></i> ${item.location || 'Belirtilmedi'}`;
+        document.getElementById('mTEgitmen').innerHTML = `<i class="ph-fill ph-user-circle"></i> ${item.egitmen || 'Belirtilmedi'}`;
+        document.getElementById('mTKontenjan').innerHTML = `<i class="ph-fill ph-users"></i> ${item.kontenjan || 'Sınırsız'}`;
+      } else {
+        tGrid.classList.add('hidden');
+      }
+
+      updateModalActionBtn(item);
+      document.getElementById('detailModal').classList.add('open');
+    }
+
+    function updateModalActionBtn(item) {
+      const btn = document.getElementById('mActionBtn');
+      if (item.category === 'egitim') {
+        btn.innerHTML = item.joined ? '<i class="ph-bold ph-check"></i> Eğitime Kayıtlısınız' : '<i class="ph-bold ph-user-plus"></i> Eğitime Kaydol';
+        btn.style.background = item.joined ? 'var(--green)' : 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
+      } else if (item.category === 'dilek') {
+        btn.innerHTML = item.joined ? '<i class="ph-bold ph-check"></i> Başvurunuz Alınmıştır' : '<i class="ph-bold ph-hand-heart"></i> Dilek Ekibine Katıl';
+        btn.style.background = item.joined ? 'var(--green)' : 'linear-gradient(135deg, #f59e0b, #d97706)';
+      } else {
+        btn.innerHTML = '<i class="ph-bold ph-check-circle"></i> Anlaşıldı';
+        btn.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
+      }
+    }
+
+    function handleModalAction() {
+      if (!currentActiveModalId) return;
+      const item = announcements.find(a => a.id === currentActiveModalId);
+      if (item && (item.category === 'egitim' || item.category === 'dilek')) {
+        toggleJoin(null, item.id);
+      } else {
+        closeDetailModal();
+      }
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.remove('open');
+      currentActiveModalId = null;
+    }
+
+    function handleModalOverlay(e) {
+      if (e.target === document.getElementById('detailModal')) closeDetailModal();
+    }
+
+    function formatDateRange(startStr, endStr) {
+      if (!startStr) return 'Tarih Belirtilecek';
+      const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylul', 'Ekim', 'Kasım', 'Aralık'];
+
+      const parts = startStr.split('-');
+      if (parts.length !== 3) return startStr;
+      const sYear = parts[0], sMonth = parts[1], sDay = parts[2];
+      const startDayNum = parseInt(sDay, 10);
+      const startMonthName = months[parseInt(sMonth, 10) - 1];
+
+      if (endStr) {
+        const eParts = endStr.split('-');
+        if (eParts.length === 3) {
+          const eYear = eParts[0], eMonth = eParts[1], eDay = eParts[2];
+          const endDayNum = parseInt(eDay, 10);
+          const endMonthName = months[parseInt(eMonth, 10) - 1];
+
+          if (sMonth === eMonth && sYear === eYear) {
+            return `${startDayNum}-${endDayNum} ${startMonthName}`;
+          } else {
+            return `${startDayNum} ${startMonthName} - ${endDayNum} ${endMonthName}`;
+          }
+        }
+      }
+
+      return `${startDayNum} ${startMonthName}`;
+    }
+
+    function formatDateTime(dtStr) {
+      if (!dtStr) return 'Tarih Belirtilecek';
+      const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+      const d = new Date(dtStr);
+      if (isNaN(d.getTime())) return dtStr;
+
+      const day = d.getDate();
+      const month = months[d.getMonth()];
+      const year = d.getFullYear();
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+
+      return `${day} ${month} ${year} · ${hours}:${minutes}`;
+    }
+
+
+
+    let editingAnnouncementId = null;
+
+    // ─── YENİ DUYURU / EDİT MODALI ───────────────────────────────────────────────
+    function openAddModal() {
+      editingAnnouncementId = null;
+
+      const titleEl = document.getElementById('addModalTitle');
+      if (titleEl) titleEl.innerHTML = `<i class="ph-fill ph-plus-circle" style="color:var(--primary);"></i> Yeni Duyuru / Eğitim Yayınla`;
+
+      const submitBtn = document.getElementById('addModalSubmitBtn');
+      if (submitBtn) submitBtn.innerHTML = `<i class="ph-bold ph-paper-plane-tilt"></i> Yayınla`;
+
+      document.getElementById('addModal').classList.add('open');
+      document.getElementById('fCategory').value = 'dilek';
+      toggleCategoryFields();
+
+      // Alanları sıfırla
+      document.getElementById('fTitle').value = '';
+      document.getElementById('fDLocation').value = '';
+      if (document.getElementById('fDAgeGroup')) document.getElementById('fDAgeGroup').value = '';
+      if (document.getElementById('fDNeedsCar')) document.getElementById('fDNeedsCar').checked = true;
+      if (document.getElementById('fDIsUrgent')) document.getElementById('fDIsUrgent').checked = false;
+      document.getElementById('fDStartDate').value = '';
+      document.getElementById('fDEndDate').value = '';
+      document.getElementById('fDInterests').value = '';
+      document.getElementById('fDNeeds').value = '';
+      document.getElementById('fTTime').value = '';
+      document.getElementById('fTLocation').value = '';
+      document.getElementById('fTEgitmen').value = '';
+      document.getElementById('fTKontenjan').value = '';
+
+      // Dilek açıklaması editörü boş gelsin
+      const dilekEditor = document.getElementById('fDDescEditor');
+      if (dilekEditor) dilekEditor.innerHTML = '';
+
+      // Kimler katılmalı şablonu
+      document.getElementById('fDCriteria').value = `Uçuk, grip, nezle, öksürük vb. herhangi bir hastalığı veya belirtisi olmayan
+Küçük çocuklarla iletişimi ve frekansı yüksek olan
+Dilek tasarım ve hazırlık sürecinde aktif olabilecek olan`;
+
+      setTimeout(updateDilekToolbarState, 100);
+    }
+
+    function openEditModal(id) {
+      const item = announcements.find(a => a.id === id);
+      if (!item) return;
+
+      editingAnnouncementId = id;
+      closeDetailModal();
+
+      const titleEl = document.getElementById('addModalTitle');
+      if (titleEl) titleEl.innerHTML = `<i class="ph-fill ph-pencil-simple" style="color:var(--primary);"></i> Duyuru Kartını Düzenle`;
+
+      const submitBtn = document.getElementById('addModalSubmitBtn');
+      if (submitBtn) submitBtn.innerHTML = `<i class="ph-bold ph-floppy-disk"></i> Değişiklikleri Kaydet`;
+
+      document.getElementById('fTitle').value = item.title || '';
+      document.getElementById('fCategory').value = item.category || 'dilek';
+      toggleCategoryFields();
+
+      if (item.category === 'dilek') {
+        document.getElementById('fDLocation').value = item.location || '';
+        if (document.getElementById('fDAgeGroup')) document.getElementById('fDAgeGroup').value = item.ageGroup || '';
+        if (document.getElementById('fDNeedsCar')) document.getElementById('fDNeedsCar').checked = item.needsCar ?? true;
+        if (document.getElementById('fDIsUrgent')) document.getElementById('fDIsUrgent').checked = item.isUrgent ?? false;
+        document.getElementById('fDStartDate').value = item.startDate || '';
+        document.getElementById('fDEndDate').value = item.endDate || '';
+
+        const dilekEditor = document.getElementById('fDDescEditor');
+        if (dilekEditor) dilekEditor.innerHTML = item.desc || '';
+
+        document.getElementById('fDInterests').value = item.interests ? item.interests.join(', ') : '';
+        document.getElementById('fDCriteria').value = item.criteria ? item.criteria.join('\n') : '';
+        document.getElementById('fDNeeds').value = item.needs ? item.needs.join('\n') : '';
+      } else if (item.category === 'egitim') {
+        document.getElementById('fTLocation').value = item.location || '';
+        document.getElementById('fTEgitmen').value = item.egitmen || '';
+        document.getElementById('fTKontenjan').value = item.kontenjan || '';
+      }
+
+      document.getElementById('addModal').classList.add('open');
+      setTimeout(updateDilekToolbarState, 100);
+    }
+
+    function openEditModalFromDetail() {
+      if (currentActiveModalId) {
+        openEditModal(currentActiveModalId);
+      }
+    }
+
+    function closeAddModal() {
+      document.getElementById('addModal').classList.remove('open');
+      editingAnnouncementId = null;
+    }
+
+    function handleAddOverlay(e) {
+      if (e.target === document.getElementById('addModal')) closeAddModal();
+    }
+
+    function toggleCategoryFields() {
+      const cat = document.getElementById('fCategory').value;
+      const tFields = document.getElementById('addTrainingFields');
+      const dFields = document.getElementById('addDilekFields');
+      if (cat === 'egitim') {
+        tFields.classList.remove('hidden');
+        dFields.classList.add('hidden');
+      } else if (cat === 'dilek') {
+        dFields.classList.remove('hidden');
+        tFields.classList.add('hidden');
+      } else {
+        tFields.classList.add('hidden');
+        dFields.classList.add('hidden');
+      }
+    }
+
+    // ─── DETAYLI FİLTRELEME FONKSİYONLARI ─────────────────────────────────────────
+    function toggleAdvancedFilters() {
+      const panel = document.getElementById('advancedFilterPanel');
+      const btn = document.getElementById('btnToggleFilter');
+      if (panel && btn) {
+        panel.classList.toggle('hidden');
+        btn.classList.toggle('active');
+      }
+    }
+
+    function resetFilters() {
+      ['filterCity', 'filterDistrict', 'filterStartDate', 'filterEndDate', 'filterAgeGroup', 'filterInterest'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      if (document.getElementById('filterCarNeed')) document.getElementById('filterCarNeed').checked = false;
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterCategory').value = '';
+      renderAnnouncements();
+    }
+
+    // ─── RICH TEXT EDITOR KOMUTLARI ──────────────────────────────────────────────
+    function updateToolbarState() {
+      try {
+        const isBold = document.queryCommandState('bold');
+        const isItalic = document.queryCommandState('italic');
+        const isUnderline = document.queryCommandState('underline');
+        const isUL = document.queryCommandState('insertUnorderedList');
+        const isOL = document.queryCommandState('insertOrderedList');
+        const blockType = document.queryCommandValue('formatBlock');
+
+        document.getElementById('btnBold')?.classList.toggle('active', isBold);
+        document.getElementById('btnItalic')?.classList.toggle('active', isItalic);
+        document.getElementById('btnUnderline')?.classList.toggle('active', isUnderline);
+        document.getElementById('btnUL')?.classList.toggle('active', isUL);
+        document.getElementById('btnOL')?.classList.toggle('active', isOL);
+        document.getElementById('btnH3')?.classList.toggle('active', blockType.toLowerCase() === 'h3');
+      } catch (e) { }
+    }
+
+    function execEditorCmd(cmd, value = null) {
+      document.execCommand(cmd, false, value);
+      document.getElementById('fDescEditor').focus();
+      updateToolbarState();
+    }
+
+    function addEditorLink() {
+      const url = prompt('Bağlantı URL adresini giriniz (örn: https://example.com):');
+      if (url) {
+        document.execCommand('createLink', false, url);
+        updateToolbarState();
+      }
+    }
+
+    // ─── DİLEK AÇIKLAMASI EDİTÖRÜ FONKSİYONLARI ─────────────────────────────────────
+    function execDilekCmd(cmd, value = null) {
+      document.execCommand(cmd, false, value);
+      document.getElementById('fDDescEditor').focus();
+      updateDilekToolbarState();
+    }
+
+    function updateDilekToolbarState() {
+      try {
+        const isBold = document.queryCommandState('bold');
+        const isItalic = document.queryCommandState('italic');
+        const isUnderline = document.queryCommandState('underline');
+        const isUL = document.queryCommandState('insertUnorderedList');
+        const isOL = document.queryCommandState('insertOrderedList');
+
+        document.getElementById('btnBoldD')?.classList.toggle('active', isBold);
+        document.getElementById('btnItalicD')?.classList.toggle('active', isItalic);
+        document.getElementById('btnUnderlineD')?.classList.toggle('active', isUnderline);
+        document.getElementById('btnULD')?.classList.toggle('active', isUL);
+        document.getElementById('btnOLD')?.classList.toggle('active', isOL);
+      } catch (e) { }
+    }
+
+    function stripHtml(html) {
+      let tmp = document.createElement("DIV");
+      tmp.innerHTML = html || "";
+      return tmp.textContent || tmp.innerText || "";
+    }
+
+    // Editör içine tıklandığında/yazıldığında toolbar butonlarının aktif durumunu güncelle
+    document.addEventListener('DOMContentLoaded', () => {
+      const editorEl = document.getElementById('fDescEditor');
+      if (editorEl) {
+        ['keyup', 'mouseup', 'click', 'input', 'focus'].forEach(evt => {
+          editorEl.addEventListener(evt, updateToolbarState);
+        });
+      }
+      const dilekEditorEl = document.getElementById('fDDescEditor');
+      if (dilekEditorEl) {
+        ['keyup', 'mouseup', 'click', 'input', 'focus'].forEach(evt => {
+          dilekEditorEl.addEventListener(evt, updateDilekToolbarState);
+        });
+      }
+
+      // Detaylı Filtreleme Alanları Dinleyicileri
+      ['filterCity', 'filterDistrict', 'filterStartDate', 'filterEndDate', 'filterAgeGroup', 'filterInterest', 'filterCarNeed'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', renderAnnouncements);
+          el.addEventListener('change', renderAnnouncements);
+        }
+      });
+    });
+    document.addEventListener('selectionchange', () => {
+      if (document.activeElement === document.getElementById('fDescEditor')) {
+        updateToolbarState();
+      }
+      if (document.activeElement === document.getElementById('fDDescEditor')) {
+        updateDilekToolbarState();
+      }
+    });
+
+    function submitNewAnnouncement() {
+      const title = document.getElementById('fTitle').value.trim();
+      const category = document.getElementById('fCategory').value;
+
+      if (!title) {
+        alert('Lütfen başlık alanını doldurunuz.');
+        return;
+      }
+
+      let isEdit = editingAnnouncementId !== null;
+      let targetAnc = isEdit ? announcements.find(a => a.id === editingAnnouncementId) : {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
+        author: 'MAW Türkiye',
+        joined: false
+      };
+
+      if (!targetAnc) return;
+
+      targetAnc.title = title;
+      targetAnc.category = category;
+
+      if (category === 'egitim') {
+        const rawTTime = document.getElementById('fTTime').value;
+        targetAnc.time = formatDateTime(rawTTime);
+        targetAnc.location = document.getElementById('fTLocation').value.trim() || 'Online';
+        targetAnc.egitmen = document.getElementById('fTEgitmen').value.trim();
+        targetAnc.kontenjan = document.getElementById('fTKontenjan').value.trim();
+      } else if (category === 'dilek') {
+        const locVal = document.getElementById('fDLocation').value.trim() || 'İzmir / Buca';
+        targetAnc.location = locVal;
+
+        // İl ve İlçe ayrıştır
+        const locParts = locVal.split('/');
+        targetAnc.city = locParts[0] ? locParts[0].trim() : locVal;
+        targetAnc.district = locParts[1] ? locParts[1].trim() : '';
+
+        // Yaş grubu, Araba ihtiyacı & Acil durumu
+        targetAnc.ageGroup = document.getElementById('fDAgeGroup')?.value.trim() || '';
+        targetAnc.needsCar = document.getElementById('fDNeedsCar')?.checked ?? true;
+        targetAnc.isUrgent = document.getElementById('fDIsUrgent')?.checked ?? false;
+
+        const startDate = document.getElementById('fDStartDate').value;
+        const endDate = document.getElementById('fDEndDate').value;
+
+        if (!startDate) {
+          alert('Lütfen etkinlik başlangıç tarihini takvimden seçiniz.');
+          return;
+        }
+
+        targetAnc.startDate = startDate;
+        targetAnc.endDate = endDate || startDate;
+        targetAnc.eventDate = formatDateRange(startDate, endDate);
+
+        // Dilek Açıklaması zengin metin editöründen al
+        const dilekDescHtml = document.getElementById('fDDescEditor').innerHTML.trim();
+        const plainDilekDesc = stripHtml(dilekDescHtml).trim();
+        if (plainDilekDesc) {
+          targetAnc.desc = dilekDescHtml;
+        }
+        targetAnc.childInfo = '';
+
+        const rawInterests = document.getElementById('fDInterests').value.trim();
+        let interestsArr = rawInterests ? rawInterests.split(',').map(s => s.trim()).filter(s => s.length > 0) : [];
+
+        if (interestsArr.length === 0) {
+          alert('Lütfen İlgi Alanları kısmına en az 1 tag/etiket yazınız.');
+          return;
+        }
+        if (interestsArr.length > 5) {
+          interestsArr = interestsArr.slice(0, 5);
+        }
+        targetAnc.interests = interestsArr;
+
+        // Kimler Katılmalı - satır satır ayır
+        const rawCriteria = document.getElementById('fDCriteria').value.trim();
+        targetAnc.criteria = rawCriteria ? rawCriteria.split('\n').map(s => s.trim()).filter(s => s.length > 0) : [];
+
+        // İhtiyaçlar - satır satır ayır
+        const rawNeeds = document.getElementById('fDNeeds').value.trim();
+        targetAnc.needs = rawNeeds ? rawNeeds.split('\n').map(s => s.trim()).filter(s => s.length > 0) : [];
+      }
+
+      if (!isEdit) {
+        announcements.unshift(targetAnc);
+      }
+
+      renderAnnouncements();
+      closeAddModal();
+      showToast(isEdit ? 'Duyuru kartı başarıyla güncellendi!' : 'Yeni duyuru kartı başarıyla yayınlandı!');
+
+      // Formu temizle ve resetle
+      editingAnnouncementId = null;
+      document.getElementById('fTitle').value = '';
+      const dEditor = document.getElementById('fDDescEditor');
+      if (dEditor) dEditor.innerHTML = '';
+      ['fTTime', 'fTLocation', 'fTEgitmen', 'fTKontenjan', 'fDLocation', 'fDAgeGroup', 'fDStartDate', 'fDEndDate', 'fDInterests', 'fDCriteria', 'fDNeeds'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      if (document.getElementById('fDNeedsCar')) document.getElementById('fDNeedsCar').checked = true;
+      if (document.getElementById('fDIsUrgent')) document.getElementById('fDIsUrgent').checked = false;
+    }
+
+    // ─── SIDEBAR & TOAST KONTROLÜ ─────────────────────────────────────────────────
+    function openSidebar() {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebarOverlay').classList.add('open');
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('open');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerHTML = `<i class="ph-fill ph-check-circle"></i> ${msg}`;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    // ─── İLK YÜKLEME ─────────────────────────────────────────────────────────────
+    renderAnnouncements();
+  </script>
+</body>
+
+</html>

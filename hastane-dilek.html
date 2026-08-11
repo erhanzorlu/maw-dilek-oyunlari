@@ -438,6 +438,281 @@
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast i { font-size: 20px; color: var(--green); }
 
+  /* ─── ONBOARDING POPUP ─── */
+  .onboarding-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 20px;
+  }
+  .onboarding-overlay.show { opacity: 1; }
+  .onboarding-overlay.hide { opacity: 0; pointer-events: none; }
+
+  .onboarding-modal {
+    background: white;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 540px;
+    box-shadow: 0 32px 80px rgba(0, 40, 100, 0.25), 0 0 0 1px rgba(255,255,255,0.1);
+    transform: scale(0.9) translateY(30px);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+    position: relative;
+  }
+  .onboarding-overlay.show .onboarding-modal {
+    transform: scale(1) translateY(0);
+  }
+
+  .onboarding-header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, #1a7fd4 100%);
+    padding: 32px 32px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .onboarding-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .onboarding-header-content { position: relative; z-index: 1; }
+  .onboarding-header .ob-emoji {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+  }
+  .onboarding-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: white;
+    margin-bottom: 8px;
+  }
+  .onboarding-header p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+  }
+
+  .onboarding-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    z-index: 2;
+  }
+  .onboarding-close:hover {
+    background: rgba(255,255,255,0.25);
+    transform: rotate(90deg);
+  }
+
+  /* Steps Container */
+  .onboarding-body { padding: 28px 32px 24px; }
+
+  .ob-steps-indicator {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-bottom: 28px;
+  }
+  .ob-step-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  .ob-step-dot.active {
+    background: var(--primary);
+    width: 32px;
+    border-radius: 100px;
+    box-shadow: 0 2px 8px rgba(0,101,195,0.35);
+  }
+  .ob-step-dot.done {
+    background: var(--green);
+    box-shadow: 0 2px 6px rgba(16,185,129,0.3);
+  }
+
+  .ob-steps-viewport {
+    overflow: hidden;
+    position: relative;
+    min-height: 180px;
+  }
+
+  .ob-step-slide {
+    display: none;
+    animation: obSlideIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  .ob-step-slide.active { display: block; }
+  .ob-step-slide.slide-out {
+    animation: obSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes obSlideIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes obSlideOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-40px); }
+  }
+
+  .ob-step-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .ob-step-icon.blue { background: var(--status-blue-bg); color: var(--status-blue); border: 1.5px solid var(--status-blue-border); }
+  .ob-step-icon.green { background: var(--status-green-bg); color: var(--status-green); border: 1.5px solid var(--status-green-border); }
+  .ob-step-icon.yellow { background: var(--status-yellow-bg); color: var(--status-yellow); border: 1.5px solid var(--status-yellow-border); }
+  .ob-step-icon.purple { background: #f3e8ff; color: #7c3aed; border: 1.5px solid #c4b5fd; }
+  .ob-step-icon.teal { background: #e6fffa; color: #0d9488; border: 1.5px solid #99f6e4; }
+
+  .ob-step-title {
+    font-size: 17px; font-weight: 800; color: var(--text);
+    margin-bottom: 8px;
+  }
+  .ob-step-desc {
+    font-size: 14px; color: var(--muted);
+    line-height: 1.7;
+  }
+  .ob-step-desc strong { color: var(--text); font-weight: 700; }
+
+  .ob-step-tip {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--primary-light);
+    border: 1px solid #bbd8ff;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    font-size: 13px; color: var(--primary-dark);
+    line-height: 1.5;
+  }
+  .ob-step-tip i { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  .ob-color-legend {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-top: 14px;
+  }
+  .ob-color-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12.5px; font-weight: 700;
+  }
+  .ob-color-item .ob-c-dot {
+    width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+  .ob-color-item.ci-green { background: var(--status-green-bg); color: #047857; }
+  .ob-color-item.ci-green .ob-c-dot { background: var(--status-green); }
+  .ob-color-item.ci-yellow { background: var(--status-yellow-bg); color: #b45309; }
+  .ob-color-item.ci-yellow .ob-c-dot { background: var(--status-yellow); }
+  .ob-color-item.ci-red { background: var(--status-red-bg); color: #dc2626; }
+  .ob-color-item.ci-red .ob-c-dot { background: var(--status-red); }
+  .ob-color-item.ci-blue { background: var(--status-blue-bg); color: #1d4ed8; }
+  .ob-color-item.ci-blue .ob-c-dot { background: var(--status-blue); }
+
+  /* Footer */
+  .onboarding-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px 28px;
+    gap: 12px;
+  }
+  .ob-btn {
+    padding: 11px 24px;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s;
+    border: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ob-btn-secondary {
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .ob-btn-secondary:hover { background: #e2e8f0; color: var(--text); }
+  .ob-btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: 0 4px 14px rgba(0,101,195,0.3);
+  }
+  .ob-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0,101,195,0.4);
+  }
+  .ob-btn-success {
+    background: linear-gradient(135deg, var(--green), #059669);
+    color: white;
+    box-shadow: 0 4px 14px rgba(16,185,129,0.3);
+  }
+  .ob-btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(16,185,129,0.4);
+  }
+
+  .ob-dont-show {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted); font-weight: 600;
+    cursor: pointer; user-select: none;
+  }
+  .ob-dont-show input[type="checkbox"] {
+    accent-color: var(--primary);
+    width: 16px; height: 16px;
+    cursor: pointer;
+  }
+
+  /* Help button in top-bar */
+  .btn-help {
+    width: 38px; height: 38px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px; color: var(--muted);
+    transition: all 0.2s; position: relative;
+  }
+  .btn-help:hover {
+    background: var(--gold-light); color: var(--gold);
+    border-color: #fde68a;
+    box-shadow: 0 2px 8px rgba(245,158,11,0.2);
+  }
+  .btn-help .help-pulse {
+    position: absolute; top: -2px; right: -2px;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    border: 2px solid white;
+    animation: helpPulse 2s ease-in-out infinite;
+  }
+  @keyframes helpPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+  }
+
+  @media (max-width: 768px) {
+    .onboarding-modal { max-width: 100%; border-radius: 20px; }
+    .onboarding-header { padding: 24px 20px 22px; }
+    .onboarding-header h2 { font-size: 20px; }
+    .onboarding-body { padding: 20px 20px 16px; }
+    .onboarding-footer { padding: 0 20px 22px; }
+    .ob-color-legend { grid-template-columns: 1fr; }
+    .ob-btn { padding: 10px 18px; font-size: 13px; }
+  }
+
   /* ─── RESPONSIVE ─── */
   @media (max-width: 768px) {
     .top-bar { padding: 0 16px; }
@@ -483,6 +758,10 @@
       </div>
     </div>
     <div class="top-bar-right">
+      <button class="btn-help" onclick="showOnboarding()" id="helpBtn" title="Yardım">
+        <i class="ph-fill ph-question"></i>
+        <span class="help-pulse" id="helpPulse"></span>
+      </button>
       <div class="lang-switcher">
         <button class="lang-btn active" id="langBtnTR" onclick="setLanguage('tr')">TR</button>
         <button class="lang-btn" id="langBtnEN" onclick="setLanguage('en')">EN</button>
@@ -576,6 +855,137 @@
 <!-- TOAST -->
 <div class="toast" id="toast"><i class="ph-fill ph-check-circle"></i> <span></span></div>
 
+<!-- ONBOARDING POPUP -->
+<div class="onboarding-overlay" id="onboardingOverlay" style="display:none;">
+  <div class="onboarding-modal">
+    <div class="onboarding-header">
+      <button class="onboarding-close" onclick="closeOnboarding()">
+        <i class="ph-bold ph-x"></i>
+      </button>
+      <div class="onboarding-header-content">
+        <span class="ob-emoji">🏥✨</span>
+        <h2 id="obHeaderTitle">Hoş Geldiniz!</h2>
+        <p id="obHeaderDesc">Bu araç ile hastane ziyaretlerinde dilek alım sürecini kolayca yönetebilirsiniz.</p>
+      </div>
+    </div>
+
+    <div class="onboarding-body">
+      <div class="ob-steps-indicator" id="obStepsIndicator">
+        <div class="ob-step-dot active" data-step="0"></div>
+        <div class="ob-step-dot" data-step="1"></div>
+        <div class="ob-step-dot" data-step="2"></div>
+        <div class="ob-step-dot" data-step="3"></div>
+        <div class="ob-step-dot" data-step="4"></div>
+      </div>
+
+      <div class="ob-steps-viewport">
+        <!-- Step 0: Welcome -->
+        <div class="ob-step-slide active" data-step="0">
+          <div class="ob-step-icon blue">
+            <i class="ph-duotone ph-hand-waving"></i>
+          </div>
+          <div class="ob-step-title" id="obStep0Title">Bu Sayfa Ne İşe Yarar?</div>
+          <div class="ob-step-desc" id="obStep0Desc">
+            Bu tablo, hastane ziyaretlerinde <strong>çocukların dilek başvuru süreçlerini</strong> takip etmenizi sağlar. Her çocuk için kayıt oluşturabilir, başvuru ve dilek durumlarını işaretleyebilir, notlar ekleyebilirsiniz.
+          </div>
+          <div class="ob-step-tip" id="obStep0Tip">
+            <i class="ph-fill ph-lightbulb"></i>
+            <span>Verileriniz tarayıcınıza otomatik kaydedilir. Sayfayı kapatsanız bile kayıtlarınız korunur!</span>
+          </div>
+        </div>
+
+        <!-- Step 1: Adding records -->
+        <div class="ob-step-slide" data-step="1">
+          <div class="ob-step-icon green">
+            <i class="ph-duotone ph-user-plus"></i>
+          </div>
+          <div class="ob-step-title" id="obStep1Title">Yeni Kayıt Ekleme</div>
+          <div class="ob-step-desc" id="obStep1Desc">
+            Sağ üstteki <strong>"Yeni Kayıt"</strong> butonuna tıklayarak yeni bir çocuk kaydı ekleyebilirsiniz. Açılan satırda <strong>ad, yaş ve oda numarası</strong> bilgilerini doğrudan tabloya yazabilirsiniz.
+          </div>
+          <div class="ob-step-tip" id="obStep1Tip">
+            <i class="ph-fill ph-lightbulb"></i>
+            <span>Her hücreye tıklayarak doğrudan yazabilirsiniz — ayrı bir form yok!</span>
+          </div>
+        </div>
+
+        <!-- Step 2: Checkboxes & Status -->
+        <div class="ob-step-slide" data-step="2">
+          <div class="ob-step-icon purple">
+            <i class="ph-duotone ph-check-square"></i>
+          </div>
+          <div class="ob-step-title" id="obStep2Title">Başvuru & Dilek Takibi</div>
+          <div class="ob-step-desc" id="obStep2Desc">
+            Her çocuk için iki checkbox bulunur:<br>
+            • <strong>Başvuru Formu:</strong> Başvuru alındığında işaretleyin<br>
+            • <strong>Dilek:</strong> Dilek alındığında işaretleyin (önce başvuru gerekir)<br><br>
+            Sağ taraftaki <strong>sarı</strong> ve <strong>kırmızı</strong> butonlarla durumu manuel olarak değiştirebilirsiniz.
+          </div>
+        </div>
+
+        <!-- Step 3: Color guide -->
+        <div class="ob-step-slide" data-step="3">
+          <div class="ob-step-icon yellow">
+            <i class="ph-duotone ph-palette"></i>
+          </div>
+          <div class="ob-step-title" id="obStep3Title">Renk Kodları</div>
+          <div class="ob-step-desc" id="obStep3Desc">
+            Her satır, durumuna göre otomatik olarak renklenir:
+          </div>
+          <div class="ob-color-legend" id="obStep3Legend">
+            <div class="ob-color-item ci-green">
+              <div class="ob-c-dot"></div>
+              <span id="obLeg0">Müsait — Başvuru alındı</span>
+            </div>
+            <div class="ob-color-item ci-yellow">
+              <div class="ob-c-dot"></div>
+              <span id="obLeg1">Müsait Değil</span>
+            </div>
+            <div class="ob-color-item ci-red">
+              <div class="ob-c-dot"></div>
+              <span id="obLeg2">Dilek Alınmayacak</span>
+            </div>
+            <div class="ob-color-item ci-blue">
+              <div class="ob-c-dot"></div>
+              <span id="obLeg3">Tamamlandı ⭐</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: WhatsApp Copy -->
+        <div class="ob-step-slide" data-step="4">
+          <div class="ob-step-icon teal">
+            <i class="ph-duotone ph-copy"></i>
+          </div>
+          <div class="ob-step-title" id="obStep4Title">WhatsApp'a Kopyalama</div>
+          <div class="ob-step-desc" id="obStep4Desc">
+            <strong>"Kopyala"</strong> butonuna tıkladığınızda tüm kayıtlar WhatsApp'a gönderilebilecek şekilde düzenli bir formatta panoya kopyalanır. Böylece ekip arkadaşlarınızla kolayca paylaşabilirsiniz.
+          </div>
+          <div class="ob-step-tip" id="obStep4Tip">
+            <i class="ph-fill ph-lightbulb"></i>
+            <span>Sağ üstteki TR/EN düğmesiyle dili değiştirebilirsiniz. Kopyalanan metin de seçili dilde olur!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="onboarding-footer">
+      <label class="ob-dont-show">
+        <input type="checkbox" id="obDontShow" />
+        <span id="obDontShowLabel">Bir daha gösterme</span>
+      </label>
+      <div style="display:flex; gap:8px;">
+        <button class="ob-btn ob-btn-secondary" id="obBtnPrev" onclick="obPrevStep()" style="display:none;">
+          <i class="ph-bold ph-arrow-left"></i> <span id="obPrevText">Geri</span>
+        </button>
+        <button class="ob-btn ob-btn-primary" id="obBtnNext" onclick="obNextStep()">
+          <span id="obNextText">Sonraki</span> <i class="ph-bold ph-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ─── I18N DICTIONARY ─────────────────────────────────────────────────────────
 const i18n = {
@@ -628,7 +1038,32 @@ const i18n = {
     lblRoom: "Oda No",
     titleYellow: "Müsait Değil",
     titleRed: "Alınmayacak",
-    btnDelete: "Sil"
+    btnDelete: "Sil",
+    // Onboarding
+    obHeaderTitle: "Hoş Geldiniz!",
+    obHeaderDesc: "Bu araç ile hastane ziyaretlerinde dilek alım sürecini kolayca yönetebilirsiniz.",
+    obStep0Title: "Bu Sayfa Ne İşe Yarar?",
+    obStep0Desc: 'Bu tablo, hastane ziyaretlerinde <strong>çocukların dilek başvuru süreçlerini</strong> takip etmenizi sağlar. Her çocuk için kayıt oluşturabilir, başvuru ve dilek durumlarını işaretleyebilir, notlar ekleyebilirsiniz.',
+    obStep0Tip: "Verileriniz tarayıcınıza otomatik kaydedilir. Sayfayı kapatsanız bile kayıtlarınız korunur!",
+    obStep1Title: "Yeni Kayıt Ekleme",
+    obStep1Desc: 'Sağ üstteki <strong>"Yeni Kayıt"</strong> butonuna tıklayarak yeni bir çocuk kaydı ekleyebilirsiniz. Açılan satırda <strong>ad, yaş ve oda numarası</strong> bilgilerini doğrudan tabloya yazabilirsiniz.',
+    obStep1Tip: "Her hücreye tıklayarak doğrudan yazabilirsiniz — ayrı bir form yok!",
+    obStep2Title: "Başvuru & Dilek Takibi",
+    obStep2Desc: 'Her çocuk için iki checkbox bulunur:<br>• <strong>Başvuru Formu:</strong> Başvuru alındığında işaretleyin<br>• <strong>Dilek:</strong> Dilek alındığında işaretleyin (önce başvuru gerekir)<br><br>Sağ taraftaki <strong>sarı</strong> ve <strong>kırmızı</strong> butonlarla durumu manuel olarak değiştirebilirsiniz.',
+    obStep3Title: "Renk Kodları",
+    obStep3Desc: "Her satır, durumuna göre otomatik olarak renklenir:",
+    obLeg0: "Müsait — Başvuru alındı",
+    obLeg1: "Müsait Değil",
+    obLeg2: "Dilek Alınmayacak",
+    obLeg3: "Tamamlandı ⭐",
+    obStep4Title: "WhatsApp'a Kopyalama",
+    obStep4Desc: '<strong>"Kopyala"</strong> butonuna tıkladığınızda tüm kayıtlar WhatsApp\'a gönderilebilecek şekilde düzenli bir formatta panoya kopyalanır. Böylece ekip arkadaşlarınızla kolayca paylaşabilirsiniz.',
+    obStep4Tip: "Sağ üstteki TR/EN düğmesiyle dili değiştirebilirsiniz. Kopyalanan metin de seçili dilde olur!",
+    obDontShow: "Bir daha gösterme",
+    obPrev: "Geri",
+    obNext: "Sonraki",
+    obFinish: "Anladım, Başla!",
+    obHelpTitle: "Yardım"
   },
   en: {
     pageTitle: "Make-A-Wish | WishTrack Hospital Board",
@@ -679,7 +1114,32 @@ const i18n = {
     lblRoom: "Room No",
     titleYellow: "Unavailable",
     titleRed: "Cancelled",
-    btnDelete: "Delete"
+    btnDelete: "Delete",
+    // Onboarding
+    obHeaderTitle: "Welcome!",
+    obHeaderDesc: "This tool helps you easily manage the wish-granting process during hospital visits.",
+    obStep0Title: "What Is This Page For?",
+    obStep0Desc: 'This board helps you track <strong>children\'s wish application processes</strong> during hospital visits. You can create records, mark application and wish statuses, and add notes for each child.',
+    obStep0Tip: "Your data is automatically saved in your browser. Your records are preserved even if you close the page!",
+    obStep1Title: "Adding New Records",
+    obStep1Desc: 'Click the <strong>"New Record"</strong> button in the top right to add a new child record. You can type <strong>name, age, and room number</strong> directly into the table row.',
+    obStep1Tip: "Click on any cell to type directly — no separate form needed!",
+    obStep2Title: "Application & Wish Tracking",
+    obStep2Desc: 'Each child has two checkboxes:<br>• <strong>Application Form:</strong> Check when the application is received<br>• <strong>Wish:</strong> Check when the wish is taken (application required first)<br><br>Use the <strong>yellow</strong> and <strong>red</strong> buttons on the right to manually change the status.',
+    obStep3Title: "Color Codes",
+    obStep3Desc: "Each row is automatically colored based on its status:",
+    obLeg0: "Available — Application received",
+    obLeg1: "Unavailable",
+    obLeg2: "Wish Won't Be Taken",
+    obLeg3: "Completed ⭐",
+    obStep4Title: "Copy for WhatsApp",
+    obStep4Desc: 'Click the <strong>"Copy"</strong> button to copy all records to your clipboard in a clean WhatsApp-ready format. Easily share with your team!',
+    obStep4Tip: "Use the TR/EN toggle in the top right to switch languages. The copied text will be in the selected language!",
+    obDontShow: "Don't show again",
+    obPrev: "Back",
+    obNext: "Next",
+    obFinish: "Got It, Let's Go!",
+    obHelpTitle: "Help"
   }
 };
 
@@ -709,6 +1169,7 @@ function setLanguage(lang) {
   });
 
   renderTable();
+  updateOnboardingText();
 }
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
@@ -1118,9 +1579,174 @@ function copyForWhatsApp() {
   });
 }
 
+// ─── ONBOARDING POPUP ────────────────────────────────────────────────────────
+const OB_STORAGE_KEY = 'maw_hastane_ob_seen';
+let obCurrentStep = 0;
+const OB_TOTAL_STEPS = 5;
+
+function updateOnboardingText() {
+  const t = i18n[currentLang];
+  const el = (id) => document.getElementById(id);
+
+  if (el('obHeaderTitle')) el('obHeaderTitle').textContent = t.obHeaderTitle;
+  if (el('obHeaderDesc')) el('obHeaderDesc').textContent = t.obHeaderDesc;
+  if (el('obStep0Title')) el('obStep0Title').textContent = t.obStep0Title;
+  if (el('obStep0Desc')) el('obStep0Desc').innerHTML = t.obStep0Desc;
+  if (el('obStep0Tip')) el('obStep0Tip').querySelector('span').textContent = t.obStep0Tip;
+  if (el('obStep1Title')) el('obStep1Title').textContent = t.obStep1Title;
+  if (el('obStep1Desc')) el('obStep1Desc').innerHTML = t.obStep1Desc;
+  if (el('obStep1Tip')) el('obStep1Tip').querySelector('span').textContent = t.obStep1Tip;
+  if (el('obStep2Title')) el('obStep2Title').textContent = t.obStep2Title;
+  if (el('obStep2Desc')) el('obStep2Desc').innerHTML = t.obStep2Desc;
+  if (el('obStep3Title')) el('obStep3Title').textContent = t.obStep3Title;
+  if (el('obStep3Desc')) el('obStep3Desc').textContent = t.obStep3Desc;
+  if (el('obLeg0')) el('obLeg0').textContent = t.obLeg0;
+  if (el('obLeg1')) el('obLeg1').textContent = t.obLeg1;
+  if (el('obLeg2')) el('obLeg2').textContent = t.obLeg2;
+  if (el('obLeg3')) el('obLeg3').textContent = t.obLeg3;
+  if (el('obStep4Title')) el('obStep4Title').textContent = t.obStep4Title;
+  if (el('obStep4Desc')) el('obStep4Desc').innerHTML = t.obStep4Desc;
+  if (el('obStep4Tip')) el('obStep4Tip').querySelector('span').textContent = t.obStep4Tip;
+  if (el('obDontShowLabel')) el('obDontShowLabel').textContent = t.obDontShow;
+  if (el('obPrevText')) el('obPrevText').textContent = t.obPrev;
+  if (el('helpBtn')) el('helpBtn').title = t.obHelpTitle;
+
+  updateObButtons();
+}
+
+function showOnboarding() {
+  obCurrentStep = 0;
+  updateObStep();
+  const overlay = document.getElementById('onboardingOverlay');
+  overlay.classList.remove('hide');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      overlay.classList.add('show');
+    });
+  });
+  updateOnboardingText();
+}
+
+function closeOnboarding() {
+  const overlay = document.getElementById('onboardingOverlay');
+  overlay.classList.remove('show');
+  overlay.classList.add('hide');
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    overlay.classList.remove('hide');
+  }, 400);
+
+  if (document.getElementById('obDontShow').checked) {
+    localStorage.setItem(OB_STORAGE_KEY, 'true');
+  }
+
+  // Hide the pulse indicator after first use
+  const pulse = document.getElementById('helpPulse');
+  if (pulse) pulse.style.display = 'none';
+}
+
+function obNextStep() {
+  if (obCurrentStep >= OB_TOTAL_STEPS - 1) {
+    closeOnboarding();
+    return;
+  }
+  obCurrentStep++;
+  updateObStep();
+}
+
+function obPrevStep() {
+  if (obCurrentStep <= 0) return;
+  obCurrentStep--;
+  updateObStep();
+}
+
+function updateObStep() {
+  // Update slides
+  document.querySelectorAll('.ob-step-slide').forEach(slide => {
+    const step = parseInt(slide.dataset.step);
+    slide.classList.remove('active', 'slide-out');
+    if (step === obCurrentStep) {
+      slide.classList.add('active');
+    }
+  });
+
+  // Update dots
+  document.querySelectorAll('.ob-step-dot').forEach(dot => {
+    const step = parseInt(dot.dataset.step);
+    dot.classList.remove('active', 'done');
+    if (step === obCurrentStep) {
+      dot.classList.add('active');
+    } else if (step < obCurrentStep) {
+      dot.classList.add('done');
+    }
+  });
+
+  // Update buttons
+  updateObButtons();
+}
+
+function updateObButtons() {
+  const t = i18n[currentLang];
+  const prevBtn = document.getElementById('obBtnPrev');
+  const nextBtn = document.getElementById('obBtnNext');
+  const nextText = document.getElementById('obNextText');
+
+  if (prevBtn) {
+    prevBtn.style.display = obCurrentStep > 0 ? 'flex' : 'none';
+  }
+
+  if (obCurrentStep >= OB_TOTAL_STEPS - 1) {
+    nextBtn.className = 'ob-btn ob-btn-success';
+    nextText.textContent = t.obFinish;
+    nextBtn.querySelector('i').className = 'ph-bold ph-rocket-launch';
+  } else {
+    nextBtn.className = 'ob-btn ob-btn-primary';
+    nextText.textContent = t.obNext;
+    nextBtn.querySelector('i').className = 'ph-bold ph-arrow-right';
+  }
+}
+
+// Allow clicking on step dots to jump
+document.querySelectorAll('.ob-step-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    obCurrentStep = parseInt(dot.dataset.step);
+    updateObStep();
+  });
+});
+
+// Close on overlay click (outside modal)
+document.getElementById('onboardingOverlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    closeOnboarding();
+  }
+});
+
+// Close on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('onboardingOverlay');
+    if (overlay.classList.contains('show')) {
+      closeOnboarding();
+    }
+  }
+});
+
+function initOnboarding() {
+  const seen = localStorage.getItem(OB_STORAGE_KEY);
+  if (!seen) {
+    setTimeout(() => showOnboarding(), 600);
+  } else {
+    // Hide pulse if already seen
+    const pulse = document.getElementById('helpPulse');
+    if (pulse) pulse.style.display = 'none';
+  }
+}
+
 // ─── INIT ────────────────────────────────────────────────────────────────────
 loadData();
 setLanguage(currentLang);
+initOnboarding();
 </script>
 </body>
 </html>
