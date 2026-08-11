@@ -1393,13 +1393,14 @@
         gap: 12px;
       }
 
-      /* ─── RICH TEXT EDITOR ─── */
+      /* ─── RICH TEXT EDITOR (GELİŞMİŞ) ─── */
       .rich-editor-wrap {
         border: 1.5px solid var(--border);
         border-radius: var(--radius-sm);
         overflow: hidden;
         background: #fafbfc;
         transition: 0.2s;
+        box-shadow: var(--shadow-sm);
       }
 
       .rich-editor-wrap:focus-within {
@@ -1411,58 +1412,150 @@
       .rich-toolbar {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 3px;
         padding: 8px 10px;
-        background: #f1f5f9;
+        background: linear-gradient(to bottom, #f8faff, #f1f5f9);
         border-bottom: 1.5px solid var(--border);
         flex-wrap: wrap;
+        row-gap: 6px;
       }
 
       .rich-toolbar button {
         background: white;
-        border: 1px solid var(--border);
+        border: 1px solid #dde4ef;
         border-radius: 6px;
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        color: var(--text);
-        font-size: 15px;
-        transition: 0.18s;
+        color: #374151;
+        font-size: 14px;
+        transition: all 0.15s;
+        flex-shrink: 0;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
       }
 
       .rich-toolbar button:hover {
         background: var(--primary-light);
         color: var(--primary);
-        border-color: #bfdbfe;
+        border-color: #93c5fd;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0,101,195,0.12);
       }
 
       .rich-toolbar button.active {
         background: var(--primary);
         color: white;
         border-color: var(--primary-dark);
-        box-shadow: 0 2px 6px rgba(0, 101, 195, 0.25);
+        box-shadow: 0 2px 6px rgba(0, 101, 195, 0.3);
+      }
+
+      .rich-toolbar select {
+        height: 30px;
+        border: 1px solid #dde4ef;
+        border-radius: 6px;
+        padding: 0 6px;
+        font-size: 12px;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        color: #374151;
+        background: white;
+        cursor: pointer;
+        outline: none;
+        transition: 0.15s;
+      }
+
+      .rich-toolbar select:hover,
+      .rich-toolbar select:focus {
+        border-color: var(--primary);
+        color: var(--primary);
       }
 
       .tb-divider {
         width: 1px;
-        height: 20px;
-        background: var(--border);
-        margin: 0 4px;
+        height: 22px;
+        background: #cbd5e1;
+        margin: 0 3px;
+        flex-shrink: 0;
+      }
+
+      /* Color picker wrapper */
+      .tb-color-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+      }
+
+      .tb-color-btn {
+        width: 30px !important;
+        height: 30px !important;
+        padding: 3px !important;
+        flex-direction: column !important;
+        gap: 1px !important;
+        position: relative;
+      }
+
+      .tb-color-indicator {
+        width: 16px;
+        height: 4px;
+        border-radius: 2px;
+        background: #0065c3;
+        transition: background 0.2s;
+      }
+
+      .tb-color-input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        border: none;
+        padding: 0;
+      }
+
+      .tb-color-reset {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 10px !important;
+        padding: 0 !important;
+        color: #94a3b8 !important;
+        border: 1px dashed #cbd5e1 !important;
+        border-radius: 4px !important;
+        background: transparent !important;
+      }
+
+      .tb-color-reset:hover {
+        color: #ef4444 !important;
+        border-color: #fca5a5 !important;
+        background: #fef2f2 !important;
+      }
+
+      /* Toolbar label badge */
+      .tb-label {
+        font-size: 10px;
+        font-weight: 800;
+        color: #64748b;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 0 2px;
+        flex-shrink: 0;
       }
 
       .rich-editor-content {
-        min-height: 140px;
-        max-height: 240px;
-        padding: 12px 14px;
+        min-height: 160px;
+        max-height: 280px;
+        padding: 14px 16px;
         font-family: 'Nunito', sans-serif;
         font-size: 14px;
         color: var(--text);
         outline: none;
         overflow-y: auto;
-        line-height: 1.65;
+        line-height: 1.7;
         background: white;
       }
 
@@ -1472,22 +1565,58 @@
         pointer-events: none;
       }
 
-      .rich-editor-content h3 {
-        font-family: 'Playfair Display', serif;
-        font-size: 17px;
-        color: var(--primary-dark);
-        margin: 8px 0 4px;
-      }
+      .rich-editor-content h1 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--primary-dark); margin: 10px 0 4px; font-weight: 800; }
+      .rich-editor-content h2 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--primary-dark); margin: 8px 0 4px; font-weight: 700; }
+      .rich-editor-content h3 { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--primary-dark); margin: 6px 0 3px; font-weight: 700; }
 
       .rich-editor-content ul,
       .rich-editor-content ol {
-        padding-left: 20px;
+        padding-left: 22px;
         margin: 6px 0;
+      }
+
+      .rich-editor-content blockquote {
+        border-left: 4px solid var(--primary);
+        background: var(--primary-light);
+        padding: 8px 14px;
+        margin: 8px 0;
+        border-radius: 0 8px 8px 0;
+        color: var(--primary-dark);
+        font-style: italic;
       }
 
       .rich-editor-content a {
         color: var(--primary);
         text-decoration: underline;
+      }
+
+      .rich-editor-content hr {
+        border: none;
+        border-top: 2px solid var(--border);
+        margin: 12px 0;
+      }
+
+      .rich-editor-content mark {
+        background: #fef08a;
+        border-radius: 3px;
+        padding: 0 2px;
+      }
+
+      /* Word counter bar */
+      .editor-counter-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px 12px;
+        background: #f8faff;
+        border-top: 1px solid var(--border);
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 600;
+      }
+
+      .editor-counter-bar span b {
+        color: var(--primary);
       }
 
       /* ─── TOAST ─── */
@@ -1922,24 +2051,83 @@
           <div class="form-group">
             <label>Dilek Açıklaması *</label>
             <div class="rich-editor-wrap">
+              <!-- SATIR 1: Başlık + Yazı Boyutu -->
               <div class="rich-toolbar">
-                <button type="button" id="btnBoldD" title="Kalın" onclick="execDilekCmd('bold')"><i
-                    class="ph-bold ph-text-b"></i></button>
-                <button type="button" id="btnItalicD" title="İtalik" onclick="execDilekCmd('italic')"><i
-                    class="ph-bold ph-text-italic"></i></button>
-                <button type="button" id="btnUnderlineD" title="Altı Çizili" onclick="execDilekCmd('underline')"><i
-                    class="ph-bold ph-text-underline"></i></button>
+                <span class="tb-label">Stil</span>
+                <select id="tbHeadingD" title="Başlık Stili" onchange="applyHeadingD(this.value)" style="width:110px;">
+                  <option value="p">Normal Metin</option>
+                  <option value="h1">Başlık 1</option>
+                  <option value="h2">Başlık 2</option>
+                  <option value="h3">Başlık 3</option>
+                </select>
+                <select id="tbFontSizeD" title="Yazı Boyutu" onchange="applyFontSizeD(this.value)" style="width:70px;">
+                  <option value="">Boyut</option>
+                  <option value="1">Küçük</option>
+                  <option value="3">Normal</option>
+                  <option value="4">Büyük</option>
+                  <option value="5">Çok Büyük</option>
+                </select>
+
                 <div class="tb-divider"></div>
-                <button type="button" id="btnULD" title="Madde İşaretli Liste"
-                  onclick="execDilekCmd('insertUnorderedList')"><i class="ph-bold ph-list-bullets"></i></button>
-                <button type="button" id="btnOLD" title="Numaralı Liste" onclick="execDilekCmd('insertOrderedList')"><i
-                    class="ph-bold ph-list-numbers"></i></button>
+
+                <!-- Temel biçimlendirme -->
+                <button type="button" id="btnBoldD" title="Kalın (Ctrl+B)" onclick="execDilekCmd('bold')"><b>B</b></button>
+                <button type="button" id="btnItalicD" title="İtalik (Ctrl+I)" onclick="execDilekCmd('italic')"><i>I</i></button>
+                <button type="button" id="btnUnderlineD" title="Altı Çizili (Ctrl+U)" onclick="execDilekCmd('underline')"><u>U</u></button>
+                <button type="button" id="btnStrikeD" title="Üstü Çizili" onclick="execDilekCmd('strikeThrough')"><s>S</s></button>
+
                 <div class="tb-divider"></div>
-                <button type="button" title="Temizle" onclick="execDilekCmd('removeFormat')"><i
-                    class="ph-bold ph-arrow-counter-clockwise"></i></button>
+
+                <!-- Hizalama -->
+                <button type="button" title="Sola Hizala" onclick="execDilekCmd('justifyLeft')"><i class="ph-bold ph-text-align-left"></i></button>
+                <button type="button" title="Ortala" onclick="execDilekCmd('justifyCenter')"><i class="ph-bold ph-text-align-center"></i></button>
+                <button type="button" title="Sağa Hizala" onclick="execDilekCmd('justifyRight')"><i class="ph-bold ph-text-align-right"></i></button>
+
+                <div class="tb-divider"></div>
+
+                <!-- Listeler -->
+                <button type="button" id="btnULD" title="Madde İşaretli Liste" onclick="execDilekCmd('insertUnorderedList')"><i class="ph-bold ph-list-bullets"></i></button>
+                <button type="button" id="btnOLD" title="Numaralı Liste" onclick="execDilekCmd('insertOrderedList')"><i class="ph-bold ph-list-numbers"></i></button>
+
+                <div class="tb-divider"></div>
+
+                <!-- Renk -->
+                <span class="tb-label">Renk</span>
+                <div class="tb-color-wrap" title="Yazı Rengi Seç">
+                  <button type="button" class="tb-color-btn" title="Yazı Rengi Seç">
+                    <i class="ph-bold ph-text-aa" style="font-size:13px;"></i>
+                    <div class="tb-color-indicator" id="textColorIndicatorD"></div>
+                    <input type="color" class="tb-color-input" id="textColorD" value="#0065c3"
+                      onchange="applyTextColorD(this.value)" oninput="document.getElementById('textColorIndicatorD').style.background=this.value">
+                  </button>
+                  <button type="button" class="tb-color-reset" title="Yazı Rengini Sıfırla" onclick="resetTextColorD()"><i class="ph-bold ph-x"></i></button>
+                </div>
+
+                <div class="tb-divider"></div>
+
+                <!-- Ekstra -->
+                <button type="button" title="Alıntı" onclick="execDilekCmd('formatBlock', 'blockquote')"><i class="ph-bold ph-quotes"></i></button>
+                <button type="button" title="Yatay Çizgi" onclick="execDilekCmd('insertHorizontalRule')"><span style="font-size:11px;font-weight:900;">─</span></button>
+                <button type="button" title="Link Ekle" onclick="insertLinkD()"><i class="ph-bold ph-link"></i></button>
+
+                <div class="tb-divider"></div>
+
+                <!-- Geri Al / Yinele -->
+                <button type="button" title="Geri Al (Ctrl+Z)" onclick="execDilekCmd('undo')"><i class="ph-bold ph-arrow-counter-clockwise"></i></button>
+                <button type="button" title="Yeniden Yap (Ctrl+Y)" onclick="execDilekCmd('redo')"><i class="ph-bold ph-arrow-clockwise"></i></button>
+                <button type="button" title="Tüm Biçimlendirmeyi Temizle" onclick="execDilekCmd('removeFormat')"><i class="ph-bold ph-eraser"></i></button>
               </div>
+
               <div class="rich-editor-content" id="fDDescEditor" contenteditable="true"
-                data-placeholder="Dilek çocuğumuz hakkında detaylı bilgi ve dilek günü planı yazınız..."></div>
+                data-placeholder="Dilek çocuğumuz hakkında detaylı bilgi ve dilek günü planı yazınız..."
+                oninput="updateEditorCounterD()"
+                onkeyup="syncDilekToolbarState()"
+                onmouseup="syncDilekToolbarState()"></div>
+
+              <div class="editor-counter-bar">
+                <span><b id="edWordCountD">0</b> kelime &nbsp;·&nbsp; <b id="edCharCountD">0</b> karakter</span>
+                <span style="color:#10b981; font-size:10px;"><i class="ph-bold ph-check-circle"></i> Otomatik Kaydediliyor</span>
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -2817,22 +3005,86 @@ Dilek tasarım ve hazırlık sürecinde aktif olabilecek olan`;
     function execDilekCmd(cmd, value = null) {
       document.execCommand(cmd, false, value);
       document.getElementById('fDDescEditor').focus();
-      updateDilekToolbarState();
+      syncDilekToolbarState();
     }
 
-    function updateDilekToolbarState() {
+    function applyHeadingD(val) {
+      if (!val) return;
+      if (val === 'p') {
+        document.execCommand('formatBlock', false, '<p>');
+      } else {
+        document.execCommand('formatBlock', false, '<' + val + '>');
+      }
+      document.getElementById('fDDescEditor').focus();
+      syncDilekToolbarState();
+    }
+
+    function applyFontSizeD(val) {
+      if (!val) return;
+      document.execCommand('fontSize', false, val);
+      document.getElementById('fDDescEditor').focus();
+      syncDilekToolbarState();
+    }
+
+    function applyTextColorD(color) {
+      document.execCommand('foreColor', false, color);
+      document.getElementById('fDDescEditor').focus();
+      syncDilekToolbarState();
+    }
+
+    function resetTextColorD() {
+      // Varsayılan metin rengine sıfırla (#1e293b)
+      document.execCommand('foreColor', false, '#1e293b');
+      const input = document.getElementById('textColorD');
+      const indicator = document.getElementById('textColorIndicatorD');
+      if (input) input.value = '#1e293b';
+      if (indicator) indicator.style.background = '#1e293b';
+      document.getElementById('fDDescEditor').focus();
+      syncDilekToolbarState();
+    }
+
+
+
+    function insertLinkD() {
+      const url = prompt('Bağlantı URL adresini giriniz (örn: https://example.com):');
+      if (url) {
+        document.execCommand('createLink', false, url);
+        document.getElementById('fDDescEditor').focus();
+        syncDilekToolbarState();
+      }
+    }
+
+    function updateEditorCounterD() {
+      const editor = document.getElementById('fDDescEditor');
+      if (!editor) return;
+      const text = editor.innerText || editor.textContent || '';
+      const cleanText = text.trim();
+      const words = cleanText ? cleanText.split(/\s+/).length : 0;
+      const chars = cleanText.length;
+
+      const wordEl = document.getElementById('edWordCountD');
+      const charEl = document.getElementById('edCharCountD');
+      if (wordEl) wordEl.innerText = words;
+      if (charEl) charEl.innerText = chars;
+    }
+
+    function syncDilekToolbarState() {
       try {
         const isBold = document.queryCommandState('bold');
         const isItalic = document.queryCommandState('italic');
         const isUnderline = document.queryCommandState('underline');
+        const isStrike = document.queryCommandState('strikeThrough');
         const isUL = document.queryCommandState('insertUnorderedList');
         const isOL = document.queryCommandState('insertOrderedList');
 
         document.getElementById('btnBoldD')?.classList.toggle('active', isBold);
         document.getElementById('btnItalicD')?.classList.toggle('active', isItalic);
         document.getElementById('btnUnderlineD')?.classList.toggle('active', isUnderline);
+        document.getElementById('btnStrikeD')?.classList.toggle('active', isStrike);
         document.getElementById('btnULD')?.classList.toggle('active', isUL);
         document.getElementById('btnOLD')?.classList.toggle('active', isOL);
+
+        updateEditorCounterD();
       } catch (e) { }
     }
 
@@ -2853,8 +3105,9 @@ Dilek tasarım ve hazırlık sürecinde aktif olabilecek olan`;
       const dilekEditorEl = document.getElementById('fDDescEditor');
       if (dilekEditorEl) {
         ['keyup', 'mouseup', 'click', 'input', 'focus'].forEach(evt => {
-          dilekEditorEl.addEventListener(evt, updateDilekToolbarState);
+          dilekEditorEl.addEventListener(evt, syncDilekToolbarState);
         });
+        updateEditorCounterD();
       }
 
       // Detaylı Filtreleme Alanları Dinleyicileri

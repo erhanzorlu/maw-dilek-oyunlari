@@ -494,51 +494,275 @@ body {
 }
 .modal-bg.open { display: flex; }
 .modal {
-  background: rgba(255,255,255,.92); border: 1.5px solid rgba(147,51,234,.25);
-  border-radius: 24px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto;
-  box-shadow: 0 40px 100px rgba(147,51,234,.25), 0 8px 32px rgba(0,0,0,.1);
-  animation: modalPop .45s var(--ease-out) both; position: relative; backdrop-filter: blur(20px);
+  background: #f8f4ff;
+  border: 1.5px solid rgba(147,51,234,.18);
+  border-radius: 20px;
+  max-width: 860px; width: 100%; max-height: 92vh; overflow-y: auto;
+  box-shadow: 0 40px 100px rgba(147,51,234,.22), 0 8px 32px rgba(0,0,0,.08);
+  animation: modalPop .45s var(--ease-out) both;
+  position: relative;
+  overflow-x: hidden;
 }
-@keyframes modalPop { from { opacity:0; transform: scale(.88) translateY(20px); } to { opacity:1; transform: scale(1) translateY(0); } }
+@keyframes modalPop { from { opacity:0; transform: scale(.9) translateY(24px); } to { opacity:1; transform: scale(1) translateY(0); } }
 
 .modal-close {
-  position: absolute; top: 1.2rem; right: 1.2rem;
-  background: rgba(147,51,234,.12); border: 1px solid rgba(147,51,234,.2); z-index: 10;
-  border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; color: var(--accent-1);
-  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s;
+  position: absolute; top: 1rem; right: 1rem;
+  background: rgba(255,255,255,.9); border: 1.5px solid rgba(147,51,234,.2); z-index: 20;
+  border-radius: 50%; width: 36px; height: 36px; font-size: 1rem; color: var(--accent-1);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
-.modal-close:hover { background: rgba(147,51,234,.3); color: white; }
+.modal-close:hover { background: var(--accent-1); color: white; border-color: var(--accent-1); }
 
-.modal-hero { height: 250px; background-size: cover; background-position: top center; position: relative; }
-.modal-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to top, rgba(255,255,255,.92), transparent); }
-
-.modal-body { padding: 0 2rem 2rem; position: relative; z-index: 2; margin-top: -50px; }
-
-.modal-header-group { display: flex; gap: 20px; align-items: flex-end; margin-bottom: 2rem; }
-.modal-avatar { width: 120px; height: 120px; border-radius: 20px; border: 4px solid rgba(255,255,255,.92); box-shadow: 0 10px 25px rgba(147,51,234,.2); background-size: cover; background-position: top center; }
-.modal-title-wrap h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 600; color: var(--ink); line-height: 1.1; margin-bottom: .2rem; }
-.modal-title-wrap p { font-size: .9rem; color: var(--accent-1); letter-spacing: .05em; font-weight: 600; text-transform: uppercase; }
-
-.modal-grid { display: grid; grid-template-columns: 2fr 1.2fr; gap: 2rem; }
-@media (max-width: 768px) {
-    .modal-grid { grid-template-columns: 1fr; }
-    .modal-header-group { flex-direction: column; align-items: center; text-align: center; }
+/* ── WIKI HEADER ── */
+.wiki-header {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+  border-bottom: 1.5px solid rgba(147,51,234,.12);
+  min-height: 180px;
+}
+.wiki-header-img {
+  width: 160px;
+  min-height: 180px;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: top center;
+  border-radius: 16px;
+  margin: 14px 0 14px 14px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.12);
+}
+.wiki-header-info {
+  flex: 1;
+  padding: 18px 56px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+.wiki-universe-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.wiki-tag {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--accent-1);
+  cursor: pointer;
+  transition: color .2s;
+}
+.wiki-tag:hover { color: var(--accent-3); }
+.wiki-tag-sep { color: rgba(147,51,234,.3); font-size: .8rem; }
+.wiki-char-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.1;
 }
 
-.box { background: rgba(255,255,255,.6); border: 1.5px solid rgba(147,51,234,.15); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
-.box.highlight { background: linear-gradient(to right bottom, rgba(243,232,255,.7), rgba(252,231,243,.7)); border-color: rgba(147,51,234,.3); }
+/* ── WIKI CONTENT GRID ── */
+.wiki-body {
+  padding: 0;
+}
+.wiki-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-bottom: 1.5px solid rgba(147,51,234,.1);
+}
+.wiki-left {
+  padding: 1.6rem;
+  border-right: 1.5px solid rgba(147,51,234,.1);
+}
+.wiki-right {
+  padding: 1.6rem;
+  background: rgba(255,255,255,.55);
+}
 
-.box-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
-.highlight .box-title { color: var(--accent-1); }
+/* ── WIKI SECTION TITLES ── */
+.wiki-section-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 5px;
+  margin-bottom: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 
-.box-list { list-style: none; }
-.box-list li { position: relative; padding-left: 1.5rem; margin-bottom: .8rem; font-size: .9rem; color: var(--ink-mid); line-height: 1.6; }
-.box-list li::before { content: '✦'; position: absolute; left: 0; color: var(--accent-1); font-size: .8rem; top: 2px; }
+/* ── WIKI SUMMARY TEXT ── */
+.wiki-summary-text {
+  font-size: .88rem;
+  color: var(--ink-mid);
+  line-height: 1.75;
+  margin-bottom: 1.2rem;
+}
 
-.faq-item { margin-bottom: 1.2rem; border-bottom: 1px solid rgba(147,51,234,.1); padding-bottom: 1.2rem; }
-.faq-item:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
-.faq-q { font-weight: 600; color: var(--ink); margin-bottom: .4rem; font-size: .95rem; }
-.faq-a { font-size: .85rem; color: var(--ink-mid); line-height: 1.6; }
+/* ── CHARACTER BLOCKS ── */
+.wiki-char-block {
+  margin-bottom: 1rem;
+  font-size: .82rem;
+  color: var(--ink-mid);
+  line-height: 1.65;
+}
+.wiki-char-block-name {
+  font-weight: 700;
+  font-size: .85rem;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 3px;
+}
+.wiki-char-block p span.label {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ── SOHBET SORULARI ── */
+.wiki-faq-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wiki-faq-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: .85rem;
+  color: var(--ink-mid);
+  line-height: 1.55;
+  padding: 8px 10px;
+  background: rgba(147,51,234,.05);
+  border-radius: 10px;
+  border-left: 3px solid rgba(147,51,234,.25);
+}
+.wiki-faq-list li::before {
+  content: '•';
+  color: var(--ink);
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── DİLEK İPUÇLARI CARD ── */
+.wiki-tips-card {
+  margin: 0;
+  background: #b09abf;
+  padding: 1.8rem 2rem;
+  border-top: 1.5px solid rgba(147,51,234,.12);
+}
+.wiki-tips-card .wiki-section-title {
+  color: #fff;
+  border-bottom-color: rgba(255,255,255,.6);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(255,255,255,.5);
+  margin-bottom: 16px;
+}
+.wiki-tips-list {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wiki-tips-list li {
+  font-size: .87rem;
+  color: #fff;
+  font-weight: 600;
+  line-height: 1.65;
+  letter-spacing: .01em;
+}
+.wiki-tips-intro {
+  font-size: .87rem;
+  color: #fff;
+  font-weight: 600;
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+
+/* ── DİKKAT KARTI ── */
+.wiki-warning-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0;
+  background: #f4b8c1;
+  padding: 0;
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+}
+.wiki-warning-title-col {
+  padding: 2rem 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+}
+.wiki-warning-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: .01em;
+  color: var(--ink);
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+.wiki-warning-list-col {
+  padding: 2rem 1.8rem 2rem 0;
+}
+.wiki-warning-list {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wiki-warning-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.55;
+  letter-spacing: .01em;
+}
+.wiki-warning-list li::before {
+  content: '•';
+  color: var(--ink);
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 0px;
+}
+
+@media (max-width: 640px) {
+  .wiki-header { flex-direction: column; min-height: auto; }
+  .wiki-header-img { width: 100%; height: 200px; border-radius: 16px 16px 0 0; margin: 0; }
+  .wiki-header-info { padding: 14px 44px 14px 14px; }
+  .wiki-main-grid { grid-template-columns: 1fr; }
+  .wiki-left { border-right: none; border-bottom: 1.5px solid rgba(147,51,234,.1); }
+  .wiki-warning-card { grid-template-columns: 1fr; }
+  .wiki-warning-title-col { padding: 1.5rem 1.5rem .5rem; }
+  .wiki-warning-list-col { padding: .5rem 1.5rem 1.5rem; }
+}
 
 /* ── INLINE EDIT MODE ── */
 .edit-field {
@@ -579,12 +803,13 @@ body {
 .btn-cancel:hover { background: rgba(147,51,234,.15); }
 
 .modal-edit-toggle {
-    position: absolute; top: 1.2rem; right: 4rem; z-index: 10;
-    background: rgba(147,51,234,.12); border: 1px solid rgba(147,51,234,.2);
-    border-radius: 50%; width: 40px; height: 40px; font-size: 1rem; color: var(--accent-1);
+    position: absolute; top: 1rem; right: 3.5rem; z-index: 20;
+    background: rgba(255,255,255,.9); border: 1.5px solid rgba(147,51,234,.2);
+    border-radius: 50%; width: 36px; height: 36px; font-size: .95rem; color: var(--accent-1);
     cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
-.modal-edit-toggle:hover { background: var(--accent-1); color: white; }
+.modal-edit-toggle:hover { background: var(--accent-1); color: white; border-color: var(--accent-1); }
 .modal.editing .modal-edit-toggle { display: none; }
 
 .edit-notice {
@@ -594,6 +819,15 @@ body {
     display: flex; align-items: center; gap: .5rem;
 }
 .edit-notice i { color: var(--accent-1); }
+
+/* ── BOX (edit mode fallback) ── */
+.box { background: rgba(255,255,255,.6); border: 1.5px solid rgba(147,51,234,.15); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.box.highlight { background: linear-gradient(to right bottom, rgba(243,232,255,.7), rgba(252,231,243,.7)); border-color: rgba(147,51,234,.3); }
+.box-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
+.highlight .box-title { color: var(--accent-1); }
+.box-list { list-style: none; }
+.box-list li { position: relative; padding-left: 1.5rem; margin-bottom: .8rem; font-size: .9rem; color: var(--ink-mid); line-height: 1.6; }
+.box-list li::before { content: '✦'; position: absolute; left: 0; color: var(--accent-1); font-size: .8rem; top: 2px; }
 
 /* ── FOOTER & SUGGEST ── */
 .footer { text-align: center; padding: 3rem 1.5rem; font-size: .82rem; color: var(--ink-dim); border-top: 1px solid rgba(147,51,234,.1); background: linear-gradient(to bottom, rgba(243,232,255,.3), transparent); }
@@ -788,94 +1022,113 @@ body {
   <div class="modal" id="modal">
     <button class="modal-close" onclick="closeModalDirect()">✕</button>
     <button class="modal-edit-toggle" onclick="toggleEditMode()" title="Düzenle"><i class="fa-solid fa-pen"></i></button>
-    
-    <div class="modal-hero" id="mHero" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_.jpg');"></div>
-    
-    <div class="modal-body">
-        <div class="modal-header-group">
-            <div class="modal-avatar" id="mAvatar" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_.jpg');"></div>
-            <div class="modal-title-wrap">
-                <!-- VIEW MODE -->
-                <div class="modal-view-mode">
-                    <p id="mUniverse">Karlar Ülkesi Evreni</p>
-                    <h2 id="mTitle">Elsa</h2>
-                </div>
-                <!-- EDIT MODE -->
-                <div class="modal-edit-mode" style="flex:1; width:100%;">
-                    <label class="edit-field-label">Karakter Adı</label>
-                    <input class="edit-field" id="editTitle" placeholder="Karakter adı">
-                    <label class="edit-field-label" style="margin-top:.8rem;">Evren / Yapım</label>
-                    <input class="edit-field" id="editUniverse" placeholder="Örn: Karlar Ülkesi (Frozen)">
-                </div>
+
+    <!-- ══ VIEW MODE ══ -->
+    <div class="modal-view-mode">
+
+      <!-- WIKI HEADER: Image + Title + Tags -->
+      <div class="wiki-header">
+        <div class="wiki-header-img" id="mAvatar"></div>
+        <div class="wiki-header-info">
+          <div class="wiki-universe-tags" id="mUniverseTags">
+            <span class="wiki-tag" id="mUniverseTag1">Wizarding World (Hogwarts)</span>
+            <span class="wiki-tag-sep">|</span>
+            <span class="wiki-tag" id="mUniverseTag2">J.K Rowling</span>
+            <span class="wiki-tag-sep">|</span>
+            <span class="wiki-tag" id="mUniverseTag3">Kitap</span>
+            <span class="wiki-tag-sep">|</span>
+            <span class="wiki-tag" id="mUniverseTag4">...</span>
+          </div>
+          <div class="wiki-char-title" id="mTitle">Harry Potter</div>
+        </div>
+      </div>
+
+      <!-- WIKI BODY: 2-col grid -->
+      <div class="wiki-body">
+        <div class="wiki-main-grid">
+
+          <!-- LEFT: Özet + Karakterler -->
+          <div class="wiki-left">
+            <div class="wiki-section-title" id="mLeftTitle">ÖZET</div>
+            <p class="wiki-summary-text" id="mSummary"></p>
+            <div id="mCharsSection" style="display:none;">
+              <div class="wiki-section-title" style="margin-top:1rem;">KARAKTERLER</div>
+              <div id="mChars"></div>
             </div>
+          </div>
+
+          <!-- RIGHT: Sohbet Soruları -->
+          <div class="wiki-right">
+            <div class="wiki-section-title">SOHBET SORULARI</div>
+            <ul class="wiki-faq-list" id="mFaqs"></ul>
+          </div>
+
         </div>
 
-        <div class="modal-grid">
-            <div>
-                <!-- VIEW: Dilek İpuçları / Özet -->
-                <div class="box highlight modal-view-mode">
-                    <h3 class="box-title" id="mIdeasTitle">✦ Dilek & Etkinlik İpuçları</h3>
-                    <p style="font-size:.85rem; color:var(--ink-dim); margin-bottom: 1rem;" id="mIdeasSubtext">Gönüllülerimizden altın değerinde fikirler:</p>
-                    <div id="mIdeas"></div>
-                </div>
-                <!-- EDIT: Dilek İpuçları -->
-                <div class="box highlight modal-edit-mode">
-                    <h3 class="box-title">✦ Dilek & Etkinlik İpuçları</h3>
-                    <label class="edit-field-label">Her ipucu yeni bir satırda:</label>
-                    <textarea class="edit-field" id="editIdeas" rows="5" placeholder="Hediyeyi verirken 'Sana Olaf'tan kargo getirdim' diyebilirsiniz.&#10;Mekanı mavi balonlarla süsleyebilirsiniz."></textarea>
-                </div>
-
-                <!-- VIEW: SSS -->
-                <div class="box modal-view-mode">
-                    <h3 class="box-title">❓ Sıkça Sorulan Sorular</h3>
-                    <div id="mFaqs"></div>
-                </div>
-                <!-- EDIT: SSS -->
-                <div class="box modal-edit-mode">
-                    <h3 class="box-title">❓ Sıkça Sorulan Sorular</h3>
-                    <label class="edit-field-label">Soru</label>
-                    <input class="edit-field" id="editFaqQ1" placeholder="Çocuğun sorabileceği bir soru">
-                    <label class="edit-field-label" style="margin-top:.6rem;">Cevap</label>
-                    <textarea class="edit-field" id="editFaqA1" rows="2" placeholder="Gönüllünün verebileceği yaratıcı cevap"></textarea>
-                    <label class="edit-field-label" style="margin-top:1rem;">Soru 2 (Opsiyonel)</label>
-                    <input class="edit-field" id="editFaqQ2" placeholder="İkinci soru">
-                    <label class="edit-field-label" style="margin-top:.6rem;">Cevap 2</label>
-                    <textarea class="edit-field" id="editFaqA2" rows="2" placeholder="İkinci cevap"></textarea>
-                </div>
-            </div>
-
-            <div>
-                <!-- VIEW: Profil -->
-                <div class="box modal-view-mode">
-                    <h3 class="box-title">✦ Profil Özeti</h3>
-                    <ul class="box-list" id="mProfile" style="margin-bottom: 1.5rem;"></ul>
-                    <a class="suggest-link" style="width:100%; justify-content:center; margin:0;" onclick="toggleEditMode()">✏️ Düzenle / Katkıda Bulun</a>
-                </div>
-                <!-- EDIT: Profil -->
-                <div class="box modal-edit-mode">
-                    <h3 class="box-title">✦ Profil Özeti</h3>
-                    <label class="edit-field-label">Kişilik</label>
-                    <input class="edit-field" id="editPersonality" placeholder="Koruyucu, asil, cesur...">
-                    <label class="edit-field-label" style="margin-top:.6rem;">Özel Güç</label>
-                    <input class="edit-field" id="editPower" placeholder="Buz ve kar yaratabilme...">
-                    <label class="edit-field-label" style="margin-top:.6rem;">Dostlar / Aile</label>
-                    <input class="edit-field" id="editFriends" placeholder="Anna, Olaf, Kristoff...">
-                </div>
-            </div>
+        <!-- DİLEK & ETKİNLİK İPUÇLARI CARD -->
+        <div class="wiki-tips-card" id="mTipsCard">
+          <div class="wiki-section-title">DİLEK VE ETKİNLİK İPUÇLARI</div>
+          <p class="wiki-tips-intro" id="mTipsIntro"></p>
+          <ul class="wiki-tips-list" id="mTipsList"></ul>
         </div>
 
-        <!-- EDIT MODE: Actions -->
-        <div class="modal-edit-mode">
-            <div class="edit-notice">
-                <i class="fa-solid fa-circle-info"></i>
-                Yaptığınız değişiklikler editör onayından sonra yayınlanacaktır.
-            </div>
-            <div class="edit-actions">
-                <button class="btn-cancel" onclick="toggleEditMode()">İptal</button>
-                <button class="btn-save" onclick="saveEdits()">Gönder ✦</button>
-            </div>
+        <!-- DİKKAT EDİNMESİ GEREKEN NOKTALAR CARD -->
+        <div class="wiki-warning-card" id="mWarningCard" style="display:none;">
+          <div class="wiki-warning-title-col">
+            <div class="wiki-warning-title" id="mWarningTitle">DİKKAT<br>EDİNMESİ<br>GEREKEN<br>NOKTALAR!!</div>
+          </div>
+          <div class="wiki-warning-list-col">
+            <ul class="wiki-warning-list" id="mWarningList"></ul>
+          </div>
         </div>
+
+      </div>
     </div>
+
+    <!-- ══ EDIT MODE ══ -->
+    <div class="modal-edit-mode" style="padding: 1.5rem;">
+      <div class="edit-notice">
+        <i class="fa-solid fa-circle-info"></i>
+        Yaptığınız değişiklikler editör onayından sonra yayınlanacaktır.
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+        <div>
+          <label class="edit-field-label">Karakter Adı</label>
+          <input class="edit-field" id="editTitle" placeholder="Karakter adı">
+        </div>
+        <div>
+          <label class="edit-field-label">Evren / Yapım</label>
+          <input class="edit-field" id="editUniverse" placeholder="Örn: Harry Potter">
+        </div>
+      </div>
+
+      <label class="edit-field-label">Özet / Hikaye</label>
+      <textarea class="edit-field" id="editIdeas" rows="4" placeholder="Kısa hikaye özeti..."></textarea>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem;">
+        <div>
+          <label class="edit-field-label">Sohbet Sorusu 1</label>
+          <input class="edit-field" id="editFaqQ1" placeholder="Soru">
+          <label class="edit-field-label" style="margin-top:.5rem;">Sohbet Sorusu 2</label>
+          <input class="edit-field" id="editFaqQ2" placeholder="Soru">
+          <label class="edit-field-label" style="margin-top:.5rem;">Sohbet Sorusu 3</label>
+          <input class="edit-field" id="editFaqQ3" placeholder="Soru">
+        </div>
+        <div>
+          <label class="edit-field-label">Dilek İpuçları (her satır = 1 ipucu)</label>
+          <textarea class="edit-field" id="editTips" rows="5" placeholder="İpucu 1&#10;İpucu 2"></textarea>
+        </div>
+      </div>
+      <label class="edit-field-label" style="margin-top:1rem;">Dikkat Edilmesi Gereken Noktalar (her satır = 1 madde)</label>
+      <textarea class="edit-field" id="editWarnings" rows="4" placeholder="Uyarı 1&#10;Uyarı 2"></textarea>
+
+      <div class="edit-actions">
+        <button class="btn-cancel" onclick="toggleEditMode()">İptal</button>
+        <button class="btn-save" onclick="saveEdits()">Gönder ✦</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -892,73 +1145,123 @@ setTimeout(() => {
 const charData = {
     elsa: {
         title: "Elsa",
-        universe: "Karlar Ülkesi (Frozen) Evreni",
+        tags: ["Karlar Ülkesi (Frozen)", "Disney", "Animasyon", "Film"],
         image: "https://m.media-amazon.com/images/M/MV5BMTQ1MjQwMTE5OF5BMl5BanBnXkFtZTgwNjk3MTcyMDE@._V1_.jpg",
-        isSummary: true,
-        boxTitle: "✦ Yapım Özeti (Karlar Ülkesi)",
-        boxSubtext: "Animasyon filminin kısa hikaye özeti:",
-        summaryText: "Karlar Ülkesi (Frozen), krallıkları sonsuz bir kışa mahkûm olan Arendelle'de geçer. Doğuştan buz ve kar yaratma sihrine sahip olan Elsa, gücünü kontrol etmekte zorlanıp istemeden krallığı dondurur ve Kuzey Dağı'na çekilir. Cesur kız kardeşi Anna; sevimli kardan adam Olaf, dağ adamı Kristoff ve sadık geyiği Sven ile birlikte ablası Elsa'yı bulup krallığa yaz mevsimini geri getirmek için büyülü bir yolculuğa çıkar. Film, kardeş sevgisinin ve kendini kabul etmenin en güçlü sihir olduğunu anlatır.",
-        faqs: [
-            {q: "Elsa'nın sihirli güçleri nereden geliyor?", a: "Elsa doğuştan bu güçlere sahip. Doğanın bir armağanı ve sevgiyle kontrol edilebiliyor."},
-            {q: "Olaf nerede, neden gelmedi?", a: "Olaf dışarıda sıcak çikolata içiyordu, güneşte erimesin diye onu Arendelle'de bıraktık ama sana çok selam söyledi!"}
+        summary: "Karlar Ülkesi (Frozen), krallıkları sonsuz bir kışa mahkûm olan Arendelle'de geçer. Doğuştan buz ve kar yaratma sihrine sahip olan Elsa, gücünü kontrol etmekte zorlanıp istemeden krallığı dondurur ve Kuzey Dağı'na çekilir. Cesur kız kardeşi Anna; sevimli kardan adam Olaf, dağ adamı Kristoff ve sadık geyiği Sven ile birlikte ablası Elsa'yı bulup krallığa yaz mevsimini geri getirmek için büyülü bir yolculuğa çıkar. Film, kardeş sevgisinin ve kendini kabul etmenin en güçlü sihir olduğunu anlatır.",
+        characters: [
+            { name: "⚡ Elsa", detail: "Kişilik: Koruyucu, asil, cesur. Özel Güç: Buz ve kar yaratabilme. Tanımak İçin: Mavi elbisesi ve platin sarısı saçları." },
+            { name: "🌸 Anna", detail: "Kişilik: Neşeli, cesur, sevgi dolu. Özel Güç: Sonsuz iyimserlik. Tanımak İçin: Örgü saçları ve çilekli çorba sevgisi." }
         ],
-        profile: {
-            personality: "Koruyucu, asil, cesur.",
-            power: "Buz ve kar yaratabilme.",
-            friends: "Anna, Olaf, Kristoff."
-        }
+        faqs: [
+            "Elsa'nın sihirli güçleri nereden geliyor?",
+            "Olaf neden hep erimeden duruyor?",
+            "\"Let It Go\" şarkısının hikayesi nedir?",
+            "Arendelle gerçek bir yer mi?",
+            "Anna ile Elsa'nın en sevdiğin sahnesi hangisi?"
+        ],
+        tips: [
+            "✦ Hediyenin yanına kar tanesi şeklinde süslenmiş bir Arendelle mektubu ekleyebilirsiniz.",
+            "✦ Çocuğa mavi veya gümüş renkli küçük bir Elsa tacı hediye edebilirsiniz.",
+            "✦ Sürpriz anında \"Let It Go\" şarkısını çalarak temayı güçlendirebilirsiniz.",
+            "✦ Mekanı kar tanesi süslemeleri ve mavi balonlarla Arendelle'ye dönüştürebilirsiniz.",
+            "✦ \"Hangi Frozen karakterisin?\" gibi küçük bir quiz ile çocuğun favorisini keşfedebilirsiniz."
+        ],
+        warnings: [
+            "Çocuğun Anna mı Elsa mı sevdiğini varsaymayın; sormak en iyisi.",
+            "Bazı sahneler ürkütücü bulunabilir; yaşa ve hassasiyete göre ilerleyin.",
+            "Serinin ilk filmi mi yoksa devamı mı daha çok sevdiğini öğrenin.",
+            "Kostüm giymeden önce çocuğun bunu isteyip istemediğini kontrol edin."
+        ]
     },
     spiderman: {
         title: "Spider-Man",
-        universe: "Marvel Evreni",
+        tags: ["Marvel", "Süper Kahraman", "Film & Dizi", "..."],
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYsl9S-Vbt1KQ3JrV7LtobF7-reqz9VU61wK28NZDvGQ&s=10",
-        ideas: [
-            'Hediyeyi teslim ederken ona gizli bir ajan/kahraman görev mektubu verebilirsiniz: <strong>"Nick Fury seni takıma çağırıyor!"</strong>',
-            'Hediye kutusunun etrafını beyaz iplerle (ağ gibi) sarıp, <strong>"Spider-Man buradaydı, ağlarına takılmış!"</strong> diyebilirsiniz.'
+        summary: "Spider-Man, radyoaktif bir örümceğin ısırmasıyla süper güçler kazanan genç Peter Parker'ın hikayesini anlatır. Ağ atma, duvara tırmanma ve örümcek hissi gibi güçleriyle New York'u korur.",
+        characters: [
+            { name: "🕷️ Peter Parker / Spider-Man", detail: "Kişilik: Esprili, zeki, sorumluluk sahibi. Özel Güç: Ağ atma, duvara tırmanma, örümcek hissi. Tanımak İçin: Kırmızı-mavi kostümü ve sevimli esprileri." },
+            { name: "🤝 Ned Leeds", detail: "Kişilik: Sadık, heyecanlı, zeki. Özel Güç: Bilgisayar dehası. Tanımak İçin: En iyi arkadaş ve sır ortağı." }
         ],
         faqs: [
-            {q: "Gerçek ağ atabiliyor musun?", a: "Şu an ağ atıcılarımın şarjı bitti (veya sıvısı tükendi), o yüzden yedek ekipmanla geldim!"},
-            {q: "Peter Parker sen misin?", a: "Şşşt, bu gizli bir bilgi! Ama evet, aramızda kalsın."}
+            "Gerçek ağ atabiliyor musun?",
+            "Peter Parker sen misin, yoksa başka biri mi?",
+            "En sevdiğin örümcek saldırısı hangisi?",
+            "Hangi süper kahraman en güçlü olur?",
+            "New York'u uçarak gezmek nasıl bir his?"
         ],
-        profile: {
-            personality: "Esprili, zeki, sorumluluk sahibi.",
-            power: "Ağ atma, duvara tırmanma, örümcek hissi.",
-            friends: "Ned, MJ, Iron Man."
-        }
+        tips: [
+            "✦ Hediyeyi teslim ederken gizli bir ajan görev mektubu verebilirsiniz: \"Nick Fury seni takıma çağırıyor!\"",
+            "✦ Hediye kutusunun etrafını beyaz iplerle (ağ gibi) sarabilirsiniz.",
+            "✦ \"Spider-Man buradaydı, ağlarına takılmış!\" yazılı bir not bırakabilirsiniz.",
+            "✦ Kırmızı ve mavi balon süslemesiyle ortamı Marvel evrenine dönüştürebilirsiniz.",
+            "✦ Çocuğa \"Örümcek hissim çalışıyor...\" diyerek temayı güçlendirin."
+        ],
+        warnings: [
+            "Hangi Spider-Man versiyonunu sevdiğini sorun (Tom Holland, Tobey Maguire, Andrew Garfield).",
+            "Bazı sahneler küçük çocuklar için yoğun olabilir.",
+            "Kostüm giymek istemeyebilir; zorlamayın.",
+            "Sürpriz sırasında \"Peter Parker\" ismini gizli tutun."
+        ]
     },
     mario: {
         title: "Super Mario",
-        universe: "Nintendo Evreni",
+        tags: ["Nintendo", "Oyun Evreni", "Film & Animasyon", "..."],
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWfJy3Z4wrtywJgcJ6QeLHrF5-aLYOP6MByDds13WUjw&s=10",
-        ideas: [
-            'Çocuğa hediye kutusunu verirken <strong>"Soru İşareti Kutusu (?) temalı"</strong> özel bir kutu hazırlayabilirsiniz.',
-            'Etkinlikte mantar ve yıldız figürleri kullanarak <strong>Mantar Krallığı</strong> atmosferi yaratabilirsiniz.'
+        summary: "Super Mario, Brooklyn'den sıradan bir tesisatçı olan Mario'nun kardeşi Luigi ile birlikte gizemli bir borudan Mantar Krallığı'na düşmesiyle başlayan maceralarını anlatır. Birlik, cesaret ve kardeş sevgisinin mesajlarını neşeli bir dille aktarır.",
+        characters: [
+            { name: "🍄 Mario", detail: "Kişilik: Cesur, enerjik, neşeli. Özel Güç: Zıplama, mantar güçleri, ateş topu. Tanımak İçin: Kırmızı şapkası ve bıyığı." },
+            { name: "💚 Luigi", detail: "Kişilik: Çekingen ama sadık. Özel Güç: Yüksek zıplama. Tanımak İçin: Yeşil şapkası ve uzun boyu." }
         ],
         faqs: [
-            {q: "Mario'nun şapkası neden kırmızı?", a: "Tesisatçı Mario'nun imza rengidir ve gücünü temsil eder!"}
+            "Soru işareti kutusunun içinde ne var?",
+            "Bowser neden bu kadar büyük?",
+            "Mantar yersen gerçekten büyür müsün?",
+            "En sevdiğin Mario oyunu hangisi?",
+            "Prenses Peach'i kurtarabilir misin?"
         ],
-        profile: {
-            personality: "Cesur, enerjik, neşeli.",
-            power: "Zıplama, mantar güçleri.",
-            friends: "Luigi, Prenses Peach, Yoshi."
-        }
+        tips: [
+            "✦ Hediye kutusunu sarı Soru İşareti (?) kutusu şeklinde süsleyebilirsiniz.",
+            "✦ Etkinlikte mantar ve yıldız figürleri kullanarak Mantar Krallığı atmosferi yaratabilirsiniz.",
+            "✦ Çocuğa kırmızı veya yeşil renkli küçük bir şapka hediye edebilirsiniz.",
+            "✦ \"Birinci koinu sen aldın!\" diyerek sürprizi oyun mantığıyla sunabilirsiniz.",
+            "✦ Mario ve Luigi temalı küçük figürlerle masa süslemesi yapabilirsiniz."
+        ],
+        warnings: [
+            "Mario mı Luigi mi daha çok sevdiğini sorun.",
+            "Oyun bağımlılığı konusunda ebeveynlerle diyalog kurun.",
+            "Çocuğun hangi Nintendo oyununu oynadığını öğrenin.",
+            "Kalabalık ortamlarda Bowser kostümü giyme — korkutabilir."
+        ]
     },
     harrypotter: {
         title: "Harry Potter",
-        universe: "Wizarding World (Hogwarts)",
+        tags: ["Wizarding World (Hogwarts)", "J.K Rowling", "Kitap", "..."],
         image: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2013/09/12/17/potter.jpg?width=1200",
-        ideas: [
-            'Çocuğa teslim edilecek hediyenin yanına <strong>Hogwarts Kabul Mektubu</strong> (mühürlü) ekleyebilirsiniz.',
-            'Sihirli değnek eşliğinde <strong>"Lumos"</strong> veya <strong>"Expecto Patronum"</strong> diyerek sürprizi başlatabilirsiniz.'
+        summary: "Sihir dünyasını keşfeden Harry'nin Hogwarts Cadılık ve Büyücülük Okulu'ndaki maceralarını anlatır. 7 kitaptan oluşur ve hikaye 8 filme uyarlanmıştır.",
+        characters: [
+            { name: "⚡ Harry Potter", detail: "Kişilik: Cesur, sadık, adalet duygusu güçlü ve arkadaşlarını korumaya çok önem verir. Özel Güç / Özellik: Büyücülük, Quidditch ve Patronus büyüsü. Binası: Gryffindor 🦁. Tanımak İçin: Yuvarlak gözlükleri, alnındaki yıldırım şeklindeki yara izi ve siyah saçları." },
+            { name: "📚 Hermione Granger", detail: "Kişilik: Zeki, çalışkan, meraklı ve çok kararlı. Arkadaşlarının yanında olmaktan asla vazgeçmez. Özel Güç / Özellik: Çok güçlü büyücülük bilgisi ve hızlı öğrenme yeteneği. Binası: Gryffindor 🦁. Tanımak İçin: Gür kahverengi saçları ve kitaplara olan sevgisi." }
         ],
         faqs: [
-            {q: "Hangi binadansın?", a: "Gryffindor! Cesurların binası!"}
+            "En sevdiğin karakter hangisi?",
+            "\"Harry Potter\"da en çok neyi seviyorsun?",
+            "\"Hogwarts'ta olsaydın ne yapmak isterdin?\"",
+            "Hangi Hogwarts binasını seçerdin?",
+            "Bir büyü yapabilseydin ne yapardın?"
         ],
-        profile: {
-            personality: "Sadık, cesur, mütevazı.",
-            power: "Büyü yapma, süpürge uçurma.",
-            friends: "Ron Weasley, Hermione Granger, Hagrid."
-        }
+        tips: [
+            "Hediyenin yanına Hogwarts Kabul Mektubu veya kişiselleştirilmiş bir mektup ekleyebilirsiniz.",
+            "✦ Çocuğa özel bir sihirli asa, Hogwarts pelerini veya bina renklerinde küçük bir sürpriz hazırlayabilirsiniz.",
+            "✦ Dileği deneyime dönüştürmek için Hogwarts temalı bir gün, sihirli dersler veya \"Büyücülük Okulu\" etkinliği kurgulanabilir.",
+            "✦ \"Hangi Hogwarts binasındasın?\" gibi küçük sorularla çocuğun favorilerini keşfedebilirsiniz.",
+            "✦ Sürpriz anında \"Lumos!\" gibi Harry Potter evreninden tanınan ifadeler kullanarak temayı güçlendirebilirsiniz."
+        ],
+        warnings: [
+            "Çocuğun favorilerini varsaymayın; hangi karakteri veya Hogwarts binasını sevdiğini sorun.",
+            "Karakterler ve hikayeler hakkında spoiler vermemeye dikkat edin.",
+            "Çocuğun seriye olan ilgisinin kitaplardan mı, filmlerden mi olduğunu öğrenin.",
+            "Bazı karakter veya sahneler karanlık/ürkütücü olabilir; çocuğun yaşına ve rahatlık düzeyine göre ilerleyin."
+        ]
     }
 };
 
@@ -971,30 +1274,66 @@ function openModal(id, editMode = false) {
     currentCharId = id;
 
     if(data) {
-        // Fill view mode
-        document.getElementById('mTitle').innerText = data.title;
-        document.getElementById('mUniverse').innerText = data.universe;
-        document.getElementById('mHero').style.backgroundImage = `url('${data.image}')`;
+        // Header: image + title
         document.getElementById('mAvatar').style.backgroundImage = `url('${data.image}')`;
-        
-        if(data.isSummary) {
-            document.getElementById('mIdeasTitle').innerText = data.boxTitle || '✦ Yapım Özeti';
-            document.getElementById('mIdeasSubtext').innerText = data.boxSubtext || 'Hikaye özeti:';
-            document.getElementById('mIdeas').innerHTML = `<p style="font-size:.9rem; color:var(--ink-mid); line-height:1.7;">${data.summaryText}</p>`;
-            document.getElementById('editIdeas').value = data.summaryText;
+        document.getElementById('mTitle').innerText = data.title;
+
+        // Header: tags
+        const tagsContainer = document.getElementById('mUniverseTags');
+        const tags = data.tags || [data.universe || ''];
+        tagsContainer.innerHTML = tags.map((t, i) =>
+            `<span class="wiki-tag">${t}</span>${i < tags.length - 1 ? '<span class="wiki-tag-sep">|</span>' : ''}`
+        ).join('');
+
+        // Left: Summary
+        document.getElementById('mSummary').innerText = data.summary || '';
+
+        // Left: Characters
+        const charsSection = document.getElementById('mCharsSection');
+        const charsEl = document.getElementById('mChars');
+        if(data.characters && data.characters.length) {
+            charsSection.style.display = 'block';
+            charsEl.innerHTML = data.characters.map(c => `
+                <div class="wiki-char-block">
+                    <div class="wiki-char-block-name">${c.name}</div>
+                    <p>${c.detail}</p>
+                </div>
+            `).join('');
         } else {
-            document.getElementById('mIdeasTitle').innerText = '✦ Dilek & Etkinlik İpuçları';
-            document.getElementById('mIdeasSubtext').innerText = 'Gönüllülerimizden altın değerinde fikirler:';
-            document.getElementById('mIdeas').innerHTML = `<ul class="box-list">${data.ideas.map(i => `<li>${i}</li>`).join('')}</ul>`;
-            document.getElementById('editIdeas').value = (data.ideas || []).map(i => i.replace(/<[^>]*>/g, '')).join('\n');
+            charsSection.style.display = 'none';
         }
-        document.getElementById('editPersonality').value = data.profile.personality;
-        document.getElementById('editPower').value = data.profile.power;
-        document.getElementById('editFriends').value = data.profile.friends;
-        document.getElementById('editFaqQ1').value = data.faqs[0] ? data.faqs[0].q : '';
-        document.getElementById('editFaqA1').value = data.faqs[0] ? data.faqs[0].a : '';
-        document.getElementById('editFaqQ2').value = data.faqs[1] ? data.faqs[1].q : '';
-        document.getElementById('editFaqA2').value = data.faqs[1] ? data.faqs[1].a : '';
+
+        // Right: FAQs
+        const faqsEl = document.getElementById('mFaqs');
+        const faqs = data.faqs || [];
+        faqsEl.innerHTML = faqs.map(q => `<li>${typeof q === 'string' ? q : q.q}</li>`).join('');
+
+        // Tips card
+        const tipsList = document.getElementById('mTipsList');
+        const tipsIntro = document.getElementById('mTipsIntro');
+        const tips = data.tips || [];
+        tipsIntro.style.display = 'none';
+        tipsList.innerHTML = tips.map(t => `<li>${t}</li>`).join('');
+
+        // Warning card
+        const warningCard = document.getElementById('mWarningCard');
+        const warningList = document.getElementById('mWarningList');
+        if(data.warnings && data.warnings.length) {
+            warningCard.style.display = 'grid';
+            warningList.innerHTML = data.warnings.map(w => `<li>${w}</li>`).join('');
+        } else {
+            warningCard.style.display = 'none';
+        }
+
+        // Edit fields
+        document.getElementById('editTitle').value = data.title;
+        document.getElementById('editUniverse').value = tags[0] || '';
+        document.getElementById('editIdeas').value = data.summary || '';
+        document.getElementById('editFaqQ1').value = faqs[0] ? (typeof faqs[0] === 'string' ? faqs[0] : faqs[0].q) : '';
+        document.getElementById('editFaqQ2').value = faqs[1] ? (typeof faqs[1] === 'string' ? faqs[1] : faqs[1].q) : '';
+        document.getElementById('editFaqQ3').value = faqs[2] ? (typeof faqs[2] === 'string' ? faqs[2] : faqs[2].q) : '';
+        document.getElementById('editTips').value = tips.join('\n');
+        document.getElementById('editWarnings').value = (data.warnings || []).join('\n');
     }
 
     document.getElementById('modalBg').classList.add('open');
@@ -1011,18 +1350,17 @@ function openModalNew() {
     currentCharId = null;
 
     document.getElementById('mTitle').innerText = 'Yeni Karakter';
-    document.getElementById('mUniverse').innerText = 'Evren Belirtilmedi';
-    document.getElementById('mHero').style.backgroundImage = 'linear-gradient(135deg, #f3e8ff, #fce7f3, #ede9fe)';
+    document.getElementById('mUniverseTags').innerHTML = '<span class="wiki-tag">Evren Belirtilmedi</span>';
     document.getElementById('mAvatar').style.backgroundImage = 'linear-gradient(135deg, #f3e8ff, #fce7f3)';
-    document.getElementById('mIdeas').innerHTML = '<li style="color:var(--ink-dim); font-style:italic;">Henüz ipucu eklenmemiş.</li>';
-    document.getElementById('mFaqs').innerHTML = '<p style="color:var(--ink-dim); font-style:italic; font-size:.85rem;">Henüz SSS eklenmemiş.</p>';
-    document.getElementById('mProfile').innerHTML = '<li style="color:var(--ink-dim); font-style:italic;">Henüz bilgi girilmemiş.</li>';
+    document.getElementById('mSummary').innerText = '';
+    document.getElementById('mCharsSection').style.display = 'none';
+    document.getElementById('mFaqs').innerHTML = '<li style="color:var(--ink-dim); font-style:italic;">Henüz soru eklenmemiş.</li>';
+    document.getElementById('mTipsList').innerHTML = '';
+    document.getElementById('mWarningCard').style.display = 'none';
 
-    // Clear edit fields
-    ['editTitle','editUniverse','editIdeas','editPersonality','editPower','editFriends','editFaqQ1','editFaqA1','editFaqQ2','editFaqA2'].forEach(id => {
+    ['editTitle','editUniverse','editIdeas','editFaqQ1','editFaqQ2','editFaqQ3','editTips','editWarnings'].forEach(id => {
         const el = document.getElementById(id);
-        if(el.tagName === 'TEXTAREA') el.value = '';
-        else el.value = '';
+        if(el) el.value = '';
     });
 
     document.getElementById('modalBg').classList.add('open');
