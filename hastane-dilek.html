@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Make-A-Wish | Hastane Dilek Alımı</title>
+<title>Make-A-Wish | Hastane Günü Düzenleyici Tablosu</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
@@ -60,6 +60,31 @@
     box-shadow: 0 2px 8px rgba(16,185,129,0.25);
   }
   .btn-add-top:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.3); }
+
+  .btn-copy-wp {
+    display: flex; align-items: center; gap: 7px;
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: white; border: none; padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 13.5px;
+    cursor: pointer; transition: 0.2s; white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(37,211,102,0.25);
+  }
+  .btn-copy-wp:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(37,211,102,0.3); }
+
+  .lang-switcher {
+    display: flex; align-items: center; background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 3px; gap: 2px; margin-right: 4px;
+  }
+  .lang-btn {
+    border: none; background: transparent; padding: 4px 10px; border-radius: 6px;
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 12px;
+    color: var(--muted); cursor: pointer; transition: all 0.2s;
+  }
+  .lang-btn.active {
+    background: var(--primary); color: white;
+    box-shadow: 0 2px 6px rgba(0,101,195,0.25);
+  }
 
   /* ─── MAIN CONTENT ─── */
   .main-content { flex: 1; overflow-y: auto; padding: 28px 32px; }
@@ -454,11 +479,16 @@
     <div class="top-bar-left">
       <div class="page-title">
         <i class="ph-fill ph-hospital" style="color:var(--primary);font-size:22px;"></i>
-        <span>Hastane Dilek Alımı</span>
+        <span id="pageTitleText" data-i18n="topBarTitle">Hastane Günü Düzenleyici Tablosu</span>
       </div>
     </div>
     <div class="top-bar-right">
-      <button class="btn-add-top" onclick="addRow()"><i class="ph-bold ph-plus"></i> <span>Yeni Kayıt</span></button>
+      <div class="lang-switcher">
+        <button class="lang-btn active" id="langBtnTR" onclick="setLanguage('tr')">TR</button>
+        <button class="lang-btn" id="langBtnEN" onclick="setLanguage('en')">EN</button>
+      </div>
+      <button class="btn-copy-wp" onclick="copyForWhatsApp()"><i class="ph-bold ph-copy"></i> <span data-i18n="copyBtn">Kopyala</span></button>
+      <button class="btn-add-top" onclick="addRow()"><i class="ph-bold ph-plus"></i> <span data-i18n="newRecordBtn">Yeni Kayıt</span></button>
       <div class="top-avatar">E</div>
     </div>
   </div>
@@ -469,33 +499,33 @@
     <!-- HERO -->
     <div class="hero-strip">
       <div class="hero-text">
-        <h2>Hastane Dilek Alım Formu 🏥</h2>
-        <p>Hastane ziyaretlerinde dilek alım sürecini takip edin. Her çocuğun başvuru ve dilek durumunu buradan yönetebilirsiniz.</p>
+        <h2 data-i18n="heroTitle">Hastane Günü Düzenleyici Tablosu 🏥</h2>
+        <p data-i18n="heroDesc">Hastane ziyaretlerinde dilek alım sürecini takip edin. Her çocuğun başvuru ve dilek durumunu buradan yönetebilirsiniz.</p>
       </div>
       <div class="hero-stats">
         <div class="hero-stat">
           <div class="hero-stat-num" id="heroTotal">0</div>
-          <div class="hero-stat-label">Toplam</div>
+          <div class="hero-stat-label" data-i18n="statTotal">Toplam</div>
         </div>
         <div class="hero-divider"></div>
         <div class="hero-stat">
           <div class="hero-stat-num" id="heroReady">0</div>
-          <div class="hero-stat-label">Müsait</div>
+          <div class="hero-stat-label" data-i18n="statReady">Müsait</div>
         </div>
         <div class="hero-divider"></div>
         <div class="hero-stat">
           <div class="hero-stat-num" id="heroDone">0</div>
-          <div class="hero-stat-label">Tamamlandı</div>
+          <div class="hero-stat-label" data-i18n="statDone">Tamamlandı</div>
         </div>
       </div>
     </div>
 
     <!-- STATUS LEGEND -->
     <div class="legend-bar">
-      <div class="legend-item"><div class="legend-dot green"></div> Başvuru alındı, dilek alımına müsait</div>
-      <div class="legend-item"><div class="legend-dot yellow"></div> Şu an müsait değil</div>
-      <div class="legend-item"><div class="legend-dot red"></div> Dilek alınmayacak</div>
-      <div class="legend-item"><div class="legend-dot blue"></div> Herşey tamam</div>
+      <div class="legend-item"><div class="legend-dot green"></div> <span data-i18n="legendGreen">Başvuru alındı, dilek alımına müsait</span></div>
+      <div class="legend-item"><div class="legend-dot yellow"></div> <span data-i18n="legendYellow">Şu an müsait değil</span></div>
+      <div class="legend-item"><div class="legend-dot red"></div> <span data-i18n="legendRed">Dilek alınmayacak</span></div>
+      <div class="legend-item"><div class="legend-dot blue"></div> <span data-i18n="legendBlue">Herşey tamam</span></div>
     </div>
 
     <!-- TABLE (Desktop) -->
@@ -505,13 +535,13 @@
           <thead>
             <tr>
               <th style="width:40px;">#</th>
-              <th>Adı Soyadı</th>
-              <th style="width:60px;">Yaş</th>
-              <th style="width:100px;">Oda No</th>
-              <th style="width:100px; text-align:center;">Başvuru Formu</th>
-              <th style="width:80px; text-align:center;">Dilek</th>
-              <th>Notlar</th>
-              <th style="width:180px;">Statü</th>
+              <th data-i18n="thName">Adı Soyadı</th>
+              <th style="width:60px;" data-i18n="thAge">Yaş</th>
+              <th style="width:100px;" data-i18n="thRoom">Oda No</th>
+              <th style="width:110px; text-align:center;" data-i18n="thBasvuru">Başvuru Formu</th>
+              <th style="width:90px; text-align:center;" data-i18n="thDilek">Dilek</th>
+              <th data-i18n="thNotes">Notlar</th>
+              <th style="width:180px;" data-i18n="thStatus">Statü</th>
               <th style="width:80px;"></th>
             </tr>
           </thead>
@@ -524,9 +554,9 @@
       <!-- EMPTY STATE (inside table wrapper) -->
       <div class="empty-state" id="emptyState">
         <i class="ph-duotone ph-clipboard-text"></i>
-        <h3>Henüz kayıt eklenmedi</h3>
-        <p>Hastane ziyareti için yeni kayıt eklemek için yukarıdaki butonu kullanın.</p>
-        <button class="btn-add-top" onclick="addRow()" style="margin: 0 auto;"><i class="ph-bold ph-plus"></i> <span>İlk Kaydı Ekle</span></button>
+        <h3 data-i18n="emptyTitle">Henüz kayıt eklenmedi</h3>
+        <p data-i18n="emptyDesc">Hastane ziyareti için yeni kayıt eklemek için yukarıdaki butonu kullanın.</p>
+        <button class="btn-add-top" onclick="addRow()" style="margin: 0 auto;"><i class="ph-bold ph-plus"></i> <span data-i18n="firstRecordBtn">İlk Kaydı Ekle</span></button>
       </div>
     </div>
 
@@ -534,9 +564,9 @@
     <div class="mobile-cards" id="mobileCards">
       <div class="empty-state" id="emptyStateMobile">
         <i class="ph-duotone ph-clipboard-text"></i>
-        <h3>Henüz kayıt eklenmedi</h3>
-        <p>Yeni kayıt eklemek için + butonuna dokunun.</p>
-        <button class="btn-add-top" onclick="addRow()" style="margin: 0 auto;"><i class="ph-bold ph-plus"></i> <span>İlk Kaydı Ekle</span></button>
+        <h3 data-i18n="emptyTitle">Henüz kayıt eklenmedi</h3>
+        <p data-i18n="emptyDescMobile">Yeni kayıt eklemek için + butonuna dokunun.</p>
+        <button class="btn-add-top" onclick="addRow()" style="margin: 0 auto;"><i class="ph-bold ph-plus"></i> <span data-i18n="firstRecordBtn">İlk Kaydı Ekle</span></button>
       </div>
     </div>
 
@@ -547,6 +577,140 @@
 <div class="toast" id="toast"><i class="ph-fill ph-check-circle"></i> <span></span></div>
 
 <script>
+// ─── I18N DICTIONARY ─────────────────────────────────────────────────────────
+const i18n = {
+  tr: {
+    pageTitle: "Make-A-Wish | Hastane Günü Düzenleyici Tablosu",
+    topBarTitle: "Hastane Günü Düzenleyici Tablosu",
+    copyBtn: "Kopyala",
+    newRecordBtn: "Yeni Kayıt",
+    firstRecordBtn: "İlk Kaydı Ekle",
+    heroTitle: "Hastane Günü Düzenleyici Tablosu 🏥",
+    heroDesc: "Hastane ziyaretlerinde dilek alım sürecini takip edin. Her çocuğun başvuru ve dilek durumunu buradan yönetebilirsiniz.",
+    statTotal: "Toplam",
+    statReady: "Müsait",
+    statDone: "Tamamlandı",
+    legendGreen: "Başvuru alındı, dilek alımına müsait",
+    legendYellow: "Şu an müsait değil",
+    legendRed: "Dilek alınmayacak",
+    legendBlue: "Herşey tamam",
+    thName: "Adı Soyadı",
+    thAge: "Yaş",
+    thRoom: "Oda No",
+    thBasvuru: "Başvuru Formu",
+    thDilek: "Dilek",
+    thNotes: "Notlar",
+    thStatus: "Statü",
+    statusGreen: "Müsait",
+    statusYellow: "Müsait Değil",
+    statusRed: "Alınmayacak",
+    statusBlue: "Tamamlandı",
+    statusPending: "Beklemede",
+    phName: "Ad Soyad yazın...",
+    phNotes: "Not ekleyin...",
+    emptyTitle: "Henüz kayıt eklenmedi",
+    emptyDesc: "Hastane ziyareti için yeni kayıt eklemek için yukarıdaki butonu kullanın.",
+    emptyDescMobile: "Yeni kayıt eklemek için + butonuna dokunun.",
+    toastCopied: "WhatsApp formatında kopyalandı! 📋",
+    toastNoRecords: "Kopyalanacak kayıt yok!",
+    toastDeleted: "Kayıt silindi",
+    confirmDelete: '"{name}" silinsin mi?',
+    wpHeader: "✨ WishTrack | 🏥 Hastane Günü Tablosu",
+    wpBasvuru: "Başvuru",
+    wpDilek: "Dilek",
+    wpStatus: "Durum",
+    wpYearsOld: "yaş",
+    wpRoom: "Oda",
+    lblBasvuru: "Başvuru",
+    lblDilek: "Dilek",
+    lblNotes: "Notlar",
+    lblAge: "Yaş",
+    lblRoom: "Oda No",
+    titleYellow: "Müsait Değil",
+    titleRed: "Alınmayacak",
+    btnDelete: "Sil"
+  },
+  en: {
+    pageTitle: "Make-A-Wish | WishTrack Hospital Board",
+    topBarTitle: "WishTrack Hospital Board",
+    copyBtn: "Copy",
+    newRecordBtn: "New Record",
+    firstRecordBtn: "Add First Record",
+    heroTitle: "WishTrack Hospital Board 🏥",
+    heroDesc: "Track the wish-granting process during hospital visits. Easily manage application and wish statuses for each child.",
+    statTotal: "Total",
+    statReady: "Available",
+    statDone: "Completed",
+    legendGreen: "Application received, available for wish intake",
+    legendYellow: "Currently unavailable",
+    legendRed: "Wish will not be taken",
+    legendBlue: "All completed",
+    thName: "Full Name",
+    thAge: "Age",
+    thRoom: "Room No",
+    thBasvuru: "Application Form",
+    thDilek: "Wish",
+    thNotes: "Notes",
+    thStatus: "Status",
+    statusGreen: "Available",
+    statusYellow: "Unavailable",
+    statusRed: "Cancelled",
+    statusBlue: "Completed",
+    statusPending: "Pending",
+    phName: "Enter full name...",
+    phNotes: "Add notes...",
+    emptyTitle: "No records added yet",
+    emptyDesc: "Use the button above to add a new record for the hospital visit.",
+    emptyDescMobile: "Tap the + button to add a new record.",
+    toastCopied: "Copied for WhatsApp! 📋",
+    toastNoRecords: "No records to copy!",
+    toastDeleted: "Record deleted",
+    confirmDelete: 'Delete "{name}"?',
+    wpHeader: "✨ WishTrack | 🏥 Hospital Day Board",
+    wpBasvuru: "Application",
+    wpDilek: "Wish",
+    wpStatus: "Status",
+    wpYearsOld: "y/o",
+    wpRoom: "Room",
+    lblBasvuru: "Application",
+    lblDilek: "Wish",
+    lblNotes: "Notes",
+    lblAge: "Age",
+    lblRoom: "Room No",
+    titleYellow: "Unavailable",
+    titleRed: "Cancelled",
+    btnDelete: "Delete"
+  }
+};
+
+let currentLang = localStorage.getItem('maw_lang') || 'tr';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('maw_lang', lang);
+
+  // Set HTML lang attribute for correct browser CSS text-transform: uppercase (i -> I in EN, i -> İ in TR)
+  document.documentElement.lang = lang;
+
+  // Update switcher active state
+  document.getElementById('langBtnTR').classList.toggle('active', lang === 'tr');
+  document.getElementById('langBtnEN').classList.toggle('active', lang === 'en');
+
+  // Update static text elements
+  const t = i18n[lang];
+  document.title = lang === 'en' ? t.pageTitle.replace(/İ/g, 'I') : t.pageTitle;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) {
+      let text = t[key];
+      if (lang === 'en') text = text.replace(/İ/g, 'I');
+      el.textContent = text;
+    }
+  });
+
+  renderTable();
+}
+
 // ─── DATA ────────────────────────────────────────────────────────────────────
 let rows = [];
 let nextId = 1;
@@ -601,12 +765,13 @@ function getStatus(row) {
 }
 
 function getStatusLabel(status) {
+  const t = i18n[currentLang];
   switch(status) {
-    case 'green': return '<i class="ph-fill ph-check-circle"></i> Müsait';
-    case 'yellow': return '<i class="ph-fill ph-warning-circle"></i> Müsait Değil';
-    case 'red': return '<i class="ph-fill ph-x-circle"></i> Alınmayacak';
-    case 'blue': return '<i class="ph-fill ph-star"></i> Tamamlandı';
-    default: return '<i class="ph-duotone ph-minus-circle"></i> Beklemede';
+    case 'green': return `<i class="ph-fill ph-check-circle"></i> ${t.statusGreen}`;
+    case 'yellow': return `<i class="ph-fill ph-warning-circle"></i> ${t.statusYellow}`;
+    case 'red': return `<i class="ph-fill ph-x-circle"></i> ${t.statusRed}`;
+    case 'blue': return `<i class="ph-fill ph-star"></i> ${t.statusBlue}`;
+    default: return `<i class="ph-duotone ph-minus-circle"></i> ${t.statusPending}`;
   }
 }
 
@@ -616,12 +781,12 @@ function renderTable() {
   const emptyState = document.getElementById('emptyState');
   const mobileCards = document.getElementById('mobileCards');
   const emptyStateMobile = document.getElementById('emptyStateMobile');
+  const t = i18n[currentLang];
 
   if (rows.length === 0) {
     tbody.innerHTML = '';
     emptyState.style.display = '';
     emptyStateMobile.style.display = '';
-    // Clear mobile cards except empty state
     mobileCards.querySelectorAll('.m-card').forEach(c => c.remove());
     updateStats();
     return;
@@ -639,12 +804,13 @@ function renderTable() {
     const isManualRed = row.manualStatus === 'red';
     const basvuruDisabled = isManualRed ? 'disabled' : '';
     const dilekDisabled = (isManualRed || !row.basvuru) ? 'disabled' : '';
+    const yellowDisabled = (row.basvuru && row.dilek) ? 'disabled' : '';
 
     return `
       <tr class="${statusClass}" data-id="${row.id}">
         <td style="color:var(--muted); font-weight:700; font-size:13px;">${idx + 1}</td>
         <td>
-          <div class="editable-cell cell-name" contenteditable="true" data-field="name" data-id="${row.id}" data-placeholder="Ad Soyad yazın...">${row.name}</div>
+          <div class="editable-cell cell-name" contenteditable="true" data-field="name" data-id="${row.id}" data-placeholder="${t.phName}">${row.name}</div>
         </td>
         <td>
           <div class="editable-cell" contenteditable="true" data-field="age" data-id="${row.id}" data-placeholder="—" style="text-align:center;">${row.age}</div>
@@ -663,7 +829,7 @@ function renderTable() {
           </div>
         </td>
         <td>
-          <div class="editable-cell" contenteditable="true" data-field="notes" data-id="${row.id}" data-placeholder="Not ekleyin..." style="min-width:120px;">${row.notes}</div>
+          <div class="editable-cell" contenteditable="true" data-field="notes" data-id="${row.id}" data-placeholder="${t.phNotes}" style="min-width:120px;">${row.notes}</div>
         </td>
         <td>
           <div style="display:flex; align-items:center; gap:8px;">
@@ -673,14 +839,14 @@ function renderTable() {
         <td>
           <div style="display:flex; align-items:center;">
             <div class="status-actions">
-              <button class="status-btn yellow-btn ${isManualYellow ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'yellow')" title="Müsait Değil">
+              <button class="status-btn yellow-btn ${isManualYellow ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'yellow')" title="${t.titleYellow}" ${yellowDisabled}>
                 <i class="ph-fill ph-warning-circle"></i>
               </button>
-              <button class="status-btn red-btn ${isManualRed ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'red')" title="Alınmayacak">
+              <button class="status-btn red-btn ${isManualRed ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'red')" title="${t.titleRed}">
                 <i class="ph-fill ph-x-circle"></i>
               </button>
             </div>
-            <button class="delete-row-btn" onclick="deleteRow(${row.id})" title="Sil">
+            <button class="delete-row-btn" onclick="deleteRow(${row.id})" title="${t.btnDelete}">
               <i class="ph-bold ph-trash"></i>
             </button>
           </div>
@@ -690,7 +856,6 @@ function renderTable() {
   }).join('');
 
   // ── Mobile cards ──
-  // Remove old cards but keep empty state
   mobileCards.querySelectorAll('.m-card').forEach(c => c.remove());
 
   rows.forEach((row, idx) => {
@@ -701,6 +866,7 @@ function renderTable() {
     const isManualRed = row.manualStatus === 'red';
     const basvuruDisabled = isManualRed ? 'disabled' : '';
     const dilekDisabled = (isManualRed || !row.basvuru) ? 'disabled' : '';
+    const yellowDisabled = (row.basvuru && row.dilek) ? 'disabled' : '';
 
     const card = document.createElement('div');
     card.className = `m-card ${statusClass}`;
@@ -708,20 +874,20 @@ function renderTable() {
     card.innerHTML = `
       <div class="m-card-header">
         <div class="m-card-num">${idx + 1}</div>
-        <div class="m-card-name" contenteditable="true" data-field="name" data-id="${row.id}" data-placeholder="Ad Soyad yazın...">${row.name}</div>
+        <div class="m-card-name" contenteditable="true" data-field="name" data-id="${row.id}" data-placeholder="${t.phName}">${row.name}</div>
         <span class="status-badge ${badgeClass}" style="font-size:11px; padding:4px 10px;">${getStatusLabel(status)}</span>
-        <button class="m-card-delete" onclick="deleteRow(${row.id})" title="Sil">
+        <button class="m-card-delete" onclick="deleteRow(${row.id})" title="${t.btnDelete}">
           <i class="ph-bold ph-trash"></i>
         </button>
       </div>
 
       <div class="m-card-row">
         <div class="m-card-field">
-          <div class="m-card-label">Yaş</div>
+          <div class="m-card-label">${t.lblAge}</div>
           <div class="m-card-value" contenteditable="true" data-field="age" data-id="${row.id}" data-placeholder="—">${row.age}</div>
         </div>
         <div class="m-card-field">
-          <div class="m-card-label">Oda No</div>
+          <div class="m-card-label">${t.lblRoom}</div>
           <div class="m-card-value" contenteditable="true" data-field="room" data-id="${row.id}" data-placeholder="—">${row.room}</div>
         </div>
       </div>
@@ -731,28 +897,28 @@ function renderTable() {
           <div class="custom-check">
             <input type="checkbox" ${row.basvuru ? 'checked' : ''} ${basvuruDisabled} onchange="toggleCheck(${row.id}, 'basvuru', this.checked)" />
           </div>
-          <label onclick="this.previousElementSibling.querySelector('input').click()">Başvuru</label>
+          <label onclick="this.previousElementSibling.querySelector('input').click()">${t.lblBasvuru}</label>
         </div>
         <div class="m-check-item">
           <div class="custom-check">
             <input type="checkbox" ${row.dilek ? 'checked' : ''} ${dilekDisabled} onchange="toggleCheck(${row.id}, 'dilek', this.checked)" />
           </div>
-          <label onclick="this.previousElementSibling.querySelector('input').click()">Dilek</label>
+          <label onclick="this.previousElementSibling.querySelector('input').click()">${t.lblDilek}</label>
         </div>
       </div>
 
       <div class="m-card-notes">
-        <div class="m-card-label" style="margin-bottom:4px;">Notlar</div>
-        <div class="m-card-value" contenteditable="true" data-field="notes" data-id="${row.id}" data-placeholder="Not ekleyin...">${row.notes}</div>
+        <div class="m-card-label" style="margin-bottom:4px;">${t.lblNotes}</div>
+        <div class="m-card-value" contenteditable="true" data-field="notes" data-id="${row.id}" data-placeholder="${t.phNotes}">${row.notes}</div>
       </div>
 
       <div class="m-card-footer">
         <div class="m-card-status-actions">
-          <button class="m-status-btn yellow-btn ${isManualYellow ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'yellow')">
-            <i class="ph-fill ph-warning-circle"></i> Müsait Değil
+          <button class="m-status-btn yellow-btn ${isManualYellow ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'yellow')" ${yellowDisabled}>
+            <i class="ph-fill ph-warning-circle"></i> ${t.titleYellow}
           </button>
           <button class="m-status-btn red-btn ${isManualRed ? 'active' : ''}" onclick="setManualStatus(${row.id}, 'red')">
-            <i class="ph-fill ph-x-circle"></i> Alınmayacak
+            <i class="ph-fill ph-x-circle"></i> ${t.titleRed}
           </button>
         </div>
       </div>
@@ -760,7 +926,7 @@ function renderTable() {
     mobileCards.appendChild(card);
   });
 
-  // Attach blur listeners for ALL editable cells (desktop + mobile)
+  // Attach blur & input listeners for ALL editable cells
   document.querySelectorAll('.editable-cell, .m-card-name, .m-card-value').forEach(cell => {
     cell.addEventListener('blur', function() {
       const id = parseInt(this.dataset.id);
@@ -778,7 +944,39 @@ function renderTable() {
         e.preventDefault();
         this.blur();
       }
+      // Age field: only allow digits, backspace, delete, arrows, tab
+      if (this.dataset.field === 'age') {
+        const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Home','End'];
+        if (!allowed.includes(e.key) && !/^\d$/.test(e.key)) {
+          e.preventDefault();
+        }
+      }
     });
+    // Age field: strip non-digits on input & paste
+    if (cell.dataset.field === 'age') {
+      cell.addEventListener('input', function() {
+        const cleaned = this.innerText.replace(/[^\d]/g, '');
+        if (this.innerText !== cleaned) {
+          this.innerText = cleaned;
+          const range = document.createRange();
+          const sel = window.getSelection();
+          if (this.childNodes.length > 0) {
+            range.setStartAfter(this.lastChild);
+          } else {
+            range.setStart(this, 0);
+          }
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      });
+      cell.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        const cleaned = text.replace(/[^\d]/g, '');
+        document.execCommand('insertText', false, cleaned);
+      });
+    }
   });
 
   updateStats();
@@ -791,12 +989,10 @@ function toggleCheck(id, field, checked) {
 
   row[field] = checked;
 
-  // If basvuru is unchecked, also uncheck dilek
   if (field === 'basvuru' && !checked) {
     row.dilek = false;
   }
 
-  // If a checkbox is being checked, clear any manual status
   if (checked && row.manualStatus) {
     row.manualStatus = null;
   }
@@ -810,12 +1006,10 @@ function setManualStatus(id, status) {
   const row = rows.find(r => r.id === id);
   if (!row) return;
 
-  // Toggle: if already this status, clear it
   if (row.manualStatus === status) {
     row.manualStatus = null;
   } else {
     row.manualStatus = status;
-    // If setting red, uncheck both
     if (status === 'red') {
       row.basvuru = false;
       row.dilek = false;
@@ -828,13 +1022,15 @@ function setManualStatus(id, status) {
 
 // ─── DELETE ROW ──────────────────────────────────────────────────────────────
 function deleteRow(id) {
+  const t = i18n[currentLang];
   const row = rows.find(r => r.id === id);
-  const name = row && row.name ? row.name : 'Bu kayıt';
-  if (!confirm(`"${name}" silinsin mi?`)) return;
+  const name = row && row.name ? row.name : (currentLang === 'en' ? 'This record' : 'Bu kayıt');
+  const confirmMsg = t.confirmDelete.replace('{name}', name);
+  if (!confirm(confirmMsg)) return;
   rows = rows.filter(r => r.id !== id);
   renderTable();
   saveData();
-  showToast('Kayıt silindi');
+  showToast(t.toastDeleted);
 }
 
 // ─── UPDATE STATS ────────────────────────────────────────────────────────────
@@ -852,9 +1048,79 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3200);
 }
 
+// ─── COPY FOR WHATSAPP ───────────────────────────────────────────────────────
+function copyForWhatsApp() {
+  const t = i18n[currentLang];
+  if (rows.length === 0) {
+    showToast(t.toastNoRecords);
+    return;
+  }
+
+  function getStatusEmoji(status) {
+    switch(status) {
+      case 'green': return '🟢';
+      case 'yellow': return '🟡';
+      case 'red': return '🔴';
+      case 'blue': return '⭐';
+      default: return '⚪';
+    }
+  }
+
+  function getStatusText(status) {
+    switch(status) {
+      case 'green': return t.statusGreen;
+      case 'yellow': return t.statusYellow;
+      case 'red': return t.statusRed;
+      case 'blue': return t.statusBlue;
+      default: return t.statusPending;
+    }
+  }
+
+  let text = `${t.wpHeader}\n`;
+  text += '━━━━━━━━━━━━━━━━━━━━\n\n';
+
+  rows.forEach((row, idx) => {
+    const status = getStatus(row);
+    const emoji = getStatusEmoji(status);
+    const statusTxt = getStatusText(status);
+    const name = row.name || (currentLang === 'en' ? '(No name)' : '(İsimsiz)');
+    const age = row.age ? ` (${row.age} ${t.wpYearsOld})` : '';
+    const room = row.room ? `  🚪 ${t.wpRoom}: ${row.room}` : '';
+    const basvuru = row.basvuru ? '✅' : '⬜';
+    const dilek = row.dilek ? '✅' : '⬜';
+    const notes = row.notes ? `\n   📝 ${row.notes}` : '';
+
+    text += `${emoji} *${idx + 1}. ${name}*${age}${room}\n`;
+    text += `   ${t.wpBasvuru}: ${basvuru}  ${t.wpDilek}: ${dilek}\n`;
+    text += `   ${t.wpStatus}: ${statusTxt}${notes}\n\n`;
+  });
+
+  const total = rows.length;
+  const ready = rows.filter(r => getStatus(r) === 'green').length;
+  const done = rows.filter(r => getStatus(r) === 'blue').length;
+  text += '━━━━━━━━━━━━━━━━━━━━\n';
+  text += `📊 ${t.statTotal}: ${total} | ${t.statReady}: ${ready} | ${t.statDone}: ${done}`;
+
+  if (currentLang === 'en') {
+    text = text.replace(/İ/g, 'I');
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(t.toastCopied);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast(t.toastCopied);
+  });
+}
+
 // ─── INIT ────────────────────────────────────────────────────────────────────
 loadData();
-renderTable();
+setLanguage(currentLang);
 </script>
 </body>
 </html>
