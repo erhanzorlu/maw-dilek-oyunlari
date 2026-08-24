@@ -1,0 +1,719 @@
+/* ================================================================
+   WISHPEDIA PREVIEW — Scroll-Driven Storytelling
+   ================================================================ */
+
+/* ─── Variables ─── */
+:root {
+    --bg-deep:    #07001a;
+    --bg-mid:     #120835;
+    --bg-warm:    #1a0e3a;
+    --purple:     #9333ea;
+    --pink:       #ec4899;
+    --gold:       #ffd700;
+    --indigo:     #6366f1;
+    --text:       #ffffff;
+    --text-dim:   rgba(255,255,255,.55);
+    --text-faint: rgba(255,255,255,.3);
+    --ease-out:   cubic-bezier(.22,1,.36,1);
+    --ease-smooth: cubic-bezier(.25,.46,.45,.94);
+}
+
+/* ─── Reset ─── */
+*,*::before,*::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    cursor: ns-resize;
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+}
+
+/* ─── Vignette ─── */
+body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(0,0,0,.5) 100%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* ================================================================
+   PARTICLE CANVAS
+   ================================================================ */
+#particleCanvas {
+    position: fixed; inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ================================================================
+   PROGRESS BAR
+   ================================================================ */
+.progress-track {
+    position: fixed; left: 28px; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 180px;
+    background: rgba(255,255,255,.08);
+    border-radius: 2px;
+    z-index: 50;
+    overflow: hidden;
+}
+.progress-fill {
+    position: absolute; bottom: 0; width: 100%;
+    height: 0%;
+    background: linear-gradient(to top, var(--purple), var(--pink), var(--gold));
+    border-radius: 2px;
+}
+.progress-pct {
+    position: absolute; bottom: -26px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px; font-weight: 500;
+    color: var(--text-dim);
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+}
+
+/* ================================================================
+   DOT NAVIGATION
+   ================================================================ */
+.dot-nav {
+    position: fixed; right: 28px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 16px;
+    z-index: 50;
+}
+.dot {
+    width: 11px; height: 11px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.18);
+    background: transparent;
+    cursor: pointer;
+    transition: all .35s var(--ease-smooth);
+    position: relative; padding: 0; outline: none;
+}
+.dot:hover { border-color: rgba(255,255,255,.5); transform: scale(1.2); }
+.dot.active {
+    border-color: var(--gold);
+    background: var(--gold);
+    box-shadow: 0 0 14px rgba(255,215,0,.45), 0 0 4px rgba(255,215,0,.8);
+}
+.dot-label {
+    position: absolute; right: calc(100% + 14px); top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px; font-weight: 400;
+    color: var(--text-dim);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity .3s ease;
+    pointer-events: none;
+}
+.dot:hover .dot-label,
+.dot.active .dot-label { opacity: 1; }
+
+/* ================================================================
+   SCENE PANELS (stacked, full viewport)
+   ================================================================ */
+.scene-panel {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .1s linear;
+}
+.scene-panel.visible {
+    pointer-events: auto;
+}
+
+.scene-content {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    max-width: 900px;
+    padding: 2rem;
+    width: 100%;
+}
+
+/* ─── Stagger animation ─── */
+.s-el {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.scene-panel.active .s-el {
+    opacity: 1;
+    transform: translateY(0);
+}
+.scene-panel.active .s-el[data-d="0"] { transition-delay: 0s; }
+.scene-panel.active .s-el[data-d="1"] { transition-delay: .18s; }
+.scene-panel.active .s-el[data-d="2"] { transition-delay: .36s; }
+.scene-panel.active .s-el[data-d="3"] { transition-delay: .54s; }
+.scene-panel.active .s-el[data-d="4"] { transition-delay: .72s; }
+.scene-panel.active .s-el[data-d="5"] { transition-delay: .90s; }
+
+/* When deactivating, no delay */
+.scene-panel:not(.active) .s-el {
+    transition-delay: 0s !important;
+    transition-duration: .3s;
+}
+
+/* ================================================================
+   SCENE 1 — Hero
+   ================================================================ */
+.hero-star {
+    position: relative;
+    width: 90px; height: 90px;
+    margin-bottom: 3rem;
+}
+.star-shape {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #ffd700, #ffaa00, #fff5c0);
+    clip-path: polygon(
+        50% 0%, 61% 35%, 98% 35%, 68% 57%,
+        79% 91%, 50% 70%, 21% 91%, 32% 57%,
+        2% 35%, 39% 35%
+    );
+    animation: star-rotate 20s linear infinite;
+}
+.star-glow {
+    position: absolute; inset: -30px;
+    background: radial-gradient(circle, rgba(255,215,0,.35) 0%, transparent 65%);
+    border-radius: 50%;
+    animation: star-pulse 3s ease-in-out infinite;
+}
+@keyframes star-rotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+@keyframes star-pulse {
+    0%,100% { transform: scale(1); opacity: .6; }
+    50%     { transform: scale(1.15); opacity: 1; }
+}
+
+.hero-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+    font-weight: 300;
+    line-height: 1.25;
+    margin-bottom: 1.4rem;
+    letter-spacing: -.01em;
+}
+.hero-title em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gold), #ffaa00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-sub {
+    font-size: clamp(.95rem, 1.8vw, 1.15rem);
+    font-weight: 300;
+    color: var(--text-dim);
+    line-height: 1.8;
+}
+
+/* ================================================================
+   SCENE 2 — Problem
+   ================================================================ */
+.problem-intro {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-weight: 300;
+    color: var(--text-dim);
+    margin-bottom: 2.5rem;
+    font-style: italic;
+}
+
+.problem-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.figure-circle {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    position: relative;
+    flex-shrink: 0;
+}
+.figure-circle .figure-label {
+    position: absolute; bottom: -26px; left: 50%;
+    transform: translateX(-50%);
+    font-size: .75rem; font-weight: 600;
+    color: var(--text-dim);
+    white-space: nowrap;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+.volunteer-fig {
+    background: rgba(99,102,241,.12);
+    border: 2px solid rgba(99,102,241,.3);
+    color: #818cf8;
+    animation: float-gentle 4s ease-in-out infinite;
+}
+.child-fig {
+    background: rgba(236,72,153,.12);
+    border: 2px solid rgba(236,72,153,.3);
+    color: #f472b6;
+    animation: float-gentle 4s ease-in-out infinite .5s;
+}
+@keyframes float-gentle {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-8px); }
+}
+
+.speech-bubble {
+    background: rgba(255,255,255,.08);
+    border: 1.5px solid rgba(255,255,255,.15);
+    border-radius: 20px;
+    padding: .9rem 1.6rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 700;
+    color: #f9a8d4;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+.speech-bubble strong {
+    color: #93c5fd;
+}
+
+.problem-text {
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    font-weight: 400;
+    color: rgba(255,255,255,.75);
+    margin-bottom: .6rem;
+    line-height: 1.7;
+}
+.problem-text strong { color: #fca5a5; font-weight: 600; }
+.problem-text.dim { color: var(--text-dim); font-weight: 300; }
+
+/* ================================================================
+   SCENE 3 — Wishpedia Reveal
+   ================================================================ */
+.reveal-glow-ring {
+    position: absolute;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(147,51,234,.25) 0%, transparent 65%);
+    animation: reveal-pulse 3s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes reveal-pulse {
+    0%,100% { transform: scale(1); opacity: .5; }
+    50%     { transform: scale(1.2); opacity: .8; }
+}
+
+.reveal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #c084fc 0%, #ec4899 40%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    z-index: 2;
+}
+
+.reveal-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 400;
+    color: var(--text-dim);
+    margin-bottom: 3rem;
+    position: relative; z-index: 2;
+}
+
+/* ─── Mockup Frame ─── */
+.mockup-frame {
+    width: min(520px, 90vw);
+    background: rgba(255,255,255,.06);
+    border: 1.5px solid rgba(255,255,255,.1);
+    border-radius: 16px;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 25px 80px rgba(147,51,234,.2), 0 8px 30px rgba(0,0,0,.3);
+    position: relative; z-index: 2;
+}
+.mockup-topbar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px;
+    background: rgba(255,255,255,.05);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.mockup-dots {
+    display: flex; gap: 6px;
+}
+.mockup-dots i {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: block;
+}
+.mockup-dots i:nth-child(1) { background: #ff5f57; }
+.mockup-dots i:nth-child(2) { background: #ffbd2e; }
+.mockup-dots i:nth-child(3) { background: #28c840; }
+.mockup-url {
+    font-size: .7rem;
+    color: var(--text-faint);
+    font-weight: 400;
+}
+.mockup-body { padding: 16px; }
+.mockup-search-bar {
+    height: 28px;
+    background: rgba(255,255,255,.08);
+    border-radius: 14px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,.06);
+}
+.mockup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.mockup-card {
+    height: 70px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border: 1px solid rgba(255,255,255,.06);
+    position: relative;
+    overflow: hidden;
+}
+.mockup-card::before {
+    content: '';
+    position: absolute; top: 8px; left: 8px;
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    background: var(--c);
+    opacity: .6;
+}
+.mockup-card::after {
+    content: '';
+    position: absolute; bottom: 10px; left: 8px; right: 20px;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,.06);
+}
+
+/* ================================================================
+   SCENE 4 — Features
+   ================================================================ */
+.features-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 300;
+    margin-bottom: 2.5rem;
+    color: var(--text);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    width: min(700px, 90vw);
+}
+
+.feature-card {
+    background: rgba(255,255,255,.05);
+    border: 1.5px solid rgba(147,51,234,.18);
+    border-radius: 18px;
+    padding: 1.5rem 1.3rem;
+    text-align: left;
+    backdrop-filter: blur(12px);
+    transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out), border-color .3s;
+}
+.feature-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 50px rgba(147,51,234,.2);
+    border-color: rgba(147,51,234,.4);
+}
+
+.feature-icon {
+    font-size: 1.8rem;
+    margin-bottom: .8rem;
+    filter: drop-shadow(0 2px 8px rgba(147,51,234,.3));
+}
+.feature-card h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: .5rem;
+    color: var(--text);
+}
+.feature-card p {
+    font-size: .82rem;
+    font-weight: 300;
+    color: var(--text-dim);
+    line-height: 1.6;
+}
+
+/* ================================================================
+   SCENE 5 — Stats
+   ================================================================ */
+.stats-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 300;
+    margin-bottom: 3rem;
+    color: var(--text);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    width: min(700px, 90vw);
+    margin-bottom: 2rem;
+}
+
+.stat-item { text-align: center; }
+
+.stat-number {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.stat-label {
+    display: block;
+    font-size: .78rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    margin-top: .4rem;
+    letter-spacing: .05em;
+}
+
+.stats-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--text-dim);
+}
+
+/* ================================================================
+   SCENE 6 — CTA
+   ================================================================ */
+.cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.25;
+    margin-bottom: 2.5rem;
+}
+.cta-title em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .8rem;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: white;
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 600;
+    padding: 1rem 2.8rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all .4s var(--ease-out);
+    box-shadow: 0 8px 35px rgba(147,51,234,.35);
+    animation: cta-glow 2.5s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+.cta-btn:hover {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 16px 55px rgba(147,51,234,.5);
+}
+.cta-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+    transform: translateX(-100%);
+    transition: transform .6s ease;
+}
+.cta-btn:hover::before {
+    transform: translateX(100%);
+}
+.cta-arrow {
+    font-size: 1.3em;
+    transition: transform .3s ease;
+}
+.cta-btn:hover .cta-arrow {
+    transform: translateX(4px);
+}
+
+@keyframes cta-glow {
+    0%,100% { box-shadow: 0 8px 35px rgba(147,51,234,.35); }
+    50%     { box-shadow: 0 8px 55px rgba(147,51,234,.55), 0 0 20px rgba(236,72,153,.3); }
+}
+
+.cta-footer {
+    font-size: .82rem;
+    color: var(--text-faint);
+    margin-top: 3rem;
+    letter-spacing: .04em;
+}
+
+/* ================================================================
+   SCROLL HINT
+   ================================================================ */
+.scroll-hint {
+    position: fixed; bottom: 30px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 10px;
+    z-index: 50;
+    animation: hint-bob 2.2s ease-in-out infinite;
+    transition: opacity .5s ease;
+}
+.scroll-hint.hidden { opacity: 0; pointer-events: none; }
+
+.scroll-mouse {
+    width: 22px; height: 36px;
+    border: 2px solid rgba(255,255,255,.25);
+    border-radius: 11px;
+    position: relative;
+}
+.scroll-wheel {
+    width: 3px; height: 7px;
+    background: rgba(255,255,255,.45);
+    border-radius: 2px;
+    position: absolute; top: 7px; left: 50%;
+    transform: translateX(-50%);
+    animation: wheel-scroll 1.6s ease-in-out infinite;
+}
+.scroll-hint span {
+    font-size: 11px; font-weight: 400;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: .18em;
+}
+@keyframes hint-bob {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50%     { transform: translateX(-50%) translateY(6px); }
+}
+@keyframes wheel-scroll {
+    0%   { top: 7px; opacity: 1; }
+    100% { top: 22px; opacity: 0; }
+}
+
+/* ================================================================
+   MOBILE-FIRST OPTIMIZATION & RESPONSIVE DESIGN
+   ================================================================ */
+@media (max-width: 768px) {
+    body {
+        touch-action: none;
+        -webkit-touch-callout: none;
+    }
+
+    .progress-track { left: 10px; height: 110px; width: 2.5px; }
+    .dot-nav { right: 10px; gap: 12px; }
+    .dot { width: 9px; height: 9px; }
+    .dot-label { display: none; }
+
+    .scene-content {
+        padding: 1.2rem 1.4rem;
+        max-height: 94dvh;
+    }
+
+    /* Scene 1 — Hero Mobile */
+    .hero-star { width: 72px; height: 72px; margin-bottom: 2rem; }
+    .hero-title { font-size: 2.2rem; line-height: 1.22; margin-bottom: 1rem; }
+    .hero-sub { font-size: 0.95rem; line-height: 1.6; }
+
+    /* Scene 2 — Problem Mobile */
+    .problem-intro { font-size: 1.3rem; margin-bottom: 1.8rem; }
+    .problem-stage {
+        flex-direction: column;
+        gap: 1.1rem;
+        margin-bottom: 1.8rem;
+    }
+    .figure-circle { width: 70px; height: 70px; font-size: 1.5rem; }
+    .figure-circle .figure-label { font-size: 0.7rem; bottom: -20px; }
+    .speech-bubble {
+        font-size: 1rem;
+        padding: 0.75rem 1.3rem;
+        border-radius: 16px;
+    }
+    .problem-text { font-size: 0.98rem; line-height: 1.55; }
+
+    /* Scene 3 — Reveal Mobile */
+    .reveal-glow-ring { width: 260px; height: 260px; }
+    .reveal-title { font-size: 3rem; margin-bottom: 0.4rem; }
+    .reveal-subtitle { font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .mockup-frame { width: 88vw; max-width: 320px; }
+    .mockup-card { height: 55px; }
+
+    /* Scene 4 — Features Mobile (2x2 Compact Glass Grid) */
+    .features-title { font-size: 1.8rem; margin-bottom: 1.2rem; }
+    .features-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+        width: 100%;
+        max-width: 360px;
+    }
+    .feature-card {
+        padding: 0.9rem 0.75rem;
+        border-radius: 14px;
+    }
+    .feature-icon { font-size: 1.4rem; margin-bottom: 0.4rem; }
+    .feature-card h3 { font-size: 0.85rem; margin-bottom: 0.25rem; }
+    .feature-card p { font-size: 0.72rem; line-height: 1.35; }
+
+    /* Scene 5 — Stats Mobile (2x2 Grid) */
+    .stats-heading { font-size: 1.7rem; margin-bottom: 1.6rem; }
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.2rem 1rem;
+        width: 100%;
+        max-width: 300px;
+        margin-bottom: 1.5rem;
+    }
+    .stat-number { font-size: 2.3rem; }
+    .stat-label { font-size: 0.72rem; }
+
+    /* Scene 6 — CTA Mobile */
+    .cta-title { font-size: 2.2rem; margin-bottom: 1.8rem; }
+    .cta-btn {
+        padding: 0.95rem 2rem;
+        font-size: 1.05rem;
+        width: 88vw;
+        max-width: 290px;
+        justify-content: center;
+    }
+    .cta-footer { margin-top: 2rem; font-size: 0.76rem; }
+
+    .scroll-hint { bottom: 18px; }
+}
+
+@media (max-width: 380px) {
+    .hero-title { font-size: 1.85rem; }
+    .hero-star { width: 58px; height: 58px; }
+    .reveal-title { font-size: 2.4rem; }
+    .features-grid { grid-template-columns: 1fr; max-width: 280px; }
+    .features-title { font-size: 1.5rem; }
+    .stat-number { font-size: 1.9rem; }
+}

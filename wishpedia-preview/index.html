@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Wishpedia — Gönüllüler için karakter kütüphanesi. Make-A-Wish Türkiye'nin dilek yolculuğunu keşfedin.">
+    <title>Wishpedia — Her Çocuğun Bir Kahramanı Var</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>✨</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ========== Particle Canvas ========== -->
+    <canvas id="particleCanvas" aria-hidden="true"></canvas>
+
+    <!-- ========== Progress Bar (Left) ========== -->
+    <div class="progress-track" aria-label="İlerleme">
+        <div class="progress-fill" id="progressFill"></div>
+        <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+
+    <!-- ========== Dot Navigation (Right) ========== -->
+    <nav class="dot-nav" id="dotNav" aria-label="Sahne navigasyonu">
+        <button class="dot active" data-target="0"  aria-label="Açılış"><span class="dot-label">Açılış</span></button>
+        <button class="dot" data-target="20" aria-label="Problem"><span class="dot-label">Problem</span></button>
+        <button class="dot" data-target="40" aria-label="Çözüm"><span class="dot-label">Çözüm</span></button>
+        <button class="dot" data-target="58" aria-label="Özellikler"><span class="dot-label">Özellikler</span></button>
+        <button class="dot" data-target="76" aria-label="Etki"><span class="dot-label">Etki</span></button>
+        <button class="dot" data-target="92" aria-label="Keşfet"><span class="dot-label">Keşfet</span></button>
+    </nav>
+
+    <!-- ================================================================
+         SCENE 1 — Hero: "Her çocuğun bir kahramanı var"
+         ================================================================ -->
+    <section class="scene-panel active" id="scene1">
+        <div class="scene-content">
+            <!-- Glowing Make-A-Wish Star -->
+            <div class="hero-star s-el" data-d="0">
+                <div class="star-shape"></div>
+                <div class="star-glow"></div>
+            </div>
+            <h1 class="hero-title s-el" data-d="1">Her çocuğun<br>bir <em>kahramanı</em> var.</h1>
+            <p class="hero-sub s-el" data-d="2">Onların dünyasına adım atabilmek için<br>önce tanımalıyız.</p>
+        </div>
+    </section>
+
+    <!-- ================================================================
+         SCENE 2 — Problem: "Bir gönüllü hayal edin..."
+         ================================================================ -->
+    <section class="scene-panel" id="scene2">
+        <div class="scene-content">
+            <p class="problem-intro s-el" data-d="0">Bir gönüllü hayal edin...</p>
+
+            <div class="problem-stage s-el" data-d="1">
+                <div class="figure-circle volunteer-fig">
+                    <span>?</span>
+                    <div class="figure-label">Gönüllü</div>
+                </div>
+
+                <div class="speech-bubble">
+                    <span>"Ben <strong>Elsa</strong> olmak istiyorum!"</span>
+                </div>
+
+                <div class="figure-circle child-fig">
+                    <span>⭐</span>
+                    <div class="figure-label">Çocuk</div>
+                </div>
+            </div>
+
+            <p class="problem-text s-el" data-d="2">Ama gönüllü… Elsa'nın hikâyesini <strong>bilmiyor.</strong></p>
+            <p class="problem-text dim s-el" data-d="3">Sevdiği şarkıyı, en yakın arkadaşını, krallığının adını bilmiyor.</p>
+        </div>
+    </section>
+
+    <!-- ================================================================
+         SCENE 3 — Wishpedia Reveal
+         ================================================================ -->
+    <section class="scene-panel" id="scene3">
+        <div class="scene-content">
+            <div class="reveal-glow-ring s-el" data-d="0"></div>
+            <h1 class="reveal-title s-el" data-d="0">Wishpedia</h1>
+            <p class="reveal-subtitle s-el" data-d="1">Gönüllüler için karakter kütüphanesi</p>
+
+            <!-- Mini Mockup -->
+            <div class="mockup-frame s-el" data-d="2">
+                <div class="mockup-topbar">
+                    <div class="mockup-dots"><i></i><i></i><i></i></div>
+                    <div class="mockup-url">wishpedia.make-a-wish.org.tr</div>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-search-bar"></div>
+                    <div class="mockup-grid">
+                        <div class="mockup-card" style="--c:#c084fc;"></div>
+                        <div class="mockup-card" style="--c:#60a5fa;"></div>
+                        <div class="mockup-card" style="--c:#34d399;"></div>
+                        <div class="mockup-card" style="--c:#fbbf24;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================================
+         SCENE 4 — Features: "İçinde Neler Var?"
+         ================================================================ -->
+    <section class="scene-panel" id="scene4">
+        <div class="scene-content">
+            <h2 class="features-title s-el" data-d="0">İçinde Neler Var?</h2>
+
+            <div class="features-grid">
+                <div class="feature-card s-el" data-d="1">
+                    <div class="feature-icon">📖</div>
+                    <h3>Hikâye Özetleri</h3>
+                    <p>Her karakter için film, oyun veya seri özeti — 2 dakikada uzman ol.</p>
+                </div>
+                <div class="feature-card s-el" data-d="2">
+                    <div class="feature-icon">💬</div>
+                    <h3>Sohbet Soruları</h3>
+                    <p>Çocukla buz kıracak hazır sorular. "En sevdiğin büyü hangisi?"</p>
+                </div>
+                <div class="feature-card s-el" data-d="3">
+                    <div class="feature-icon">✨</div>
+                    <h3>Dilek İpuçları</h3>
+                    <p>Hediye sunumu, mekân süsleme, sürpriz anı fikirleri.</p>
+                </div>
+                <div class="feature-card s-el" data-d="4">
+                    <div class="feature-icon">⚠️</div>
+                    <h3>Dikkat Noktaları</h3>
+                    <p>Hassasiyet uyarıları — neyi sormalı, neden yapmamalı.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================================
+         SCENE 5 — Stats: "Rakamlarla Wishpedia"
+         ================================================================ -->
+    <section class="scene-panel" id="scene5">
+        <div class="scene-content">
+            <h2 class="stats-heading s-el" data-d="0">Rakamlarla Wishpedia</h2>
+
+            <div class="stats-grid">
+                <div class="stat-item s-el" data-d="1">
+                    <span class="stat-number" data-target="142" data-suffix="">0</span>
+                    <span class="stat-label">Karakter</span>
+                </div>
+                <div class="stat-item s-el" data-d="2">
+                    <span class="stat-number" data-target="580" data-suffix="+">0</span>
+                    <span class="stat-label">Dilek İpucu</span>
+                </div>
+                <div class="stat-item s-el" data-d="3">
+                    <span class="stat-number" data-target="12" data-suffix="">0</span>
+                    <span class="stat-label">Farklı Evren</span>
+                </div>
+                <div class="stat-item s-el" data-d="4">
+                    <span class="stat-number" data-target="94" data-suffix="">0</span>
+                    <span class="stat-label">Gönüllü Katkısı</span>
+                </div>
+            </div>
+
+            <p class="stats-note s-el" data-d="5">Ve her gün büyüyor…</p>
+        </div>
+    </section>
+
+    <!-- ================================================================
+         SCENE 6 — CTA: "Keşfetmeye Hazır mısın?"
+         ================================================================ -->
+    <section class="scene-panel" id="scene6">
+        <div class="scene-content">
+            <h2 class="cta-title s-el" data-d="0">Keşfetmeye<br><em>hazır mısın?</em></h2>
+            <a href="https://maw-yararli-linkler.vercel.app/wishpedia.html" class="cta-btn s-el" data-d="1" target="_blank" rel="noopener">
+                Wishpedia'yı Keşfet
+                <span class="cta-arrow">→</span>
+            </a>
+            <p class="cta-footer s-el" data-d="2">Make-A-Wish Türkiye — Her dilek bir mucize ✦</p>
+        </div>
+    </section>
+
+    <!-- ========== Scroll Hint ========== -->
+    <div class="scroll-hint" id="scrollHint">
+        <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+        <span>Kaydır</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
