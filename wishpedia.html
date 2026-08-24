@@ -76,43 +76,73 @@ body {
   cursor: default;
 }
 
-/* ─── SIDEBAR & MAIN WRAPPER ─── */
+/* ─── SIDEBAR & COLLAPSIBLE NAVIGATION ─── */
 .sidebar {
-  width: 268px;
-  background: rgba(255, 255, 255, 0.85);
+  width: 270px;
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-right: 1px solid rgba(180, 100, 255, 0.2);
-  padding: 28px 16px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   z-index: 30;
   position: relative;
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+}
+.sidebar.collapsed {
+  margin-left: -270px;
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 0 4px;
+}
+.sidebar-toggle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(147, 51, 234, 0.08);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+.sidebar-toggle-btn:hover {
+  background: rgba(147, 51, 234, 0.18);
+  color: var(--accent-1);
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 8px;
-  margin-bottom: 24px;
+  gap: 12px;
 }
 .brand-icon {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   background: linear-gradient(135deg, #0065c3, #004b93);
-  border-radius: 12px;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 19px;
   color: #ffb800;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(0,101,195,0.3);
 }
 .brand-text {
   font-family: 'Playfair Display', serif;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: #004b93;
   line-height: 1.2;
@@ -127,12 +157,17 @@ body {
   text-transform: uppercase;
   margin-top: 1px;
 }
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
 .menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 11px 14px;
-  margin-bottom: 2px;
   border-radius: 10px;
   cursor: pointer;
   color: #64748b;
@@ -157,96 +192,115 @@ body {
   color: var(--accent-1);
   box-shadow: inset 3px 0 0 var(--accent-1);
 }
-.sidebar-close {
-  display: none;
-  position: absolute;
-  top: 18px;
-  right: 14px;
-  width: 30px;
-  height: 30px;
-  background: #fdf4ff;
-  border: none;
-  border-radius: 8px;
+.sidebar-footer {
+  padding-top: 14px;
+  border-top: 1px solid rgba(180, 100, 255, 0.15);
+}
+.menu-preview-link {
+  color: var(--accent-1);
+  font-size: 13px;
+  background: rgba(147, 51, 234, 0.05);
+}
+
+/* ─── TOP BAR & MAIN WRAPPER ─── */
+.top-nav {
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 12px 28px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(180, 100, 255, 0.18);
+  position: relative;
+  z-index: 20;
+  width: 100%;
+}
+.top-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(147, 51, 234, 0.08);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 10px;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 13px;
   cursor: pointer;
-  color: #64748b;
-  font-size: 15px;
-  transition: 0.2s;
+  transition: all 0.2s ease;
 }
-.sidebar-close:hover {
-  background: #fee2e2;
-  color: #dc2626;
+.top-menu-btn:hover {
+  background: rgba(147, 51, 234, 0.15);
+  color: var(--accent-1);
+  transform: translateY(-1px);
 }
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 29;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
-.sidebar-overlay.open {
-  opacity: 1;
-  pointer-events: all;
+.nav-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-1);
+  background: rgba(147, 51, 234, 0.08);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.nav-back-btn:hover {
+  background: rgba(147, 51, 234, 0.16);
+  transform: translateY(-1px);
 }
 .main-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  width: 100%;
   min-width: 0;
   position: relative;
   z-index: 10;
 }
-.top-bar-mobile {
+.sidebar-overlay {
   display: none;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(180, 100, 255, 0.18);
-  z-index: 20;
-}
-.hamburger {
-  width: 38px;
-  height: 38px;
-  background: none;
-  border: 1px solid rgba(180, 100, 255, 0.25);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--ink);
-  font-size: 18px;
-  transition: 0.2s;
 }
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     height: 100vh;
-    z-index: 30;
+    height: 100dvh;
+    z-index: 40;
     transform: translateX(-100%);
-    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
-    box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+    margin-left: 0 !important;
+    opacity: 1 !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
   }
   .sidebar.open {
     transform: translateX(0);
+    pointer-events: all;
   }
   .sidebar-overlay {
     display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 35;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
   }
-  .sidebar-close {
-    display: flex !important;
-  }
-  .top-bar-mobile {
-    display: flex;
+  .sidebar-overlay.open {
+    opacity: 1;
+    pointer-events: all;
   }
 }
 
@@ -852,31 +906,50 @@ body {
   </div>
 </div>
 
-<!-- SIDEBAR OVERLAY -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<!-- MAGIC PARTICLE CANVAS -->
+<canvas id="particleCanvas" style="position:fixed; inset:0; z-index:2; pointer-events:none;"></canvas>
 
-<!-- SOL MENÜ -->
-<div class="sidebar" id="sidebar">
-  <button class="sidebar-close" id="sidebarClose" onclick="closeSidebar()"><i class="ph-bold ph-x"></i></button>
+<!-- SIDEBAR OVERLAY (Mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-  <div class="brand">
-    <div class="brand-icon"><i class="ph-fill ph-star"></i></div>
-    <div class="brand-text">Make-A-Wish <span>Türkiye</span></div>
+<!-- SOL MENÜ (KAPATILABİLİR / TOGGLEABLE) -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="brand">
+      <div class="brand-icon"><i class="ph-fill ph-star"></i></div>
+      <div class="brand-text">Make-A-Wish <span>Türkiye</span></div>
+    </div>
+    <button class="sidebar-toggle-btn" id="sidebarCloseBtn" onclick="toggleSidebar()" title="Menüyü Gizle">
+      <i class="ph-bold ph-caret-left"></i>
+    </button>
   </div>
 
-  <a href="guvenli-mekanlar.html" class="menu-item"><i class="ph-fill ph-shield-check"></i> Güvenli Mekanlar</a>
-  <a href="duyurular.html" class="menu-item"><i class="ph-fill ph-megaphone"></i> Duyurular</a>
-  <a href="wishpedia.html" class="menu-item active"><i class="ph-fill ph-sparkle"></i> Wishpedia</a>
-  <a href="hastane-dilek.html" class="menu-item"><i class="ph-fill ph-hospital"></i> Hastane Dilek Alımı</a>
-</div>
+  <nav class="sidebar-nav">
+    <a href="guvenli-mekanlar.html" class="menu-item"><i class="ph-fill ph-shield-check"></i> Güvenli Mekanlar</a>
+    <a href="duyurular.html" class="menu-item"><i class="ph-fill ph-megaphone"></i> Duyurular</a>
+    <a href="wishpedia.html" class="menu-item active"><i class="ph-fill ph-sparkle"></i> Wishpedia</a>
+    <a href="hastane-dilek.html" class="menu-item"><i class="ph-fill ph-hospital"></i> Hastane Dilek Alımı</a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="index.html" class="menu-item menu-preview-link"><i class="ph-bold ph-arrow-left"></i> Hikaye & Önizleme</a>
+  </div>
+</aside>
 
 <!-- ANA WRAPPER -->
 <div class="main-wrapper">
-  <!-- TOP BAR MOBILE -->
-  <div class="top-bar-mobile">
-    <button class="hamburger" id="hamburgerBtn" onclick="openSidebar()"><i class="ph-bold ph-list"></i></button>
-    <div style="font-family:'Playfair Display',serif; font-weight:700; color:#004b93; font-size:17px;">Make-A-Wish</div>
-  </div>
+  <!-- ÜST KONTROL BARI -->
+  <header class="top-nav">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="top-menu-btn" id="sidebarOpenBtn" onclick="toggleSidebar()" title="Menüyü Aç / Kapat">
+        <i class="ph-bold ph-list"></i>
+        <span>Menü</span>
+      </button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-back-btn"><i class="ph-bold ph-arrow-left"></i> Hikaye & Önizleme</a>
+    </div>
+  </header>
 
   <div class="page" style="flex:1; overflow-y:auto;">
   <!-- HERO (compact) -->
@@ -1268,6 +1341,7 @@ const charData = {
 let currentCharId = null;
 
 function openModal(id, editMode = false) {
+    triggerHaptic('reveal');
     const data = charData[id];
     const modal = document.getElementById('modal');
     modal.classList.remove('editing');
@@ -1345,6 +1419,7 @@ function openModal(id, editMode = false) {
 }
 
 function openModalNew() {
+    triggerHaptic('reveal');
     const modal = document.getElementById('modal');
     modal.classList.remove('editing');
     currentCharId = null;
@@ -1377,11 +1452,19 @@ function saveEdits() {
     const msg = isNew
         ? '✦ Karakter öneriniz başarıyla alındı! Editör onayından sonra yayınlanacaktır.'
         : '✦ Güncelleme öneriniz başarıyla alındı! Editör onayından sonra yayınlanacaktır.';
+    triggerHaptic('reveal');
+    if (window.launchFirework) {
+        const w = window.innerWidth, h = window.innerHeight;
+        window.launchFirework(w * 0.3, h * 0.28, '#ffd700');
+        setTimeout(() => window.launchFirework(w * 0.5, h * 0.22, '#ec4899'), 200);
+        setTimeout(() => window.launchFirework(w * 0.7, h * 0.3, '#60a5fa'), 400);
+    }
     alert(msg);
     closeModalDirect();
 }
 
 function closeModalDirect() {
+    triggerHaptic('tap');
     document.getElementById('modal').classList.remove('editing');
     document.getElementById('modalBg').classList.remove('open');
     document.body.style.overflow = 'auto';
@@ -1391,20 +1474,495 @@ function closeModal(e) {
     if(e.target.id === 'modalBg') closeModalDirect();
 }
 
-// ─── SIDEBAR CONTROL ──────────────────────────────────────────────────────────
-function openSidebar() {
-    document.getElementById('sidebar').classList.add('open');
-    document.getElementById('sidebarOverlay').classList.add('open');
-}
+// ─── SIDEBAR TOGGLE (KAPAT / AÇ) ──────────────────────────────────────────────
+function toggleSidebar() {
+    triggerHaptic('tap');
+    const sb = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const isMobile = window.innerWidth <= 768;
 
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('open');
+    if (isMobile) {
+        sb.classList.toggle('open');
+        if (overlay) overlay.classList.toggle('open');
+    } else {
+        sb.classList.toggle('collapsed');
+    }
 }
 
 window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) closeSidebar();
+    const sb = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (window.innerWidth > 768) {
+        if (overlay) overlay.classList.remove('open');
+        if (sb) sb.classList.remove('open');
+    }
 });
+
+// ================================================================
+// MAGIC COSMOS PARTICLE ENGINE (Mouse, Touch, Trails & Haptics)
+// ================================================================
+(function () {
+    'use strict';
+
+    const CFG = {
+        STAR_COUNT: 40,
+        PARTICLE_LIMIT: 85,
+        MAX_MOUSE_STARS: 5,
+        MOUSE_SPAWN_INTERVAL: 220,
+        MOUSE_STAR_SPEED: 2.2,
+    };
+
+    let particles = [];
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let lastMouseStarTime = 0;
+    let lastFrameTime = performance.now();
+    let mouseTimer = null;
+
+    // Gyroscope
+    let tiltX = 0, tiltY = 0;
+    let targetTiltX = 0, targetTiltY = 0;
+
+    const canvas = document.getElementById('particleCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function init() {
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // ── Mouse tracking ──
+        window.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            clearTimeout(mouseTimer);
+            mouseTimer = setTimeout(() => {}, 200);
+
+            const now = performance.now();
+            if (now - lastMouseStarTime >= CFG.MOUSE_SPAWN_INTERVAL) {
+                let activeMouseStars = 0;
+                for (let i = 0; i < particles.length; i++) {
+                    if (particles[i].type === 'mouse') activeMouseStars++;
+                }
+                if (activeMouseStars < CFG.MAX_MOUSE_STARS) {
+                    lastMouseStarTime = now;
+                    particles.push(makeMouseStar(window.innerWidth, window.innerHeight, mouseX, mouseY));
+                }
+            }
+        });
+
+        // ── Touch tracking & Tap Sparkles ──
+        let ty = 0, tx = 0;
+        window.addEventListener('touchstart', e => {
+            if (e.touches.length > 0) {
+                tx = e.touches[0].clientX;
+                ty = e.touches[0].clientY;
+                mouseX = tx;
+                mouseY = ty;
+                createTapBurst(tx, ty);
+                triggerHaptic('micro');
+                particles.push(makeMouseStar(window.innerWidth, window.innerHeight, mouseX, mouseY));
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchmove', e => {
+            if (e.touches.length > 0) {
+                const currentX = e.touches[0].clientX;
+                const currentY = e.touches[0].clientY;
+                mouseX = currentX;
+                mouseY = currentY;
+
+                const now = performance.now();
+                if (now - lastMouseStarTime >= CFG.MOUSE_SPAWN_INTERVAL) {
+                    let activeMouseStars = 0;
+                    for (let i = 0; i < particles.length; i++) {
+                        if (particles[i].type === 'mouse') activeMouseStars++;
+                    }
+                    if (activeMouseStars < CFG.MAX_MOUSE_STARS) {
+                        lastMouseStarTime = now;
+                        particles.push(makeMouseStar(window.innerWidth, window.innerHeight, mouseX, mouseY));
+                    }
+                }
+            }
+        }, { passive: true });
+
+        // ── Gyroscope / Jiroskop ──
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', e => {
+                if (e.gamma !== null && e.beta !== null) {
+                    targetTiltX = clamp(e.gamma / 35, -1, 1) * 14;
+                    targetTiltY = clamp((e.beta - 45) / 35, -1, 1) * 14;
+                }
+            }, { passive: true });
+        }
+
+        // Tag chip clicks & Card clicks feedback
+        document.querySelectorAll('.tag-chip').forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                triggerHaptic('tap');
+                createTapBurst(e.clientX || window.innerWidth/2, e.clientY || 300);
+            });
+        });
+
+        // Brand Icon / Logo Click -> Celebratory Firework Show!
+        document.querySelectorAll('.brand, .brand-icon').forEach(brandEl => {
+            brandEl.style.cursor = 'pointer';
+            brandEl.addEventListener('click', (e) => {
+                triggerHaptic('reveal');
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                launchFirework(w * 0.35, h * 0.32);
+                setTimeout(() => launchFirework(w * 0.65, h * 0.28), 350);
+            });
+        });
+
+        // Search button firework
+        const searchBtn = document.querySelector('.search-btn');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', () => {
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                launchFirework(w * 0.5, h * 0.3);
+            });
+        }
+
+        // Ambient gentle firework timer (Every 16-24s, gentle and non-distracting)
+        function scheduleNextAmbientFirework() {
+            const delay = 16000 + Math.random() * 8000;
+            setTimeout(() => {
+                if (document.visibilityState === 'visible') {
+                    const w = window.innerWidth;
+                    const h = window.innerHeight;
+                    const rx = w * (0.2 + Math.random() * 0.6);
+                    const ry = h * (0.2 + Math.random() * 0.28);
+                    launchFirework(rx, ry);
+                }
+                scheduleNextAmbientFirework();
+            }, delay);
+        }
+        scheduleNextAmbientFirework();
+
+        raf();
+    }
+
+    function launchFirework(startX, targetY, colorTheme) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const x = startX !== undefined ? startX : w * 0.5;
+        const ty = targetY !== undefined ? targetY : h * 0.3;
+        const colors = ['#ffd700', '#ec4899', '#c084fc', '#60a5fa', '#34d399', '#f59e0b'];
+        const rocketColor = colorTheme || colors[Math.floor(Math.random() * colors.length)];
+
+        particles.push({
+            type: 'rocket',
+            x: x,
+            y: h + 10,
+            targetY: ty,
+            vx: (Math.random() - 0.5) * 1.4,
+            vy: -8.5 - Math.random() * 2.0,
+            trail: [],
+            size: 3.5,
+            life: 1,
+            decay: 0.001,
+            color: rocketColor,
+            angle: 0,
+            spin: 0,
+            isStar: true
+        });
+    }
+    window.launchFirework = launchFirework;
+
+    function createFireworkBurst(cx, cy, baseColor) {
+        triggerHaptic('micro');
+        const count = 22;
+        const colors = ['#ffd700', '#fff5c0', '#f472b6', '#c084fc', '#60a5fa', '#34d399', '#ffffff'];
+
+        for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.35;
+            const speed = Math.random() * 3.8 + 2.2;
+            const chosenColor = Math.random() > 0.4 ? (baseColor || '#ffd700') : colors[Math.floor(Math.random() * colors.length)];
+
+            particles.push({
+                type: 'firework_spark',
+                x: cx,
+                y: cy,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                size: Math.random() * 2.5 + 2.8,
+                life: 1,
+                decay: 0.016 + Math.random() * 0.012, // ~1.2s smooth fade
+                color: chosenColor,
+                angle: Math.random() * Math.PI * 2,
+                spin: (Math.random() - 0.5) * 0.08,
+                isStar: true
+            });
+        }
+    }
+
+    function createTapBurst(x, y) {
+        const count = 7;
+        const colors = ['#ffd700', '#fff5c0', '#c084fc', '#ec4899', '#60a5fa', '#34d399'];
+        for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.5;
+            const speed = Math.random() * 2.8 + 1.8;
+            particles.push({
+                type: 'tap',
+                x: x,
+                y: y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                size: Math.random() * 2 + 2.8,
+                life: 1,
+                decay: 0.035 + Math.random() * 0.02,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                angle: Math.random() * Math.PI * 2,
+                spin: (Math.random() - 0.5) * 0.1,
+                isStar: true
+            });
+        }
+    }
+
+    function makeStar(w, h) {
+        const colors = ['#ffd700', '#ffffff', '#c084fc', '#f0abfc'];
+        return {
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.15,
+            vy: -Math.random() * 0.2 - 0.04,
+            size: Math.random() * 2 + 0.8,
+            life: 1,
+            decay: 0.0015 + Math.random() * 0.002,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            angle: Math.random() * Math.PI * 2,
+            spin: (Math.random() - 0.5) * 0.012,
+            isStar: Math.random() > 0.6,
+        };
+    }
+
+    function makeMouseStar(w, h, mx, my) {
+        let sx, sy;
+        const edge = Math.floor(Math.random() * 4);
+        switch (edge) {
+            case 0: sx = Math.random() * w; sy = -15; break;
+            case 1: sx = Math.random() * w; sy = h + 15; break;
+            case 2: sx = -15; sy = Math.random() * h; break;
+            case 3: sx = w + 15; sy = Math.random() * h; break;
+        }
+
+        const dx = mx - sx;
+        const dy = my - sy;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const speed = CFG.MOUSE_STAR_SPEED + (Math.random() - 0.5) * 0.35;
+        const colors = ['#ffd700', '#ffea75', '#ec4899', '#c084fc', '#60a5fa', '#34d399'];
+
+        return {
+            type: 'mouse',
+            x: sx,
+            y: sy,
+            trail: [],
+            speed: speed,
+            vx: (dx / dist) * speed,
+            vy: (dy / dist) * speed,
+            tx: mx,
+            ty: my,
+            size: Math.random() * 2 + 3.8,
+            life: 1,
+            decay: 0.0012 + Math.random() * 0.001,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            angle: Math.random() * Math.PI * 2,
+            spin: (Math.random() - 0.5) * 0.06,
+            isStar: true,
+        };
+    }
+
+    function raf(now) {
+        if (!now) now = performance.now();
+        const deltaMs = now - lastFrameTime;
+        lastFrameTime = now;
+        const dt = Math.min(Math.max(deltaMs / 16.667, 0.1), 3.0);
+
+        tiltX += (targetTiltX - tiltX) * 0.08;
+        tiltY += (targetTiltY - tiltY) * 0.08;
+
+        tickParticles(dt);
+        drawParticles();
+
+        requestAnimationFrame(raf);
+    }
+
+    function tickParticles(dt) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        if (Math.random() < 0.04 * dt && particles.length < CFG.PARTICLE_LIMIT) {
+            particles.push(makeStar(w, h));
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const s = particles[i];
+
+            if (s.type === 'rocket') {
+                if (!s.trail) s.trail = [];
+                s.trail.unshift({ x: s.x, y: s.y });
+                if (s.trail.length > 10) s.trail.pop();
+
+                s.vy += 0.045 * dt; // Hafif yerçekimi yavaşlaması
+
+                if (s.y <= s.targetY || s.vy >= -1.0) {
+                    createFireworkBurst(s.x, s.y, s.color);
+                    s.life = 0;
+                }
+            } else if (s.type === 'firework_spark') {
+                s.vx *= Math.pow(0.94, dt);
+                s.vy *= Math.pow(0.94, dt);
+                s.vy += 0.052 * dt; // Zarif yerçekimi süzülmesi
+            } else if (s.type === 'tap') {
+                s.vx *= Math.pow(0.93, dt);
+                s.vy *= Math.pow(0.93, dt);
+            } else if (s.type === 'mouse') {
+                if (!s.trail) s.trail = [];
+                s.trail.unshift({ x: s.x, y: s.y });
+                if (s.trail.length > 16) s.trail.pop();
+
+                const dx = s.tx - s.x;
+                const dy = s.ty - s.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 22) {
+                    s.decay = 0.04;
+                    s.size *= Math.pow(0.95, dt);
+                } else {
+                    const targetAngle = Math.atan2(dy, dx);
+                    const currentAngle = Math.atan2(s.vy, s.vx);
+                    let diff = targetAngle - currentAngle;
+                    while (diff < -Math.PI) diff += Math.PI * 2;
+                    while (diff > Math.PI) diff -= Math.PI * 2;
+
+                    const newAngle = currentAngle + diff * (0.058 * dt);
+                    const speed = s.speed || CFG.MOUSE_STAR_SPEED;
+
+                    s.vx = Math.cos(newAngle) * speed;
+                    s.vy = Math.sin(newAngle) * speed;
+                }
+
+                s.tx = mouseX;
+                s.ty = mouseY;
+            }
+
+            s.x += s.vx * dt;
+            s.y += s.vy * dt;
+            s.life -= s.decay * dt;
+            s.angle += s.spin * dt;
+
+            if (s.life <= 0) particles.splice(i, 1);
+        }
+    }
+
+    function drawParticles() {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+        for (const s of particles) {
+            const alpha = clamp(s.life, 0, 1);
+
+            // Roket veya Mouse Yıldızı Kuyruk İzi
+            if ((s.type === 'mouse' || s.type === 'rocket') && s.trail && s.trail.length > 1) {
+                const len = s.trail.length;
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(s.x, s.y);
+                for (let t = 0; t < len; t++) {
+                    ctx.lineTo(s.trail[t].x, s.trail[t].y);
+                }
+                ctx.strokeStyle = s.color;
+                ctx.lineWidth = s.size * (s.type === 'rocket' ? 0.6 : 0.45);
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.globalAlpha = alpha * (s.type === 'rocket' ? 0.35 : 0.22);
+                ctx.shadowColor = s.color;
+                ctx.shadowBlur = 8;
+                ctx.stroke();
+                ctx.restore();
+
+                for (let t = 0; t < len; t += 2) {
+                    const pt = s.trail[t];
+                    const ratio = 1 - (t / len);
+                    ctx.save();
+                    ctx.globalAlpha = alpha * ratio * 0.32;
+                    ctx.fillStyle = s.color;
+                    ctx.shadowColor = s.color;
+                    ctx.shadowBlur = 6 * ratio;
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, (s.size * 0.4) * ratio, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // Ana Yıldız / Parçacık
+            ctx.save();
+            ctx.globalAlpha = (s.type === 'mouse' || s.type === 'tap' || s.type === 'firework_spark' || s.type === 'rocket') ? alpha * 0.95 : alpha * 0.6;
+            ctx.translate(s.x, s.y);
+            ctx.rotate(s.angle);
+
+            const r = s.size * Math.max(s.life, 0.2);
+
+            if (s.isStar && r > 1.2) {
+                drawMiniStar(ctx, 0, 0, r, s.color);
+            } else {
+                ctx.beginPath();
+                ctx.arc(0, 0, r, 0, Math.PI * 2);
+                ctx.fillStyle = s.color;
+                ctx.shadowColor = s.color;
+                ctx.shadowBlur = s.type === 'mouse' || s.type === 'firework_spark' ? 12 : 6;
+                ctx.fill();
+            }
+
+            ctx.restore();
+        }
+    }
+
+    function drawMiniStar(ctx, cx, cy, r, color) {
+        const ir = r * 0.4;
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+            const rad = i % 2 === 0 ? r : ir;
+            const angle = (i * Math.PI) / 4;
+            const x = cx + rad * Math.cos(angle);
+            const y = cy + rad * Math.sin(angle);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 10;
+        ctx.fill();
+    }
+
+    function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
+
+    document.addEventListener('DOMContentLoaded', init);
+})();
+
+// Haptic Helper
+function triggerHaptic(type) {
+    if (!navigator.vibrate) return;
+    try {
+        if (type === 'reveal') navigator.vibrate([20, 35, 20]);
+        else if (type === 'tap') navigator.vibrate(10);
+        else if (type === 'micro') navigator.vibrate(6);
+    } catch (e) {}
+}
 </script>
 </body>
 </html>
