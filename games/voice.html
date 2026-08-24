@@ -2,190 +2,1056 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sihirli Ses Laboratuvarı 🧪</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sihirli Ses Laboratuvarı 🧪 — Make-A-Wish</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
-        
-        body { 
-            font-family: 'Nunito', sans-serif; 
-            background: #0f172a; color: white; 
-            display: flex; flex-direction: column; align-items: center; 
-            justify-content: center; min-height: 100vh; margin: 0; padding: 20px;
+        :root {
+            --bg: #07001a;
+            --bg-card: rgba(26, 14, 58, 0.75);
+            --border: rgba(180, 100, 255, 0.22);
+            --primary: #9333ea;
+            --primary-light: #c084fc;
+            --accent: #ec4899;
+            --gold: #ffd700;
+            --cyan: #38bdf8;
+            --emerald: #10b981;
+            --rose: #f43f5e;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
         }
 
-        .container { 
-            background: #1e293b; padding: 30px; border-radius: 32px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; 
-            width: 100%; max-width: 450px; border: 2px solid #334155;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        h1 { color: #38bdf8; font-weight: 900; margin-bottom: 5px; font-size: 28px; }
-        .subtitle { opacity: 0.7; font-size: 14px; margin-bottom: 25px; }
-
-        /* Efekt Seçimi */
-        .effect-grid { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; 
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* Ambient Glow Blobs */
+        .bg-glow {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .glow-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: floatGlow 14s ease-in-out infinite alternate;
+        }
+        .glow-1 { width: 340px; height: 340px; background: #9333ea; top: -60px; left: -80px; }
+        .glow-2 { width: 300px; height: 300px; background: #ec4899; bottom: -50px; right: -60px; animation-delay: -5s; }
+        .glow-3 { width: 220px; height: 220px; background: #38bdf8; top: 40%; left: 60%; animation-delay: -8s; opacity: 0.25; }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(25px, 35px) scale(1.12); }
+        }
+
+        /* Main Container */
+        .app-container {
+            width: 100%;
+            max-width: 460px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 26px 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(147, 51, 234, 0.15);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header */
+        .header { margin-bottom: 20px; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(147, 51, 234, 0.18);
+            border: 1px solid rgba(192, 132, 252, 0.3);
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary-light);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .badge i { color: var(--gold); }
+        h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 30%, var(--cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        /* Visualizer Canvas */
+        .visualizer-card {
+            background: rgba(15, 7, 34, 0.6);
+            border: 1px solid rgba(180, 100, 255, 0.15);
+            border-radius: 20px;
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        .viz-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-dim);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .rec-timer {
+            font-family: monospace;
+            font-size: 13px;
+            color: var(--rose);
+            font-weight: 700;
+        }
+        #vizCanvas {
+            width: 100%;
+            height: 52px;
+            display: block;
+            border-radius: 10px;
+        }
+
+        /* Character Effect Grid */
+        .section-title {
+            font-size: 12px;
+            text-align: left;
+            color: var(--primary-light);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .effect-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
         .effect-btn {
-            background: #334155; border: 2px solid transparent; border-radius: 16px;
-            padding: 15px; cursor: pointer; transition: 0.3s; color: white;
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(180, 100, 255, 0.15);
+            border-radius: 16px;
+            padding: 10px 4px;
+            cursor: pointer;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .effect-btn:active { transform: scale(0.94); }
+        .effect-btn.active {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.35), rgba(236, 72, 153, 0.3));
+            border-color: var(--primary-light);
+            box-shadow: 0 0 20px rgba(192, 132, 252, 0.35), inset 0 0 12px rgba(192, 132, 252, 0.2);
+            transform: translateY(-2px);
+        }
+        .effect-btn.active::after {
+            content: '✓';
+            position: absolute;
+            top: 4px;
+            right: 5px;
+            font-size: 9px;
+            font-weight: 900;
+            color: var(--gold);
+        }
+        .effect-icon { font-size: 22px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)); }
+        .effect-name { font-size: 11px; font-weight: 700; line-height: 1.1; }
+
+        /* Main Controls Area */
+        .controls-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
-        .effect-btn.active { 
-            background: #075985; border-color: #38bdf8; transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        /* Large Record Button */
+        .record-btn-outer {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .record-pulse-ring {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.35);
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+        .recording .record-pulse-ring {
+            animation: pulseWave 1.4s infinite cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        @keyframes pulseWave {
+            0% { transform: scale(0.85); opacity: 0.8; }
+            100% { transform: scale(1.5); opacity: 0; }
         }
 
-        .effect-btn span:first-child { font-size: 30px; }
-        .effect-btn span:last-child { font-size: 13px; font-weight: 700; }
-
-        /* Ana Kayıt Butonu */
-        .record-container { margin: 20px 0; }
-        
-        #mainBtn { 
-            width: 100px; height: 100px; border-radius: 50%; border: none;
-            background: #ef4444; color: white; font-size: 40px; cursor: pointer;
-            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-            transition: 0.3s; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto;
+        #mainBtn {
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+        #mainBtn:active { transform: scale(0.92); }
+        #mainBtn.recording {
+            background: linear-gradient(135deg, #10b981, #047857);
+            border-color: rgba(52, 211, 153, 0.5);
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.6);
+            transform: scale(1.06);
         }
 
-        #mainBtn.recording { 
-            animation: pulse 1.5s infinite; background: #22c55e;
-            transform: scale(1.1);
+        /* Action Buttons (Replay & Download) */
+        .side-action-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(180, 100, 255, 0.2);
+            color: var(--text);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .side-action-btn.enabled {
+            opacity: 1;
+            pointer-events: all;
+            background: rgba(147, 51, 234, 0.18);
+            border-color: var(--primary-light);
+            color: var(--gold);
+        }
+        .side-action-btn.enabled:hover {
+            transform: translateY(-2px);
+            background: rgba(147, 51, 234, 0.3);
+            box-shadow: 0 4px 16px rgba(147, 51, 234, 0.3);
+        }
+        .side-action-btn.playing {
+            background: var(--primary);
+            color: white;
+            animation: bouncePlay 0.8s infinite alternate;
+        }
+        @keyframes bouncePlay {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { box-shadow: 0 0 0 25px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        /* Status & Tip Message */
+        .status-box {
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 12px;
         }
+        .status-box.error { color: var(--rose); }
 
-        .status { margin-top: 20px; font-weight: 700; color: #facc15; height: 24px; }
+        .hint-text {
+            font-size: 11.5px;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+        .hint-text i { color: var(--primary-light); }
+
+        /* Mobile specific responsiveness */
+        @media (max-width: 400px) {
+            .app-container { padding: 22px 14px; border-radius: 26px; }
+            .effect-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+            .effect-btn { padding: 8px 2px; }
+            .effect-icon { font-size: 19px; }
+            .effect-name { font-size: 9.5px; }
+            #mainBtn { width: 76px; height: 76px; font-size: 28px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Ses Laboratuvarı 🧪</h1>
-        <div class="subtitle">Bir karakter seç ve sihrini konuştur!</div>
-
-        <div class="effect-grid">
-            <button class="effect-btn active" onclick="setEffect('chipmunk', this)">
-                <span>🐿️</span><span>Sincap Tom</span>
-            </button>
-            <button class="effect-btn" onclick="setEffect('giant', this)">
-                <span>👹</span><span>Koca Dev</span>
-            </button>
-            <button class="effect-btn" onclick="setEffect('robot', this)">
-                <span>🤖</span><span>Robot</span>
-            </button>
-            <button class="effect-btn" onclick="setEffect('alien', this)">
-                <span>👽</span><span>Uzaylı</span>
-            </button>
-        </div>
-
-        <div class="record-container">
-            <button id="mainBtn" onclick="toggleRecording()">🎤</button>
-        </div>
-        
-        <div id="status" class="status">Hazır...</div>
+    <!-- Ambient Lighting Background -->
+    <div class="bg-glow">
+        <div class="glow-circle glow-1"></div>
+        <div class="glow-circle glow-2"></div>
+        <div class="glow-circle glow-3"></div>
     </div>
 
+    <!-- Main App Container -->
+    <main class="app-container">
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Make-A-Wish Türkiye</div>
+            <h1>Ses Laboratuvarı 🧪</h1>
+            <p class="subtitle">Sesini kaydet, sihirli bir karaktere dönüştür!</p>
+        </header>
+
+        <!-- Live Visualizer & Timer -->
+        <div class="visualizer-card">
+            <div class="viz-header">
+                <span id="vizLabel"><i class="fa-solid fa-wave-square"></i> Canlı Ses Dalgası</span>
+                <span class="rec-timer" id="timer">00:00</span>
+            </div>
+            <canvas id="vizCanvas"></canvas>
+        </div>
+
+        <!-- Character Selection Grid -->
+        <div class="section-title">
+            <span>🎭 Bir Karakter Seç</span>
+            <span style="font-size:10px; opacity:0.7;">8 Farklı Ses</span>
+        </div>
+        <div class="effect-grid">
+            <button class="effect-btn active" data-eff="chipmunk" onclick="selectEffect('chipmunk', this)">
+                <span class="effect-icon">🐿️</span>
+                <span class="effect-name">Sincap</span>
+            </button>
+            <button class="effect-btn" data-eff="giant" onclick="selectEffect('giant', this)">
+                <span class="effect-icon">👹</span>
+                <span class="effect-name">Koca Dev</span>
+            </button>
+            <button class="effect-btn" data-eff="robot" onclick="selectEffect('robot', this)">
+                <span class="effect-icon">🤖</span>
+                <span class="effect-name">Robot</span>
+            </button>
+            <button class="effect-btn" data-eff="alien" onclick="selectEffect('alien', this)">
+                <span class="effect-icon">👽</span>
+                <span class="effect-name">Uzaylı</span>
+            </button>
+            <button class="effect-btn" data-eff="cave" onclick="selectEffect('cave', this)">
+                <span class="effect-icon">🏰</span>
+                <span class="effect-name">Mağara</span>
+            </button>
+            <button class="effect-btn" data-eff="radio" onclick="selectEffect('radio', this)">
+                <span class="effect-icon">📻</span>
+                <span class="effect-name">Telsiz</span>
+            </button>
+            <button class="effect-btn" data-eff="fairy" onclick="selectEffect('fairy', this)">
+                <span class="effect-icon">👑</span>
+                <span class="effect-name">Peri Kızı</span>
+            </button>
+            <button class="effect-btn" data-eff="ghost" onclick="selectEffect('ghost', this)">
+                <span class="effect-icon">👻</span>
+                <span class="effect-name">Hayalet</span>
+            </button>
+        </div>
+
+        <!-- Controls: Replay + Big Record + Download -->
+        <div class="controls-wrapper">
+            <!-- Replay Button (Instantly hear saved recording in selected effect) -->
+            <button class="side-action-btn" id="replayBtn" onclick="replayAudio()" title="Seçili Efektle Tekrar Çal">
+                <i class="fa-solid fa-play"></i>
+            </button>
+
+            <!-- Main Record Button -->
+            <div class="record-btn-outer" id="recordOuter">
+                <div class="record-pulse-ring"></div>
+                <button id="mainBtn" onclick="toggleRecording()" title="Kaydı Başlat / Bitir">
+                    <i class="fa-solid fa-microphone" id="btnIcon"></i>
+                </button>
+            </div>
+
+            <!-- Download Button -->
+            <button class="side-action-btn" id="downloadBtn" onclick="downloadWav()" title="Sesi İndir (.wav)">
+                <i class="fa-solid fa-download"></i>
+            </button>
+        </div>
+
+        <!-- Status Message -->
+        <div class="status-box" id="status">
+            <span>Kırmızı butona bas ve konuşmaya başla!</span>
+        </div>
+
+        <!-- Tip Footer -->
+        <p class="hint-text">
+            <i class="fa-solid fa-lightbulb"></i> <strong>İpucu:</strong> Bir kere konuştuktan sonra farklı karakterlere basarak sesini anında diğer karakterlerle de dinleyebilirsin!
+        </p>
+
+    </main>
+
+    <!-- ================================================================
+         ROCK-SOLID CROSS-BROWSER WEB AUDIO ENGINE
+         ================================================================ -->
     <script>
-        let audioCtx, mediaRecorder, audioChunks = [];
+    (function () {
+        'use strict';
+
+        // State
+        let audioCtx = null;
+        let mediaStream = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
         let isRecording = false;
+        let isPlaying = false;
         let selectedEffect = 'chipmunk';
+        let recordedBuffer = null; // Decoded in-memory AudioBuffer
+        let currentSourceNode = null;
+        let timerInterval = null;
+        let recordStartTime = 0;
 
+        // Visualizer State
+        let analyserNode = null;
+        let visualizerStream = null;
+        let animFrameId = null;
+
+        // DOM Elements
         const mainBtn = document.getElementById('mainBtn');
-        const status = document.getElementById('status');
+        const btnIcon = document.getElementById('btnIcon');
+        const recordOuter = document.getElementById('recordOuter');
+        const replayBtn = document.getElementById('replayBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusEl = document.getElementById('status');
+        const timerEl = document.getElementById('timer');
+        const vizCanvas = document.getElementById('vizCanvas');
+        const vizCtx = vizCanvas.getContext('2d');
 
-        function setEffect(eff, btn) {
+        // Setup Canvas Resolution
+        function resizeViz() {
+            const dpr = window.devicePixelRatio || 1;
+            vizCanvas.width = vizCanvas.clientWidth * dpr;
+            vizCanvas.height = vizCanvas.clientHeight * dpr;
+            vizCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        window.addEventListener('resize', resizeViz);
+        resizeViz();
+
+        // ─── Initialize / Resume AudioContext safely on User Gesture ───
+        async function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+            }
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // ─── Haptic Feedback Helper ───
+        function haptic(ms = 15) {
+            if (navigator.vibrate) {
+                try { navigator.vibrate(ms); } catch (e) {}
+            }
+        }
+
+        // ─── Effect Selection ───
+        window.selectEffect = function(eff, btn) {
+            haptic(10);
             selectedEffect = eff;
             document.querySelectorAll('.effect-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
+            if (btn) btn.classList.add('active');
 
-        function initContext() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-        }
+            // If we already have a recorded voice in memory, immediately preview it in the new character!
+            if (recordedBuffer && !isRecording) {
+                playProcessedAudio(recordedBuffer, selectedEffect);
+            }
+        };
 
-        async function toggleRecording() {
-            initContext();
+        // ─── Main Recording Toggle ───
+        window.toggleRecording = async function () {
+            await getAudioContext();
+
             if (!isRecording) {
-                try {
-                    audioChunks = [];
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                    mediaRecorder.onstop = async () => {
-                        const audioBlob = new Blob(audioChunks);
-                        const arrayBuffer = await audioBlob.arrayBuffer();
-                        playWithEffect(arrayBuffer);
-                    };
-                    mediaRecorder.start();
-                    isRecording = true;
-                    mainBtn.classList.add('recording');
-                    mainBtn.innerHTML = "⏹️";
-                    status.textContent = "Dinliyorum... Konuş!";
-                } catch (err) { status.textContent = "Mikrofon izni gerek!"; }
+                startRecording();
             } else {
+                stopRecording();
+            }
+        };
+
+        // ─── Start Recording ───
+        async function startRecording() {
+            try {
+                haptic([20, 40, 20]);
+                stopCurrentPlayback();
+
+                // Request microphone with high quality and echo cancellation
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }
+                });
+
+                // Setup live visualizer during recording
+                setupVisualizer(mediaStream);
+
+                // Find optimal MIME type supported on this device
+                const mimeTypes = [
+                    'audio/webm;codecs=opus',
+                    'audio/webm',
+                    'audio/mp4',
+                    'audio/aac',
+                    'audio/ogg'
+                ];
+                let chosenMime = '';
+                for (const mime of mimeTypes) {
+                    if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(mime)) {
+                        chosenMime = mime;
+                        break;
+                    }
+                }
+
+                const options = chosenMime ? { mimeType: chosenMime } : {};
+                mediaRecorder = new MediaRecorder(mediaStream, options);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data && e.data.size > 0) {
+                        audioChunks.push(e.data);
+                    }
+                };
+
+                mediaRecorder.onstop = async () => {
+                    clearInterval(timerInterval);
+                    const blobType = chosenMime || 'audio/webm';
+                    const audioBlob = new Blob(audioChunks, { type: blobType });
+                    
+                    statusEl.className = 'status-box';
+                    statusEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Sihirli ses işleniyor...';
+
+                    try {
+                        const arrayBuffer = await audioBlob.arrayBuffer();
+                        // Safe decodeAudioData compatible with iOS Safari & modern Chrome
+                        const ctx = await getAudioContext();
+                        ctx.decodeAudioData(arrayBuffer.slice(0), (decoded) => {
+                            recordedBuffer = decoded;
+                            replayBtn.classList.add('enabled');
+                            downloadBtn.classList.add('enabled');
+                            playProcessedAudio(recordedBuffer, selectedEffect);
+                        }, (err) => {
+                            console.error("Decode error:", err);
+                            statusEl.innerHTML = '⚠️ Ses çözülemedi, lütfen tekrar konuşun.';
+                        });
+                    } catch (err) {
+                        console.error("Blob process error:", err);
+                        statusEl.innerHTML = '⚠️ Ses işlenirken bir hata oluştu.';
+                    }
+                };
+
+                mediaRecorder.start(100); // 100ms slices for responsive capture
+                isRecording = true;
+
+                // UI Updates
+                mainBtn.classList.add('recording');
+                recordOuter.classList.add('recording');
+                btnIcon.className = 'fa-solid fa-stop';
+                statusEl.className = 'status-box';
+                statusEl.innerHTML = '<i class="fa-solid fa-circle-dot" style="color:var(--rose);"></i> Dinliyorum... Konuş!';
+
+                // Start Timer
+                recordStartTime = Date.now();
+                timerInterval = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
+                    const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+                    const s = String(elapsed % 60).padStart(2, '0');
+                    timerEl.textContent = `${m}:${s}`;
+                    if (elapsed >= 30) stopRecording(); // 30s auto stop limit
+                }, 200);
+
+            } catch (err) {
+                console.error("Mic access error:", err);
+                statusEl.className = 'status-box error';
+                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Mikrofon izni verilemedi!';
+                haptic(100);
+            }
+        }
+
+        // ─── Stop Recording ───
+        function stopRecording() {
+            if (!isRecording) return;
+            haptic(20);
+            isRecording = false;
+
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                 mediaRecorder.stop();
-                mediaRecorder.stream.getTracks().forEach(t => t.stop());
-                isRecording = false;
-                mainBtn.classList.remove('recording');
-                mainBtn.innerHTML = "🎤";
-                status.textContent = "Sihir yapılıyor...";
             }
+
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+
+            mainBtn.classList.remove('recording');
+            recordOuter.classList.remove('recording');
+            btnIcon.className = 'fa-solid fa-microphone';
         }
 
-        async function playWithEffect(arrayBuffer) {
-            const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-            const source = audioCtx.createBufferSource();
+        // ─── Live Audio Visualizer (Waveform & Spectrum) ───
+        function setupVisualizer(stream) {
+            if (!audioCtx) return;
+            const source = audioCtx.createMediaStreamSource(stream);
+            analyserNode = audioCtx.createAnalyser();
+            analyserNode.fftSize = 128;
+            source.connect(analyserNode);
+
+            const bufferLength = analyserNode.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            function drawViz() {
+                if (!isRecording && !isPlaying) {
+                    drawIdleWave();
+                    return;
+                }
+
+                animFrameId = requestAnimationFrame(drawViz);
+                analyserNode.getByteFrequencyData(dataArray);
+
+                const w = vizCanvas.clientWidth;
+                const h = vizCanvas.clientHeight;
+                vizCtx.clearRect(0, 0, w, h);
+
+                const barWidth = (w / bufferLength) * 1.8;
+                let x = 0;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    const barHeight = (dataArray[i] / 255) * (h * 0.85) + 2;
+
+                    const grad = vizCtx.createLinearGradient(0, h - barHeight, 0, h);
+                    if (isRecording) {
+                        grad.addColorStop(0, '#34d399');
+                        grad.addColorStop(1, '#059669');
+                    } else {
+                        grad.addColorStop(0, '#ffd700');
+                        grad.addColorStop(1, '#9333ea');
+                    }
+
+                    vizCtx.fillStyle = grad;
+                    vizCtx.beginPath();
+                    vizCtx.roundRect(x, h - barHeight, barWidth - 2, barHeight, [3, 3, 0, 0]);
+                    vizCtx.fill();
+
+                    x += barWidth;
+                }
+            }
+
+            drawViz();
+        }
+
+        function drawIdleWave() {
+            const w = vizCanvas.clientWidth;
+            const h = vizCanvas.clientHeight;
+            vizCtx.clearRect(0, 0, w, h);
+
+            vizCtx.strokeStyle = 'rgba(192, 132, 252, 0.25)';
+            vizCtx.lineWidth = 2;
+            vizCtx.beginPath();
+            vizCtx.moveTo(0, h / 2);
+            for (let x = 0; x < w; x += 10) {
+                const y = h / 2 + Math.sin(x * 0.05 + Date.now() * 0.003) * 3;
+                vizCtx.lineTo(x, y);
+            }
+            vizCtx.stroke();
+        }
+        drawIdleWave();
+
+        // ─── Playback Engine with Web Audio DSP Nodes ───
+        async function playProcessedAudio(audioBuffer, effectType) {
+            const ctx = await getAudioContext();
+            stopCurrentPlayback();
+
+            // Create Audio Source
+            const source = ctx.createBufferSource();
             source.buffer = audioBuffer;
+            currentSourceNode = source;
 
-            // Efekt Ayarları
-            switch(selectedEffect) {
-                case 'chipmunk':
-                    source.playbackRate.value = 1.6; // İnce ve Hızlı
-                    source.connect(audioCtx.destination);
+            // Master Gain Node (Prevents clipping & sets volume)
+            const masterGain = ctx.createGain();
+            masterGain.gain.value = 1.0;
+
+            // Connect Master to Visualizer and Speaker Destination
+            analyserNode = ctx.createAnalyser();
+            analyserNode.fftSize = 128;
+            masterGain.connect(analyserNode);
+            analyserNode.connect(ctx.destination);
+
+            // ─── DSP Effect Processing Pipeline ───
+            switch (effectType) {
+
+                // 🐿️ Sincap Tom (Chipmunk / High Pitch & Bright EQ)
+                case 'chipmunk': {
+                    source.playbackRate.value = 1.58; // Swift & Crisp
+                    const highEq = ctx.createBiquadFilter();
+                    highEq.type = "highshelf";
+                    highEq.frequency.value = 2800;
+                    highEq.gain.value = 4;
+
+                    source.connect(highEq);
+                    highEq.connect(masterGain);
                     break;
-                case 'giant':
-                    source.playbackRate.value = 0.75; // Kalın ve Yavaş
-                    source.connect(audioCtx.destination);
+                }
+
+                // 👹 Koca Dev (Giant / Deep Pitch, Low Boost & Slapback Echo)
+                case 'giant': {
+                    source.playbackRate.value = 0.72; // Deep & Thunderous
+
+                    const bassBoost = ctx.createBiquadFilter();
+                    bassBoost.type = "lowshelf";
+                    bassBoost.frequency.value = 220;
+                    bassBoost.gain.value = 7;
+
+                    // Slapback echo for cave presence
+                    const delay = ctx.createDelay();
+                    delay.delayTime.value = 0.12;
+                    const delayGain = ctx.createGain();
+                    delayGain.gain.value = 0.35;
+
+                    source.connect(bassBoost);
+                    bassBoost.connect(masterGain);
+                    bassBoost.connect(delay);
+                    delay.connect(delayGain);
+                    delayGain.connect(masterGain);
                     break;
-                case 'robot':
-                    // Robot için distorsiyon (basit metalik ses)
-                    const biquadFilter = audioCtx.createBiquadFilter();
-                    biquadFilter.type = "peaking";
-                    biquadFilter.frequency.value = 1500;
-                    biquadFilter.Q.value = 20;
-                    biquadFilter.gain.value = 25;
-                    source.connect(biquadFilter);
-                    biquadFilter.connect(audioCtx.destination);
+                }
+
+                // 🤖 Robot (Cyborg Ring Modulator & Metallic Resonance)
+                case 'robot': {
+                    const osc = ctx.createOscillator();
+                    osc.type = "sine";
+                    osc.frequency.value = 65; // 65Hz ring modulation carrier
+
+                    const modGain = ctx.createGain();
+                    modGain.gain.value = 0.85;
+
+                    const bandpass = ctx.createBiquadFilter();
+                    bandpass.type = "bandpass";
+                    bandpass.frequency.value = 1400;
+                    bandpass.Q.value = 3.2;
+
+                    osc.connect(modGain.gain);
+                    source.connect(modGain);
+                    modGain.connect(bandpass);
+                    bandpass.connect(masterGain);
+                    osc.start();
                     break;
-                case 'alien':
-                    // Uzaylı için hızlı titreme (Tremolo)
-                    const gainNode = audioCtx.createGain();
-                    const lfo = audioCtx.createOscillator();
-                    lfo.type = 'sine';
-                    lfo.frequency.value = 20; // 20Hz titreme
-                    lfo.connect(gainNode.gain);
+                }
+
+                // 👽 Uzaylı (Alien Tremolo & Harmonic Modulation)
+                case 'alien': {
+                    source.playbackRate.value = 1.25;
+
+                    const lfo = ctx.createOscillator();
+                    lfo.type = "sine";
+                    lfo.frequency.value = 16; // 16Hz tremolo speed
+
+                    const tremoloGain = ctx.createGain();
+                    tremoloGain.gain.value = 0.55;
+
+                    const lfoDepth = ctx.createGain();
+                    lfoDepth.gain.value = 0.45;
+
+                    lfo.connect(lfoDepth);
+                    lfoDepth.connect(tremoloGain.gain);
+
+                    source.connect(tremoloGain);
+                    tremoloGain.connect(masterGain);
                     lfo.start();
-                    source.playbackRate.value = 1.3;
-                    source.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
                     break;
+                }
+
+                // 🏰 Mağara (Cathedral / Long Rich Echo)
+                case 'cave': {
+                    const delay1 = ctx.createDelay();
+                    delay1.delayTime.value = 0.28;
+                    const delayFeedback = ctx.createGain();
+                    delayFeedback.gain.value = 0.42;
+
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = "lowpass";
+                    filter.frequency.value = 3000;
+
+                    source.connect(masterGain);
+                    source.connect(delay1);
+                    delay1.connect(filter);
+                    filter.connect(delayFeedback);
+                    delayFeedback.connect(delay1);
+                    filter.connect(masterGain);
+                    break;
+                }
+
+                // 📻 Telsiz (Walkie-Talkie Bandpass & Distortion)
+                case 'radio': {
+                    const hp = ctx.createBiquadFilter();
+                    hp.type = "highpass";
+                    hp.frequency.value = 450;
+
+                    const lp = ctx.createBiquadFilter();
+                    lp.type = "lowpass";
+                    lp.frequency.value = 2800;
+
+                    // Light waveshaper drive
+                    const shaper = ctx.createWaveShaper();
+                    shaper.curve = makeDistortionCurve(18);
+
+                    source.connect(hp);
+                    hp.connect(lp);
+                    lp.connect(shaper);
+                    shaper.connect(masterGain);
+                    break;
+                }
+
+                // 👑 Peri Kızı (Fairy Princess Shimmer & Pitch)
+                case 'fairy': {
+                    source.playbackRate.value = 1.42;
+
+                    const sparkle = ctx.createBiquadFilter();
+                    sparkle.type = "peaking";
+                    sparkle.frequency.value = 3500;
+                    sparkle.gain.value = 6;
+
+                    const delay = ctx.createDelay();
+                    delay.delayTime.value = 0.16;
+                    const delayGain = ctx.createGain();
+                    delayGain.gain.value = 0.3;
+
+                    source.connect(sparkle);
+                    sparkle.connect(masterGain);
+                    sparkle.connect(delay);
+                    delay.connect(delayGain);
+                    delayGain.connect(masterGain);
+                    break;
+                }
+
+                // 👻 Hayalet (Ghostly Slow Glide & Hollow Reverb)
+                case 'ghost': {
+                    source.playbackRate.value = 0.82;
+
+                    const ghostDelay = ctx.createDelay();
+                    ghostDelay.delayTime.value = 0.35;
+                    const ghostFeedback = ctx.createGain();
+                    ghostFeedback.gain.value = 0.5;
+
+                    const ghostFilter = ctx.createBiquadFilter();
+                    ghostFilter.type = "bandpass";
+                    ghostFilter.frequency.value = 800;
+                    ghostFilter.Q.value = 1.8;
+
+                    source.connect(masterGain);
+                    source.connect(ghostDelay);
+                    ghostDelay.connect(ghostFilter);
+                    ghostFilter.connect(ghostFeedback);
+                    ghostFeedback.connect(ghostDelay);
+                    ghostFilter.connect(masterGain);
+                    break;
+                }
+
+                default:
+                    source.connect(masterGain);
             }
 
-            source.start();
-            status.textContent = "🔊 Dinle bakalım!";
-            source.onended = () => status.textContent = "Hazır!";
+            // Start Audio
+            source.start(0);
+            isPlaying = true;
+            replayBtn.classList.add('playing');
+            statusEl.className = 'status-box';
+            statusEl.innerHTML = '🔊 <strong>Dinle bakalım!</strong>';
+
+            // Start Visualizer Loop during playback
+            const bufferLength = analyserNode.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            function drawPlaybackViz() {
+                if (!isPlaying) return;
+                requestAnimationFrame(drawPlaybackViz);
+                analyserNode.getByteFrequencyData(dataArray);
+
+                const w = vizCanvas.clientWidth;
+                const h = vizCanvas.clientHeight;
+                vizCtx.clearRect(0, 0, w, h);
+
+                const barWidth = (w / bufferLength) * 1.8;
+                let x = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    const barHeight = (dataArray[i] / 255) * (h * 0.85) + 2;
+                    const grad = vizCtx.createLinearGradient(0, h - barHeight, 0, h);
+                    grad.addColorStop(0, '#ffd700');
+                    grad.addColorStop(1, '#c084fc');
+                    vizCtx.fillStyle = grad;
+                    vizCtx.beginPath();
+                    vizCtx.roundRect(x, h - barHeight, barWidth - 2, barHeight, [3, 3, 0, 0]);
+                    vizCtx.fill();
+                    x += barWidth;
+                }
+            }
+            drawPlaybackViz();
+
+            source.onended = () => {
+                isPlaying = false;
+                replayBtn.classList.remove('playing');
+                statusEl.innerHTML = '✨ Hazır! Başka bir karaktere basabilirsin.';
+                drawIdleWave();
+            };
         }
+
+        // ─── Stop Current Playback ───
+        function stopCurrentPlayback() {
+            if (currentSourceNode) {
+                try { currentSourceNode.stop(); } catch (e) {}
+                currentSourceNode = null;
+            }
+            isPlaying = false;
+            replayBtn.classList.remove('playing');
+        }
+
+        // ─── Replay Button Action ───
+        window.replayAudio = function () {
+            haptic(15);
+            if (recordedBuffer) {
+                playProcessedAudio(recordedBuffer, selectedEffect);
+            }
+        };
+
+        // ─── Distortion Curve Generator (for Walkie Talkie) ───
+        function makeDistortionCurve(amount) {
+            const k = typeof amount === 'number' ? amount : 50;
+            const n_samples = 44100;
+            const curve = new Float32Array(n_samples);
+            const deg = Math.PI / 180;
+            for (let i = 0; i < n_samples; ++i) {
+                const x = (i * 2) / n_samples - 1;
+                curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+            }
+            return curve;
+        }
+
+        // ─── WAV File Exporter / Downloader ───
+        window.downloadWav = function () {
+            if (!recordedBuffer) return;
+            haptic(20);
+
+            // Render current buffer to WAV
+            const wavBlob = audioBufferToWav(recordedBuffer);
+            const url = URL.createObjectURL(wavBlob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `sihirli-ses-${selectedEffect}.wav`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 500);
+
+            statusEl.innerHTML = '💾 Ses başarıyla indirildi!';
+        };
+
+        // Simple pure JS AudioBuffer to PCM 16-bit WAV converter
+        function audioBufferToWav(buffer) {
+            const numChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const format = 1; // PCM
+            const bitDepth = 16;
+            
+            const bytesPerSample = bitDepth / 8;
+            const blockAlign = numChannels * bytesPerSample;
+            const length = buffer.length * blockAlign;
+            const bufferArray = new ArrayBuffer(44 + length);
+            const view = new DataView(bufferArray);
+
+            function writeString(offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + length, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, format, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * blockAlign, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitDepth, true);
+            writeString(36, 'data');
+            view.setUint32(40, length, true);
+
+            const channels = [];
+            for (let i = 0; i < numChannels; i++) {
+                channels.push(buffer.getChannelData(i));
+            }
+
+            let offset = 44;
+            for (let i = 0; i < buffer.length; i++) {
+                for (let channel = 0; channel < numChannels; channel++) {
+                    let sample = channels[channel][i];
+                    sample = Math.max(-1, Math.min(1, sample));
+                    view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+                    offset += 2;
+                }
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+    })();
     </script>
 </body>
 </html>
