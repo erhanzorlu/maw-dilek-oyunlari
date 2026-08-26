@@ -64,20 +64,56 @@
       width: 268px;
       background: var(--card);
       border-right: 1px solid var(--border);
-      padding: 28px 16px;
+      padding: 24px 16px;
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
       z-index: 20;
       position: relative;
+      transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+    }
+
+    .sidebar.collapsed {
+      margin-left: -268px;
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding: 0 4px;
+    }
+
+    .sidebar-toggle-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--primary-light);
+      border: 1px solid #c8e0ff;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-toggle-btn:hover {
+      background: var(--primary);
+      color: white;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 0 8px;
-      margin-bottom: 24px;
+      padding: 0;
+      margin-bottom: 0;
     }
 
     .brand-icon {
@@ -256,10 +292,10 @@
     }
 
     .hamburger {
-      display: none;
+      display: flex;
       width: 38px;
       height: 38px;
-      background: none;
+      background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       align-items: center;
@@ -271,7 +307,9 @@
     }
 
     .hamburger:hover {
-      background: var(--bg);
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: #bbd8ff;
     }
 
     .page-title {
@@ -568,26 +606,51 @@
     }
 
     .btn-toggle-filter {
-      padding: 11px 16px;
-      border: 1.5px solid var(--border);
+      padding: 11px 18px;
+      border: 1.5px solid #b2d7ff;
       border-radius: var(--radius-sm);
       font-family: 'Nunito', sans-serif;
       font-size: 13.5px;
       font-weight: 700;
-      background: var(--card);
-      color: var(--text);
+      background: linear-gradient(135deg, #f0f7ff 0%, #e2efff 100%);
+      color: var(--primary-dark);
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0, 101, 195, 0.12);
     }
 
-    .btn-toggle-filter:hover,
-    .btn-toggle-filter.active {
-      border-color: var(--primary);
+    .btn-toggle-filter i {
+      font-size: 16px;
       color: var(--primary);
-      background: var(--primary-light);
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .btn-toggle-filter:hover {
+      background: linear-gradient(135deg, var(--primary) 0%, #004f9e 100%);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px rgba(0, 101, 195, 0.28);
+      transform: translateY(-1px);
+    }
+
+    .btn-toggle-filter:hover i {
+      color: #ffffff;
+      transform: rotate(15deg);
+    }
+
+    .btn-toggle-filter.active {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #ffffff;
+      border-color: var(--primary-dark);
+      box-shadow: 0 4px 14px rgba(0, 61, 122, 0.32);
+    }
+
+    .btn-toggle-filter.active i {
+      color: var(--gold);
+      transform: rotate(90deg);
     }
 
     .filter-count-badge {
@@ -597,6 +660,13 @@
       font-weight: 800;
       padding: 2px 7px;
       border-radius: 12px;
+      transition: all 0.2s;
+    }
+
+    .btn-toggle-filter:hover .filter-count-badge,
+    .btn-toggle-filter.active .filter-count-badge {
+      background: white;
+      color: var(--primary-dark);
     }
 
     /* DETAYLI KART FİLTRELEME PANELİ STİLLERİ */
@@ -1676,12 +1746,15 @@
           height: 100vh;
           z-index: 30;
           transform: translateX(-100%);
+          margin-left: 0 !important;
+          opacity: 1 !important;
           transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
           box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
         }
 
         .sidebar.open {
           transform: translateX(0);
+          pointer-events: all;
         }
 
         .sidebar-overlay {
@@ -1776,6 +1849,357 @@
           margin-bottom: 10px;
         }
       }
+
+      /* ─── 4 ADIMLI İNTERAKTİF SPOTLIGHT SAYFA TURU (SVG CUTOUT) ─── */
+      .tour-svg-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9998;
+        pointer-events: auto;
+      }
+
+      .tour-svg-overlay.active {
+        display: block;
+      }
+
+      body.tour-in-progress .hero-strip,
+      body.tour-in-progress .top-bar,
+      body.tour-in-progress #sidebar {
+        filter: blur(3px);
+        opacity: 0.7;
+        transition: filter 0.3s ease, opacity 0.3s ease;
+      }
+
+      .tour-active-target {
+        position: relative !important;
+        z-index: 10001 !important;
+        filter: none !important;
+        opacity: 1 !important;
+        box-shadow: 0 0 0 3.5px #0065c3, 0 0 30px rgba(0, 101, 195, 0.65) !important;
+        border-radius: var(--radius-sm) !important;
+        transition: box-shadow 0.25s ease !important;
+      }
+
+      .tour-card {
+        display: none;
+        position: fixed;
+        width: 390px;
+        max-width: calc(100vw - 32px);
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 24px 60px rgba(0, 30, 80, 0.38), 0 0 0 1px rgba(0, 101, 195, 0.15);
+        z-index: 10002;
+        padding: 22px;
+        animation: tourCardPop 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+        transition: top 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.1), left 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+      }
+
+      .tour-card.active {
+        display: block;
+      }
+
+      #tourRectBorder {
+        animation: borderGlowPulse 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes borderGlowPulse {
+        0% { stroke: #0065c3; stroke-width: 2.5px; }
+        100% { stroke: #38bdf8; stroke-width: 3.5px; }
+      }
+
+      @media (max-width: 640px) {
+        .tour-card {
+          width: auto !important;
+          left: 12px !important;
+          right: 12px !important;
+          max-width: calc(100vw - 24px) !important;
+          padding: 15px 16px !important;
+          border-radius: 18px !important;
+          box-shadow: 0 16px 45px rgba(0, 30, 80, 0.42), 0 0 0 1px rgba(0, 101, 195, 0.2) !important;
+        }
+
+        .tour-card-header {
+          margin-bottom: 10px !important;
+          gap: 8px !important;
+        }
+
+        .tour-step-badge {
+          font-size: 11px !important;
+          padding: 4px 10px !important;
+        }
+
+        .tour-card-body {
+          gap: 12px !important;
+          margin-bottom: 12px !important;
+        }
+
+        .tour-icon-wrap {
+          width: 38px !important;
+          height: 38px !important;
+          font-size: 19px !important;
+          border-radius: 11px !important;
+        }
+
+        .tour-title {
+          font-size: 14.5px !important;
+          margin-bottom: 3px !important;
+        }
+
+        .tour-desc {
+          font-size: 12px !important;
+          line-height: 1.42 !important;
+        }
+
+        .tour-card-footer {
+          padding-top: 10px !important;
+        }
+
+        .tour-btn {
+          font-size: 12.5px !important;
+          padding: 7px 12px !important;
+        }
+
+        .btn-tour-start span {
+          display: none;
+        }
+
+        .btn-tour-start {
+          padding: 8px 10px;
+        }
+      }
+
+      @keyframes tourCardPop {
+        from {
+          opacity: 0;
+          transform: scale(0.92) translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .tour-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .tour-step-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 800;
+        padding: 5px 12px;
+        border-radius: 20px;
+        letter-spacing: 0.02em;
+      }
+
+      .tour-progress-bar {
+        flex: 1;
+        height: 6px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .tour-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), #38bdf8);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+      }
+
+      .tour-close-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        background: #f1f5f9;
+        color: var(--muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        transition: 0.18s;
+      }
+
+      .tour-close-btn:hover {
+        background: #fee2e2;
+        color: #ef4444;
+      }
+
+      .tour-card-body {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        margin-bottom: 20px;
+      }
+
+      .tour-icon-wrap {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        background: var(--primary-light);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 14px rgba(0, 101, 195, 0.16);
+      }
+
+      .tour-content-text {
+        flex: 1;
+      }
+
+      .tour-title {
+        font-size: 16.5px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 6px;
+        line-height: 1.3;
+      }
+
+      .tour-desc {
+        font-size: 13.5px;
+        color: #475569;
+        line-height: 1.55;
+      }
+
+      .tour-dont-show {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        color: #64748b;
+        cursor: pointer;
+        user-select: none;
+        font-weight: 600;
+        transition: color 0.2s;
+      }
+
+      .tour-dont-show:hover {
+        color: var(--text);
+      }
+
+      .tour-dont-show input[type="checkbox"] {
+        accent-color: var(--primary);
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .tour-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .tour-btn {
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: 'Nunito', sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: 0.2s;
+      }
+
+      .tour-btn-skip {
+        background: none;
+        color: var(--muted);
+        padding: 6px 10px;
+      }
+
+      .tour-btn-skip:hover {
+        color: var(--text);
+        text-decoration: underline;
+      }
+
+      .tour-btn-group {
+        display: flex;
+        gap: 8px;
+      }
+
+      .tour-btn-prev {
+        background: #f1f5f9;
+        color: var(--text);
+        padding: 8px 14px;
+      }
+
+      .tour-btn-prev:hover:not(:disabled) {
+        background: #e2e8f0;
+      }
+
+      .tour-btn-prev:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .tour-btn-next {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: #ffffff;
+        padding: 8px 18px;
+        box-shadow: 0 3px 10px rgba(0, 101, 195, 0.25);
+      }
+
+      .tour-btn-next:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 16px rgba(0, 101, 195, 0.35);
+      }
+
+      .btn-tour-start {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 15px;
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border: 1.5px solid #fde68a;
+        border-radius: var(--radius-sm);
+        color: #b45309;
+        font-family: 'Nunito', sans-serif;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+      }
+
+      .btn-tour-start i {
+        color: #d97706;
+        font-size: 16px;
+      }
+
+      .btn-tour-start:hover {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #ffffff;
+        border-color: #d97706;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.32);
+      }
+
+      .btn-tour-start:hover i {
+        color: #ffffff;
+      }
   </style>
 </head>
 
@@ -1786,14 +2210,17 @@
 
   <!-- SOL MENÜ -->
   <div class="sidebar" id="sidebar">
-    <button class="sidebar-close" id="sidebarClose" onclick="closeSidebar()"><i class="ph-bold ph-x"></i></button>
-
-    <div class="brand">
-      <div class="brand-icon"><i class="ph-fill ph-star"></i></div>
-      <div class="brand-text">Make-A-Wish <span>Türkiye</span></div>
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-icon"><i class="ph-fill ph-star"></i></div>
+        <div class="brand-text">Make-A-Wish <span>Türkiye</span></div>
+      </div>
+      <button class="sidebar-toggle-btn" id="sidebarCloseBtn" onclick="toggleSidebar()" title="Menüyü Gizle">
+        <i class="ph-bold ph-caret-left"></i>
+      </button>
     </div>
 
-    <a href="guvenli-mekanlar.html" class="menu-item"><i class="ph-fill ph-shield-check"></i> Güvenli Mekanlar</a>
+    <a href="guvenli-mekanlar.html" class="menu-item"><i class="ph-fill ph-shield-check"></i> Çocuk Dostu Mekanlar</a>
     <a href="duyurular.html" class="menu-item active"><i class="ph-fill ph-megaphone"></i> Duyurular</a>
     <a href="wishpedia.html" class="menu-item"><i class="ph-fill ph-sparkle"></i> Wishpedia</a>
     <a href="hastane-dilek.html" class="menu-item"><i class="ph-fill ph-hospital"></i> Hastane Dilek Alımı</a>
@@ -1805,13 +2232,16 @@
     <!-- TOP BAR -->
     <div class="top-bar">
       <div class="top-bar-left">
-        <button class="hamburger" id="hamburgerBtn" onclick="openSidebar()"><i class="ph-bold ph-list"></i></button>
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" title="Menüyü Aç / Kapat"><i class="ph-bold ph-list"></i></button>
         <div class="page-title">
           <i class="ph-fill ph-megaphone" style="color:var(--primary);font-size:22px;"></i>
           <span>Duyurular & Eğitimler</span>
         </div>
       </div>
       <div class="top-bar-right">
+        <button type="button" class="btn-tour-start" onclick="startTour()" title="Sayfayı 4 Adımda Keşfet">
+          <i class="ph-fill ph-sparkle"></i> <span>Sayfa Turu</span>
+        </button>
         <div class="icon-btn"><i class="ph-fill ph-bell"></i>
           <div class="dot"></div>
         </div>
@@ -3233,15 +3663,49 @@ Dilek tasarım ve hazırlık sürecinde aktif olabilecek olan`;
     }
 
     // ─── SIDEBAR & TOAST KONTROLÜ ─────────────────────────────────────────────────
+    function toggleSidebar() {
+      const sb = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile) {
+        sb.classList.toggle('open');
+        if (overlay) overlay.classList.toggle('open');
+      } else {
+        sb.classList.toggle('collapsed');
+      }
+    }
+
     function openSidebar() {
-      document.getElementById('sidebar').classList.add('open');
-      document.getElementById('sidebarOverlay').classList.add('open');
+      const sb = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (window.innerWidth <= 768) {
+        sb.classList.add('open');
+        if (overlay) overlay.classList.add('open');
+      } else {
+        sb.classList.remove('collapsed');
+      }
     }
 
     function closeSidebar() {
-      document.getElementById('sidebar').classList.remove('open');
-      document.getElementById('sidebarOverlay').classList.remove('open');
+      const sb = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (window.innerWidth <= 768) {
+        sb.classList.remove('open');
+        if (overlay) overlay.classList.remove('open');
+      } else {
+        sb.classList.add('collapsed');
+      }
     }
+
+    window.addEventListener('resize', () => {
+      const sb = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (window.innerWidth > 768) {
+        if (overlay) overlay.classList.remove('open');
+        if (sb) sb.classList.remove('open');
+      }
+    });
 
     function showToast(msg) {
       const t = document.getElementById('toast');
@@ -3250,9 +3714,405 @@ Dilek tasarım ve hazırlık sürecinde aktif olabilecek olan`;
       setTimeout(() => t.classList.remove('show'), 3200);
     }
 
-    // ─── İLK YÜKLEME ─────────────────────────────────────────────────────────────
+    // ─── 4 ADIMLI İNTERAKTİF SAYFA TURU (SPOTLIGHT ONBOARDING) ────────────────────
+    let currentTourIndex = 0;
+    let isTourActive = false;
+    let tourAnimFrameId = null;
+
+    const tourSteps = [
+      {
+        step: 1,
+        title: "1. Yayın Türleri & Kategori Sekmeleri",
+        desc: "Make-A-Wish duyurularını ilgi alanınıza göre listeleyin: 'Tüm Yayınlar', 'Dilek Duyuruları', 'Eğitim Duyuruları' veya 'Genel Duyurular' sekmeleri arasında hızlıca geçiş yapabilirsiniz.",
+        icon: "ph-fill ph-squares-four",
+        iconBg: "linear-gradient(135deg, #0065c3, #003d7a)",
+        iconColor: "#ffffff",
+        getTarget: () => document.querySelector('.tab-bar'),
+        beforeShow: () => {}
+      },
+      {
+        step: 2,
+        title: "2. Hızlı Arama & Detaylı Filtreleme",
+        desc: "Anahtar kelimelerle arama yapabilir veya 'Detaylı Filtrele' butonuna tıklayarak şehir, tarih, yaş grubu ve araba ihtiyacı gibi gelişmiş filtreleri açıp kapatabilirsiniz.",
+        icon: "ph-bold ph-sliders-horizontal",
+        iconBg: "linear-gradient(135deg, #e0edff, #b9d8fd)",
+        iconColor: "#0065c3",
+        getTarget: () => document.getElementById('btnToggleFilter') || document.querySelector('.filter-row'),
+        beforeShow: () => {}
+      },
+      {
+        step: 3,
+        title: "3. Detaylı Kart Filtreleme Paneli",
+        desc: "Açılan bu özel panelden il, ilçe, başlangıç-bitiş tarihleri, çocuk yaş grubu, ilgi alanı (örneğin Harry Potter, Marvel, Lego vb.) ve araç gereksinimine göre tam aradığınız görevleri süzebilirsiniz.",
+        icon: "ph-fill ph-funnel",
+        iconBg: "linear-gradient(135deg, #fffbeb, #fef3c7)",
+        iconColor: "#d97706",
+        getTarget: () => document.getElementById('advancedFilterPanel'),
+        beforeShow: () => {
+          const panel = document.getElementById('advancedFilterPanel');
+          const btn = document.getElementById('btnToggleFilter');
+          if (panel && panel.classList.contains('hidden')) {
+            panel.classList.remove('hidden');
+            if (btn) btn.classList.add('active');
+          }
+        }
+      },
+      {
+        step: 4,
+        title: "4. Dilek Ekibine Katıl",
+        desc: "Dilek gerçekleştirme duyurularında aktif rol almak ve bir çocuğumuzun hayaline ortak olmak istediğinizde, kartın altındaki bu butona tıklayarak başvurunuzu anında gerçekleştirebilirsiniz!",
+        icon: "ph-fill ph-hand-heart",
+        iconBg: "linear-gradient(135deg, #10b981, #059669)",
+        iconColor: "#ffffff",
+        getTarget: () => {
+          const btn = document.querySelector('.anc-card.dilek-card .btn-join') || document.querySelector('.btn-join') || document.querySelector('.anc-card');
+          return btn;
+        },
+        beforeShow: () => {
+          const tabBtn = document.querySelector('.tab-btn:nth-child(2)') || document.querySelector('.tab-btn');
+          if (tabBtn && typeof setTab === 'function') {
+            setTab('dilek', tabBtn);
+          }
+        }
+      }
+    ];
+
+    function trackTargetElement(targetEl, durationMs = 700) {
+      if (tourAnimFrameId) cancelAnimationFrame(tourAnimFrameId);
+      const startTime = performance.now();
+
+      function loop(now) {
+        if (!isTourActive) return;
+        updateSpotlightAndCard(targetEl);
+        if (now - startTime < durationMs) {
+          tourAnimFrameId = requestAnimationFrame(loop);
+        }
+      }
+      tourAnimFrameId = requestAnimationFrame(loop);
+    }
+
+    function startTour() {
+      currentTourIndex = 0;
+      isTourActive = true;
+      document.body.classList.add('tour-in-progress');
+      document.getElementById('tourSvgOverlay').classList.add('active');
+      document.getElementById('tourCard').classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      renderTourStep();
+    }
+
+    function renderTourStep() {
+      if (!isTourActive) return;
+      const current = tourSteps[currentTourIndex];
+      if (!current) return;
+
+      if (typeof current.beforeShow === 'function') {
+        current.beforeShow();
+      }
+
+      setTimeout(() => {
+        const targetEl = current.getTarget();
+        if (!targetEl) return;
+
+        const isMobile = window.innerWidth <= 640;
+
+        // Kart İçeriğini Güncelle
+        document.getElementById('tourCurrentStep').textContent = current.step;
+        document.getElementById('tourProgressFill').style.width = `${(current.step / tourSteps.length) * 100}%`;
+        document.getElementById('tourTitle').textContent = current.title;
+        document.getElementById('tourDesc').textContent = current.desc;
+
+        const iconEl = document.getElementById('tourIcon');
+        iconEl.className = current.icon;
+        iconEl.style.color = current.iconColor;
+
+        const iconWrap = document.getElementById('tourIconWrap');
+        iconWrap.style.background = current.iconBg;
+
+        const prevBtn = document.getElementById('tourBtnPrev');
+        prevBtn.disabled = currentTourIndex === 0;
+
+        const nextBtn = document.getElementById('tourBtnNext');
+        if (currentTourIndex === tourSteps.length - 1) {
+          nextBtn.innerHTML = `<span>Turu Tamamla 🎉</span> <i class="ph-bold ph-check"></i>`;
+          nextBtn.style.background = 'linear-gradient(135deg, var(--green), #059669)';
+        } else {
+          nextBtn.innerHTML = `<span>Devam Et</span> <i class="ph-bold ph-arrow-right"></i>`;
+          nextBtn.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
+        }
+
+        // Akıllı Kaydırma: Mobilde hedefin üstte rahat görünmesi için
+        if (isMobile) {
+          if (currentTourIndex === 2) {
+            // Detaylı filtre paneli için üste al
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        } else {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Kaydırma animasyonu boyunca 60 FPS gerçek zamanlı takip et
+        trackTargetElement(targetEl, 700);
+      }, 50);
+    }
+
+    function updateSpotlightAndCard(targetEl) {
+      if (!targetEl || !isTourActive) return;
+
+      // Önceki odaklanan öğeyi temizle, yenisini yükselt & aydınlat
+      document.querySelectorAll('.tour-active-target').forEach(el => el.classList.remove('tour-active-target'));
+      targetEl.classList.add('tour-active-target');
+
+      const rect = targetEl.getBoundingClientRect();
+      const isMobile = window.innerWidth <= 640;
+      const pad = (targetEl.id === 'btnToggleFilter' || targetEl.classList.contains('btn-join')) ? 6 : (isMobile ? 5 : 8);
+
+      const winW = window.innerWidth;
+      const winH = window.innerHeight;
+
+      const x = Math.max(0, rect.left - pad);
+      const y = Math.max(0, rect.top - pad);
+      const w = Math.min(winW - x, rect.width + pad * 2);
+      const h = Math.min(winH - y, rect.height + pad * 2);
+      const r = Math.min(14, Math.min(w / 2, h / 2));
+
+      // 1. SVG Cutout Mask (Hole is 100% transparent, crystal clear!)
+      const pathData = `
+        M 0 0
+        L ${winW} 0
+        L ${winW} ${winH}
+        L 0 ${winH}
+        Z
+        M ${x + r} ${y}
+        H ${x + w - r}
+        Q ${x + w} ${y} ${x + w} ${y + r}
+        V ${y + h - r}
+        Q ${x + w} ${y + h} ${x + w - r} ${y + h}
+        H ${x + r}
+        Q ${x} ${y + h} ${x} ${y + h - r}
+        V ${y + r}
+        Q ${x} ${y} ${x + r} ${y}
+        Z
+      `;
+
+      const pathEl = document.getElementById('tourPath');
+      if (pathEl) pathEl.setAttribute('d', pathData);
+
+      const borderEl = document.getElementById('tourRectBorder');
+      if (borderEl) {
+        borderEl.setAttribute('x', x);
+        borderEl.setAttribute('y', y);
+        borderEl.setAttribute('width', w);
+        borderEl.setAttribute('height', h);
+        borderEl.setAttribute('rx', r);
+        borderEl.setAttribute('ry', r);
+      }
+
+      // 2. Bilgi Kartını Konumlandır (Mobilde ve Masaüstünde Akıllı Yerleşim)
+      const card = document.getElementById('tourCard');
+      if (!card) return;
+
+      if (isMobile) {
+        card.style.width = 'calc(100vw - 24px)';
+        card.style.left = '12px';
+        card.style.right = '12px';
+        card.style.maxWidth = 'calc(100vw - 24px)';
+
+        const cardH = card.offsetHeight || 190;
+        // Hedef ekranın alt yarısındaysa kartı üste, üst yarısındaysa alta koy
+        if (y > winH * 0.45) {
+          const top = Math.max(12, y - cardH - 10);
+          card.style.top = `${top}px`;
+          card.style.bottom = 'auto';
+        } else {
+          const top = y + h + 10;
+          if (top + cardH > winH - 12) {
+            card.style.top = 'auto';
+            card.style.bottom = '12px';
+          } else {
+            card.style.top = `${top}px`;
+            card.style.bottom = 'auto';
+          }
+        }
+      } else {
+        const cardW = Math.min(390, winW - 32);
+        const cardH = card.offsetHeight || 220;
+
+        let top = y + h + 16;
+        if (top + cardH > winH - 16) {
+          top = Math.max(16, y - cardH - 16);
+        }
+
+        let left = x + (w / 2) - (cardW / 2);
+        if (left < 16) left = 16;
+        if (left + cardW > winW - 16) left = winW - cardW - 16;
+
+        card.style.width = '390px';
+        card.style.maxWidth = 'calc(100vw - 32px)';
+        card.style.left = `${left}px`;
+        card.style.right = 'auto';
+        card.style.top = `${top}px`;
+        card.style.bottom = 'auto';
+      }
+    }
+
+    function nextTourStep() {
+      if (currentTourIndex < tourSteps.length - 1) {
+        currentTourIndex++;
+        renderTourStep();
+      } else {
+        finishTour();
+      }
+    }
+
+    function prevTourStep() {
+      if (currentTourIndex > 0) {
+        currentTourIndex--;
+        renderTourStep();
+      }
+    }
+
+    function skipTour() {
+      const dontShow = document.getElementById('tourDontShowCheck')?.checked;
+      if (dontShow) {
+        localStorage.setItem('maw_announcements_tour_seen', 'true');
+      }
+      closeTour();
+    }
+
+    function closeTour() {
+      const dontShow = document.getElementById('tourDontShowCheck')?.checked;
+      if (dontShow) {
+        localStorage.setItem('maw_announcements_tour_seen', 'true');
+      }
+      isTourActive = false;
+      if (tourAnimFrameId) {
+        cancelAnimationFrame(tourAnimFrameId);
+        tourAnimFrameId = null;
+      }
+      document.body.classList.remove('tour-in-progress');
+      document.querySelectorAll('.tour-active-target').forEach(el => el.classList.remove('tour-active-target'));
+      
+      const svgEl = document.getElementById('tourSvgOverlay');
+      if (svgEl) svgEl.classList.remove('active');
+      
+      const card = document.getElementById('tourCard');
+      if (card) card.classList.remove('active');
+      
+      document.body.style.overflow = '';
+    }
+
+    function finishTour() {
+      localStorage.setItem('maw_announcements_tour_seen', 'true');
+      closeTour();
+      showToast('🌟 Harika! Duyurular sayfası tanıtım turunu tamamladınız.');
+    }
+
+    // Scroll ve yeniden boyutlandırmalarda anlık takip
+    const mainContentEl = document.querySelector('.main-content');
+    if (mainContentEl) {
+      mainContentEl.addEventListener('scroll', () => {
+        if (isTourActive) {
+          const current = tourSteps[currentTourIndex];
+          if (current) {
+            const targetEl = current.getTarget();
+            if (targetEl) updateSpotlightAndCard(targetEl);
+          }
+        }
+      }, { passive: true });
+    }
+
+    window.addEventListener('resize', () => {
+      if (isTourActive) {
+        const current = tourSteps[currentTourIndex];
+        if (current) updateSpotlightAndCard(current.getTarget());
+      }
+    });
+
+    window.addEventListener('scroll', () => {
+      if (isTourActive) {
+        const current = tourSteps[currentTourIndex];
+        if (current) {
+          const targetEl = current.getTarget();
+          if (targetEl) updateSpotlightAndCard(targetEl);
+        }
+      }
+    }, { passive: true });
+
+    document.addEventListener('keydown', (e) => {
+      if (!isTourActive) return;
+      if (e.key === 'Escape') closeTour();
+      else if (e.key === 'ArrowRight' || e.key === 'Enter') nextTourStep();
+      else if (e.key === 'ArrowLeft') prevTourStep();
+    });
+
+    // ─── İLK YÜKLEME & OTOMATİK TUR BAŞLATMA ──────────────────────────────────────
     renderAnnouncements();
+
+    // Sayfa açıldığında otomatik başlat ("Bir daha gösterme" işaretlenmediyse)
+    window.addEventListener('DOMContentLoaded', () => {
+      const hasSeenTour = localStorage.getItem('maw_announcements_tour_seen');
+      if (!hasSeenTour) {
+        setTimeout(() => {
+          startTour();
+        }, 550);
+      }
+    });
   </script>
+
+  <!-- INTERACTIVE ONBOARDING TOUR OVERLAY (SVG CUTOUT) -->
+  <svg id="tourSvgOverlay" class="tour-svg-overlay" onclick="closeTour()">
+    <defs>
+      <filter id="tourBorderGlow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+    <path id="tourPath" d="" fill="rgba(15, 23, 42, 0.72)" fill-rule="evenodd" />
+    <rect id="tourRectBorder" x="0" y="0" width="0" height="0" rx="12" ry="12" fill="none" stroke="#0065c3" stroke-width="3" filter="url(#tourBorderGlow)" />
+  </svg>
+  <div class="tour-card" id="tourCard">
+    <div class="tour-card-header">
+      <div class="tour-step-badge" id="tourStepBadge">
+        <i class="ph-fill ph-sparkle"></i> Adım <span id="tourCurrentStep">1</span> / 4
+      </div>
+      <div class="tour-progress-bar">
+        <div class="tour-progress-fill" id="tourProgressFill" style="width: 25%;"></div>
+      </div>
+      <button type="button" class="tour-close-btn" onclick="closeTour()" title="Turu Kapat">
+        <i class="ph-bold ph-x"></i>
+      </button>
+    </div>
+
+    <div class="tour-card-body">
+      <div class="tour-icon-wrap" id="tourIconWrap">
+        <i class="ph-fill ph-squares-four" id="tourIcon"></i>
+      </div>
+      <div class="tour-content-text">
+        <h3 class="tour-title" id="tourTitle">Yayın Türleri & Sekmeler</h3>
+        <p class="tour-desc" id="tourDesc">Duyuruları kategorilerine göre filtreleyin: Tüm yayınlar, acil dilek alımları, gönüllü eğitimleri veya dernek içi genel duyuruları tek tıkla listeleyebilirsiniz.</p>
+      </div>
+    </div>
+
+    <div class="tour-card-footer">
+      <label class="tour-dont-show" title="İşaretlerseniz sayfa her açıldığında tur otomatik başlamaz">
+        <input type="checkbox" id="tourDontShowCheck">
+        <span>Bir daha gösterme</span>
+      </label>
+      <div class="tour-btn-group">
+        <button type="button" class="tour-btn tour-btn-skip" onclick="skipTour()">Turu Geç</button>
+        <button type="button" class="tour-btn tour-btn-prev" id="tourBtnPrev" onclick="prevTourStep()">
+          <i class="ph-bold ph-arrow-left"></i> Geri
+        </button>
+        <button type="button" class="tour-btn tour-btn-next" id="tourBtnNext" onclick="nextTourStep()">
+          <span>Devam Et</span> <i class="ph-bold ph-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

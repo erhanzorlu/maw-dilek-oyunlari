@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Make-A-Wish | Güvenli Mekanlar</title>
+<title>Make-A-Wish | Çocuk Dostu Mekanlar</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
@@ -29,11 +29,43 @@
   .sidebar {
     width: 268px; background: var(--card);
     border-right: 1px solid var(--border);
-    padding: 28px 16px;
+    padding: 24px 16px;
     display: flex; flex-direction: column;
     flex-shrink: 0; z-index: 20; position: relative;
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
   }
-  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; margin-bottom: 32px; }
+  .sidebar.collapsed {
+    margin-left: -268px;
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 0 4px;
+  }
+  .sidebar-toggle-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--primary-light);
+    border: 1px solid #c8e0ff;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+  }
+  .sidebar-toggle-btn:hover {
+    background: var(--primary);
+    color: white;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0; margin-bottom: 0; }
   .brand-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--gold); flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,101,195,0.3); }
   .brand-text { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--primary-dark); line-height: 1.2; }
   .brand-text span { display: block; font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 1px; }
@@ -62,8 +94,8 @@
   /* ─── TOP BAR ─── */
   .top-bar { background: var(--card); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); gap: 16px; flex-shrink: 0; position: relative; }
   .top-bar-left { display: flex; align-items: center; gap: 12px; }
-  .hamburger { display: none; width: 38px; height: 38px; background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); align-items: center; justify-content: center; cursor: pointer; color: var(--text); font-size: 18px; transition: 0.2s; }
-  .hamburger:hover { background: var(--bg); }
+  .hamburger { display: flex; width: 38px; height: 38px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); align-items: center; justify-content: center; cursor: pointer; color: var(--text); font-size: 18px; transition: 0.2s; }
+  .hamburger:hover { background: var(--primary-light); color: var(--primary); border-color: #bbd8ff; }
   .page-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; }
   .top-bar-right { display: flex; align-items: center; gap: 8px; }
   .icon-btn { width: 38px; height: 38px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--muted); transition: 0.18s; position: relative; }
@@ -262,8 +294,8 @@
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 768px) {
-    .sidebar { position: fixed; top: 0; left: 0; height: 100vh; z-index: 30; transform: translateX(-100%); transition: transform 0.32s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 24px rgba(0,0,0,0.1); }
-    .sidebar.open { transform: translateX(0); }
+    .sidebar { position: fixed; top: 0; left: 0; height: 100vh; z-index: 30; transform: translateX(-100%); margin-left: 0 !important; opacity: 1 !important; transition: transform 0.32s cubic-bezier(0.4,0,0.2,1); box-shadow: 4px 0 24px rgba(0,0,0,0.1); }
+    .sidebar.open { transform: translateX(0); pointer-events: all; }
     .sidebar-overlay { display: block; }
     .sidebar-close { display: flex !important; }
     .hamburger { display: flex; }
@@ -300,14 +332,17 @@
 
 <!-- SOL MENÜ -->
 <div class="sidebar" id="sidebar">
-  <button class="sidebar-close" id="sidebarClose" onclick="closeSidebar()"><i class="ph-bold ph-x"></i></button>
-
-  <div class="brand">
-    <div class="brand-icon"><i class="ph-fill ph-star"></i></div>
-    <div class="brand-text">Make-A-Wish <span>Türkiye</span></div>
+  <div class="sidebar-header">
+    <div class="brand">
+      <div class="brand-icon"><i class="ph-fill ph-star"></i></div>
+      <div class="brand-text">Make-A-Wish <span>Türkiye</span></div>
+    </div>
+    <button class="sidebar-toggle-btn" id="sidebarCloseBtn" onclick="toggleSidebar()" title="Menüyü Gizle">
+      <i class="ph-bold ph-caret-left"></i>
+    </button>
   </div>
 
-  <a href="guvenli-mekanlar.html" class="menu-item active"><i class="ph-fill ph-shield-check"></i> Güvenli Mekanlar</a>
+  <a href="guvenli-mekanlar.html" class="menu-item active"><i class="ph-fill ph-shield-check"></i> Çocuk Dostu Mekanlar</a>
   <a href="duyurular.html" class="menu-item"><i class="ph-fill ph-megaphone"></i> Duyurular</a>
   <a href="wishpedia.html" class="menu-item"><i class="ph-fill ph-sparkle"></i> Wishpedia</a>
   <a href="hastane-dilek.html" class="menu-item"><i class="ph-fill ph-hospital"></i> Hastane Dilek Alımı</a>
@@ -319,10 +354,10 @@
   <!-- TOP BAR -->
   <div class="top-bar">
     <div class="top-bar-left">
-      <button class="hamburger" id="hamburgerBtn" onclick="openSidebar()"><i class="ph-bold ph-list"></i></button>
+      <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" title="Menüyü Aç / Kapat"><i class="ph-bold ph-list"></i></button>
       <div class="page-title">
         <i class="ph-fill ph-shield-check" style="color:var(--green);font-size:22px;"></i>
-        <span>Güvenli Mekanlar</span>
+        <span>Çocuk Dostu Mekanlar</span>
       </div>
     </div>
     <div class="top-bar-right">
@@ -339,7 +374,7 @@
     <!-- HERO -->
     <div class="hero-strip">
       <div class="hero-text">
-        <h2>Güvenli & Onaylı Mekanlar 🛡️</h2>
+        <h2>Çocuk Dostu & Onaylı Mekanlar 🛡️</h2>
         <p>Topluluğumuzun önerdiği ve titizlikle incelenmiş mekanlar. Dilek çocukları için her zaman en güvenli ortamı sunuyoruz.</p>
       </div>
       <div class="hero-stats">
@@ -1052,6 +1087,51 @@ document.getElementById('searchInput').addEventListener('input', filterCards);
 document.getElementById('filterIl').addEventListener('change', ()=>{ updateFilterIlce(); filterCards(); });
 document.getElementById('filterIlce').addEventListener('change', filterCards);
 document.getElementById('filterTur').addEventListener('change', filterCards);
+
+// ─── SIDEBAR KONTROLÜ ────────────────────────────────────────────────────────
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const isMobile = window.innerWidth <= 768;
+
+  if (isMobile) {
+    sb.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('open');
+  } else {
+    sb.classList.toggle('collapsed');
+  }
+}
+
+function openSidebar() {
+  const sb = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (window.innerWidth <= 768) {
+    sb.classList.add('open');
+    if (overlay) overlay.classList.add('open');
+  } else {
+    sb.classList.remove('collapsed');
+  }
+}
+
+function closeSidebar() {
+  const sb = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (window.innerWidth <= 768) {
+    sb.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
+  } else {
+    sb.classList.add('collapsed');
+  }
+}
+
+window.addEventListener('resize', () => {
+  const sb = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (window.innerWidth > 768) {
+    if (overlay) overlay.classList.remove('open');
+    if (sb) sb.classList.remove('open');
+  }
+});
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 buildIlSelects();
