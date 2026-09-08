@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Wishpedia — Bilgi & İlham Rehberi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,14 +58,24 @@
       --ts: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; }
+    *, *:before, *:after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { 
+      scroll-behavior: smooth; 
+      font-size: 16px; 
+      overflow-x: hidden; 
+      max-width: 100vw;
+      width: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
     body {
       background-color: var(--bg-page);
       color: var(--text-secondary);
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       line-height: 1.7;
       overflow-x: hidden;
+      max-width: 100vw;
+      width: 100%;
+      position: relative;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
@@ -615,11 +625,17 @@
     .tcm { color: #64748b; font-style: italic; }
 
     /* TABLE */
+    .table-responsive {
+      width: 100%;
+      max-width: 100%;
+      margin: 20px 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
     .armor-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
-      margin: 20px 0;
       border-radius: var(--radius-md);
       overflow: hidden;
       border: 1px solid var(--border-light);
@@ -647,6 +663,18 @@
     }
     .armor-table tr:hover td {
       background: #f8fafc;
+    }
+    .code-pill {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      background: #f1f5f9;
+      padding: 3px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      max-width: 100%;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+      white-space: normal;
     }
     .ab {
       display: inline-block;
@@ -815,28 +843,30 @@
       font-family: 'Fira Code', monospace;
       font-size: 0.82rem;
       margin-top: 12px;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .diff-box span {
+      display: block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
     }
     .diff-add {
       background: rgba(16, 185, 129, 0.2);
       color: #34d399;
-      padding: 3px 8px;
-      border-radius: 4px;
-      margin-bottom: 4px;
-      display: block;
     }
     .diff-rm {
       background: rgba(244, 63, 94, 0.2);
       color: #fb7185;
-      padding: 3px 8px;
-      border-radius: 4px;
-      margin-bottom: 4px;
-      display: block;
       text-decoration: line-through;
     }
     .diff-unch {
       color: #94a3b8;
-      padding: 3px 8px;
-      display: block;
     }
 
     /* FOOTER */
@@ -863,13 +893,202 @@
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
-      .hero-title { font-size: 2.1rem; }
-      .hero-sub { font-size: 1rem; }
-      .glass-card { padding: 24px; }
-      .sticky-nav { display: none; }
-      .flow-steps { flex-direction: column; }
-      .flow-arrow { transform: rotate(90deg); margin: 4px 0; }
-      .lang-toggle { top: 12px; right: 12px; }
+      .doc-container {
+        padding: 14px 12px 60px;
+        width: 100%;
+        overflow-x: hidden;
+      }
+      .lang-toggle {
+        top: 10px;
+        right: 12px;
+        padding: 3px;
+      }
+      .lang-btn {
+        padding: 4px 10px;
+        font-size: 0.76rem;
+      }
+      .hero-section {
+        padding: 48px 6px 28px;
+        width: 100%;
+      }
+      .hero-title {
+        font-size: 1.8rem;
+        line-height: 1.25;
+        word-break: break-word;
+      }
+      .hero-sub {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+      .audience-banner {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .audience-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+      }
+      .sticky-nav {
+        top: 8px;
+        padding: 5px 8px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        max-width: 100%;
+      }
+      .nav-link {
+        padding: 6px 12px;
+        font-size: 0.78rem;
+      }
+      .glass-card {
+        padding: 20px 14px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .section-header {
+        gap: 12px;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+      }
+      .section-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+      }
+      .section-title-wrap h2 {
+        font-size: 1.32rem;
+      }
+      .section-title-wrap p {
+        font-size: 0.85rem;
+      }
+      .sb-banner {
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px 14px;
+      }
+      .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .fcard {
+        padding: 18px 14px;
+      }
+      .sc-card {
+        padding: 18px 14px;
+      }
+      .sc-badge {
+        position: static;
+        display: inline-block;
+        margin-bottom: 12px;
+      }
+      .flow-steps {
+        flex-direction: column;
+        gap: 8px;
+        margin: 14px 0;
+      }
+      .flow-step {
+        width: 100%;
+        min-width: 100%;
+        padding: 14px 10px;
+      }
+      .flow-arrow {
+        transform: rotate(90deg);
+        margin: 2px 0;
+      }
+      .code-wrap {
+        border-radius: 10px;
+        margin: 16px 0;
+      }
+      pre {
+        padding: 14px;
+        font-size: 0.78rem;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* SECTION 6: TABLE TO CARDS TRANSFORMATION */
+      .table-responsive {
+        margin: 14px 0;
+      }
+      .armor-table,
+      .armor-table thead,
+      .armor-table tbody,
+      .armor-table tr,
+      .armor-table td {
+        display: block;
+        width: 100% !important;
+        box-sizing: border-box;
+      }
+      .armor-table {
+        border: none;
+        background: transparent;
+        border-radius: 0;
+      }
+      .armor-table thead {
+        display: none;
+      }
+      .armor-table tr {
+        background: #ffffff;
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        margin-bottom: 14px;
+        padding: 16px 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      }
+      .armor-table tr:hover td {
+        background: transparent;
+      }
+      .armor-table td {
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--border-light);
+        font-size: 0.88rem;
+        background: transparent;
+        line-height: 1.55;
+      }
+      .armor-table td.col-threat {
+        padding-top: 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .armor-table td:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .armor-table td[data-col]::before {
+        content: attr(data-col);
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+      }
+
+      /* SECTION 7 LAB */
+      .sandbox {
+        padding: 18px 14px;
+        border-radius: 12px;
+      }
+      .diff-box {
+        padding: 12px;
+        font-size: 0.76rem;
+      }
+      .diff-box span {
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+      .tag-input {
+        font-size: 0.84rem;
+        padding: 10px 12px;
+      }
     }
   </style>
 </head>
@@ -1137,42 +1356,44 @@
         <p data-i18n="s6s"></p>
       </div>
     </div>
-    <table class="armor-table">
-      <thead>
-        <tr>
-          <th style="width:22%" data-i18n="th1"></th>
-          <th style="width:38%" data-i18n="th2"></th>
-          <th style="width:40%" data-i18n="th3"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="ab ab-c">1. SQL Cascade</span></td>
-          <td data-i18n="r1d"></td>
-          <td><span class="ab ab-s">Restrict</span><br><span data-i18n="r1a"></span></td>
-        </tr>
-        <tr>
-          <td><span class="ab ab-c">2. Race Condition</span></td>
-          <td data-i18n="r2d"></td>
-          <td><span class="ab ab-s">Unique Index</span><br><code style="font-size:.78rem;background:#f1f5f9;padding:2px 6px;border-radius:4px">CREATE UNIQUE INDEX ... WHERE Status=1 AND IsDeleted=false</code></td>
-        </tr>
-        <tr>
-          <td><span class="ab ab-c">3. XSS</span></td>
-          <td data-i18n="r3d"></td>
-          <td><span class="ab ab-s">Strongly-Typed DTO</span><br><span data-i18n="r3a"></span></td>
-        </tr>
-        <tr>
-          <td><span class="ab ab-c">4. RAM Overflow</span></td>
-          <td data-i18n="r4d"></td>
-          <td><span class="ab ab-s">DTO Projection</span><br><span data-i18n="r4a"></span></td>
-        </tr>
-        <tr>
-          <td><span class="ab ab-c">5. DB Spam</span></td>
-          <td data-i18n="r5d"></td>
-          <td><span class="ab ab-s">FluentValidation</span><br><span data-i18n="r5a"></span></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="armor-table">
+        <thead>
+          <tr>
+            <th style="width:25%" data-i18n="th1"></th>
+            <th style="width:37%" data-i18n="th2"></th>
+            <th style="width:38%" data-i18n="th3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-threat"><span class="ab ab-c">1. SQL Cascade</span></td>
+            <td data-col-key="th2" data-i18n="r1d"></td>
+            <td data-col-key="th3"><span class="ab ab-s">Restrict</span><br><span data-i18n="r1a"></span></td>
+          </tr>
+          <tr>
+            <td class="col-threat"><span class="ab ab-c">2. Race Condition</span></td>
+            <td data-col-key="th2" data-i18n="r2d"></td>
+            <td data-col-key="th3"><span class="ab ab-s">Unique Index</span><br><code class="code-pill">CREATE UNIQUE INDEX ... WHERE Status=1 AND IsDeleted=false</code></td>
+          </tr>
+          <tr>
+            <td class="col-threat"><span class="ab ab-c">3. XSS</span></td>
+            <td data-col-key="th2" data-i18n="r3d"></td>
+            <td data-col-key="th3"><span class="ab ab-s">Strongly-Typed DTO</span><br><span data-i18n="r3a"></span></td>
+          </tr>
+          <tr>
+            <td class="col-threat"><span class="ab ab-c">4. RAM Overflow</span></td>
+            <td data-col-key="th2" data-i18n="r4d"></td>
+            <td data-col-key="th3"><span class="ab ab-s">DTO Projection</span><br><span data-i18n="r4a"></span></td>
+          </tr>
+          <tr>
+            <td class="col-threat"><span class="ab ab-c">5. DB Spam</span></td>
+            <td data-col-key="th2" data-i18n="r5d"></td>
+            <td data-col-key="th3"><span class="ab ab-s">FluentValidation</span><br><span data-i18n="r5a"></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <!-- 7. İNTERAKTİF LAB -->
@@ -1520,6 +1741,10 @@ function switchLang(l) {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.getAttribute('data-i18n');
     if (L[l][k] !== undefined) el.innerHTML = L[l][k];
+  });
+  document.querySelectorAll('.armor-table td[data-col-key]').forEach(td => {
+    const k = td.getAttribute('data-col-key');
+    if (L[l][k] !== undefined) td.setAttribute('data-col', L[l][k]);
   });
   swCat(cat);
   valTags();
