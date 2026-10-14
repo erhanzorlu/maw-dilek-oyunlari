@@ -784,6 +784,21 @@
                         </label>
                     </div>
 
+                    <!-- Auto-Jump (Doodle Jump Mode) Toggle -->
+                    <div class="w-full text-left bg-[#001845]/90 p-3 rounded-2xl border border-[#41B6E6]/40 flex items-center justify-between">
+                        <div>
+                            <div class="font-display text-xs font-bold text-white flex items-center gap-1.5">
+                                <span>Otomatik Zıplama (Doodle Jump)</span>
+                                <span class="text-xs">🦘</span>
+                            </div>
+                            <div class="text-[10px] text-sky-200">Platforma basınca kendi zıplar, sadece yön verirsin.</div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input id="chkAutoJumpEnabled" type="checkbox" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                        </label>
+                    </div>
+
                     <button id="btnSaveSettings" class="maw-btn-giant w-full py-2.5 rounded-xl font-display text-sm font-bold tracking-wide cursor-pointer flex items-center justify-center gap-1.5 shadow">
                         <span>AYARLARI KAYDET</span>
                         <span>✓</span>
@@ -1118,6 +1133,7 @@
         const STORAGE_KEY_BREAK_ENABLED = 'maw_icytower_break_enabled_v1';
         const STORAGE_KEY_BREAK_INTERVAL = 'maw_icytower_break_interval_v1';
         const STORAGE_KEY_HAPTICS = 'maw_dilekkulesi_haptics_v1';
+        const STORAGE_KEY_AUTO_JUMP = 'maw_dilekkulesi_autojump_v1';
 
         let savedHighScore = parseInt(localStorage.getItem(STORAGE_KEY_SCORE) || '0', 10);
         let savedHighFloor = parseInt(localStorage.getItem(STORAGE_KEY_FLOOR) || '0', 10);
@@ -1126,6 +1142,8 @@
         let isBreakFeatureEnabled = localStorage.getItem(STORAGE_KEY_BREAK_ENABLED) !== 'false';
         let breakIntervalSeconds = parseInt(localStorage.getItem(STORAGE_KEY_BREAK_INTERVAL) || '150', 10);
         let isHapticsEnabled = localStorage.getItem(STORAGE_KEY_HAPTICS) !== 'false';
+        let isAutoJumpEnabled = localStorage.getItem(STORAGE_KEY_AUTO_JUMP) === 'true';
+        let touchJumpHoldTimer = 0; // Sustained jump arc guarantee for mobile taps
 
         // Haptic Feedback Engine
         function triggerHaptic(duration = 10) {
@@ -1319,14 +1337,15 @@
             });
         }
 
-        // Multi-touch Independent Jump Button
+        // Multi-touch Independent Jump Button (Sustained Jump Arc Guaranteed)
         if (btnTouchJump) {
             btnTouchJump.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 if (jumpTouchId === null && e.changedTouches.length > 0) {
                     jumpTouchId = e.changedTouches[0].identifier;
                     keys.jump = true;
-                    keys.jumpBuffer = 0.16;
+                    keys.jumpBuffer = 0.28;
+                    touchJumpHoldTimer = 0.28; // Guarantees full, buoyant jump arc!
                     btnTouchJump.classList.add('active-press');
                     triggerHaptic(12);
                 }
@@ -1350,7 +1369,8 @@
             btnTouchJump.addEventListener('mousedown', (e) => {
                 e.preventDefault();
                 keys.jump = true;
-                keys.jumpBuffer = 0.16;
+                keys.jumpBuffer = 0.28;
+                touchJumpHoldTimer = 0.28;
                 btnTouchJump.classList.add('active-press');
                 triggerHaptic(12);
             });
@@ -1360,7 +1380,9 @@
             });
         }
 
-        // Direct On-Canvas Touch Zones (Tap-to-Move & Multi-finger Jump)
+        // Direct On-Canvas Touch Zones:
+        // Left half (normX < 0.50): Steering Left / Right (Slideable)
+        // Right half (normX >= 0.50): Giant Jump Touch Zone with Sustained Jump Arc!
         if (canvasWrapper) {
             canvasWrapper.addEventListener('touchstart', (e) => {
                 if (gameState !== 'PLAYING') return;
@@ -1372,29 +1394,39 @@
                     const t = e.changedTouches[i];
                     const normX = (t.clientX - rect.left) / rect.width;
 
-                    let side = 'center';
-                    if (normX < 0.42) {
-                        side = 'left';
-                        keys.left = true;
-                        if (btnTouchLeft) btnTouchLeft.classList.add('active-press');
-                        triggerHaptic(8);
-                    } else if (normX > 0.58) {
-                        side = 'right';
-                        keys.right = true;
-                        if (btnTouchRight) btnTouchRight.classList.add('active-press');
-                        triggerHaptic(8);
+                    let side = 'jump';
+                    if (normX < 0.50) {
+                        // Left Half of Screen: Direction control
+                        if (normX < 0.25) {
+                            side = 'left';
+                            keys.left = true;
+                            keys.right = false;
+                            if (btnTouchLeft) btnTouchLeft.classList.add('active-press');
+                            if (btnTouchRight) btnTouchRight.classList.remove('active-press');
+                            triggerHaptic(8);
+                        } else {
+                            side = 'right';
+                            keys.right = true;
+                            keys.left = false;
+                            if (btnTouchRight) btnTouchRight.classList.add('active-press');
+                            if (btnTouchLeft) btnTouchLeft.classList.remove('active-press');
+                            triggerHaptic(8);
+                        }
                     } else {
-                        side = 'center';
+                        // Right Half of Screen: Full Jump Zone!
+                        side = 'jump';
                         keys.jump = true;
-                        keys.jumpBuffer = 0.16;
+                        keys.jumpBuffer = 0.28;
+                        touchJumpHoldTimer = 0.28;
                         if (btnTouchJump) btnTouchJump.classList.add('active-press');
                         triggerHaptic(12);
                     }
 
-                    // Multi-finger tap: 2nd finger on screen automatically triggers jump!
-                    if (canvasTouchMap.size >= 1 && side !== 'center') {
+                    // Multi-finger tap: 2nd finger anywhere on screen triggers sustained jump!
+                    if (canvasTouchMap.size >= 1 && side !== 'jump') {
                         keys.jump = true;
-                        keys.jumpBuffer = 0.16;
+                        keys.jumpBuffer = 0.28;
+                        touchJumpHoldTimer = 0.28;
                         if (btnTouchJump) btnTouchJump.classList.add('active-press');
                         triggerHaptic(12);
                     }
@@ -1415,29 +1447,40 @@
                     const entry = canvasTouchMap.get(t.identifier);
                     if (!entry) continue;
 
-                    // Swipe up detection to jump!
+                    // Swipe up detection anywhere on screen to launch high jump!
                     const dy = t.clientY - entry.startY;
-                    if (dy < -35 && !keys.jump) {
+                    if (dy < -30 && !keys.jump) {
                         keys.jump = true;
-                        keys.jumpBuffer = 0.16;
+                        keys.jumpBuffer = 0.28;
+                        touchJumpHoldTimer = 0.28;
                         if (btnTouchJump) btnTouchJump.classList.add('active-press');
                         triggerHaptic(12);
                     }
 
-                    // Seamless slide across screen left/right
+                    // Seamless slide across left half of screen
                     const normX = (t.clientX - rect.left) / rect.width;
-                    if (normX < 0.42 && !keys.left) {
-                        keys.left = true;
-                        keys.right = false;
-                        if (btnTouchLeft) btnTouchLeft.classList.add('active-press');
-                        if (btnTouchRight) btnTouchRight.classList.remove('active-press');
-                        entry.side = 'left';
-                    } else if (normX > 0.58 && !keys.right) {
-                        keys.right = true;
-                        keys.left = false;
-                        if (btnTouchRight) btnTouchRight.classList.add('active-press');
-                        if (btnTouchLeft) btnTouchLeft.classList.remove('active-press');
-                        entry.side = 'right';
+                    if (normX < 0.50) {
+                        if (normX < 0.25 && !keys.left) {
+                            keys.left = true;
+                            keys.right = false;
+                            if (btnTouchLeft) btnTouchLeft.classList.add('active-press');
+                            if (btnTouchRight) btnTouchRight.classList.remove('active-press');
+                            entry.side = 'left';
+                        } else if (normX >= 0.25 && !keys.right) {
+                            keys.right = true;
+                            keys.left = false;
+                            if (btnTouchRight) btnTouchRight.classList.add('active-press');
+                            if (btnTouchLeft) btnTouchLeft.classList.remove('active-press');
+                            entry.side = 'right';
+                        }
+                    } else if (entry.side !== 'jump') {
+                        // Moved into right half: trigger jump!
+                        entry.side = 'jump';
+                        keys.jump = true;
+                        keys.jumpBuffer = 0.28;
+                        touchJumpHoldTimer = 0.28;
+                        if (btnTouchJump) btnTouchJump.classList.add('active-press');
+                        triggerHaptic(12);
                     }
                 }
             }, { passive: false });
@@ -1453,7 +1496,7 @@
                         } else if (entry.side === 'right') {
                             keys.right = false;
                             if (btnTouchRight) btnTouchRight.classList.remove('active-press');
-                        } else if (entry.side === 'center') {
+                        } else if (entry.side === 'jump') {
                             keys.jump = false;
                             if (btnTouchJump) btnTouchJump.classList.remove('active-press');
                         }
@@ -2060,16 +2103,28 @@
                 if (player.coyoteTimer > 0) {
                     player.coyoteTimer -= dt;
                 }
+                // Sustained touch jump timer decay
+                if (touchJumpHoldTimer > 0) {
+                    touchJumpHoldTimer -= dt;
+                }
+                // Jump buffer timer decay
+                if (keys.jumpBuffer > 0) {
+                    keys.jumpBuffer -= dt;
+                }
 
                 // Can jump if currently on ground OR within 140ms coyote grace window!
                 const canJump = player.onGround || player.coyoteTimer > 0;
 
+                // Auto-jump condition: When Doodle Jump mode is enabled and player is grounded
+                const isAutoJumpTrigger = isAutoJumpEnabled && player.onGround;
+
                 // Jump execution (Momentum-based!)
-                if (canJump && (keys.jump || keys.jumpBuffer > 0)) {
+                if (canJump && (keys.jump || keys.jumpBuffer > 0 || isAutoJumpTrigger)) {
                     keys.jumpBuffer = 0;
                     player.coyoteTimer = 0;
                     player.onGround = false;
                     player.currentPlatform = null;
+                    touchJumpHoldTimer = 0.28; // Guarantees buoyant 280ms upward arc without early cut!
 
                     // Base jump velocity + horizontal momentum bonus
                     const baseJumpV = 575;
@@ -2091,8 +2146,10 @@
                     }
                 }
 
-                // Variable Jump Cut: Releasing Space/Touch early softly dampens ascent (great for kids!)
-                if (!keys.jump && player.vy < -260) {
+                // Variable Jump Cut: Releasing Space/Touch early softly dampens ascent (great for keyboard hops)
+                // When touchJumpHoldTimer > 0, touch taps are guaranteed a full, soaring arc!
+                const isJumpSustained = keys.jump || touchJumpHoldTimer > 0;
+                if (!isJumpSustained && player.vy < -260) {
                     player.vy += 1350 * dt;
                 }
 
@@ -4506,9 +4563,32 @@
         const btnSaveSettings = document.getElementById('btnSaveSettings');
         const chkBreakEnabled = document.getElementById('chkBreakEnabled');
         const chkHapticsEnabled = document.getElementById('chkHapticsEnabled');
+        const chkAutoJumpEnabled = document.getElementById('chkAutoJumpEnabled');
         const intervalBtns = document.querySelectorAll('.btn-interval');
 
         let tempInterval = breakIntervalSeconds;
+
+        function updateJumpButtonUI() {
+            if (!btnTouchJump) return;
+            if (isAutoJumpEnabled) {
+                btnTouchJump.classList.add('border-2', 'border-emerald-400');
+                btnTouchJump.innerHTML = `
+                    <span class="flex items-center gap-1.5">
+                        <span>OTO-ZIPLA</span>
+                        <span class="text-base">🦘</span>
+                    </span>
+                `;
+            } else {
+                btnTouchJump.classList.remove('border-2', 'border-emerald-400');
+                btnTouchJump.innerHTML = `
+                    <span>ZIPLA</span>
+                    <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                    </svg>
+                `;
+            }
+        }
+        updateJumpButtonUI();
 
         function updateIntervalButtonsUI(selectedVal) {
             tempInterval = selectedVal;
@@ -4528,6 +4608,7 @@
             if (settingsNameEl) settingsNameEl.textContent = currentPlayerName || 'Kahraman';
             if (chkBreakEnabled) chkBreakEnabled.checked = isBreakFeatureEnabled;
             if (chkHapticsEnabled) chkHapticsEnabled.checked = isHapticsEnabled;
+            if (chkAutoJumpEnabled) chkAutoJumpEnabled.checked = isAutoJumpEnabled;
             updateIntervalButtonsUI(breakIntervalSeconds);
             if (settingsModal) settingsModal.classList.remove('hidden');
         }
@@ -4545,6 +4626,11 @@
             if (chkHapticsEnabled) {
                 isHapticsEnabled = chkHapticsEnabled.checked;
                 localStorage.setItem(STORAGE_KEY_HAPTICS, String(isHapticsEnabled));
+            }
+            if (chkAutoJumpEnabled) {
+                isAutoJumpEnabled = chkAutoJumpEnabled.checked;
+                localStorage.setItem(STORAGE_KEY_AUTO_JUMP, String(isAutoJumpEnabled));
+                updateJumpButtonUI();
             }
             breakIntervalSeconds = tempInterval || 150;
             localStorage.setItem(STORAGE_KEY_BREAK_INTERVAL, String(breakIntervalSeconds));
