@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Make-A-Wish Bowling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#C0392B; --gold:#D4A017; --cream:#FFF8F0; --teal:#1A6B7A;
+    --navy:#1A2A4A; --cyan:#00AEEF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;touch-action:none;}
+  html,body{height:100%;}
+  body{
+    background:radial-gradient(circle at 50% 0%, #12233f 0%, #0d1220 55%, #070b14 100%);
+    font-family:'Nunito',sans-serif;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  #stage{position:fixed;inset:0;display:block;}
+  #stage canvas{display:block;width:100%;height:100%;cursor:crosshair;}
+
+  /* ---------- MODALS (DOM) ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(6,12,26,0.86);
+    display:flex;align-items:center;justify-content:center;z-index:100;
+    backdrop-filter:blur(7px);padding:16px;
+  }
+  .modal-overlay.hidden{display:none;}
+  .modal-box{
+    background:linear-gradient(160deg,#FFFDF8 0%,#FFF3E2 60%,#FFE7C8 100%);
+    border-radius:26px;padding:34px 30px 26px;max-width:460px;width:100%;
+    text-align:center;border:3px solid var(--gold);position:relative;overflow:hidden;
+    box-shadow:0 0 70px rgba(212,160,23,0.35), 0 26px 70px rgba(0,0,0,0.6);
+    animation:boxIn .45s cubic-bezier(.2,1.3,.4,1);
+  }
+  @keyframes boxIn{from{opacity:0;transform:translateY(24px) scale(.92);}to{opacity:1;transform:none;}}
+  .modal-ornament{
+    position:absolute;top:0;left:0;right:0;height:9px;
+    background:repeating-linear-gradient(90deg,var(--red) 0 22px,var(--gold) 22px 44px,var(--cyan) 44px 66px);
+  }
+  .modal-title{font-family:'Cinzel',serif;font-weight:900;font-size:23px;color:var(--navy);margin:6px 0 10px;}
+  .modal-subtitle{font-size:12px;color:#9a8f85;margin-bottom:20px;letter-spacing:2.5px;font-weight:700;}
+  .modal-question{
+    font-size:17px;font-weight:700;color:var(--navy);
+    background:rgba(0,174,239,0.10);border-left:5px solid var(--cyan);
+    padding:15px 16px;border-radius:12px;margin-bottom:20px;line-height:1.5;
+  }
+  .modal-hint{font-size:13px;color:#7a756e;margin-bottom:22px;font-style:italic;}
+  .modal-btn{
+    background:linear-gradient(135deg,#FF7A59,#C0392B);color:#fff;font-size:17px;font-weight:800;
+    font-family:'Nunito',sans-serif;border:none;border-radius:50px;padding:15px 46px;cursor:pointer;
+    box-shadow:0 8px 24px rgba(192,57,43,0.42);transition:transform .15s, box-shadow .15s;letter-spacing:1px;
+  }
+  .modal-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(192,57,43,0.55);}
+  .modal-btn:active{transform:translateY(1px);}
+  .modal-rules{text-align:left;font-size:14px;color:#4a4540;line-height:1.9;}
+  .modal-rules li{list-style:none;margin-bottom:4px;}
+  .modal-rules .emoji{margin-right:8px;}
+  .score-badge{
+    display:inline-block;background:linear-gradient(140deg,#FFE08A,#D4A017);color:var(--navy);
+    font-size:50px;font-weight:900;border-radius:50%;width:108px;height:108px;line-height:108px;
+    margin:0 auto 16px;font-family:'Cinzel',serif;box-shadow:0 0 34px rgba(212,160,23,0.7);
+  }
+  .setup-section{margin-bottom:18px;text-align:left;}
+  .setup-label{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:7px;}
+  .name-input{
+    width:100%;padding:13px 16px;font-size:16px;font-weight:700;font-family:'Nunito',sans-serif;
+    border:2px solid var(--cyan);border-radius:13px;outline:none;background:#fff;transition:box-shadow .2s;
+  }
+  .name-input:focus{box-shadow:0 0 0 4px rgba(0,174,239,0.22);}
+  .color-picker{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px;}
+  .color-opt{
+    width:46px;height:46px;border-radius:50%;border:3px solid transparent;cursor:pointer;
+    transition:transform .15s, border-color .15s;box-shadow:0 4px 12px rgba(0,0,0,0.25);
+  }
+  .color-opt:hover{transform:scale(1.14);}
+  .color-opt.selected{border-color:#FFD700;transform:scale(1.2);box-shadow:0 0 18px rgba(255,215,0,0.6);}
+
+  .seg{display:flex;gap:8px;background:rgba(26,107,122,0.10);border-radius:15px;padding:6px;}
+  .seg-opt{
+    flex:1;text-align:center;padding:12px 8px;border-radius:11px;font-weight:800;font-size:14px;
+    color:#5a6b7a;cursor:pointer;transition:all .16s;border:2px solid transparent;user-select:none;
+  }
+  .seg-opt:hover{color:var(--navy);}
+  .seg-opt.selected{
+    background:linear-gradient(135deg,#00AEEF,#0A6FB0);color:#fff;
+    box-shadow:0 6px 16px rgba(0,174,239,0.45);transform:translateY(-1px);
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+
+<!-- Setup Modal -->
+<div class="modal-overlay" id="modal-intro">
+  <div class="modal-box">
+    <div class="modal-ornament"></div>
+    <div class="modal-title">⭐ Make-A-Wish Bowling</div>
+    <div class="modal-subtitle">OYUNA HAZIRLAN!</div>
+    <div class="setup-section">
+      <div class="setup-label">👋 Adın ne?</div>
+      <input type="text" class="name-input" id="player-name" placeholder="Adını yaz..." maxlength="20" autocomplete="off">
+    </div>
+    <div class="setup-section">
+      <div class="setup-label">🎱 Topunu seç:</div>
+      <div class="color-picker" id="color-picker">
+        <div class="color-opt selected" data-color="blue"    style="background:linear-gradient(135deg,#6FD6FF,#0B4C8C)"></div>
+        <div class="color-opt"          data-color="pink"    style="background:linear-gradient(135deg,#FFB3DA,#C4317F)"></div>
+        <div class="color-opt"          data-color="green"   style="background:linear-gradient(135deg,#8CF7C0,#1E8449)"></div>
+        <div class="color-opt"          data-color="orange"  style="background:linear-gradient(135deg,#FFDD7A,#E0651A)"></div>
+        <div class="color-opt"          data-color="rainbow" style="background:conic-gradient(#FF3B3B,#FFA53B,#FFE03B,#4BE07A,#3BB0FF,#B03BFF,#FF3B3B)"></div>
+      </div>
+    </div>
+    <div class="setup-section">
+      <div class="setup-label">💬 Dilek Soruları</div>
+      <div class="seg" id="question-seg">
+        <div class="seg-opt selected" data-q="on">💬 Soruları Sor</div>
+        <div class="seg-opt" data-q="off">🎳 Sadece Oyun</div>
+      </div>
+    </div>
+
+    <ul class="modal-rules">
+      <li><span class="emoji">🖱️</span><strong>Sürükle & Bırak:</strong> Topu fırlat</li>
+      <li><span class="emoji">🎯</span>10 labut = <strong>Strike!</strong></li>
+      <li><span class="emoji">🔄</span>Her turda <strong>2 atış</strong> hakkın var</li>
+      <li><span class="emoji">💬</span>Dilek soruları <strong>açılıp kapatılabilir</strong></li>
+    </ul>
+    <br>
+    <button class="modal-btn" onclick="setupAndStart()">⭐ BAŞLA!</button>
+  </div>
+</div>
+
+<!-- Question Modal -->
+<div class="modal-overlay hidden" id="modal-question">
+  <div class="modal-box">
+    <div class="modal-ornament"></div>
+    <div class="modal-title">🌙 Soru Zamanı</div>
+    <div class="modal-question" id="q-text"></div>
+    <div class="modal-hint">💬 Cevabını sesli olarak paylaş!</div>
+    <button class="modal-btn" onclick="closeQuestion()">Devam Et →</button>
+  </div>
+</div>
+
+<!-- End Modal -->
+<div class="modal-overlay hidden" id="modal-end">
+  <div class="modal-box">
+    <div class="modal-ornament"></div>
+    <div class="modal-title">🏆 Oyun Bitti!</div>
+    <div class="score-badge" id="final-score">0</div>
+    <div class="modal-question" id="end-msg"></div>
+    <br>
+    <button class="modal-btn" onclick="restartGame()">🔄 Tekrar Oyna</button>
+  </div>
+</div>
+
+<script src="./lib/pixi/pixi.min.js"></script>
+<script src="./lib/pixi/pixi-filters.js"></script>
+<script>
+/* ============================================================
+   Make-A-Wish Bowling — Pixi v8 (Disney style)
+   Oyun mantığı korunmuş, render katmanı Pixi'ye taşınmıştır.
+   ============================================================ */
+
+// ==================== QUESTIONS (aynı) ====================
+const QUESTIONS = [
+  "Boş zamanlarında neler yapmayı seversin? (Hobilerin, ilgi alanların)",
+  "Büyüyünce ne olmak istersin?",
+  "Senin yeteneğin (iyi olduğun alan) nedir?",
+  "Büyüyünce ne olmak istiyorsun?",
+  "Olmaktan mutlu olduğun, gitmeyi sevdiğin bir yer var mı?",
+  "Hangi oyunları seviyorsun?",
+  "Uyumadan önce ne hayal edersin?"
+];
+
+// ==================== PLAYER SETUP ====================
+let playerName = '';
+let selectedBallColor = 'blue';
+let questionsEnabled = true;
+
+const BALL_COLORS = {
+  blue:    { light: '#8FE3FF', mid: '#1FA6E0', dark: '#0A3F73', glow: '#00AEEF' },
+  pink:    { light: '#FFC2E2', mid: '#EC4FA0', dark: '#7A1F4F', glow: '#FF6FBF' },
+  green:   { light: '#B6FFD6', mid: '#2FBE6E', dark: '#12522F', glow: '#3BE08A' },
+  orange:  { light: '#FFE39B', mid: '#FF9A3D', dark: '#8A3A10', glow: '#FFA741' },
+  rainbow: { light: '#FFFFFF', mid: '#B44BE0', dark: '#2A1B6B', glow: '#E060FF' },
+};
+
+document.getElementById('color-picker').addEventListener('click', (e) => {
+  const opt = e.target.closest('.color-opt');
+  if (!opt) return;
+  document.querySelectorAll('.color-opt').forEach(o => o.classList.remove('selected'));
+  opt.classList.add('selected');
+  selectedBallColor = opt.dataset.color;
+  if (ballSprite && BALL_TEX[selectedBallColor]) ballSprite.texture = BALL_TEX[selectedBallColor];
+});
+
+// Question on/off handler
+document.getElementById('question-seg').addEventListener('click', (e) => {
+  const opt = e.target.closest('.seg-opt');
+  if (!opt) return;
+  document.querySelectorAll('#question-seg .seg-opt').forEach(o => o.classList.remove('selected'));
+  opt.classList.add('selected');
+  questionsEnabled = opt.dataset.q === 'on';
+});
+
+// ==================== LANE THEMES ====================
+const LANE_THEMES = [
+  { name:'Gündüz', wood1:'#C08A55', wood2:'#B37C48', wood3:'#9A6A3C',
+    ceilTop:'#123A63', ceilBot:'#1C6FA8', wall:'#0E2E4F',
+    tint:'rgba(255,240,200,0.05)', star:0x6FE0FF, ambient:0xffffff, ambAlpha:0.05 },
+  { name:'Gece',   wood1:'#7A6699', wood2:'#6B5788', wood3:'#584872',
+    ceilTop:'#241A44', ceilBot:'#3D2A6E', wall:'#1C1440',
+    tint:'rgba(140,110,220,0.07)', star:0xC9A8FF, ambient:0x9B7BFF, ambAlpha:0.06 },
+  { name:'Uzay',   wood1:'#5E719B', wood2:'#516389', wood3:'#42537A',
+    ceilTop:'#081C3A', ceilBot:'#0E4A7A', wall:'#08203E',
+    tint:'rgba(0,174,239,0.06)', star:0x74D4FF, ambient:0x00AEEF, ambAlpha:0.05 },
+];
+function getLaneTheme(){ return LANE_THEMES[Math.floor(currentFrame / 3) % LANE_THEMES.length]; }
+
+// ==================== GAME STATE (aynı) ====================
+const FRAME_COUNT = 10;
+const V_W = 600, V_H = 900;
+
+let questionFrames = [];
+let questions = {};
+let frames = [];
+let currentFrame = 0;
+let currentRoll = 0;
+let totalScore = 0;
+let gameRunning = false;
+
+let pins = [];
+let ball = null;
+let dragStart = null, dragCurrent = null;
+let settleTimer = 0;
+
+// ==================== PIXI GLOBALS ====================
+let app, world, overlayWorld, hud;
+let bgSprite;
+let BALL_TEX = {}, PIN_TEX, DOT_TEX, STAR_TEX, SPARK_TEX, RING_TEX, SHADOW_TEX, SHARD_TEX, VIGNETTE_TEX;
+let ballSprite, ballShadow, aimGfx, trailSprites = [];
+let particleLayer, ringLayer, twinkleLayer, gutterStarLayer;
+let flashRect, bigTextObj, mascotCont, mascotBubble, mascotMsgText, mascotEmoji;
+let gaugeCont, gaugeFillGfx, gaugeLabel;
+let hudFrameText, hudScoreText, hudTitleText, hudBarGfx;
+let bloomFilter, shockFilter, rgbFilter;
+let swT = 0, rgbT = 0;
+let shakeAmp = 0, shakeTime = 0;
+let started = false;
+
+const PIN_LAYOUT = (() => {
+  const cx = V_W / 2, topY = 96, gapX = 38, gapY = 40, out = [];
+  let id = 0;
+  for (let row = 0; row < 4; row++)
+    for (let col = 0; col <= row; col++)
+      out.push({ x: cx - (row * gapX / 2) + col * gapX, y: topY + row * gapY, id: id++ });
+  return out;
+})();
+
+// ==================== SOUND ENGINE (aynı) ====================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null, rollSource = null;
+function getAudio(){ if(!audioCtx) audioCtx = new AudioCtx(); if(audioCtx.state==='suspended') audioCtx.resume(); return audioCtx; }
+function makeNoiseBuffer(ac, duration){
+  const len = Math.floor(ac.sampleRate * duration);
+  const buf = ac.createBuffer(1, len, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i=0;i<len;i++) d[i] = Math.random()*2-1;
+  return buf;
+}
+function playRoll(){
+  stopRoll();
+  const ac = getAudio(), t = ac.currentTime;
+  const src = ac.createBufferSource(); src.buffer = makeNoiseBuffer(ac, 3.0); src.loop = true;
+  const lpf = ac.createBiquadFilter(); lpf.type='lowpass'; lpf.frequency.setValueAtTime(130,t); lpf.Q.value=0.8;
+  const bpf = ac.createBiquadFilter(); bpf.type='bandpass'; bpf.frequency.value=80; bpf.Q.value=1.2;
+  const lfo = ac.createOscillator(); lfo.type='sine'; lfo.frequency.value=28;
+  const lfoGain = ac.createGain(); lfoGain.gain.value=18; lfo.connect(lfoGain); lfoGain.connect(lpf.frequency);
+  const gain = ac.createGain(); gain.gain.setValueAtTime(0,t); gain.gain.linearRampToValueAtTime(0.5,t+0.12);
+  src.connect(lpf); lpf.connect(bpf); bpf.connect(gain); gain.connect(ac.destination);
+  src.start(t); lfo.start(t);
+  rollSource = { src, gain, lfo, ac };
+}
+function stopRoll(){
+  if(!rollSource) return;
+  try{
+    const {src,gain,lfo,ac} = rollSource, t = ac.currentTime;
+    gain.gain.setValueAtTime(gain.gain.value,t); gain.gain.linearRampToValueAtTime(0,t+0.18);
+    src.stop(t+0.2); lfo.stop(t+0.2);
+  }catch(e){}
+  rollSource = null;
+}
+function playHit(intensity=1){
+  const ac = getAudio(), t = ac.currentTime;
+  const nSrc = ac.createBufferSource(); nSrc.buffer = makeNoiseBuffer(ac,0.25);
+  const nF = ac.createBiquadFilter(); nF.type='bandpass'; nF.frequency.setValueAtTime(900,t);
+  nF.frequency.exponentialRampToValueAtTime(200,t+0.15); nF.Q.value=0.5;
+  const nG = ac.createGain(); nG.gain.setValueAtTime(0.65*Math.min(intensity,1.8),t); nG.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+  nSrc.connect(nF); nF.connect(nG); nG.connect(ac.destination); nSrc.start(t); nSrc.stop(t+0.25);
+  const thump = ac.createOscillator(); thump.type='sine';
+  thump.frequency.setValueAtTime(85,t); thump.frequency.exponentialRampToValueAtTime(35,t+0.12);
+  const tG = ac.createGain(); tG.gain.setValueAtTime(0.8,t); tG.gain.exponentialRampToValueAtTime(0.001,t+0.14);
+  thump.connect(tG); tG.connect(ac.destination); thump.start(t); thump.stop(t+0.14);
+}
+function playPinFall(){
+  const ac = getAudio(), t = ac.currentTime;
+  const nSrc = ac.createBufferSource(); nSrc.buffer = makeNoiseBuffer(ac,0.18);
+  const nF = ac.createBiquadFilter(); nF.type='bandpass'; nF.frequency.setValueAtTime(1800,t);
+  nF.frequency.exponentialRampToValueAtTime(400,t+0.1); nF.Q.value=1.2;
+  const nG = ac.createGain(); nG.gain.setValueAtTime(0.26,t); nG.gain.exponentialRampToValueAtTime(0.001,t+0.16);
+  nSrc.connect(nF); nF.connect(nG); nG.connect(ac.destination); nSrc.start(t); nSrc.stop(t+0.18);
+  const clack = ac.createOscillator(); clack.type='triangle';
+  clack.frequency.setValueAtTime(320+Math.random()*80,t); clack.frequency.exponentialRampToValueAtTime(140,t+0.08);
+  const cG = ac.createGain(); cG.gain.setValueAtTime(0.2,t); cG.gain.exponentialRampToValueAtTime(0.001,t+0.1);
+  clack.connect(cG); cG.connect(ac.destination); clack.start(t); clack.stop(t+0.1);
+}
+function playStrike(){
+  stopRoll();
+  const ac = getAudio(), t = ac.currentTime;
+  const nSrc = ac.createBufferSource(); nSrc.buffer = makeNoiseBuffer(ac,1.2);
+  const nF = ac.createBiquadFilter(); nF.type='lowpass'; nF.frequency.setValueAtTime(2500,t);
+  nF.frequency.exponentialRampToValueAtTime(300,t+0.8);
+  const nG = ac.createGain(); nG.gain.setValueAtTime(0.9,t); nG.gain.exponentialRampToValueAtTime(0.001,t+1.0);
+  nSrc.connect(nF); nF.connect(nG); nG.connect(ac.destination); nSrc.start(t); nSrc.stop(t+1.2);
+  const boom = ac.createOscillator(); boom.type='sine';
+  boom.frequency.setValueAtTime(60,t); boom.frequency.exponentialRampToValueAtTime(28,t+0.5);
+  const bG = ac.createGain(); bG.gain.setValueAtTime(1.0,t); bG.gain.exponentialRampToValueAtTime(0.001,t+0.55);
+  boom.connect(bG); bG.connect(ac.destination); boom.start(t); boom.stop(t+0.55);
+}
+function playSpare(){ stopRoll(); const ac = getAudio(), t = ac.currentTime;
+  [0,0.08].forEach((d,i)=>{
+    const nSrc = ac.createBufferSource(); nSrc.buffer = makeNoiseBuffer(ac,0.3);
+    const nF = ac.createBiquadFilter(); nF.type='bandpass'; nF.frequency.setValueAtTime(1400-i*200,t+d);
+    nF.frequency.exponentialRampToValueAtTime(300,t+d+0.2); nF.Q.value=0.8;
+    const nG = ac.createGain(); nG.gain.setValueAtTime(0.42-i*0.1,t+d); nG.gain.exponentialRampToValueAtTime(0.001,t+d+0.28);
+    nSrc.connect(nF); nF.connect(nG); nG.connect(ac.destination); nSrc.start(t+d); nSrc.stop(t+d+0.3);
+    const thump = ac.createOscillator(); thump.type='sine';
+    thump.frequency.setValueAtTime(70,t+d); thump.frequency.exponentialRampToValueAtTime(30,t+d+0.1);
+    const tG = ac.createGain(); tG.gain.setValueAtTime(0.5,t+d); tG.gain.exponentialRampToValueAtTime(0.001,t+d+0.12);
+    thump.connect(tG); tG.connect(ac.destination); thump.start(t+d); thump.stop(t+d+0.12);
+  });
+}
+function vibrateDevice(p){ if(navigator.vibrate) navigator.vibrate(p); }
+
+// ==================== TWEEN (küçük motor) ====================
+const tweens = [];
+function tween(dur, onUpdate, ease, onDone){
+  const tw = { t:0, dur, onUpdate, ease: ease || (x=>x), onDone };
+  tweens.push(tw); return tw;
+}
+function updateTweens(dt){
+  for(let i=tweens.length-1;i>=0;i--){
+    const tw = tweens[i]; tw.t += dt;
+    const k = Math.min(tw.t/tw.dur, 1);
+    tw.onUpdate(tw.ease(k), k);
+    if(k>=1){ tweens.splice(i,1); if(tw.onDone) tw.onDone(); }
+  }
+}
+const easeOut = x => 1 - Math.pow(1-x,3);
+const easeIn  = x => x*x;
+const easeBack= x => 1 + 2.7*Math.pow(x-1,3) + 1.7*Math.pow(x-1,2);
+
+// ==================== TEXTURE BUILDERS ====================
+const RES = 2;
+function makeTex(w, h, draw){
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(w*RES));
+  c.height = Math.max(1, Math.round(h*RES));
+  const g = c.getContext('2d');
+  g.scale(RES, RES);
+  draw(g, w, h);
+  const source = new PIXI.CanvasSource({ resource:c, resolution:RES });
+  return new PIXI.Texture({ source });
+}
+function pathStar(g, cx, cy, r, points, innerRatio){
+  const ir = r * (innerRatio || 0.45);
+  for(let i=0;i<points*2;i++){
+    const rad = i%2===0 ? r : ir;
+    const a = (i*Math.PI/points) - Math.PI/2;
+    const x = cx + Math.cos(a)*rad, y = cy + Math.sin(a)*rad;
+    i===0 ? g.moveTo(x,y) : g.lineTo(x,y);
+  }
+  g.closePath();
+}
+
+function buildDotTex(){
+  return makeTex(64,64,(g,w,h)=>{
+    const grd = g.createRadialGradient(w/2,h/2,0,w/2,h/2,w/2);
+    grd.addColorStop(0,'rgba(255,255,255,1)');
+    grd.addColorStop(0.35,'rgba(255,255,255,0.75)');
+    grd.addColorStop(1,'rgba(255,255,255,0)');
+    g.fillStyle = grd; g.fillRect(0,0,w,h);
+  });
+}
+function buildSparkTex(){
+  return makeTex(64,64,(g,w,h)=>{
+    const cx=w/2, cy=h/2;
+    g.save(); g.shadowColor='rgba(255,255,255,0.9)'; g.shadowBlur=10;
+    g.fillStyle='#fff';
+    g.beginPath();
+    g.moveTo(cx, cy-30); g.quadraticCurveTo(cx+4,cy-4, cx+30,cy);
+    g.quadraticCurveTo(cx+4,cy+4, cx,cy+30);
+    g.quadraticCurveTo(cx-4,cy+4, cx-30,cy);
+    g.quadraticCurveTo(cx-4,cy-4, cx,cy-30);
+    g.closePath(); g.fill();
+    g.restore();
+    g.fillStyle='rgba(255,255,255,1)';
+    g.beginPath(); g.arc(cx,cy,4,0,Math.PI*2); g.fill();
+  });
+}
+function buildStarTex(){
+  return makeTex(64,64,(g,w,h)=>{
+    g.save(); g.shadowColor='rgba(255,255,255,0.85)'; g.shadowBlur=8;
+    g.fillStyle='#fff';
+    g.beginPath(); pathStar(g, w/2, h/2, 30, 5, 0.45); g.fill();
+    g.restore();
+  });
+}
+function buildRingTex(){
+  return makeTex(160,160,(g,w,h)=>{
+    const cx=w/2, cy=h/2;
+    for(let i=3;i>=1;i--){
+      g.beginPath(); g.arc(cx,cy, 62, 0, Math.PI*2);
+      g.strokeStyle=`rgba(255,255,255,${0.10*i})`;
+      g.lineWidth = 6*i; g.stroke();
+    }
+    g.beginPath(); g.arc(cx,cy,62,0,Math.PI*2);
+    g.strokeStyle='rgba(255,255,255,0.95)'; g.lineWidth=3; g.stroke();
+  });
+}
+function buildShadowTex(){
+  return makeTex(80,44,(g,w,h)=>{
+    const cx=w/2, cy=h/2;
+    g.save();
+    g.translate(cx,cy); g.scale(1, h/w); g.translate(-cx,-cy);
+    const grd = g.createRadialGradient(cx,cy,0,cx,cy,cx);
+    grd.addColorStop(0,'rgba(0,0,0,0.55)');
+    grd.addColorStop(0.6,'rgba(0,0,0,0.26)');
+    grd.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle=grd; g.beginPath(); g.arc(cx,cy,cx,0,Math.PI*2); g.fill();
+    g.restore();
+  });
+}
+function buildShardTex(){
+  return makeTex(20,26,(g,w,h)=>{
+    const r=4;
+    g.fillStyle='#fff';
+    g.beginPath();
+    g.moveTo(r,0); g.lineTo(w-r,0); g.quadraticCurveTo(w,0,w,r); g.lineTo(w,h-r);
+    g.quadraticCurveTo(w,h,w-r,h); g.lineTo(r,h); g.quadraticCurveTo(0,h,0,h-r);
+    g.lineTo(0,r); g.quadraticCurveTo(0,0,r,0); g.closePath(); g.fill();
+  });
+}
+function buildVignetteTex(){
+  return makeTex(256,256,(g,w,h)=>{
+    const grd = g.createRadialGradient(w/2,h/2,w*0.30,w/2,h/2,w*0.75);
+    grd.addColorStop(0,'rgba(0,0,0,0)');
+    grd.addColorStop(0.7,'rgba(0,0,0,0.28)');
+    grd.addColorStop(1,'rgba(0,0,0,0.62)');
+    g.fillStyle=grd; g.fillRect(0,0,w,h);
+  });
+}
+
+function buildPinTex(){
+  const W=52, H=80, cx=W/2;
+  return makeTex(W,H,(g)=>{
+    const body = () => {
+      g.beginPath();
+      g.moveTo(cx-13, 72);
+      g.quadraticCurveTo(cx-15, 58, cx-8, 47);
+      g.quadraticCurveTo(cx-5, 37, cx-5, 29);
+      g.quadraticCurveTo(cx-5, 21, cx-7, 15);
+      g.quadraticCurveTo(cx-9, 6, cx, 6);
+      g.quadraticCurveTo(cx+9, 6, cx+7, 15);
+      g.quadraticCurveTo(cx+5, 21, cx+5, 29);
+      g.quadraticCurveTo(cx+5, 37, cx+8, 47);
+      g.quadraticCurveTo(cx+15, 58, cx+13, 72);
+      g.quadraticCurveTo(cx, 76, cx-13, 72);
+      g.closePath();
+    };
+    // zemin gölge (hafif)
+    g.save(); g.globalAlpha=0.16; g.fillStyle='#000';
+    g.beginPath(); g.ellipse(cx+2, 74, 14, 3.6, 0, 0, Math.PI*2); g.fill(); g.restore();
+    // gövde — inci beyazı
+    const grd = g.createLinearGradient(cx-14, 6, cx+14, 72);
+    grd.addColorStop(0,'#FFFFFF'); grd.addColorStop(0.42,'#F5F9FC'); grd.addColorStop(1,'#C6D6E6');
+    g.save(); g.shadowColor='rgba(0,120,180,0.35)'; g.shadowBlur=7;
+    g.fillStyle=grd; body(); g.fill(); g.restore();
+    // sağ kenar rim ışığı + bantlar
+    g.save(); body(); g.clip();
+    const rim = g.createLinearGradient(cx, 0, cx+16, 0);
+    rim.addColorStop(0,'rgba(255,255,255,0)'); rim.addColorStop(1,'rgba(0,174,239,0.32)');
+    g.fillStyle=rim; g.fillRect(cx-2,0,20,H);
+    g.fillStyle='rgba(34,195,230,0.95)';
+    g.beginPath(); g.ellipse(cx, 31, 7.2, 2.6, 0, 0, Math.PI*2); g.fill();
+    g.fillStyle='rgba(212,160,23,0.9)';
+    g.beginPath(); g.ellipse(cx, 36.5, 8.2, 2.7, 0, 0, Math.PI*2); g.fill();
+    // parlak highlight
+    const hl = g.createRadialGradient(cx-4,14,1,cx-4,14,15);
+    hl.addColorStop(0,'rgba(255,255,255,0.85)'); hl.addColorStop(1,'rgba(255,255,255,0)');
+    g.fillStyle=hl; g.beginPath(); g.ellipse(cx-3.5,15,4,10,-0.12,0,Math.PI*2); g.fill();
+    g.restore();
+    // yıldız amblem
+    g.save();
+    g.shadowColor='#22C3E6'; g.shadowBlur=6;
+    g.fillStyle='#0B3D66'; g.beginPath(); g.arc(cx,20,6.4,0,Math.PI*2); g.fill();
+    g.fillStyle='#22C3E6'; g.beginPath(); g.arc(cx,20,4.8,0,Math.PI*2); g.fill();
+    g.fillStyle='#fff'; g.beginPath(); pathStar(g,cx,20,3.1,5,0.45); g.fill();
+    g.restore();
+    g.fillStyle='#22C3E6'; g.beginPath(); g.arc(cx,20,1.1,0,Math.PI*2); g.fill();
+  });
+}
+
+function buildBallTex(colorKey){
+  const W=56, H=56, cx=W/2, cy=H/2, r=22;
+  const bc = BALL_COLORS[colorKey];
+  return makeTex(W,H,(g)=>{
+    g.save(); g.shadowColor=bc.glow; g.shadowBlur=10;
+    const grd = g.createRadialGradient(cx-8,cy-8,2,cx,cy,r);
+    if(colorKey==='rainbow' && g.createConicGradient){
+      const cg = g.createConicGradient(-Math.PI/2, cx, cy);
+      cg.addColorStop(0,'#FF4D4D'); cg.addColorStop(0.17,'#FFB03B'); cg.addColorStop(0.33,'#FFE93B');
+      cg.addColorStop(0.5,'#4BE07A'); cg.addColorStop(0.66,'#3BB0FF'); cg.addColorStop(0.83,'#B03BFF'); cg.addColorStop(1,'#FF4D4D');
+      g.fillStyle=cg;
+    } else {
+      grd.addColorStop(0, bc.light); grd.addColorStop(0.42, bc.mid); grd.addColorStop(1, bc.dark);
+      g.fillStyle=grd;
+    }
+    g.beginPath(); g.arc(cx,cy,r,0,Math.PI*2); g.fill();
+    g.restore();
+    // iç desen
+    g.save(); g.beginPath(); g.arc(cx,cy,r,0,Math.PI*2); g.clip();
+    g.globalAlpha=0.32;
+    g.fillStyle='#FFD700'; g.beginPath(); pathStar(g, cx+7, cy-4, 6, 5, 0.45); g.fill();
+    g.fillStyle='#fff'; g.beginPath(); pathStar(g, cx-8, cy+7, 4, 5, 0.45); g.fill();
+    // parlak üst kubbe
+    const top = g.createRadialGradient(cx-8,cy-9,1,cx-6,cy-8,18);
+    top.addColorStop(0,'rgba(255,255,255,0.75)'); top.addColorStop(1,'rgba(255,255,255,0)');
+    g.globalAlpha=1; g.fillStyle=top; g.beginPath(); g.arc(cx-6,cy-8,18,0,Math.PI*2); g.fill();
+    g.restore();
+    // parmak delikleri
+    g.fillStyle='rgba(6,26,48,0.55)';
+    g.beginPath(); g.ellipse(cx-6, cy-5, 3.6, 3.6, 0,0,Math.PI*2); g.fill();
+    g.beginPath(); g.ellipse(cx+5, cy-7, 3.4, 3.4, 0,0,Math.PI*2); g.fill();
+    g.beginPath(); g.ellipse(cx+6, cy+4, 3.1, 3.1, 0,0,Math.PI*2); g.fill();
+    // shine
+    g.fillStyle='rgba(255,255,255,0.8)';
+    g.beginPath(); g.ellipse(cx-9, cy-10, 4.5, 3, -0.5, 0, Math.PI*2); g.fill();
+  });
+}
+
+// ----- Background (per theme) -----
+function buildBackgroundTex(theme){
+  return makeTex(V_W, V_H, (g)=>{
+    const laneX=80, laneW=V_W-160;
+    // tavan
+    const ceil = g.createLinearGradient(0,0,0,170);
+    ceil.addColorStop(0, theme.ceilTop); ceil.addColorStop(0.55, theme.ceilBot); ceil.addColorStop(1,'#0a1b30');
+    g.fillStyle=ceil; g.fillRect(0,0,V_W,170);
+    // tavan yıldızları (statik soluk)
+    g.save();
+    for(let i=0;i<46;i++){
+      const sx = (i*97.3+31) % (V_W-40)+20, sy=(i*53.7+11)%140+12;
+      g.globalAlpha = 0.20 + (i%3)*0.10;
+      g.fillStyle='#fff'; g.beginPath(); g.arc(sx,sy, 0.8+(i%3)*0.5, 0, Math.PI*2); g.fill();
+    }
+    g.restore();
+    // tavan spot ışıkları
+    [100,200,300,400,500].forEach((lx)=>{
+      const beam = g.createLinearGradient(lx,30,lx,178);
+      beam.addColorStop(0,`rgba(110,220,255,0.16)`); beam.addColorStop(1,'rgba(110,220,255,0)');
+      g.fillStyle=beam; g.beginPath();
+      g.moveTo(lx-3,30); g.lineTo(lx-42,178); g.lineTo(lx+42,178); g.lineTo(lx+3,30); g.closePath(); g.fill();
+      g.save(); g.shadowColor='#6FE0FF'; g.shadowBlur=14; g.fillStyle='#BFEFFF';
+      g.beginPath(); pathStar(g,lx,28,8,5,0.45); g.fill(); g.restore();
+    });
+    // yan duvar panelleri
+    const panel = (px,pw)=>{
+      const pg = g.createLinearGradient(px,0,px+pw,170);
+      pg.addColorStop(0, theme.wall); pg.addColorStop(1,'#08192e');
+      g.fillStyle=pg; g.fillRect(px,0,pw,170);
+      for(let i=0;i<3;i++){ g.save(); g.globalAlpha=0.35; g.fillStyle='#6FE0FF';
+        g.beginPath(); pathStar(g, px+pw/2, 52+i*48, 6, 5, 0.45); g.fill(); g.restore(); }
+    };
+    panel(0,80); panel(V_W-80,80);
+    // zemin geçiş bandı
+    const fb = g.createLinearGradient(0,168,0,200);
+    fb.addColorStop(0,'#062342'); fb.addColorStop(1,'#0a3357'); g.fillStyle=fb; g.fillRect(0,168,V_W,32);
+    // oluk (gutter)
+    const gut = g.createLinearGradient(0,168,0,V_H);
+    gut.addColorStop(0,'#04182c'); gut.addColorStop(1,'#062744'); g.fillStyle=gut;
+    g.fillRect(0,168,80,V_H-168); g.fillRect(V_W-80,168,80,V_H-168);
+    g.save(); g.shadowColor='#6FE0FF'; g.shadowBlur=10; g.strokeStyle='#6FE0FF'; g.lineWidth=2; g.globalAlpha=0.55;
+    g.beginPath(); g.moveTo(80,168); g.lineTo(80,V_H); g.stroke();
+    g.beginPath(); g.moveTo(V_W-80,168); g.lineTo(V_W-80,V_H); g.stroke(); g.restore();
+    // oluk yıldızları (statik soluk)
+    g.save(); g.globalAlpha=0.22; g.fillStyle='#6FE0FF';
+    const gp=[[40,290],[40,400],[40,510],[40,620],[V_W-40,330],[V_W-40,440],[V_W-40,550],[V_W-40,660]];
+    gp.forEach(([x,y])=>{ g.beginPath(); pathStar(g,x,y,6,5,0.45); g.fill(); }); g.restore();
+    // arka duvar
+    const bw = g.createLinearGradient(80,168,80,240);
+    bw.addColorStop(0,'#083056'); bw.addColorStop(1,'#0c4a7d'); g.fillStyle=bw; g.fillRect(80,168,V_W-160,32);
+    g.save(); g.textAlign='center'; g.font='bold 12px Nunito, sans-serif';
+    g.shadowColor='#6FE0FF'; g.shadowBlur=12; g.fillStyle='#BFEFFF'; g.globalAlpha=0.9;
+    g.fillText('⭐   M A K E - A - W I S H   ⭐', V_W/2, 187); g.restore();
+    // === KORİDOR ===
+    for(let i=0;i<8;i++){
+      const x = laneX + i*laneW/8;
+      const wg = g.createLinearGradient(x,0,x+laneW/8,0);
+      wg.addColorStop(0, i%2===0?theme.wood1:theme.wood2);
+      wg.addColorStop(1, i%2===0?theme.wood2:theme.wood3);
+      g.fillStyle=wg; g.fillRect(x,170,laneW/8,V_H-170);
+    }
+    // oluk kenarı (engine/şerit)
+    const seam = g.createLinearGradient(laneX,0,laneX+laneW,0);
+    seam.addColorStop(0,'rgba(0,0,0,0.22)'); seam.addColorStop(0.08,'rgba(255,255,255,0.06)');
+    seam.addColorStop(0.5,'rgba(255,255,255,0.10)'); seam.addColorStop(0.92,'rgba(255,255,255,0.06)');
+    seam.addColorStop(1,'rgba(0,0,0,0.22)');
+    g.fillStyle=seam; g.fillRect(laneX,170,laneW,V_H-170);
+    // cila parlaması
+    const shine = g.createLinearGradient(laneX,0,laneX+laneW,0);
+    shine.addColorStop(0,'rgba(255,255,255,0)'); shine.addColorStop(0.35,'rgba(255,255,255,0.06)');
+    shine.addColorStop(0.5,'rgba(255,255,255,0.13)'); shine.addColorStop(0.65,'rgba(255,255,255,0.06)');
+    shine.addColorStop(1,'rgba(255,255,255,0)');
+    g.fillStyle=shine; g.fillRect(laneX,170,laneW,V_H-170);
+    // yıldız desenli overlay
+    g.save(); g.globalAlpha=0.06; g.fillStyle='#9FE9FF';
+    for(let ky=200; ky<V_H-30; ky+=60)
+      for(let kx=laneX+30; kx<laneX+laneW-30; kx+=60){ g.beginPath(); pathStar(g,kx,ky,8,5,0.45); g.fill(); }
+    g.restore();
+    // yıldız hedef okları
+    g.save(); const arrY=V_H-140;
+    [-60,-30,0,30,60].forEach((ax,i)=>{
+      const center = i===2;
+      g.shadowColor = center?'#6FE0FF':'#FFD700'; g.shadowBlur = center?9:4;
+      g.fillStyle = center?'#8FEBFF':'rgba(255,215,0,0.5)';
+      g.beginPath(); pathStar(g, V_W/2+ax, arrY, center?8:6, 5, 0.45); g.fill();
+    });
+    g.restore();
+    // turkuaz koridor kenarlığı
+    g.save(); g.shadowColor='#6FE0FF'; g.shadowBlur=7; g.strokeStyle='rgba(111,224,255,0.45)'; g.lineWidth=2;
+    g.strokeRect(laneX,170,laneW,V_H-170); g.restore();
+    // tema tonu
+    g.fillStyle = theme.tint; g.fillRect(0,0,V_W,V_H);
+  });
+}
+
+// ==================== EFFECTS ====================
+function screenShake(amp){ shakeAmp = Math.max(shakeAmp, amp||9); shakeTime = shakeAmp/9*0.45; }
+function flashScreen(colorHex, alpha){
+  flashRect.tint = colorHex;
+  flashRect.alpha = alpha;
+  tween(0.42, k => { flashRect.alpha = alpha*(1-k); }, easeOut);
+}
+function triggerShockwave(x,y){ if(!shockFilter) return; shockFilter.center = { x, y }; swT=0.85; }
+function triggerRGB(){ rgbT = 0.14; }
+
+function showBigText(text){
+  bigTextObj.text = text;
+  bigTextObj.alpha = 0;
+  bigTextObj.scale.set(0.2);
+  bigTextObj.rotation = -0.16;
+  tween(1.15, (k)=>{
+    const s = k<0.22 ? 0.2 + (1.35-0.2)*(k/0.22)
+            : k<0.35 ? 1.35 - (1.35-1.0)*((k-0.22)/0.13)
+            : 1.0;
+    bigTextObj.scale.set(s);
+    bigTextObj.rotation = -0.16*(1-Math.min(k/0.35,1));
+    bigTextObj.alpha = k<0.12 ? k/0.12 : (k>0.8 ? (1-k)/0.2 : 1);
+  }, x=>x);
+}
+
+const particles = [];
+function spawnParticle(tex, x, y, opts){
+  const s = new PIXI.Sprite(tex);
+  s.anchor.set(0.5);
+  s.x=x; s.y=y;
+  s.blendMode = opts.add ? 'add' : 'normal';
+  if(opts.tint!==undefined) s.tint = opts.tint;
+  const p = {
+    sprite:s, vx:opts.vx||0, vy:opts.vy||0, g:opts.g||0, drag:opts.drag!==undefined?opts.drag:1,
+    life:opts.life||1, maxLife:opts.life||1, rot:(opts.rot||0), rotV:opts.rotV||0,
+    fromScale:opts.scale||1, toScale:opts.toScale!==undefined?opts.toScale:opts.scale||1,
+    fade:opts.fade!==false, layer:opts.layer||particleLayer, text:opts.text, color:opts.color
+  };
+  s.scale.set(p.fromScale);
+  p.layer.addChild(s);
+  particles.push(p);
+  return p;
+}
+function burst(x,y,count,texes,tints,power){
+  const texArr = Array.isArray(texes) ? texes : [texes];
+  for(let i=0;i<count;i++){
+    const a = Math.random()*Math.PI*2, sp = (2+Math.random()*5)*power;
+    spawnParticle(texArr[(Math.random()*texArr.length)|0], x, y, {
+      vx:Math.cos(a)*sp, vy:Math.sin(a)*sp-2, g:0.16, drag:0.99,
+      life:0.9+Math.random()*0.7, rot:Math.random()*6.28, rotV:(Math.random()-0.5)*0.4,
+      scale:0.5+Math.random()*0.7, toScale:0.2, tint:tints[(Math.random()*tints.length)|0], add:true
+    });
+  }
+}
+function confettiBurst(x,y,count,tints){
+  for(let i=0;i<count;i++){
+    const a = Math.random()*Math.PI*2, sp = 2+Math.random()*6;
+    spawnParticle(SHARD_TEX, x, y, {
+      vx:Math.cos(a)*sp, vy:Math.sin(a)*sp-3, g:0.12, drag:0.99,
+      life:1.0+Math.random()*0.9, rot:Math.random()*6.28, rotV:(Math.random()-0.5)*0.35,
+      scale:0.7+Math.random()*0.7, toScale:0.5, tint:tints[(Math.random()*tints.length)|0]
+    });
+  }
+}
+function emojiRain(emojis, count){
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      const t = new PIXI.Text({ text: emojis[(Math.random()*emojis.length)|0], style:new PIXI.TextStyle({ fontSize: 20+Math.random()*18 }) });
+      t.anchor.set(0.5);
+      t.x = 40 + Math.random()*(V_W-80); t.y = -40;
+      particleLayer.addChild(t);
+      dropEmojis.push({ sprite:t, vy: 1.6+Math.random()*2.2, rotV:(Math.random()-0.5)*0.06, life: 3.4, sway: Math.random()*6.28 });
+    }, i*70);
+  }
+}
+const dropEmojis = [];
+function updateDropEmojis(dt){
+  for(let i=dropEmojis.length-1;i>=0;i--){
+    const d = dropEmojis[i];
+    d.sprite.y += d.vy*60*dt; d.sway += dt*3; d.sprite.x += Math.sin(d.sway)*0.6;
+    d.sprite.rotation += d.rotV*60*dt;
+    d.life -= dt;
+    if(d.life<1) d.sprite.alpha = Math.max(0,d.life);
+    if(d.life<=0 || d.sprite.y > V_H+60){ d.sprite.destroy(); dropEmojis.splice(i,1); }
+  }
+}
+function spawnRing(x,y,tint){
+  const s = new PIXI.Sprite(RING_TEX); s.anchor.set(0.5); s.x=x; s.y=y; s.tint=tint; s.blendMode='add'; s.scale.set(0.25); s.alpha=0.9;
+  ringLayer.addChild(s);
+  tween(0.55, k=>{ s.scale.set(0.25 + k*1.6); s.alpha = 0.9*(1-k); }, easeOut, ()=>s.destroy());
+}
+function updateParticles(dt){
+  // normal dt ölçeği ~ (dt*60)
+  const f = dt*60;
+  for(let i=particles.length-1;i>=0;i--){
+    const p = particles[i], s = p.sprite;
+    p.vx *= Math.pow(p.drag, f); p.vy = p.vy*Math.pow(p.drag,f) + p.g*f;
+    s.x += p.vx*f; s.y += p.vy*f;
+    s.rotation += p.rotV*f;
+    const lk = 1 - (p.life/p.maxLife);
+    s.scale.set(p.fromScale + (p.toScale-p.fromScale)*lk);
+    if(p.fade) s.alpha = Math.min(1, p.life/ (p.maxLife*0.6));
+    p.life -= dt;
+    if(p.life<=0){ s.destroy(); particles.splice(i,1); }
+  }
+}
+
+// ==================== CELEBRATIONS ====================
+const MASCOTS = ['🐰','🐱','🐶','🦊','🐻','🐼'];
+function showMascot(type){
+  const name = playerName || 'Dostum';
+  mascotEmoji.text = MASCOTS[currentFrame % MASCOTS.length];
+  const messages = {
+    strike:['Süpersin '+name+'! 🌟','Strike! Harikasın! ⭐','WOW '+name+'! 🎉'],
+    spare:['Güzel kurtardın '+name+'! 👏','Spare! Bravo! ✨'],
+    good:['İyi atış '+name+'! 💪','Devam et! 🎯'],
+    miss:['Olsun '+name+', tekrar dene! 💫','Bir dahakine '+name+'! 🌈'],
+    gutter:['Oops! Sorun değil '+name+'! 😄','Gutter! Ama eğlence devam! 🎳'],
+  };
+  const list = messages[type] || messages.good;
+  mascotMsgText.text = list[(Math.random()*list.length)|0];
+  const tw = Math.min(mascotMsgText.width + 30, 220);
+  mascotBubble.clear();
+  mascotBubble.roundRect(-tw/2, -40, tw, 52, 14)
+    .fill({ color:0xFFFFFF, alpha:0.96 })
+    .stroke({ width:2, color:0x00AEEF, alpha:0.65 });
+  mascotBubble.poly([6,11, 22,30, -2,13]).fill({ color:0xFFFFFF, alpha:0.96 });
+  mascotCont.visible = true;
+  mascotCont.alpha = 0;
+  mascotCont.scale.set(0.6);
+  tween(0.3, k=>{ mascotCont.alpha = k; mascotCont.scale.set(0.6+0.4*easeBack(k)); }, easeOut);
+  clearTimeout(showMascot._t);
+  showMascot._t = setTimeout(()=>{
+    tween(0.35, k=>{ mascotCont.alpha = 1-k; }, easeIn, ()=>mascotCont.visible=false);
+  }, 2200);
+}
+function pinExplosion(x,y){
+  burst(x,y,8,[SPARK_TEX,STAR_TEX,DOT_TEX],[0xFFD700,0xFF8A3D,0x6FE0FF,0xFFFFFF],1);
+  screenShake(6);
+  vibrateDevice(15);
+}
+function strikeCelebration(){
+  screenShake(18); flashScreen(0xFFD24D, 0.6); vibrateDevice([100,50,100,50,300]);
+  showBigText('⭐ STRIKE! ⭐');
+  emojiRain(['🌟','⭐','🎉','🎊','💥','🔥','✨','🏆'], 18);
+  confettiBurst(V_W/2, V_H/3, 46, [0xFFD700,0xFF6B00,0x00AEEF,0xFF6FBF,0x69F0AE,0xFFFFFF]);
+  spawnRing(V_W/2, V_H*0.38, 0xFFE07A);
+  triggerShockwave(V_W/2, V_H*0.25);
+  triggerRGB();
+}
+function spareCelebration(){
+  screenShake(10); flashScreen(0xFFFFFF, 0.45); vibrateDevice([100,50,150]);
+  showBigText('🎯 SPARE! 🎯');
+  emojiRain(['✨','👏','🎯','💫','🌈'], 10);
+  confettiBurst(V_W/2, V_H/3, 26, [0x00AEEF,0x6FE0FF,0xFFD700,0xFFFFFF,0xB39DDB]);
+}
+
+// ==================== PIN / BALL STATE ====================
+function initPins(fallen = []){
+  pins = PIN_LAYOUT.map((p,i)=>({
+    x:p.x, y:p.y, vx:0, vy:0, fallen:fallen.includes(i),
+    wobble:0, wobbleV:0, id:i, _anim:null, _delay:0,
+    sprite:null, shadow:null
+  }));
+  if(started){
+    pins.forEach((pin,i)=>{
+      const view = pinViews[i];
+      pin.sprite = view.sprite; pin.shadow = view.shadow;
+      const base = PIN_LAYOUT[i];
+      view.sprite.x = base.x; view.sprite.y = base.y;
+      view.sprite.rotation = 0; view.sprite.alpha = 1; view.sprite.visible = !pin.fallen;
+      view.shadow.x = base.x; view.shadow.y = base.y + 13; view.shadow.alpha = pin.fallen?0:0.55;
+    });
+  }
+}
+function resetBall(){
+  ball = { x: V_W/2 + (Math.random()-0.5)*20, y: V_H-180, vx:0, vy:0, r:22, moving:false, angle:0 };
+  if(started && ballSprite){
+    ballSprite.x = ball.x; ballSprite.y = ball.y; ballSprite.rotation = 0;
+    ballShadow.x = ball.x; ballShadow.y = ball.y + 22;
+  }
+}
+
+// ==================== PHYSICS (aynı mantık) ====================
+function updatePhysics(){
+  if(!ball || !ball.moving) return;
+  ball.x += ball.vx; ball.y += ball.vy;
+  ball.angle = (ball.angle||0) + ball.vx*0.05;
+
+  pins.forEach(pin=>{
+    if(pin.fallen) return;
+    const dx = ball.x-pin.x, dy = ball.y-pin.y;
+    const dist = Math.hypot(dx,dy), minDist = ball.r+14;
+    if(dist < minDist){
+      const nx=dx/(dist||1), ny=dy/(dist||1);
+      pin.vx += nx*8 + ball.vx*0.6; pin.vy += ny*8 + ball.vy*0.6;
+      pin.wobble = nx*15; pin.wobbleV = 1;
+      ball.vx += nx*-0.3; ball.vy += ny*-0.3;
+      if(!pin._hitSounded){ pin._hitSounded = true; playHit(1+Math.abs(ball.vy)*0.05); }
+    }
+  });
+
+  for(let i=0;i<pins.length;i++){
+    if(pins[i].fallen) continue;
+    for(let j=i+1;j<pins.length;j++){
+      if(pins[j].fallen) continue;
+      const dx=pins[i].x-pins[j].x, dy=pins[i].y-pins[j].y;
+      const dist=Math.hypot(dx,dy);
+      if(dist<32){
+        const nx=dx/(dist||1), ny=dy/(dist||1);
+        const dv=(pins[i].vx-pins[j].vx)*nx+(pins[i].vy-pins[j].vy)*ny;
+        if(dv<0){ pins[i].vx-=dv*nx*0.7; pins[i].vy-=dv*ny*0.7; pins[j].vx+=dv*nx*0.7; pins[j].vy+=dv*ny*0.7; }
+      }
+    }
+  }
+
+  pins.forEach(pin=>{
+    if(pin.fallen) return;
+    pin.x += pin.vx; pin.y += pin.vy;
+    pin.vx *= 0.85; pin.vy *= 0.85;
+    pin.wobble += pin.wobbleV; pin.wobbleV *= -0.6; pin.wobble *= 0.8;
+    const initPos = PIN_LAYOUT[pin.id];
+    if(Math.hypot(pin.x-initPos.x, pin.y-initPos.y) > 50){
+      if(!pin.fallen){ playPinFall(); pinExplosion(pin.x, pin.y); }
+      pin.fallen = true;
+      pin._anim = 0; pin._delay = Math.random()*0.06;
+    }
+  });
+
+  if(ball.y < -50 || ball.x < 60 || ball.x > V_W-60){
+    ball.moving = false; stopRoll();
+    setTimeout(onRollEnd, 400);
+  }
+}
+
+// ==================== VIEW ====================
+function updateView(dt){
+  const f = dt*60;
+  // pins
+  pins.forEach(pin=>{
+    const view = pinViews[pin.id]; if(!view) return;
+    if(!pin.fallen){
+      view.sprite.x = pin.x; view.sprite.y = pin.y;
+      view.sprite.rotation = pin.wobble*0.12;
+      view.sprite.visible = true; view.sprite.alpha = 1;
+      view.shadow.x = pin.x; view.shadow.y = pin.y+13; view.shadow.alpha = 0.5;
+    } else if(pin._anim !== null){
+      pin._anim += dt;
+      const t = Math.max(0, Math.min(1, (pin._anim - pin._delay)/0.55));
+      const dir = (pin.x - PIN_LAYOUT[pin.id].x) >= 0 ? 1 : -1;
+      view.sprite.visible = true;
+      view.sprite.rotation = dir * (t*Math.PI*0.55);
+      view.sprite.x = pin.x + dir*t*16;
+      view.sprite.y = pin.y + t*10;
+      const k = t<0.72 ? 1 : 1-(t-0.72)/0.28;
+      view.sprite.alpha = Math.max(0,k);
+      view.shadow.alpha = 0.5*(1-t);
+      if(t>=1){ view.sprite.visible=false; pin._anim=null; }
+    }
+  });
+  // ball
+  if(ballSprite){
+    ballSprite.x = ball.x; ballSprite.y = ball.y;
+    ballSprite.rotation = ball.angle||0;
+    ballSprite.visible = true;
+    ballShadow.x = ball.x; ballShadow.y = ball.y + 20;
+    ballShadow.scale.set(0.9, 0.9);
+    // trail
+    ballTrail.forEach((g,i)=>{
+      g.x += (ball.x - g.x)*0.35; g.y += (ball.y - g.y)*0.35;
+      g.alpha = ball.moving ? (0.28*(1 - i/ballTrail.length)) : 0;
+    });
+  }
+}
+
+function drawAim(){
+  aimGfx.clear();
+  if(!dragStart || (ball && ball.moving)) return;
+  const dx = dragStart.x-dragCurrent.x, dy = dragStart.y-dragCurrent.y;
+  const len = Math.hypot(dx,dy);
+  if(len<10 || !ball) return;
+  const ex = ball.x + dx*1.5, ey = ball.y + dy*1.5;
+  // yıldız uç
+  const r1=11, r2=5;
+  for(let p=0;p<5;p++){
+    const a0=(p*2*Math.PI/5)-Math.PI/2, a1=a0+Math.PI/5;
+    aimGfx[p===0?'moveTo':'lineTo'](ex+Math.cos(a0)*r1, ey+Math.sin(a0)*r1);
+    aimGfx.lineTo(ex+Math.cos(a1)*r2, ey+Math.sin(a1)*r2);
+  }
+  aimGfx.closePath();
+  aimGfx.fill({ color:0x8FEBFF, alpha:0.9 });
+  // kesikli yön çizgisi
+  const segs = 10;
+  for(let i=0;i<segs;i++){
+    if(i%2) continue;
+    const t0=i/segs, t1=(i+1)/segs;
+    aimGfx.moveTo(ball.x+(ex-ball.x)*t0, ball.y+(ey-ball.y)*t0);
+    aimGfx.lineTo(ball.x+(ex-ball.x)*t1, ball.y+(ey-ball.y)*t1);
+  }
+  aimGfx.stroke({ width:3, color:0x8FEBFF, alpha:0.85 });
+}
+
+// ==================== HUD ====================
+function updateHUD(){
+  if(hudFrameText) hudFrameText.text = `${Math.min(currentFrame+1,10)}/10`;
+  if(hudScoreText) hudScoreText.text = String(totalScore);
+}
+
+// ==================== GAME LOGIC (aynı) ====================
+function setupAndStart(){
+  playerName = (document.getElementById('player-name').value||'').trim() || 'Yıldız';
+  document.getElementById('modal-intro').classList.add('hidden');
+  startGame();
+}
+function startGame(){
+  frames = [];
+  for(let i=0;i<FRAME_COUNT;i++) frames.push({ rolls:[], pinsStanding:Array(10).fill(true), fallenThisRoll:[] });
+  questionFrames = questionsEnabled ? [0,1,2,3,4,5,6] : [];
+  questions = {}; questionFrames.forEach((fr,i)=>{ questions[fr]=QUESTIONS[i]; });
+  currentFrame=0; currentRoll=0; totalScore=0; gameRunning=true;
+  updateHUD();
+  initPins([]); resetBall();
+  if(bgSprite) bgSprite.texture = BG_TEX[Math.floor(currentFrame/3)%LANE_THEMES.length];
+  gameLoopStart();
+  setTimeout(()=>showMascot('good'), 500);
+}
+function restartGame(){
+  document.getElementById('modal-end').classList.add('hidden');
+  document.getElementById('modal-intro').classList.remove('hidden');
+}
+function countFallen(){ return pins.filter(p=>p.fallen).length; }
+
+function onRollEnd(){
+  if(!gameRunning) return;
+  const fallenNow = countFallen();
+  const frame = frames[currentFrame];
+  let knockedThisRoll;
+  if(currentRoll===0){ knockedThisRoll=fallenNow; frame.rolls[0]=knockedThisRoll; }
+  else { const prev=frame.rolls[0]||0; knockedThisRoll=fallenNow-prev; frame.rolls[1]=knockedThisRoll; }
+
+  const firstRollKnocked = frame.rolls[0]||0;
+  const isStrike = currentRoll===0 && firstRollKnocked===10;
+  const isSpare = currentRoll===1 && (frame.rolls[0]||0)+(frame.rolls[1]||0)===10;
+  const isFrameDone = isStrike || currentRoll===1;
+
+  if(knockedThisRoll>=10){ showMascot('strike'); strikeCelebration(); playStrike(); }
+  else if(isSpare){ showMascot('spare'); spareCelebration(); playSpare(); }
+  else if(knockedThisRoll>=6){
+    showMascot('good'); screenShake(14); flashScreen(0xFFD24D,0.45); showBigText('🔥 HARİKA!');
+    emojiRain(['🔥','💥','⭐','🎉','✨'],12);
+    confettiBurst(V_W/2, V_H/3, 30, [0xFFD700,0xFF6B00,0x00AEEF,0xFF6FBF,0x69F0AE]);
+  } else if(knockedThisRoll>=3){
+    showMascot('good'); screenShake(8); showBigText('💪 GÜZEL!');
+    emojiRain(['💪','👍','⭐','✨'],8);
+    confettiBurst(V_W/2, V_H/3, 18, [0x00AEEF,0xFFD700,0xFFFFFF,0xFF6FBF]);
+  } else if(knockedThisRoll>=1){
+    showMascot('good'); showBigText('👏 İYİ!');
+    emojiRain(['👏','✨','💫'],5);
+    confettiBurst(V_W/2, V_H/2, 10, [0x00AEEF,0xFFD700,0xFFFFFF]);
+  } else {
+    showMascot('gutter'); emojiRain(['💫','🌈','😊'],4);
+  }
+
+  if(isFrameDone){
+    calculateScore();
+    if(questionFrames.includes(currentFrame)) setTimeout(()=>showQuestion(questions[currentFrame]), 2000);
+    else advanceFrame();
+  } else {
+    currentRoll=1;
+    const fallenIds = pins.filter(p=>p.fallen).map(p=>p.id);
+    initPins(fallenIds); resetBall();
+  }
+}
+function calculateScore(){
+  let score=0;
+  for(let f=0; f<currentFrame+1; f++){
+    const r = frames[f].rolls; if(!r || r.length===0) continue;
+    const r0=r[0]||0, r1=r[1]||0;
+    const isStrike = r0===10 && r.length>=1;
+    const isSpare = !isStrike && r0+r1===10;
+    if(isStrike){
+      let bonus=0; const nf=frames[f+1];
+      if(nf){ bonus += nf.rolls[0]||0; if(nf.rolls[1]!==undefined) bonus += nf.rolls[1]; else { const n2=frames[f+2]; if(n2) bonus += n2.rolls[0]||0; } }
+      score += 10+bonus;
+    } else if(isSpare){ const nf=frames[f+1]; score += 10 + (nf?(nf.rolls[0]||0):0); }
+    else score += r0+r1;
+  }
+  totalScore=score; updateHUD();
+}
+function advanceFrame(){
+  currentFrame++; currentRoll=0;
+  if(currentFrame>=FRAME_COUNT){ endGame(); return; }
+  initPins([]); resetBall(); updateHUD();
+  if(bgSprite) bgSprite.texture = BG_TEX[Math.floor(currentFrame/3)%LANE_THEMES.length];
+}
+function showQuestion(q){
+  const name = playerName||'Yıldız';
+  document.getElementById('q-text').textContent = q;
+  document.querySelector('#modal-question .modal-title').textContent = '🌙 '+name+', Soru Zamanı!';
+  document.getElementById('modal-question').classList.remove('hidden');
+}
+function closeQuestion(){ document.getElementById('modal-question').classList.add('hidden'); advanceFrame(); }
+function endGame(){
+  gameRunning=false;
+  const name = playerName||'Yıldız';
+  document.getElementById('final-score').textContent = totalScore;
+  const msg = totalScore>=150 ? '🏆 Muhteşem '+name+'! Gerçek bir bowling yıldızısın!' :
+              totalScore>=100 ? '⭐ Harika '+name+'! Çok güzel bir oyun çıkardın!' :
+              totalScore>=60  ? '👏 İyi iş '+name+'! Pratik yaptıkça daha da iyileşeceksin.' :
+                                '🎳 Güzel deneme '+name+'! Bir daha deneyelim!';
+  document.getElementById('end-msg').textContent = msg;
+  document.querySelector('#modal-end .modal-title').textContent = '🏆 Tebrikler '+name+'!';
+  document.getElementById('modal-end').classList.remove('hidden');
+  emojiRain(['🏆','🎉','⭐','✨','🎊'], 20);
+  confettiBurst(V_W/2, V_H*0.4, 60, [0xFFD700,0xFF6B00,0x00AEEF,0xFF6FBF,0x69F0AE,0xFFFFFF]);
+}
+
+// ==================== GAME LOOP START ====================
+let loopRunning = false;
+function gameLoopStart(){ loopRunning = true; }
+
+// ==================== INPUT ====================
+const _pt = new PIXI.Point();
+function getPos(e){
+  const rect = app.canvas.getBoundingClientRect();
+  const src = e.touches ? e.touches[0] : e;
+  _pt.set(src.clientX - rect.left, src.clientY - rect.top);
+  const local = world.toLocal(_pt);
+  return { x: local.x, y: local.y };
+}
+function onDown(e){
+  if(!gameRunning || (ball && ball.moving)) return;
+  e.preventDefault();
+  const pos = getPos(e);
+  const dx = pos.x-ball.x, dy = pos.y-ball.y;
+  if(Math.hypot(dx,dy) < ball.r*2.6){
+    dragStart = { x:pos.x, y:pos.y }; dragCurrent = { x:pos.x, y:pos.y };
+    gaugeCont.visible = true; updateGauge(0);
+  }
+}
+function onMove(e){
+  if(!dragStart) return;
+  e.preventDefault();
+  dragCurrent = getPos(e);
+  updateGauge(Math.hypot(dragStart.x-dragCurrent.x, dragStart.y-dragCurrent.y));
+}
+function onUp(e){
+  if(!dragStart || (ball && ball.moving)) return;
+  e.preventDefault();
+  const dx = dragStart.x-dragCurrent.x, dy = dragStart.y-dragCurrent.y;
+  const len = Math.hypot(dx,dy);
+  if(len>15){
+    const speed = Math.min(len*0.22, 22);
+    ball.vx = (dx/len)*speed; ball.vy = (dy/len)*speed;
+    ball.moving = true; settleTimer = 0; playRoll();
+  }
+  dragStart=null; dragCurrent=null;
+  gaugeCont.visible = false;
+}
+function updateGauge(len){
+  const pct = Math.min(len/200, 1);
+  gaugeFillGfx.clear();
+  const w = 160*pct, x = -80;
+  const col = pct<0.3?0x6FE0FF : pct<0.6?0x69F0AE : pct<0.85?0xFFEB3B : 0xFF5722;
+  gaugeFillGfx.roundRect(x, -6, Math.max(w,0.001), 12, 6).fill({ color:col, alpha:1 });
+  gaugeLabel.text = pct<0.3?'HAFİF' : pct<0.6?'ORTA' : pct<0.85?'GÜÇLÜ!' : '🔥 MAKSİMUM!';
+}
+
+// ==================== MAIN LOOP ====================
+function onTick(ticker){
+  const dt = Math.min(ticker.deltaMS/1000, 0.05);
+  updateTweens(dt);
+
+  if(gameRunning){
+    if(loopRunning && ball){
+      updatePhysics();
+      // settle kontrolü
+      if(ball.moving){
+        const allStill = pins.every(p=>p.fallen || (Math.abs(p.vx)<0.3 && Math.abs(p.vy)<0.3));
+        if(allStill){ settleTimer++; if(settleTimer>30){ ball.moving=false; stopRoll(); setTimeout(onRollEnd,300);} }
+        else settleTimer=0;
+      }
+    }
+  }
+  updateView(dt);
+  drawAim();
+  updateParticles(dt);
+  updateDropEmojis(dt);
+
+  // twinkle yıldızlar
+  const now = performance.now()/1000;
+  twinkleStars.forEach((s,i)=>{ s.alpha = 0.25 + 0.35*Math.sin(now*1.6 + i*1.1); });
+  gutterStars.forEach((s,i)=>{ s.alpha = 0.15 + 0.15*Math.sin(now*1.0 + i*0.8); s.y = s.baseY + Math.sin(now*1.1+i)*4; });
+
+  // shake
+  if(shakeTime>0){
+    shakeTime -= dt;
+    const k = Math.max(shakeTime,0)/0.45;
+    const amp = shakeAmp*k;
+    world.x = worldBaseX + (Math.random()-0.5)*amp;
+    world.y = worldBaseY + (Math.random()-0.5)*amp;
+    world.rotation = (Math.random()-0.5)*amp*0.0016;
+  } else if(world.rotation!==0){ world.x=worldBaseX; world.y=worldBaseY; world.rotation=0; }
+
+  // filtre zamanlayıcıları
+  if(swT>0){ swT-=dt; if(shockFilter){ shockFilter.enabled = swT>0; shockFilter.time = 1-Math.max(swT,0)/0.85; } }
+  if(rgbT>0){ rgbT-=dt; if(rgbFilter){ rgbFilter.enabled = rgbT>0; const o = Math.max(rgbT,0)/0.14*7; rgbFilter.red = { x:o, y:o*0.4 }; rgbFilter.blue = { x:-o, y:-o*0.4 }; } }
+}
+
+// ==================== LAYOUT ====================
+let worldBaseX=0, worldBaseY=0;
+function layout(){
+  const w = window.innerWidth, h = window.innerHeight;
+  app.renderer.resize(w, h);
+  const s = Math.min(w/V_W, h/V_H);
+  world.scale.set(s);
+  worldBaseX = (w - V_W*s)/2;
+  worldBaseY = (h - V_H*s)/2;
+  world.x = worldBaseX; world.y = worldBaseY; world.rotation = 0;
+  if(overlayWorld){ overlayWorld.scale.set(s); overlayWorld.x = worldBaseX; overlayWorld.y = worldBaseY; }
+  // vignette
+  if(vignetteSprite){ vignetteSprite.width = w; vignetteSprite.height = h; }
+  // HUD bar
+  const barW = Math.min(V_W*s, w-16);
+  const barX = (w - barW)/2, barY = Math.max(worldBaseY, 0) + 6;
+  hudBarGfx.clear();
+  hudBarGfx.roundRect(barX, barY, barW, 40, 12)
+    .fill({ color:0x0a1730, alpha:0.72 })
+    .stroke({ width:2, color:0x00AEEF, alpha:0.55 });
+  const cy = barY + 20;
+  hudFrameText.x = barX + barW*0.13; hudFrameText.y = cy;
+  hudTitleText.x = barX + barW*0.5;  hudTitleText.y = cy;
+  hudScoreText.x = barX + barW*0.87; hudScoreText.y = cy;
+}
+
+// ==================== INIT ====================
+let BG_TEX = [];
+let pinViews = [];
+let ballTrail = [];
+let twinkleStars = [], gutterStars = [], vignetteSprite;
+
+async function init(){
+  if(typeof PIXI === 'undefined'){ alert('Pixi yüklenemedi.'); return; }
+
+  const stageEl = document.getElementById('stage');
+  app = new PIXI.Application();
+  await app.init({
+    background: 0x070b14,
+    antialias: true,
+    autoDensity: true,
+    resolution: Math.min(window.devicePixelRatio||1, 2),
+    preference: 'webgl',
+    powerPreference: 'high-performance',
+    hello: false
+  });
+  stageEl.appendChild(app.canvas);
+  app.renderer.resize(window.innerWidth, window.innerHeight);
+
+  await Promise.all([
+    document.fonts.load('900 56px Cinzel'),
+    document.fonts.load('800 20px Nunito'),
+    document.fonts.load('700 18px Nunito')
+  ]).catch(()=>{});
+  await document.fonts.ready.catch(()=>{});
+
+  // ---- textures ----
+  BG_TEX = LANE_THEMES.map(buildBackgroundTex);
+  PIN_TEX = buildPinTex();
+  DOT_TEX = buildDotTex();
+  STAR_TEX = buildStarTex();
+  SPARK_TEX = buildSparkTex();
+  RING_TEX = buildRingTex();
+  SHADOW_TEX = buildShadowTex();
+  SHARD_TEX = buildShardTex();
+  VIGNETTE_TEX = buildVignetteTex();
+  Object.keys(BALL_COLORS).forEach(k=> BALL_TEX[k] = buildBallTex(k));
+
+  // ---- scene ----
+  world = new PIXI.Container();
+  app.stage.addChild(world);
+
+  // Filter'siz katman (maskot baloncuğu, güç göstergesi) — bloom metni bozmasın
+  overlayWorld = new PIXI.Container();
+  app.stage.addChild(overlayWorld);
+
+  bgSprite = new PIXI.Sprite(BG_TEX[0]);
+  world.addChild(bgSprite);
+
+  twinkleLayer = new PIXI.Container(); world.addChild(twinkleLayer);
+  for(let i=0;i<16;i++){
+    const s = new PIXI.Sprite(STAR_TEX); s.anchor.set(0.5);
+    s.x = (i*111.7+23)%(V_W-60)+30; s.y = (i*47.3+18)%130+16;
+    s.scale.set(0.16 + (i%3)*0.05); s.tint = 0xBFEFFF; s.blendMode='add';
+    twinkleLayer.addChild(s); twinkleStars.push(s);
+  }
+  gutterStarLayer = new PIXI.Container(); world.addChild(gutterStarLayer);
+  const gp=[[40,290],[40,400],[40,510],[40,620],[V_W-40,330],[V_W-40,440],[V_W-40,550],[V_W-40,660]];
+  gp.forEach(([x,y],i)=>{
+    const s = new PIXI.Sprite(STAR_TEX); s.anchor.set(0.5); s.x=x; s.baseY=y; s.y=y;
+    s.scale.set(0.13); s.tint=0x6FE0FF; s.blendMode='add'; s.alpha=0.2;
+    gutterStarLayer.addChild(s); gutterStars.push(s);
+  });
+
+  // pin views
+  pinViews = [];
+  const pinLayer = new PIXI.Container(); world.addChild(pinLayer);
+  for(let i=0;i<10;i++){
+    const shadow = new PIXI.Sprite(SHADOW_TEX); shadow.anchor.set(0.5); shadow.alpha=0.5; shadow.scale.set(0.42);
+    const sprite = new PIXI.Sprite(PIN_TEX); sprite.anchor.set(0.5, 0.72); sprite.scale.set(0.7);
+    pinLayer.addChild(shadow, sprite);
+    pinViews.push({ sprite, shadow });
+  }
+
+  // trail + ball
+  const trailLayer = new PIXI.Container(); world.addChild(trailLayer);
+  ballTrail = [];
+  for(let i=0;i<6;i++){
+    const g = new PIXI.Sprite(DOT_TEX); g.anchor.set(0.5);
+    g.tint = 0x6FE0FF; g.blendMode='add'; g.alpha=0; g.scale.set(0.5 - i*0.05);
+    trailLayer.addChild(g); ballTrail.push(g);
+  }
+  ballShadow = new PIXI.Sprite(SHADOW_TEX); ballShadow.anchor.set(0.5); ballShadow.alpha=0.5; ballShadow.scale.set(0.85);
+  world.addChild(ballShadow);
+  ballSprite = new PIXI.Sprite(BALL_TEX[selectedBallColor]); ballSprite.anchor.set(0.5); ballSprite.scale.set(1.0);
+  world.addChild(ballSprite);
+
+  particleLayer = new PIXI.Container(); world.addChild(particleLayer);
+  ringLayer = new PIXI.Container(); world.addChild(ringLayer);
+
+  aimGfx = new PIXI.Graphics(); world.addChild(aimGfx);
+
+  // power gauge
+  gaugeCont = new PIXI.Container(); gaugeCont.x = V_W/2; gaugeCont.y = V_H-46; gaugeCont.visible=false;
+  const gbg = new PIXI.Graphics();
+  gbg.roundRect(-84,-9,168,18,9).fill({ color:0x000000, alpha:0.4 }).stroke({ width:2, color:0xFFFFFF, alpha:0.2 });
+  gaugeFillGfx = new PIXI.Graphics();
+  gaugeLabel = new PIXI.Text({ text:'GÜÇ', style:new PIXI.TextStyle({ fontFamily:'Nunito', fontWeight:'800', fontSize:13, fill:0xFFFFFF, stroke:{ color:0x000000, width:3 } }) });
+  gaugeLabel.anchor.set(0.5); gaugeLabel.y = -20;
+  gaugeCont.addChild(gbg, gaugeFillGfx, gaugeLabel);
+  overlayWorld.addChild(gaugeCont);
+
+  // mascot
+  mascotCont = new PIXI.Container(); mascotCont.x = V_W-120; mascotCont.y = V_H-150; mascotCont.visible=false; overlayWorld.addChild(mascotCont);
+  mascotEmoji = new PIXI.Text({ text:'🐰', style:new PIXI.TextStyle({ fontSize:48 }) });
+  mascotEmoji.anchor.set(0.5); mascotEmoji.y = 46;
+  mascotBubble = new PIXI.Graphics();
+  mascotMsgText = new PIXI.Text({ text:'', style:new PIXI.TextStyle({ fontFamily:'Nunito', fontWeight:'800', fontSize:14, fill:0x14243f, wordWrap:true, wordWrapWidth:200, align:'center' }) });
+  mascotMsgText.anchor.set(0.5); mascotMsgText.y = -14;
+  mascotCont.addChild(mascotBubble, mascotMsgText, mascotEmoji);
+
+  // flash + big text
+  flashRect = new PIXI.Graphics(); flashRect.rect(0,0,V_W,V_H).fill(0xFFFFFF); flashRect.alpha=0; flashRect.blendMode='add'; world.addChild(flashRect);
+  bigTextObj = new PIXI.Text({ text:'', style:new PIXI.TextStyle({ fontFamily:'Cinzel', fontWeight:'900', fontSize:58, fill:0xFFE27A, align:'center',
+    stroke:{ color:0x8A3A00, width:6 }, dropShadow:{ color:0x000000, blur:6, distance:4, angle:Math.PI/2, alpha:0.5 } }) });
+  bigTextObj.anchor.set(0.5); bigTextObj.x = V_W/2; bigTextObj.y = V_H*0.34; bigTextObj.alpha=0; world.addChild(bigTextObj);
+
+  // vignette (screen space)
+  vignetteSprite = new PIXI.Sprite(VIGNETTE_TEX); vignetteSprite.x=0; vignetteSprite.y=0;
+  app.stage.addChild(vignetteSprite);
+
+  // HUD (screen space)
+  hud = new PIXI.Container(); app.stage.addChild(hud);
+  hudBarGfx = new PIXI.Graphics();
+  const mk = (txt, size, color, weight) => new PIXI.Text({ text:txt, style:new PIXI.TextStyle({ fontFamily:'Nunito', fontWeight:weight||'800', fontSize:size, fill:color, stroke:{ color:0x000000, width:3 } }) });
+  hudFrameText = mk('1/10', 18, 0x9FE9FF);
+  hudTitleText = new PIXI.Text({ text:'⭐ Make-A-Wish Bowling ⭐', style:new PIXI.TextStyle({ fontFamily:'Cinzel', fontWeight:'900', fontSize:15, fill:0xFFFFFF, stroke:{ color:0x0a3a5a, width:4 } }) });
+  hudScoreText = mk('0', 22, 0xFFE27A);
+  [hudFrameText,hudTitleText,hudScoreText].forEach(t=>{ t.anchor.set(0.5); });
+  hud.addChild(hudBarGfx, hudFrameText, hudTitleText, hudScoreText);
+
+  // ---- filters ----
+  try { bloomFilter = new PIXI.filters.AdvancedBloomFilter({ threshold:0.78, bloomScale:0.55, brightness:1.03, blur:6, quality:4 }); }
+  catch(e){ bloomFilter = null; }
+  try { shockFilter = new PIXI.filters.ShockwaveFilter({ center:{ x:V_W/2, y:V_H*0.25 }, amplitude:18, wavelength:130, speed:900, brightness:1.2, radius:520, time:0 }); shockFilter.enabled = false; }
+  catch(e){ shockFilter = null; }
+  try { rgbFilter = new PIXI.filters.RGBSplitFilter({ red:{x:0,y:0}, green:{x:0,y:0}, blue:{x:0,y:0} }); rgbFilter.enabled = false; }
+  catch(e){ rgbFilter = null; }
+  const fchain = [bloomFilter, shockFilter, rgbFilter].filter(Boolean);
+  if(fchain.length){
+    world.filters = fchain;
+    world.filterArea = new PIXI.Rectangle(0, 0, V_W, V_H);
+  }
+
+  // ---- state ----
+  initPins([]); resetBall();
+  layout();
+  window.addEventListener('resize', layout);
+
+  // input
+  const c = app.canvas;
+  c.addEventListener('mousedown', onDown);
+  c.addEventListener('mousemove', onMove);
+  c.addEventListener('mouseup', onUp);
+  c.addEventListener('touchstart', onDown, {passive:false});
+  c.addEventListener('touchmove', onMove, {passive:false});
+  c.addEventListener('touchend', onUp, {passive:false});
+
+  started = true;
+  app.ticker.add(onTick);
+}
+
+init();
+</script>
+</body>
+</html>
