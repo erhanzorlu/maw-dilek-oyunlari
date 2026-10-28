@@ -8,10 +8,11 @@
     content="Make-A-Wish Türkiye gönüllü platformu: dilek gerçekleştirme duyuruları, eğitimler ve saha çağrıları. Bir dilek tut, bir hayata dokun.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Make-A-Wish Türkiye">
+  <meta property="og:url" content="https://maw-yararli-linkler.vercel.app/duyurular.html">
   <meta property="og:title" content="Duyurular & Eğitimler | Make-A-Wish Türkiye">
   <meta property="og:description"
     content="Gönüllü duyuruları, eğitimler ve dilek gerçekleştirme çağrıları. Bir dilek tut, bir hayata dokun.">
-  <meta property="og:image" content="og-duyurular.png">
+  <meta property="og:image" content="https://maw-yararli-linkler.vercel.app/og-duyurular.png">
   <meta name="twitter:card" content="summary_large_image">
   <title>Make-A-Wish | Duyurular & Eğitimler</title>
   <link
@@ -1046,15 +1047,22 @@
       .anc-card-body {
         padding: 0 20px 16px;
         flex: 1;
+        display: flex;
+        flex-direction: column;
       }
 
       .anc-title {
         font-family: 'Playfair Display', serif;
-        font-size: 17.5px;
+        font-size: 17px;
         font-weight: 700;
         color: var(--primary-dark);
         margin-bottom: 8px;
         line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 46px;
       }
 
       .anc-desc {
@@ -1150,14 +1158,91 @@
         background: linear-gradient(135deg, #eff6ff, #dbeafe);
         border: 1px solid #bfdbfe;
         border-radius: var(--radius-sm);
-        padding: 9px 12px;
-        margin-bottom: 12px;
-        font-size: 13px;
+        padding: 7px 11px;
+        margin-bottom: 10px;
+        font-size: 12.5px;
         font-weight: 700;
         color: var(--primary-dark);
         display: flex;
         align-items: center;
         gap: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .child-wish-pill span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .compact-interest-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-bottom: 8px;
+      }
+
+      .compact-interest-row .interest-pill {
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+      }
+
+      .compact-interest-row .interest-pill.more-pill {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #64748b;
+        font-weight: 800;
+      }
+
+      /* ─── SAĞLIK & ENFEKSİYON PROTOKOLÜ BANNERI (MODAL) ─── */
+      .hygiene-protocol-banner {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border: 1.5px solid #6ee7b7;
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+      }
+
+      .hygiene-protocol-banner .hp-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #10b981;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      .hygiene-protocol-banner .hp-title {
+        font-size: 13px;
+        font-weight: 800;
+        color: #065f46;
+        margin-bottom: 2px;
+      }
+
+      .hygiene-protocol-banner .hp-desc {
+        font-size: 12px;
+        color: #047857;
+        line-height: 1.5;
+        font-weight: 600;
       }
 
       .interest-tags-wrapper {
@@ -2793,6 +2878,9 @@
       .role-volunteer .coord-only {
         display: none !important;
       }
+      .role-coordinator .volunteer-only {
+        display: none !important;
+      }
 
       /* ─── Sabitlenmiş bölümü ─── */
       .pinned-section {
@@ -2844,44 +2932,187 @@
         background: linear-gradient(180deg, #fbbf24, #f59e0b);
       }
 
-      .btn-pin {
-        width: 34px;
-        height: 34px;
+      /* ─── Kart Alt Barı (anc-card-footer) ─── */
+      .anc-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        padding: 10px 12px;
+        border-top: 1px solid var(--border);
+        background: #fafbfc;
+        flex-wrap: nowrap;
+        min-height: 52px;
+        box-sizing: border-box;
+      }
+
+      /* Gönüllü Modunda Tam Genişlik Kahraman Butonu */
+      .btn-join-hero {
+        height: 38px;
+        padding: 0 16px;
+        border: none;
         border-radius: 10px;
-        border: 1.5px solid var(--border);
-        background: var(--bg);
-        color: var(--muted);
+        font-family: 'Nunito', sans-serif;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        font-size: 15px;
-        transition: 0.18s;
+        gap: 8px;
+        white-space: nowrap;
+        flex: 1 1 100%;
+        width: 100%;
+        text-decoration: none;
+        box-sizing: border-box;
+      }
+      .btn-join-hero:not(.joined) {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(217, 119, 6, 0.22);
+      }
+      .btn-join-hero:not(.joined):hover {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 16px rgba(217, 119, 6, 0.35);
+        filter: brightness(1.04);
+      }
+      .btn-join-hero.joined {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(5, 150, 105, 0.22);
+      }
+      .btn-join-hero.joined:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 16px rgba(5, 150, 105, 0.35);
+        filter: brightness(1.04);
+      }
+
+      /* Koordinatör İkon Araç Çubuğu (anc-coord-actions) */
+      .anc-coord-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
         flex-shrink: 0;
       }
 
-      .btn-pin:hover {
-        border-color: #fcd34d;
-        color: #b45309;
-        background: #fffbeb;
+      /* 32x32px Kusursuz Standart İkon Butonları */
+      .btn-action-tool,
+      .btn-pin,
+      .btn-icon-edit,
+      .btn-icon-danger {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 9px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1.5px solid var(--border);
+        background: #ffffff;
+        color: #64748b;
+        padding: 0;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        flex-shrink: 0;
+        box-sizing: border-box;
+      }
+      .btn-action-tool:hover,
+      .btn-pin:hover,
+      .btn-icon-edit:hover,
+      .btn-icon-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      }
+      .btn-action-tool:active,
+      .btn-pin:active,
+      .btn-icon-edit:active,
+      .btn-icon-danger:active {
+        transform: scale(0.93);
       }
 
-      .btn-pin.pinned {
+      /* 1. Gönüllü Katıl İkon Butonu */
+      .btn-action-tool.join-btn {
+        background: #fffbeb;
+        border-color: #fde68a;
+        color: #d97706;
+      }
+      .btn-action-tool.join-btn:hover {
+        background: #f59e0b;
+        border-color: #f59e0b;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      }
+      .btn-action-tool.join-btn.joined {
+        background: #ecfdf5;
+        border-color: #86efac;
+        color: #059669;
+      }
+      .btn-action-tool.join-btn.joined:hover {
+        background: #059669;
+        border-color: #059669;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+      }
+
+      /* 2. Düzenle İkon Butonu */
+      .btn-action-tool.edit-btn,
+      .btn-icon-edit {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        color: #475569;
+      }
+      .btn-action-tool.edit-btn:hover,
+      .btn-icon-edit:hover {
+        background: #0065c3;
+        border-color: #0065c3;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 101, 195, 0.28);
+      }
+
+      /* 3. Sabitle İkon Butonu */
+      .btn-action-tool.pin-btn,
+      .btn-pin {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        color: #64748b;
+      }
+      .btn-action-tool.pin-btn:hover,
+      .btn-pin:hover {
         background: #fffbeb;
         border-color: #fde68a;
         color: #b45309;
+        box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
+      }
+      .btn-action-tool.pin-btn.pinned,
+      .btn-pin.pinned {
+        background: #fef3c7;
+        border-color: #fcd34d;
+        color: #b45309;
+        box-shadow: 0 2px 6px rgba(245, 158, 11, 0.18);
+      }
+      .btn-action-tool.pin-btn.pinned:hover,
+      .btn-pin.pinned:hover {
+        background: #fde68a;
+        border-color: #f59e0b;
+        color: #92400e;
       }
 
-      /* Kart alt satırı: birincil buton esner, ikonlar sabit kalır */
-      .anc-card-footer {
-        flex-wrap: nowrap;
-        gap: 8px;
+      /* 4. Sil İkon Butonu */
+      .btn-action-tool.danger-btn,
+      .btn-icon-danger {
+        background: #fef2f2;
+        border-color: #fecaca;
+        color: #dc2626;
       }
-
-      .anc-card-footer .btn-join {
-        flex: 1 1 auto;
-        min-width: 0;
-        white-space: nowrap;
+      .btn-action-tool.danger-btn:hover,
+      .btn-icon-danger:hover {
+        background: #dc2626;
+        border-color: #dc2626;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
       }
 
       /* ─── Paylaşım katmanı ─── */
@@ -3065,6 +3296,53 @@
       .share-form-col textarea:focus {
         border-color: var(--primary);
         background: #fff;
+      }
+
+      .share-template-selector {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 12px;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 10px;
+      }
+      .btn-share-tpl {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 10px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: #64748b;
+        font-family: 'Nunito', sans-serif;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.18s;
+        white-space: nowrap;
+      }
+      .btn-share-tpl:hover {
+        color: #1e293b;
+      }
+      .btn-share-tpl.active {
+        background: #ffffff;
+        color: #0f172a;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      }
+      .btn-share-tpl i {
+        font-size: 14px;
+      }
+      .btn-copy-msg {
+        background: #f8fafc !important;
+        border: 1.5px solid #cbd5e1 !important;
+        color: #334155 !important;
+      }
+      .btn-copy-msg:hover {
+        background: #e2e8f0 !important;
+        color: #0f172a !important;
       }
 
       .share-actions {
@@ -3403,6 +3681,1451 @@
           text-align: right;
         }
       }
+    /* ─── WHATSAPP AYRIŞTIRMA & ORTAK KÜME / ISI HARİTASI STİLLERİ ─── */
+    .btn-smart-paste {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(18, 140, 126, 0.25);
+    }
+    .btn-smart-paste:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(18, 140, 126, 0.35);
+      filter: brightness(1.05);
+    }
+
+    .btn-heatmap-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px;
+      height: 32px;
+      padding: 0 8px 0 9px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      color: #065f46;
+      border: 1.5px solid #86efac;
+      border-radius: 9px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: 'Nunito', sans-serif;
+      white-space: nowrap;
+      flex: 1 1 auto;
+      min-width: 0;
+      box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1);
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .btn-heatmap-action:hover {
+      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+      border-color: #4ade80;
+      color: #047857;
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.22);
+    }
+    .btn-heatmap-action:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 3px rgba(16, 185, 129, 0.15);
+    }
+    .btn-heatmap-action .btn-hm-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      font-weight: 800;
+      color: #065f46;
+      font-size: 11.5px;
+    }
+    .btn-heatmap-action .btn-hm-left i {
+      font-size: 14px;
+      color: #059669;
+      flex-shrink: 0;
+    }
+    .btn-heatmap-action .badge-mini-win {
+      display: inline-flex;
+      align-items: center;
+      gap: 2.5px;
+      background: #059669;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6.5px;
+      border-radius: 999px;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+      box-shadow: 0 1px 3px rgba(5, 150, 105, 0.3);
+      flex-shrink: 0;
+    }
+    .btn-heatmap-action .badge-mini-win i {
+      font-size: 10px;
+    }
+    .btn-heatmap-action .badge-mini-win.is-empty {
+      background: #e2e8f0;
+      color: #64748b;
+      box-shadow: none;
+      font-weight: 700;
+    }
+
+    .badge-tag.finalized {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+      font-weight: 800;
+    }
+
+    /* Müsaitlik Gün Seçici (Date Chips) */
+    .availability-box {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+    }
+    .avail-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .avail-head strong {
+      font-size: 13.5px;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .quick-select-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-quick-chip {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      transition: 0.18s;
+    }
+    .btn-quick-chip:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: #93c5fd;
+    }
+    .avail-day-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 2px;
+    }
+    .day-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 4px;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      user-select: none;
+      position: relative;
+    }
+    .day-chip:hover {
+      border-color: #93c5fd;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 101, 195, 0.1);
+    }
+    .day-chip.weekend {
+      background: #fffdf5;
+      border-color: #fef3c7;
+    }
+    .day-chip .d-num {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1e293b;
+      line-height: 1.1;
+    }
+    .day-chip .d-month {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+    .day-chip .d-name {
+      font-size: 10px;
+      font-weight: 800;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .day-chip.weekend .d-name {
+      color: #d97706;
+    }
+    .day-chip.selected {
+      background: linear-gradient(135deg, #0065c3, #00458a) !important;
+      border-color: #00458a !important;
+      color: white !important;
+      box-shadow: 0 4px 14px rgba(0, 101, 195, 0.3) !important;
+    }
+    .day-chip.selected .d-num,
+    .day-chip.selected .d-month,
+    .day-chip.selected .d-name {
+      color: white !important;
+    }
+    .day-chip.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 3px;
+      right: 5px;
+      font-size: 10px;
+      font-weight: 900;
+      color: #fde047;
+    }
+
+    /* Kriter Kontrol Listesi */
+    .criteria-checklist {
+      margin-bottom: 20px;
+    }
+    .crit-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .crit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      margin-bottom: 7px;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #334155;
+    }
+    .crit-item:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .crit-item.checked {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1e40af;
+    }
+    .crit-item input[type="checkbox"] {
+      margin-top: 2px;
+      width: 17px;
+      height: 17px;
+      accent-color: #0065c3;
+      flex-shrink: 0;
+    }
+
+    /* Isı Haritası / Ortak Küme Modalı */
+    .heatmap-winner-banner {
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 1.5px solid #6ee7b7;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    }
+    .hw-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hw-icon {
+      width: 44px;
+      height: 44px;
+      background: #10b981;
+      color: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    }
+    .hw-text strong {
+      display: block;
+      font-size: 15px;
+      color: #064e3b;
+    }
+    .hw-text span {
+      font-size: 12.5px;
+      color: #047857;
+      font-weight: 600;
+    }
+    .btn-lock-winner {
+      background: #059669;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 12.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-lock-winner:hover {
+      background: #047857;
+      transform: translateY(-1px);
+    }
+
+    .heatmap-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 2px;
+    }
+    .heatmap-row {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: 140px 1fr 90px 110px;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+    .heatmap-row:hover {
+      border-color: #cbd5e1;
+      background: #fafbfc;
+    }
+    .heatmap-row.is-winner {
+      border: 2px solid #10b981;
+      background: #f0fdf4;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+    }
+    .hm-date strong {
+      display: block;
+      font-size: 13.5px;
+      color: #1e293b;
+    }
+    .hm-date small {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 700;
+    }
+    .hm-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .hm-bar-bg {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .hm-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #f59e0b, #10b981);
+      transition: width 0.5s ease;
+    }
+    .hm-volunteers-preview {
+      font-size: 11px;
+      color: #475569;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hm-count {
+      text-align: center;
+      font-weight: 800;
+      font-size: 13px;
+      color: #0f172a;
+    }
+    .hm-count .badge-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+    }
+    .heatmap-row.is-winner .badge-count {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    .btn-hm-select {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-hm-select:hover {
+      background: #0065c3;
+      color: white;
+      border-color: #0065c3;
+    }
+    .heatmap-row.is-winner .btn-hm-select {
+      background: #10b981;
+      color: white;
+      border-color: #10b981;
+    }
+
+    /* Başvuran Gönüllüler Listesi */
+    .applicants-list-card {
+      background: #fafbfc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      padding: 14px;
+    }
+    .applicants-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .applicants-header strong {
+      font-size: 13.5px;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .applicant-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 14px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      margin-bottom: 9px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      transition: all 0.2s ease;
+    }
+    .applicant-row:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    .app-info-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+    .app-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--primary-light), #c3dcff);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .app-name-block {
+      min-width: 0;
+    }
+    .app-name-block strong {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.3;
+    }
+    .app-name-block span {
+      font-size: 11.5px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+    .app-tags {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      max-width: 62%;
+    }
+    .app-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      background: #f1f5f9;
+      color: #475569;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .app-tag.wishes {
+      background: #faf5ff;
+      color: #7e22ce;
+      border: 1px solid #e9d5ff;
+    }
+    .app-tag.last-date {
+      background: #f0f9ff;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+    .app-tag.car {
+      background: #fff7ed;
+      color: #c2410c;
+      border: 1px solid #fed7aa;
+    }
+    .app-tag.dates {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+    @media (max-width: 640px) {
+      .applicant-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px;
+      }
+      .app-info-left {
+        width: 100%;
+      }
+      .app-tags {
+        max-width: 100%;
+        justify-content: flex-start;
+        width: 100%;
+        gap: 5px;
+      }
+    }
+
+    /* ─── AVATAR STACK (EKİP RUHU) STİLLERİ ─── */
+    .card-team-stack-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 11px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 9px;
+      margin-top: auto;
+      margin-bottom: 2px;
+      transition: all 0.2s ease;
+    }
+    .card-team-stack-row:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    .avatar-stack {
+      display: inline-flex;
+      align-items: center;
+      flex-direction: row;
+    }
+    .avatar-stack-item {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #fff;
+      margin-right: -7px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      transition: transform 0.15s ease, z-index 0.15s ease;
+      flex-shrink: 0;
+    }
+    .avatar-stack-item:hover {
+      transform: translateY(-2px) scale(1.18);
+      z-index: 10;
+    }
+    .avatar-stack-item.is-me {
+      box-shadow: 0 0 0 1.5px var(--gold);
+    }
+    .avatar-stack-item.more-count {
+      background: #475569 !important;
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+    }
+    .avatar-stack-label {
+      font-size: 11px;
+      color: #475569;
+      font-weight: 600;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .avatar-stack-label strong {
+      color: #0f172a;
+    }
+
+    /* ─── UYUM SKORU (MATCH SCORE) STİLLERİ ─── */
+    .match-score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 1px solid #a7f3d0;
+      border-radius: 10px;
+      padding: 3px 8px 3px 5px;
+      box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1);
+      cursor: help;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .match-score-badge:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(16, 185, 129, 0.2);
+      border-color: #6ee7b7;
+    }
+    .match-score-badge.match-high {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-color: #86efac;
+    }
+    .match-score-badge.match-med {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-color: #bfdbfe;
+    }
+    .match-score-badge.match-med .circle {
+      stroke: #2563eb;
+    }
+    .match-score-badge.match-med .ms-label {
+      color: #1d4ed8;
+    }
+    .match-score-badge.match-med .ms-pct {
+      color: #1e40af;
+    }
+    .ms-ring {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .circular-chart {
+      display: block;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .circle-bg {
+      fill: none;
+      stroke: #e2e8f0;
+      stroke-width: 3.8;
+    }
+    .circle {
+      fill: none;
+      stroke-width: 3.8;
+      stroke: #059669;
+      stroke-linecap: round;
+      stroke-dasharray: 100, 100;
+      transition: stroke-dasharray 0.6s ease;
+    }
+    .ms-pct {
+      position: absolute;
+      font-size: 8px;
+      font-weight: 800;
+      color: #065f46;
+      line-height: 1;
+    }
+    .ms-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+    .ms-label {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #047857;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .ms-reason {
+      font-size: 10px;
+      color: #64748b;
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Detay modalındaki Uyum Rozet Paneli */
+    .detail-match-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 1.5px solid #86efac;
+      border-radius: 12px;
+      padding: 11px 14px;
+      margin-bottom: 15px;
+    }
+    .dmb-left {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #dcfce7;
+      color: #15803d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .dmb-text strong {
+      display: block;
+      font-size: 13px;
+      color: #14532d;
+      font-weight: 800;
+    }
+    .dmb-text span {
+      font-size: 11.5px;
+      color: #166534;
+      line-height: 1.4;
+    }
+
+    /* ─── KADRO KİLİTLENDİ WHATSAPP BUTONLARI ─── */
+    .btn-wa-broadcast-launch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: #fff;
+      border: none;
+      padding: 7px 13px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(18, 140, 126, 0.25);
+      transition: all 0.2s ease;
+      margin-top: 6px;
+    }
+    .btn-wa-broadcast-launch:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(18, 140, 126, 0.35);
+      filter: brightness(1.05);
+    }
+    .btn-icon-wa {
+      color: #15803d;
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+    .btn-icon-wa:hover {
+      background: #25D366;
+      color: #fff;
+      border-color: #16a34a;
+    }
+
+    /* WhatsApp Sihirli Yapıştırıcı Modalı */
+    .sample-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .sample-chip {
+      background: #f1f5f9;
+      border: 1px dashed #94a3b8;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.18s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .sample-chip:hover {
+      background: #e0f2fe;
+      border-color: #0284c7;
+      color: #0369a1;
+      transform: translateY(-1px);
+    }
+    .wa-paste-area {
+      width: 100%;
+      height: 180px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #1e293b;
+      background: #ffffff;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    .wa-paste-area:focus {
+      outline: none;
+      border-color: #25D366;
+      box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
+    }
+    .parsed-preview-box {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border: 1.5px dashed #0065c3;
+      border-radius: 12px;
+      display: none;
+    }
+    /* ─── NOTLAR SLIDE-IN PANELİ STİLLERİ ─── */
+    .btn-meeting-notes {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .btn-meeting-notes:hover {
+      background: #f8fafc;
+      border-color: #0065c3;
+      color: #0065c3;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 101, 195, 0.15);
+    }
+    .btn-meeting-notes i {
+      font-size: 16px;
+      color: #0065c3;
+    }
+
+    /* ─── HARİTA & KONUM ÇİPLERİ VE BANNERLARI ─── */
+    .btn-location-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 2px rgba(29, 78, 216, 0.08);
+      white-space: nowrap;
+    }
+    .btn-location-chip:hover {
+      background: #dbeafe;
+      color: #1e40af;
+      border-color: #93c5fd;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(29, 78, 216, 0.15);
+    }
+    .need-item-with-map {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+    .need-item-with-map .need-text {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .location-banner-box {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .location-banner-box .lbb-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+    .location-banner-box .lbb-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #fee2e2;
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .location-banner-box .lbb-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+    }
+    .location-banner-box .lbb-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+    .location-banner-box .btn-open-map {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0065c3;
+      color: #ffffff;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 101, 195, 0.25);
+    }
+    .location-banner-box .btn-open-map:hover {
+      background: #004d94;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 101, 195, 0.35);
+    }
+    .meta-pill.location.with-link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .meta-pill.location.with-link:hover {
+      border-color: #93c5fd;
+      background: #eff6ff;
+      color: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .notes-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(3px);
+      z-index: 10000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .notes-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .notes-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 440px;
+      max-width: 92vw;
+      background: #ffffff;
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.2);
+      z-index: 10001;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .notes-drawer.open {
+      transform: translateX(0);
+    }
+
+    .notes-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fafbfc;
+    }
+    .notes-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .notes-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .notes-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .notes-status {
+      font-size: 11.5px;
+      color: #10b981;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+    .btn-notes-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.15s ease;
+    }
+    .btn-notes-close:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .notes-toolbar {
+      padding: 10px 18px;
+      border-bottom: 1px solid #f1f5f9;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-notes-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      color: #334155;
+      transition: all 0.15s ease;
+    }
+    .btn-notes-action.copy {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+    .btn-notes-action.copy:hover {
+      background: #dbeafe;
+    }
+    .btn-notes-action.clear:hover {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #dc2626;
+    }
+    .btn-notes-template {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px dashed #cbd5e1;
+      background: #fff;
+      color: #64748b;
+      cursor: pointer;
+    }
+    .btn-notes-template:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      color: #0f172a;
+    }
+
+    .notes-body {
+      flex: 1;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .notes-textarea {
+      flex: 1;
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #1e293b;
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .notes-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 101, 195, 0.12);
+    }
+
+    .notes-footer {
+      padding: 14px 18px;
+      border-top: 1px solid #e2e8f0;
+      background: #fafbfc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .notes-meta-info {
+      font-size: 11.5px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .btn-notes-copy-big {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-notes-copy-big:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    /* ─── ŞEHİR BAZLI VARSAYILAN FİLTRE BANNERI ─── */
+    .city-filter-active-banner {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border: 1.5px solid #bae6fd;
+      border-radius: 14px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.08);
+      animation: fadeIn 0.25s ease-out;
+    }
+    .cfb-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cfb-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: #0284c7;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .cfb-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0369a1;
+    }
+    .cfb-desc {
+      font-size: 12px;
+      color: #0284c7;
+      font-weight: 600;
+    }
+    .cfb-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-cfb-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 1.5px solid #0284c7;
+      color: #0284c7;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-cfb-all:hover {
+      background: #0284c7;
+      color: #ffffff;
+    }
+    .btn-cfb-settings {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1.5px solid transparent;
+      color: #0369a1;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-cfb-settings:hover {
+      background: rgba(2, 132, 199, 0.1);
+    }
+
+    /* ─── E-POSTA BİLDİRİM KARTLARI (DETAY MODALI) ─── */
+    .email-notice-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .email-notice-card.eligible {
+      background: #f0fdf4;
+      border: 1.5px solid #a7f3d0;
+      color: #065f46;
+    }
+    .email-notice-card.eligible i {
+      font-size: 18px;
+      color: #10b981;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .email-notice-card.ineligible {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      color: #64748b;
+    }
+    .email-notice-card.ineligible i {
+      font-size: 18px;
+      color: #94a3b8;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .email-notice-card.optout {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      color: #92400e;
+    }
+    .email-notice-card.optout i {
+      font-size: 18px;
+      color: #f59e0b;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .email-notice-card.general {
+      background: #f5f3ff;
+      border: 1.5px solid #ddd6fe;
+      color: #5b21b6;
+    }
+    .email-notice-card.general i {
+      font-size: 18px;
+      color: #8b5cf6;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ─── AYARLAR SWITCH STİLLERİ ─── */
+    .settings-toggle-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .settings-toggle-card:hover {
+      border-color: #cbd5e1;
+    }
+    .st-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 3px;
+    }
+    .st-desc {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.45;
+    }
+    .switch-ui {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+    .switch-ui input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .switch-ui-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #cbd5e1;
+      transition: .25s cubic-bezier(0.4,0,0.2,1);
+      border-radius: 26px;
+    }
+    .switch-ui-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .25s cubic-bezier(0.4,0,0.2,1);
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .switch-ui input:checked + .switch-ui-slider {
+      background-color: #10b981;
+    }
+    .switch-ui input:checked + .switch-ui-slider:before {
+      transform: translateX(20px);
+    }
+
+    /* ─── E-POSTA DAĞITIM RAPORU TABLOSU ─── */
+    .edm-rule-summary {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 12.5px;
+      color: #166534;
+      line-height: 1.5;
+    }
+    .edm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+    }
+    .edm-row.is-sent {
+      background: #f0fdf4;
+      border-color: #a7f3d0;
+    }
+    .edm-row.is-skipped {
+      opacity: 0.85;
+    }
+    .badge-eligible {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-eligible.sent {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+    .badge-eligible.skipped {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+    }
   </style>
 </head>
 
@@ -3462,16 +5185,22 @@
         </div>
       </div>
       <div class="top-bar-right">
+        <button type="button" class="btn-meeting-notes" id="btnMeetingNotes" onclick="toggleNotesDrawer()" title="Notlar (Panoya Kopyala)">
+          <i class="ph-bold ph-note-pencil"></i> <span>Notlar</span>
+        </button>
         <button type="button" class="btn-tour-start" onclick="startTour()" title="Sayfayı 4 Adımda Keşfet">
           <i class="ph-fill ph-sparkle"></i> <span>Sayfa Turu</span>
         </button>
-        <div class="icon-btn"><i class="ph-fill ph-bell"></i>
+        <div class="icon-btn" onclick="openSettingsModal()" title="Bildirim Tercihleri" style="cursor:pointer;"><i class="ph-fill ph-bell"></i>
           <div class="dot"></div>
         </div>
-        <div class="icon-btn hide-mobile"><i class="ph-bold ph-gear"></i></div>
+        <div class="icon-btn hide-mobile" onclick="openSettingsModal()" title="Profil &amp; Bildirim Ayarları" style="cursor:pointer;"><i class="ph-bold ph-gear"></i></div>
+        <button type="button" class="btn-smart-paste coord-only" onclick="openSmartPasteModal()" title="WhatsApp metninden akıllı duyuru oluştur">
+          <i class="ph-fill ph-magic-wand"></i> <span>WhatsApp'tan Yapıştır</span>
+        </button>
         <button class="btn-add-top coord-only" onclick="openAddModal()"><i class="ph-bold ph-plus"></i> <span>Duyuru
             Ekle</span></button>
-        <div class="top-avatar hide-mobile">E</div>
+        <div class="top-avatar hide-mobile" id="topAvatarLetter" onclick="openSettingsModal()" title="Profil: Selin Aydın (İstanbul)" style="cursor:pointer;">S</div>
       </div>
     </div>
 
@@ -3593,6 +5322,25 @@
         </div>
       </div>
 
+      <!-- ŞEHİR BAZLI VARSAYILAN GÖRÜNÜM BANNERI -->
+      <div class="city-filter-active-banner" id="cityBanner">
+        <div class="cfb-left">
+          <div class="cfb-icon"><i class="ph-fill ph-map-pin"></i></div>
+          <div>
+            <div class="cfb-title">İkamet Şehriniz: <span id="cfbCityName">İstanbul</span></div>
+            <div class="cfb-desc" id="cfbDesc">Varsayılan olarak şehrinizdeki dilekler listeleniyor.</div>
+          </div>
+        </div>
+        <div class="cfb-actions">
+          <button type="button" class="btn-cfb-all" onclick="showAllCities()" id="btnShowAllCities">
+            <i class="ph-bold ph-globe"></i> Tüm Türkiye'yi Göster
+          </button>
+          <button type="button" class="btn-cfb-settings" onclick="openSettingsModal()" title="Şehri veya e-posta tercihlerini değiştir">
+            <i class="ph-bold ph-gear"></i> Şehri Değiştir
+          </button>
+        </div>
+      </div>
+
       <!-- SABİTLENMİŞ DUYURULAR -->
       <div class="pinned-section hidden" id="pinnedSection">
         <div class="pinned-head">
@@ -3678,7 +5426,7 @@
           onclick="openEditModalFromDetail()">
           <i class="ph-bold ph-pencil-simple"></i> Güncelle
         </button>
-        <button class="btn-modal-action" id="mActionBtn" onclick="handleModalAction()">
+        <button class="btn-modal-action volunteer-only" id="mActionBtn" onclick="handleModalAction()">
           <i class="ph-bold ph-check"></i> Katıl / Kaydol
         </button>
       </div>
@@ -3725,14 +5473,31 @@
         </div>
         <div class="share-form-col">
           <div class="share-note" id="shareNote" style="margin-top:0;margin-bottom:10px;"></div>
-          <label for="waMessage">Mesaj</label>
+
+          <div class="share-template-selector">
+            <button type="button" class="btn-share-tpl active" id="btnTplFormal" onclick="switchShareTemplate('formal')">
+              <i class="ph-bold ph-newspaper"></i> Kapsamlı Resmî Çağrı
+            </button>
+            <button type="button" class="btn-share-tpl" id="btnTplQuick" onclick="switchShareTemplate('quick')">
+              <i class="ph-bold ph-lightning"></i> Hızlı / Acil Çağrı
+            </button>
+          </div>
+
+          <label for="waMessage" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Mesaj Taslağı</span>
+            <span style="font-size:11px; color:#64748b; font-weight:600;"><i class="ph-bold ph-pencil-simple"></i> Düzenleyebilirsiniz</span>
+          </label>
           <textarea id="waMessage" oninput="syncWaPreview()"></textarea>
+
           <div class="share-actions">
             <button type="button" class="btn-modal-action btn-wa" onclick="openWhatsAppShare()">
               <i class="ph-fill ph-whatsapp-logo"></i> WhatsApp'ta Aç
             </button>
+            <button type="button" class="btn-modal-action btn-copy-msg" onclick="copyShareMessage()">
+              <i class="ph-bold ph-copy"></i> Metni Kopyala
+            </button>
             <button type="button" class="btn-modal-action" onclick="copyShareLink()">
-              <i class="ph-bold ph-link"></i> Bağlantıyı Kopyala
+              <i class="ph-bold ph-link"></i> Linki Kopyala
             </button>
             <button type="button" class="btn-modal-action" onclick="downloadShareCard()">
               <i class="ph-bold ph-image"></i> Görsel Kart İndir
@@ -3993,34 +5758,384 @@
 
   <!-- DİLEK EKİBİNE KATILIM POP-UP MODALI -->
   <div class="detail-overlay" id="joinModal" onclick="handleJoinOverlay(event)">
-    <div class="detail-panel" style="max-width: 520px;">
+    <div class="detail-panel" style="max-width: 620px;">
       <div class="detail-modal-header" style="background: linear-gradient(135deg, #fffdfa 0%, #fff7ed 100%); border-bottom: 1.5px solid #fed7aa;">
         <h2><i class="ph-fill ph-hand-heart" style="color:#d97706;"></i> Dilek Ekibine Katılım Başvurusu</h2>
         <button class="modal-close-btn" onclick="closeJoinModal()"><i class="ph-bold ph-x"></i></button>
       </div>
-      <div class="detail-modal-body">
-        <div id="joinModalAncTitle" style="font-family:'Playfair Display',serif; font-size:15.5px; font-weight:700; color:var(--primary-dark); margin-bottom:18px; padding:12px 16px; background:var(--gold-light); border:1px solid #fde68a; border-radius:var(--radius-sm); display:flex; align-items:center; gap:8px;">
+      <div class="detail-modal-body" style="max-height: calc(85vh - 130px); overflow-y: auto;">
+        <div id="joinModalAncTitle" style="font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--primary-dark); margin-bottom:16px; padding:12px 16px; background:var(--gold-light); border:1px solid #fde68a; border-radius:var(--radius-sm); display:flex; align-items:center; gap:8px;">
           <i class="ph-fill ph-sparkle" style="color:var(--gold);"></i> <span>Dilek Başlığı</span>
         </div>
 
-        <div class="form-group" style="margin-bottom:18px;">
+        <!-- Müsaitlik Gün Seçici (Tarih Aralığı Varsa) -->
+        <div id="jAvailabilitySection" class="availability-box">
+          <div class="avail-head">
+            <strong><i class="ph-bold ph-calendar-check"></i> Müsait Olduğunuz Günleri Seçin:</strong>
+            <div class="quick-select-row" id="jQuickSelectRow">
+              <button type="button" class="btn-quick-chip" onclick="selectQuickDates('all')">Tümünü Seç</button>
+              <button type="button" class="btn-quick-chip" onclick="selectQuickDates('weekends')">Sadece Hafta Sonu</button>
+              <button type="button" class="btn-quick-chip" onclick="selectQuickDates('clear')">Temizle</button>
+            </div>
+          </div>
+          <div style="font-size:11.5px; color:#64748b; margin-bottom:10px;">
+            Birden fazla gün işaretleyebilirsiniz. En çok gönüllümüzün çakıştığı ortak gün dilek günü olarak kilitlenecektir.
+          </div>
+          <div class="avail-day-grid" id="jDayGrid">
+            <!-- JS ile gün kutuları doldurulacak -->
+          </div>
+          <div id="jSingleDateNotice" style="display:none; font-size:13px; font-weight:700; color:#0369a1; padding:8px 12px; background:#e0f2fe; border-radius:8px;">
+            <i class="ph-fill ph-info"></i> Bu dilek tek bir gün ve sabit saatte gerçekleşecektir.
+          </div>
+        </div>
+
+        <!-- Kriter Kontrol Listesi -->
+        <div id="jCriteriaSection" class="criteria-checklist">
+          <div class="crit-title"><i class="ph-bold ph-check-square-offset"></i> Sağladığınız Kriterleri İşaretleyin:</div>
+          <div id="jCriteriaList">
+            <!-- JS ile dinamik kriter checkbox'ları -->
+          </div>
+        </div>
+
+        <!-- Araç Desteği -->
+        <div class="form-group" style="margin-bottom:16px;">
           <label class="checkbox-container" style="border-color:#fde68a; background:#fffdfa; padding:12px 14px;">
             <input type="checkbox" id="jHasCar">
-            <span style="color:#b45309; font-weight:700;"><i class="ph-bold ph-car"></i> 🚗 Araba / Araç Desteği Sağlayabilirim</span>
+            <span style="color:#b45309; font-weight:700;"><i class="ph-bold ph-car"></i> 🚗 Araba / Araç Desteği Sağlayabilirim (Çocuk & Hediye Lojistiği)</span>
           </label>
         </div>
 
+        <!-- Notlar -->
         <div class="form-group">
           <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span>Eklemek İstediğiniz Notlar</span>
+            <span>Eklemek İstediğiniz Notlar veya Deneyiminiz</span>
             <span style="font-size:11px; font-weight:800; color:var(--muted); text-transform:none; letter-spacing:0;">(Opsiyonel)</span>
           </label>
-          <textarea id="jNotes" rows="4" placeholder="Dilek günü ile ilgili eklemek istediğiniz notlar, saat tercihleriniz veya lojistik imkanlarınız varsa buraya yazabilirsiniz..."></textarea>
+          <textarea id="jNotes" rows="3" placeholder="Saat tercihiniz, özel yeteneğiniz veya lojistik imkanlarınız varsa buraya belirtebilirsiniz..."></textarea>
         </div>
       </div>
       <div class="detail-modal-footer" style="background:#fafbfc;">
         <button class="btn-modal-action" style="background:linear-gradient(135deg, #f59e0b, #d97706);" onclick="submitJoinApplication()">
-          <i class="ph-bold ph-paper-plane-tilt"></i> Başvur
+          <i class="ph-bold ph-paper-plane-tilt"></i> Başvurumu Gönder
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORTAK KÜME / MÜSAİTLİK ISI HARİTASI (KOORDİNATÖR GÖRÜNÜMÜ) -->
+  <div class="detail-overlay" id="heatmapModal" onclick="handleHeatmapOverlay(event)">
+    <div class="detail-panel" style="max-width: 760px;">
+      <div class="detail-modal-header" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-bottom: 1.5px solid #86efac;">
+        <div>
+          <div style="font-size:11px; font-weight:800; color:#15803d; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:2px;">
+            <i class="ph-fill ph-chart-bar"></i> Koordinatör Eşleştirme Masası
+          </div>
+          <h2 style="color:#14532d; font-size:18px;">Müsaitlik Isı Haritası & Ortak Küme</h2>
+        </div>
+        <button class="modal-close-btn" onclick="closeHeatmapModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <div class="detail-modal-body" style="max-height: calc(85vh - 130px); overflow-y: auto;">
+        
+        <!-- En İyi Gün Rozet Paneli -->
+        <div id="hmWinnerBanner" class="heatmap-winner-banner">
+          <div class="hw-left">
+            <div class="hw-icon"><i class="ph-fill ph-trophy"></i></div>
+            <div class="hw-text">
+              <strong id="hmWinnerTitle">31 Ekim Cumartesi — 5 Gönüllü Çakışıyor!</strong>
+              <span id="hmWinnerSub">En yüksek katılım kümesi bu gün sağlanmaktadır (2 araç desteği mevcut).</span>
+            </div>
+          </div>
+          <button type="button" class="btn-lock-winner" id="btnLockWinningDay" onclick="lockWinningDay()">
+            <i class="ph-fill ph-lock-key"></i> Bu Günü Kesinleştir
+          </button>
+        </div>
+
+        <!-- Tarih Dağılım Listesi / Çubukları -->
+        <div style="font-size:13px; font-weight:800; color:#1e293b; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+          <span><i class="ph-bold ph-calendar-dots"></i> Tarih Bazlı Gönüllü Müsaitlik Dağılımı:</span>
+          <span style="font-size:11.5px; font-weight:700; color:#64748b;" id="hmTotalApplicantsCount">Toplam 6 Başvuru</span>
+        </div>
+        <div class="heatmap-list" id="hmListContainer">
+          <!-- JS ile doldurulacak -->
+        </div>
+
+        <!-- Başvuran Gönüllüler Detayı -->
+        <div class="applicants-list-card">
+          <div class="applicants-header">
+            <strong><i class="ph-bold ph-users-three"></i> Başvuran Gönüllülerin Detayları:</strong>
+            <span style="font-size:11.5px; color:#64748b;">Dilek deneyimi, kriter uyumu ve araç bilgileri</span>
+          </div>
+          <div id="hmApplicantsList">
+            <!-- JS ile doldurulacak -->
+          </div>
+        </div>
+
+      </div>
+      <div class="detail-modal-footer" style="background:#fafbfc;">
+        <button type="button" class="btn-modal-action" style="background:#fff; color:#475569; border:1.5px solid #cbd5e1;" onclick="closeHeatmapModal()">
+          Kapat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHATSAPP METNİNDEN AKILLI DUYURU AYRIŞTIRICI POP-UP MODALI -->
+  <div class="detail-overlay" id="smartPasteModal" onclick="handleSmartPasteOverlay(event)">
+    <div class="detail-panel" style="max-width: 680px;">
+      <div class="detail-modal-header" style="background: linear-gradient(135deg, #f0fdf4 0%, #e7f9ef 100%); border-bottom: 1.5px solid #bbf7d0;">
+        <div>
+          <div style="font-size:11px; font-weight:800; color:#128c7e; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:2px;">
+            <i class="ph-fill ph-whatsapp-logo"></i> WhatsApp Doğal Dil Ayrıştırıcı
+          </div>
+          <h2 style="color:#0f5132; font-size:18px;">WhatsApp Metninden Duyuru Oluştur</h2>
+        </div>
+        <button class="modal-close-btn" onclick="closeSmartPasteModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <div class="detail-modal-body" style="max-height: calc(85vh - 130px); overflow-y: auto;">
+        
+        <p style="font-size:13px; color:#475569; line-height:1.5; margin-bottom:12px;">
+          WhatsApp grubuna attığınız standart duyuru metnini aşağıdaki alana yapıştırın. Sistemimiz <b>Yer, Tarih, Detaylar, İlgi Alanları ve Kriterleri</b> otomatik olarak ayırıp kartı oluşturur.
+        </p>
+
+        <!-- Hızlı Örnek Doldurma Butonları (Yönetici Sunumunda Kolaylık) -->
+        <div style="font-size:11.5px; font-weight:800; color:#64748b; margin-bottom:6px;">Hızlı Örnek Seç (Test İçin Tıklayın):</div>
+        <div class="sample-chips-row">
+          <button type="button" class="sample-chip" onclick="pasteSampleText(0)">🏥 1. Koç Hastanesi (16 Yaş Laptop)</button>
+          <button type="button" class="sample-chip" onclick="pasteSampleText(1)">🤝 2. Üsküdar Kulübü (12 Yaş İkizler)</button>
+          <button type="button" class="sample-chip" onclick="pasteSampleText(2)">🏍️ 3. Gebze (4 Yaş Akülü Motor)</button>
+          <button type="button" class="sample-chip" onclick="pasteSampleText(3)">🎯 4. Bursa (9 Yaş 3D Yazıcı)</button>
+        </div>
+
+        <textarea id="smartPasteTextarea" class="wa-paste-area" placeholder="DİLEK GERÇEKLEŞTİRME DUYURUSU:&#10;Yer: Koç Üniversitesi Hastanesi...&#10;Tarih: 27 Ekim...&#10;Detaylar: Dilek çocuğumuz 16 yaşında...&#10;İlgi alanları: Kitap okuma...&#10;Kimler katılmalı?&#10;* Uçuk, grip belirtisi olmayan..."></textarea>
+
+        <div style="margin-top:10px; display:flex; justify-content:flex-end;">
+          <button type="button" class="btn-modal-action" style="background:linear-gradient(135deg, #25D366, #128C7E); padding:9px 18px;" onclick="parseWhatsAppInput()">
+            <i class="ph-fill ph-magic-wand"></i> Sihirli Ayrıştır ve Önizle
+          </button>
+        </div>
+
+        <!-- Ayrıştırılan Kart Önizlemesi -->
+        <div id="smartParsedPreview" class="parsed-preview-box">
+          <div style="font-size:12px; font-weight:800; color:var(--primary); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <i class="ph-fill ph-check-circle"></i> Başarıyla Ayrıştırıldı — Canlı Kart Önizlemesi:
+          </div>
+          <div id="smartPreviewContent"></div>
+          <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:8px;">
+            <button type="button" class="btn-modal-action" style="background:linear-gradient(135deg, var(--primary), var(--primary-dark));" onclick="publishParsedAnnouncement()">
+              <i class="ph-bold ph-check"></i> Bu Duyuruyu Yayınla
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- KADRO KİLİTLENDİ WHATSAPP DUYURUSU & TEŞEKKÜR MODALI -->
+  <div class="detail-overlay" id="lockedTeamWhatsAppModal" onclick="handleLockedTeamOverlay(event)">
+    <div class="detail-panel" style="max-width: 640px;">
+      <div class="detail-modal-header" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-bottom: 1.5px solid #86efac;">
+        <div>
+          <div style="font-size:11px; font-weight:800; color:#15803d; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:2px;">
+            <i class="ph-fill ph-whatsapp-logo"></i> Saha Koordinatör Araçları
+          </div>
+          <h2 style="color:#14532d; font-size:18px;">Kadro Kesinleşti · WhatsApp Teşekkür Mesajı</h2>
+        </div>
+        <button class="modal-close-btn" onclick="closeLockedTeamWhatsAppModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <div class="detail-modal-body" style="max-height: calc(85vh - 130px); overflow-y: auto;">
+        
+        <p style="font-size:12.5px; color:#475569; line-height:1.5; margin-bottom:12px;">
+          Tarih ve kadro kesinleştiğinde gönüllü grubuna atılacak teşekkür ve görev dağılım metnidir. Aşağıdan metni inceleyebilir, kopyalayabilir veya doğrudan WhatsApp'a gönderebilirsiniz:
+        </p>
+
+        <!-- WhatsApp Balon Önizlemesi -->
+        <div style="background: #e5ddd5; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);">
+          <div style="background: #dcf8c6; border-radius: 8px 8px 2px 8px; padding: 12px 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.12); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.5; color: #111b21; white-space: pre-wrap;" id="lockedTeamBubblePreview"></div>
+        </div>
+
+        <div class="form-group">
+          <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span>Düzenlenebilir Mesaj Metni</span>
+            <span style="font-size:11px; font-weight:700; color:#16a34a;"><i class="ph-bold ph-check"></i> Görev rolleri ve link eklendi</span>
+          </label>
+          <textarea id="lockedTeamTextarea" rows="7" style="font-family: monospace; font-size: 12px;"></textarea>
+        </div>
+
+      </div>
+      <div class="detail-modal-footer" style="background:#fafbfc; display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" class="btn-modal-action" style="background:#fff; color:#475569; border:1.5px solid #cbd5e1;" onclick="closeLockedTeamWhatsAppModal()">
+          Kapat
+        </button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-modal-action" style="background:#25D366; color:#fff;" onclick="copyLockedTeamText()">
+            <i class="ph-bold ph-copy"></i> Metni Kopyala
+          </button>
+          <button type="button" class="btn-modal-action" style="background:#128C7E; color:#fff;" onclick="openLockedTeamWhatsAppWeb()">
+            <i class="ph-bold ph-whatsapp-logo"></i> WhatsApp'ta Aç
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTLAR SLIDE-IN PANELİ -->
+  <div class="notes-backdrop" id="notesBackdrop" onclick="closeNotesDrawer()"></div>
+  <aside class="notes-drawer" id="notesDrawer" aria-label="Notlar">
+    <div class="notes-header">
+      <div class="notes-header-left">
+        <div class="notes-icon"><i class="ph-fill ph-notepad"></i></div>
+        <div>
+          <h3 class="notes-title">Not Defteri</h3>
+          <div class="notes-status"><span class="pulse-dot"></span> <span id="notesSaveStatus">Tarayıcıya otomatik kaydedilir</span></div>
+        </div>
+      </div>
+      <button type="button" class="btn-notes-close" onclick="closeNotesDrawer()" title="Paneli Kapat"><i class="ph-bold ph-x"></i></button>
+    </div>
+    
+    <div class="notes-toolbar">
+      <button type="button" class="btn-notes-action copy" onclick="copyMeetingNotes()" title="Tüm notları panoya kopyala">
+        <i class="ph-bold ph-copy"></i> <span>Panoya Kopyala</span>
+      </button>
+      <button type="button" class="btn-notes-action clear" onclick="clearMeetingNotes()" title="Notları temizle">
+        <i class="ph-bold ph-trash"></i> <span>Temizle</span>
+      </button>
+      <button type="button" class="btn-notes-template" onclick="insertNoteTemplate('features')" title="Sistem özelliklerini ekle">
+        + Özellikler
+      </button>
+      <button type="button" class="btn-notes-template" onclick="insertNoteTemplate('agenda')" title="Gündem maddeleri ekle">
+        + Gündem
+      </button>
+      <button type="button" class="btn-notes-template" onclick="insertNoteTemplate('decisions')" title="Kararlar &amp; Aksiyonlar ekle">
+        + Aksiyonlar
+      </button>
+    </div>
+
+    <div class="notes-body">
+      <textarea id="meetingNotesArea" class="notes-textarea" placeholder="Dilekler ve görev dağılımı ile ilgili notlarınızı buraya alın... (Yazdığınız her karakter anında kaydedilir, sayfayı yenileseniz de kaybolmaz)"></textarea>
+    </div>
+
+    <div class="notes-footer">
+      <div class="notes-meta-info" id="notesMetaInfo">0 kelime • 0 karakter</div>
+      <button type="button" class="btn-notes-copy-big" onclick="copyMeetingNotes()">
+        <i class="ph-bold ph-check"></i> Notları Kopyala &amp; Paylaş
+      </button>
+    </div>
+  </aside>
+
+  <!-- AYARLAR & BİLDİRİM TERCİHLERİ POP-UP MODALI -->
+  <div class="detail-overlay" id="settingsModal" onclick="handleSettingsOverlay(event)" role="dialog" aria-modal="true">
+    <div class="detail-panel" style="max-width:540px;" onclick="event.stopPropagation()">
+      <div class="detail-modal-header" style="background:linear-gradient(135deg, #f8fafc, #edf2f7); padding:18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:36px; height:36px; border-radius:10px; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:18px;">
+            <i class="ph-fill ph-sliders"></i>
+          </div>
+          <div>
+            <h2 style="font-size:18px; font-weight:800; color:var(--text); margin-bottom:2px;">Profil &amp; Bildirim Ayarları</h2>
+            <p style="font-size:12px; color:var(--muted);">İkamet şehrinizi ve e-posta bildirim tercihlerinizi yönetin.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeSettingsModal()" title="Kapat"><i class="ph-bold ph-x"></i></button>
+      </div>
+      
+      <div class="detail-modal-body" style="padding:22px 24px;">
+        <!-- Profil Bilgileri -->
+        <div style="margin-bottom:20px;">
+          <label style="display:block; font-size:12px; font-weight:800; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Gönüllü Profili</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div>
+              <label style="font-size:11.5px; font-weight:700; color:#475569; display:block; margin-bottom:4px;">Ad Soyad</label>
+              <input type="text" id="setVolunteerName" class="filter-input" value="Selin Aydın" style="width:100%; font-weight:700;">
+            </div>
+            <div>
+              <label style="font-size:11.5px; font-weight:700; color:#475569; display:block; margin-bottom:4px;">E-Posta</label>
+              <input type="email" id="setVolunteerEmail" class="filter-input" value="selin.aydin@makeawishtr.org" style="width:100%;">
+            </div>
+          </div>
+          <div>
+            <label style="font-size:11.5px; font-weight:700; color:#475569; display:block; margin-bottom:4px;">
+              <i class="ph-fill ph-map-pin" style="color:#ef4444;"></i> İkamet Ettiğiniz Şehir (Varsayılan Liste Şehri)
+            </label>
+            <select id="setVolunteerCity" class="filter-select" style="width:100%; font-weight:700;">
+              <option value="İstanbul" selected>İstanbul</option>
+              <option value="Bursa">Bursa</option>
+              <option value="Kocaeli">Kocaeli</option>
+              <option value="İzmir">İzmir</option>
+              <option value="Ankara">Ankara</option>
+            </select>
+            <div style="font-size:11.5px; color:#64748b; margin-top:4px;">
+              Sayfa açıldığında otomatik olarak bu şehirdeki dilekler filtrelenir.
+            </div>
+          </div>
+        </div>
+
+        <hr style="border:0; border-top:1px solid #e2e8f0; margin:18px 0;">
+
+        <!-- E-Posta Gönderim Kuralları (Opt-out) -->
+        <div>
+          <label style="display:block; font-size:12px; font-weight:800; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">E-Posta Dağıtım Tercihleri (Otomatik Kurallar)</label>
+          
+          <!-- Kural 1: %75+ Uyum & Şehir Dilekleri -->
+          <div class="settings-toggle-card">
+            <div class="st-content">
+              <div class="st-title">🎯 Şehrimdeki Yüksek Uyumlu (%75+) Dilekler</div>
+              <div class="st-desc">İkamet ettiğiniz şehirdeki dileklerde uyum skorunuz %75 ve üzeri olduğunda size özel katılım çağrısı e-postası gönderilir.</div>
+            </div>
+            <label class="switch-ui">
+              <input type="checkbox" id="setNotifyHighMatch" checked>
+              <span class="switch-ui-slider"></span>
+            </label>
+          </div>
+
+          <!-- Kural 2: Genel Duyurular & Eğitimler -->
+          <div class="settings-toggle-card">
+            <div class="st-content">
+              <div class="st-title">📢 Genel Dernek Duyuruları &amp; Eğitimler</div>
+              <div class="st-desc">Tüm Türkiye'deki gönüllülere iletilen resmi duyurular, gala etkinlikleri ve çevrim içi eğitim davetleri.</div>
+            </div>
+            <label class="switch-ui">
+              <input type="checkbox" id="setNotifyGeneral" checked>
+              <span class="switch-ui-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-modal-footer" style="padding:14px 24px; background:#fafbfc; display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="btn-modal-action" style="background:#fff; color:#475569; border:1.5px solid #cbd5e1;" onclick="closeSettingsModal()">İptal</button>
+        <button type="button" class="btn-modal-action" style="background:var(--primary); color:#fff;" onclick="saveVolunteerSettings()">
+          <i class="ph-bold ph-check"></i> Tercihleri Kaydet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KOORDİNATÖR E-POSTA DAĞITIM VE DENETİM MODALI -->
+  <div class="detail-overlay" id="emailDispatchModal" onclick="handleEmailDispatchOverlay(event)" role="dialog" aria-modal="true">
+    <div class="detail-panel" style="max-width:620px;" onclick="event.stopPropagation()">
+      <div class="detail-modal-header" style="background:linear-gradient(135deg, #f0fdf4, #ecfdf5); padding:18px 24px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:36px; height:36px; border-radius:10px; background:#10b981; color:#fff; display:flex; align-items:center; justify-content:center; font-size:18px;">
+            <i class="ph-fill ph-paper-plane-tilt"></i>
+          </div>
+          <div>
+            <h2 style="font-size:18px; font-weight:800; color:#065f46; margin-bottom:2px;" id="edmTitle">E-Posta Dağıtım Denetim Raporu</h2>
+            <p style="font-size:12px; color:#047857;">Sistem kuralı: <b>Uyum ≥ %75 VE Şehir Eşleşmesi OLANLARA</b> e-posta iletildi.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeEmailDispatchModal()" title="Kapat"><i class="ph-bold ph-x"></i></button>
+      </div>
+
+      <div class="detail-modal-body" style="padding:18px 24px;">
+        <div class="edm-rule-summary" id="edmRuleSummary"></div>
+        <div class="edm-list" id="edmVolunteerList"></div>
+      </div>
+
+      <div class="detail-modal-footer" style="padding:14px 24px; background:#fafbfc; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-size:12px; color:#64748b;" id="edmStatsText">Toplam 6 Gönüllü Denetlendi</div>
+        <button type="button" class="btn-modal-action" style="background:#10b981; color:#fff;" onclick="closeEmailDispatchModal()">
+          Tamam, İnceledim
         </button>
       </div>
     </div>
@@ -4036,37 +6151,173 @@
     // (Ganss.Xss / HtmlSanitizer) sanitize edilmelidir.
     const SEED_ANNOUNCEMENTS = [
       {
-        id: 100,
-        title: "Kuromi Temalı Genç Odası Dileği — İzmir",
+        id: 104,
+        title: "3D Yazıcı & Geleneksel Okçuluk Deneyimi — Bursa",
         category: "dilek",
-        date: "14-15 Kasım",
-        eventDate: "14-15 Kasım",
-        startDate: "2026-11-14",
-        endDate: "2026-11-15",
-        location: "İzmir / Buca",
-        city: "İzmir",
-        district: "Buca",
-        author: "İzmir Gönüllü Ekibi",
-        ageGroup: "8",
+        date: "26 Ekim - 8 Kasım 2026",
+        eventDate: "26 Ekim - 8 Kasım 2026",
+        startDate: "2026-10-26",
+        endDate: "2026-11-08",
+        location: "Bursa / Nilüfer (Uludağ Üniv. Görükle Kampüsü)",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Bursa+Uluda%C4%9F+%C3%9Cniversitesi+G%C3%B6r%C3%BCkle+Yerle%C5%9Fkesi",
+        city: "Bursa",
+        district: "Nilüfer / Görükle",
+        author: "Bursa Gönüllü Ekibi",
+        ageGroup: "9",
         needsCar: true,
-        childInfo: "8 Yaşında Kız Çocuğu · Genç Odası Dileği & Kuromi Partisi 🎈",
-        desc: "Dilek çocuğumuz 8 yaşında pırıl pırıl bir kız çocuğu. En büyük hayali kendisine ait bir <b>genç odasına</b> sahip olmak! Dilek gününde dışarı çıkabilir, açık alanda <b>Kuromi temalı neşeli bir parti</b> düzenlemek istiyoruz. Tüm gönüllülerimizin desteğini bekliyoruz!",
+        isDateRange: true,
+        childInfo: "9 Yaşında Erkek Çocuğu · 3D Yazıcı & Okçuluk Macerası 🎯🏹",
+        desc: "Dilek çocuğumuz 9 yaşında meraklı bir erkek çocuğu, dileği bir <b>3D yazıcıya</b> sahip olmak! 5 yaşında bir erkek kardeşi var. Dileği Uludağ Üniversitesi Görükle Kampüsü'nde gerçekleştirilecek. Geleneksel okçuluğa çok büyük ilgisi olduğu için ona özel bir okçuluk talimi ve uçurtma uçurma deneyimi yaşatmak istiyoruz. 26 Ekim - 8 Kasım arasında en yüksek gönüllü katılımının olduğu gün aileyle kilitlenecektir.",
         interests: [
-          "🥋 Tekvando Kursu",
-          "💃 Dans & Halk Oyunları",
-          "🪆 Barbie Oyunları",
-          "🎸 Gitar Öğreniyor",
-          "🃏 Manifest & Vampir Köylü"
+          "🏹 Geleneksel Okçuluk",
+          "🚲 Bisiklet Sürmek",
+          "🧩 Lego & 3D Tasarım",
+          "🪁 Uçurtma Uçurmak",
+          "📱 Brawl Stars & Sokak Oyunları"
         ],
         criteria: [
-          "Uçuk, grip, nezle, öksürük vb. herhangi bir hastalığı veya belirtisi olmayan",
-          "Küçük çocuklarla iletişimi ve frekansı yüksek olan",
-          "Dilek tasarım ve hazırlık sürecinde aktif olabilecek olan"
+          "Uçuk, grip, nezle, öksürük vs. herhangi bir hastalığı veya belirtisi olmayan",
+          "9 yaş ve 5 yaş erkek çocuklarla açık alanda spor ve oyun aktivitelerine eşlik edebilecek",
+          "Okçuluk veya açık hava etkinlik düzeninde enerjik ve dikkatli",
+          "Bursa içi veya çevre illerden Görükle Kampüsü'ne ulaşım sağlayabilecek olan"
         ],
         needs: [
-          "🚗 Lojistik / Araba Desteği (Malzeme & Dekorasyon Taşıma)",
-          "🎈 Kuromi Temalı Parti Süsleme & Konsept Desteği",
-          "🎸 Gitar / Müzik İçi Aktivite Desteği"
+          "🚗 Bursa Görükle Kampüsü Lojistik & Araç Desteği",
+          "🏹 Geleneksel Okçuluk Ekipman/Hedef Tahtası Desteği",
+          "🪁 Uçurtma & Oyun Alanı Malzemeleri"
+        ],
+        applications: [
+          { name: "Ahmet Kurt", role: "Kıdemli Gönüllü", car: true, totalWishes: 12, lastWishDate: "14 Eylül 2026", criteriaVerified: [0, 1, 2, 3], notes: "Bursa Nilüfer'deyim. Okçuluk kulübüyle de irtibat kurabilirim.", selectedDates: ["2026-10-31", "2026-11-01", "2026-11-07", "2026-11-08"] },
+          { name: "Selin Yılmaz", role: "Gönüllü", car: false, totalWishes: 4, lastWishDate: "28 Ağustos 2026", criteriaVerified: [0, 1, 3], notes: "Hafta sonu tam gün gelirim. Kardeşiyle uçurtma uçurabiliriz.", selectedDates: ["2026-10-31", "2026-11-01", "2026-11-02"] },
+          { name: "Can Varol", role: "Gönüllü", car: true, totalWishes: 7, lastWishDate: "5 Ekim 2026", criteriaVerified: [0, 1, 2], notes: "Aracımda 3D yazıcı kutusunu güvenle taşırız. 31 Ekim ve 1 Kasım uygun.", selectedDates: ["2026-10-30", "2026-10-31", "2026-11-01"] },
+          { name: "Buse Demir", role: "Gönüllü", car: false, totalWishes: 1, lastWishDate: "20 Haziran 2026", criteriaVerified: [0, 1], notes: "Uludağ Üniversitesi öğrencisiyim, kampüsü çok iyi biliyorum.", selectedDates: ["2026-10-28", "2026-10-31", "2026-11-01", "2026-11-04"] },
+          { name: "Tolga Akın", role: "Gönüllü", car: true, totalWishes: 5, lastWishDate: "12 Temmuz 2026", criteriaVerified: [0, 1, 2, 3], notes: "Brawl Stars oyununa hakimim çocukla süper muhabbet kurarız :)", selectedDates: ["2026-10-31", "2026-11-01", "2026-11-07"] },
+          { name: "Elif Çetin", role: "Gönüllü", car: false, totalWishes: 3, lastWishDate: "30 Eylül 2026", criteriaVerified: [0, 3], notes: "Fotoğraf ve video çekimi yapabilirim.", selectedDates: ["2026-10-31", "2026-11-07", "2026-11-08"] }
+        ],
+        joined: false
+      },
+      {
+        id: 101,
+        title: "Dilek Gerçekleştirme — Koç Üniversitesi Hastanesi",
+        category: "dilek",
+        date: "27 Ekim 2026",
+        eventDate: "27 Ekim 2026",
+        startDate: "2026-10-27",
+        endDate: "2026-10-27",
+        location: "Koç Üniversitesi Hastanesi (İstanbul)",
+        locationUrl: "https://www.google.com/maps/place/Ko%C3%A7+%C3%9Cniversitesi+Hastanesi/@41.0236863,28.9148731,1175m/data=!3m2!1e3!4b1!4m6!3m5!1s0x14caba5b2d19bc21:0x1a02c4fc0ff3661f!8m2!3d41.0236823!4d28.917448!16s%2Fg%2F11b6hlbn2h?entry=ttu&g_ep=EgoyMDI2MTAyMC4wIKXMDSoASAFQAw%3D%3D",
+        city: "İstanbul",
+        district: "Zeytinburnu / Koç Üniv. Hastanesi",
+        author: "Saha Koordinasyonu",
+        ageGroup: "16",
+        needsCar: true,
+        isDateRange: false,
+        childInfo: "16 Yaşında Kız Çocuğu · Dizüstü Bilgisayar & Kitap Kapağı Tasarımı 💻✨",
+        desc: "Dilek çocuğumuz 16 yaşında pırıl pırıl bir kız çocuğu. En büyük hayali kendisine ait bir <b>dizüstü bilgisayara</b> sahip olmak! Aile normalde İstanbul'da ikamet ediyor fakat dileğinin hastane ortamında gerçekleşmesini rica ettiler. Kitap okumayı çok seviyor hatta bilim kurgu alanında bir kitap yazıyor; bilgisayarı da yazdığı kitabın kapağını tasarlamak için diledi.🥹 Korku filmleri izlemeyi de çok seviyor.",
+        interests: [
+          "📚 Kitap Okuma & Yazarlık",
+          "🚀 Bilim Kurgu Edebiyatı",
+          "🎨 Kitap Kapağı Tasarımı",
+          "🎬 Korku & Gerilim Filmleri",
+          "💻 Dijital Tasarım"
+        ],
+        criteria: [
+          "Uçuk, grip, nezle, öksürük vs. herhangi bir hastalığı veya belirtisi olmayan",
+          "16 yaşındaki ergen kız çocuklarla rahat iletişim ve empati kurabilen",
+          "Kitaplar, bilim kurgu ve yazarlık gibi konularda sohbet edebilecek",
+          "Utangaç çocuklarla frekans yakalayabilen, sabırlı ve güler yüzlü",
+          "Mümkünse bir kişi dilek hediyelerini dernek ofisinden teslim alabilecek"
+        ],
+        needs: [
+          "🎁 Hediyelerin Ofisten Teslim Alınması",
+          "🚗 Lojistik / Hastaneye Ulaşım",
+          "🎈 Hastane Odası Mini Süsleme"
+        ],
+        applications: [
+          { name: "Zeynep Tunç", role: "Gönüllü", car: true, totalWishes: 9, lastWishDate: "2 Ekim 2026", criteriaVerified: [0, 1, 2, 3, 4], notes: "Ofise çok yakınım, hediyeleri alıp gelebilirim. Edebiyat öğretmeniyim.", date: "2026-10-27" },
+          { name: "Canan Dağ", role: "Gönüllü", car: false, totalWishes: 2, lastWishDate: "15 Ağustos 2026", criteriaVerified: [0, 1, 2, 3], notes: "Bilim kurgu kitap kulübündeyim, çok iyi anlaşacağımıza eminim.", date: "2026-10-27" }
+        ],
+        joined: false
+      },
+      {
+        id: 103,
+        title: "Akülü Motor Dileği — Kocaeli / Gebze",
+        category: "dilek",
+        date: "7 - 15 Kasım 2026 (Tercihen Hafta Sonu)",
+        eventDate: "7 - 15 Kasım 2026",
+        startDate: "2026-11-07",
+        endDate: "2026-11-15",
+        preferWeekend: true,
+        isDateRange: true,
+        location: "Kocaeli / Gebze",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Gebze+Kocaeli",
+        city: "Kocaeli",
+        district: "Gebze",
+        author: "Kocaeli Saha Ekibi",
+        ageGroup: "4",
+        needsCar: true,
+        childInfo: "4 Yaşında Kız Çocuğu · Akülü Motor Dileği 🏍️💨",
+        desc: "Dilek çocuğumuz 4 yaşında sevimli mi sevimli bir kız çocuğu, en büyük hayali bir <b>akülü motora</b> sahip olmak! 10 ve 13 yaşlarında iki ablası var. Dilek dışarıda, kalabalık olmayan sakin bir alanda (park/bahçe) gerçekleştirilecektir. 7-15 Kasım aralığında aileyle ortaklaşarak uygun hafta sonu organize edilecektir.",
+        interests: [
+          "💃 Dans Etmek & Şarkı Söylemek",
+          "🧲 Mıknatıslı Bloklar & Lego",
+          "🎨 Renkli Boyama Yapmak",
+          "🎈 Balon ve Park Oyunları"
+        ],
+        criteria: [
+          "Uçuk, grip, nezle, öksürük vs. herhangi bir hastalığı veya belirtisi olmayan",
+          "Okul öncesi (4 yaş) minik çocuklarla ve ablalarıyla (10 & 13 yaş) oyun kurabilen",
+          "Açık hava organizasyonunda çocukların güvenliğine eşlik edebilecek"
+        ],
+        needs: [
+          "🚗 Akülü Motor Lojistiği (Geniş bagajlı araç desteği)",
+          "🎈 Açık Hava Alan Süsleme & Müzik Çalar"
+        ],
+        applications: [
+          { name: "Merve Bulut", role: "Gönüllü", car: true, totalWishes: 6, lastWishDate: "18 Eylül 2026", criteriaVerified: [0, 1, 2], notes: "SUV aracım var, akülü motor bagaja rahatça sığar. Hafta sonu müsaitim.", selectedDates: ["2026-11-07", "2026-11-08", "2026-11-14", "2026-11-15"] },
+          { name: "Kemal Yiğit", role: "Gönüllü", car: false, totalWishes: 3, lastWishDate: "24 Ağustos 2026", criteriaVerified: [0, 1], notes: "Dans ve palyaço/animasyon deneyimim var.", selectedDates: ["2026-11-08", "2026-11-14", "2026-11-15"] },
+          { name: "Ayşe Saygın", role: "Gönüllü", car: false, totalWishes: 8, lastWishDate: "10 Ekim 2026", criteriaVerified: [0, 1, 2], notes: "Gebze'de oturuyorum, ablalarla da boyama yapabiliriz.", selectedDates: ["2026-11-07", "2026-11-14"] },
+          { name: "Oğuz Demir", role: "Gönüllü", car: true, totalWishes: 2, lastWishDate: "5 Temmuz 2026", criteriaVerified: [0, 2], notes: "14 Kasım Cumartesi tam gün boştayım.", selectedDates: ["2026-11-14", "2026-11-15"] }
+        ],
+        joined: false
+      },
+      {
+        id: 102,
+        title: "Dilek Gerçekleştirme Desteği — Üsküdar Spor Kulübü",
+        category: "dilek",
+        date: "8 Ekim 2026 Perşembe · 14:30",
+        eventDate: "8 Ekim 2026 Perşembe · 14:30",
+        startDate: "2026-10-08",
+        endDate: "2026-10-08",
+        time: "14:30",
+        location: "Yapı Kredi Koç Topluluğu Spor Kulübü (Üsküdar)",
+        locationUrl: "https://www.google.com/maps/search/?api=1&query=Yap%C4%B1+Kredi+Ko%C3%A7+Toplulu%C4%9Fu+Spor+Kul%C3%BCb%C3%BC+%C3%9Csk%C3%BCdar",
+        city: "İstanbul",
+        district: "Üsküdar",
+        author: "Kurumsal Ortaklıklar Ekibi",
+        ageGroup: "12",
+        needsCar: false,
+        isDateRange: false,
+        childInfo: "12 Yaşında 2 Kardeş (Biri Kız, Biri Erkek) · Kurumsal İş Birliği 🤝",
+        desc: "İki kardeşin hayalini aynı anda gerçekleştireceğiz! İkisi de 12 yaşında (biri oğlan biri kız). Oğlan çocuğumuzda <b>zihinsel gelişim geriliği</b> mevcuttur. Bir kurum iş birliğiyle kulüp tesislerinde gerçekleştireceğimiz bu özel dilek buluşması için <b>deneyimli 2-3 gönüllüye</b> ihtiyacımız bulunmaktadır.",
+        interests: [
+          "⚽ Spor & Kulüp Aktiviteleri",
+          "🏃 Açık Hava Oyunları",
+          "🧩 Eğitici Bloklar & Yapboz",
+          "🎵 Müzik & Ritim Oyunları"
+        ],
+        criteria: [
+          "Uçuk, grip, nezle, öksürük vs. herhangi bir hastalığı veya belirtisi olmayan",
+          "Özellikle özel gereksinimli çocuklarla çalışma veya temas deneyimi olan",
+          "Grup dinamiklerinde ve kurumsal saha ortamında deneyimli (2-3 gönüllü)"
+        ],
+        needs: [
+          "🤝 Saha Rehberliği & Çocuk Eşlikçisi",
+          "🏆 Etkinlik Akışı & Oyun Moderasyonu"
+        ],
+        applications: [
+          { name: "Ece Korkmaz", role: "Özel Eğitim Uzmanı Gönüllü", car: true, totalWishes: 14, lastWishDate: "22 Eylül 2026", criteriaVerified: [0, 1, 2], notes: "Özel eğitim öğretmeniyim, zihinsel gelişim geriliği olan çocuklarla 4 yıldır çalışıyorum.", date: "2026-10-08" },
+          { name: "Burak Mert", role: "Kıdemli Gönüllü", car: false, totalWishes: 11, lastWishDate: "1 Ekim 2026", criteriaVerified: [0, 2], notes: "Kurumsal etkinliklerde daha önce yer aldım, 14:00'te alanda olurum.", date: "2026-10-08" }
         ],
         joined: false
       },
@@ -4120,53 +6371,89 @@
         egitmen: "Prof. Dr. Mehmet Kaya",
         kontenjan: "35 Gönüllü",
         joined: false
-      },
-      {
-        id: 4,
-        title: "Astronot Temalı Dilek Ekibi — Ankara",
-        category: "dilek",
-        date: "21-22 Kasım",
-        eventDate: "21-22 Kasım",
-        startDate: "2026-11-21",
-        endDate: "2026-11-22",
-        location: "Ankara / Çankaya",
-        city: "Ankara",
-        district: "Çankaya",
-        author: "Saha Operasyon",
-        ageGroup: "7",
-        needsCar: true,
-        isUrgent: true,
-        childInfo: "7 Yaşında Erkek Çocuğu · Astronot Temalı Dilek 🚀",
-        desc: "Ankara'da tedavi gören 7 yaşındaki çocuk için hazırlanan astronot temalı dilek organizasyonunda lojistik ve kostüm desteği verebilecek gönüllüler aranıyor.",
-        interests: ["🚀 Uzay", "🎨 Resim", "🧩 Lego"],
-        criteria: ["Ankara'da ikamet eden", "Lojistik süreçlere katılabilecek olan"],
-        needs: ["🚗 Araba Desteği", "🚀 Uzay Konseptli Süsleme"],
-        time: null,
-        egitmen: null,
-        kontenjan: null,
-        joined: false
-      },
-      {
-        id: 5,
-        title: "Dilek Fotoğrafçılığı ve Dijital Medya Atölyesi",
-        category: "egitim",
-        date: "19 Kasım 2026",
-        startDate: "2026-11-19",
-        endDate: "2026-11-19",
-        location: "Online (Teams)",
-        city: "Online",
-        district: "Teams",
-        author: "Medya & İletişim",
-        desc: "Dilek günlerinde çocukların anılarını en etik ve profesyonel şekilde ölümsüzleştirmek isteyen gönüllülerimiz için fotoğraf ve kısa video içerik üretimi atölyesi.",
-        time: "19 Kasım 2026 · 11:00 - 15:00",
-        egitmen: "Burak Deniz (Fotoğraf Sanatçısı)",
-        kontenjan: "25 Gönüllü",
-        joined: false
       }
     ];
 
     // ─── DEMO KALICILIĞI (localStorage) ──────────────────────────────────────────
-    const STORAGE_KEY = 'maw_announcements_mock_v4';
+    const STORAGE_KEY = 'maw_announcements_mock_v7';
+
+    // ─── HARİTA & MEKÂN YÖNLENDİRME MOTORU ────────────────────────────────────────
+    const OFFICE_LOCATION_URL = "https://www.google.com/maps/place/Kolektif+House+Levent/data=!4m2!3m1!1s0x0:0x936fefd8e611f9de?sa=X&ved=1t:2428&ictx=111";
+
+    function getLocationMapUrl(locationText, customUrl) {
+      if (customUrl) return customUrl;
+      if (!locationText) return '';
+      const clean = locationText.toLowerCase();
+      if (clean.includes('koç') && clean.includes('hastane')) {
+        return "https://www.google.com/maps/place/Ko%C3%A7+%C3%9Cniversitesi+Hastanesi/@41.0236863,28.9148731,1175m/data=!3m2!1e3!4b1!4m6!3m5!1s0x14caba5b2d19bc21:0x1a02c4fc0ff3661f!8m2!3d41.0236823!4d28.917448!16s%2Fg%2F11b6hlbn2h?entry=ttu&g_ep=EgoyMDI2MTAyMC4wIKXMDSoASAFQAw%3D%3D";
+      }
+      if (clean.includes('levent') || clean.includes('ofis') || clean.includes('kolektif')) {
+        return OFFICE_LOCATION_URL;
+      }
+      if (clean.includes('görükle') || clean.includes('uludağ')) {
+        return "https://www.google.com/maps/search/?api=1&query=Bursa+Uluda%C4%9F+%C3%9Cniversitesi+G%C3%B6r%C3%BCkle+Yerle%C5%9Fkesi";
+      }
+      if (clean.includes('üsküdar') || clean.includes('spor kulübü')) {
+        return "https://www.google.com/maps/search/?api=1&query=Yap%C4%B1+Kredi+Ko%C3%A7+Toplulu%C4%9Fu+Spor+Kul%C3%BCb%C3%BC+%C3%9Csk%C3%BCdar";
+      }
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationText)}`;
+    }
+
+    function renderNeedItemHtml(needText, item) {
+      const clean = needText || '';
+      const lower = clean.toLowerCase();
+      
+      // 1. Ofisten teslim alma (Kolektif House Levent)
+      if (lower.includes('ofis') || lower.includes('teslim')) {
+        return `
+          <li class="need-item-with-map">
+            <span class="need-text"><i class="ph-bold ph-gift" style="color:#d97706;"></i> ${escapeHtml(clean)}</span>
+            <a href="${OFFICE_LOCATION_URL}" target="_blank" rel="noopener noreferrer" class="btn-location-chip" onclick="event.stopPropagation()" title="Dernek Ofisi: Kolektif House Levent Konumunu Aç">
+              <i class="ph-fill ph-map-pin" style="color:#ef4444;"></i> Ofis Konumu (Levent) <i class="ph-bold ph-arrow-square-out"></i>
+            </a>
+          </li>
+        `;
+      }
+      
+      // 2. Hastane veya mekân ulaşım / lojistik
+      if (lower.includes('hastane') || lower.includes('ulaşım') || lower.includes('kampüs')) {
+        const venueUrl = (item && item.location) ? getLocationMapUrl(item.location, item.locationUrl) : '';
+        if (venueUrl) {
+          return `
+            <li class="need-item-with-map">
+              <span class="need-text"><i class="ph-bold ph-truck" style="color:#2563eb;"></i> ${escapeHtml(clean)}</span>
+              <a href="${venueUrl}" target="_blank" rel="noopener noreferrer" class="btn-location-chip" onclick="event.stopPropagation()" title="Dilek Gerçekleştirme Mekânı Haritasını Aç">
+                <i class="ph-fill ph-map-pin" style="color:#ef4444;"></i> Mekân Konumu <i class="ph-bold ph-arrow-square-out"></i>
+              </a>
+            </li>
+          `;
+        }
+      }
+
+      return `<li><i class="ph-bold ph-hand-heart"></i> ${escapeHtml(clean)}</li>`;
+    }
+
+    function getVolunteerWishStats(app) {
+      if (app && app.totalWishes !== undefined && app.lastWishDate !== undefined) {
+        return { count: app.totalWishes, lastDate: app.lastWishDate };
+      }
+      if (app && app.isMe) {
+        return { count: 5, lastDate: '12 Eylül 2026' };
+      }
+      const name = (app && app.name) ? app.name : 'Gönüllü';
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = (hash << 5) - hash + name.charCodeAt(i);
+      }
+      const count = (Math.abs(hash) % 12) + 2; // 2 ile 13 arası
+      const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim'];
+      const day = (Math.abs(hash >> 2) % 27) + 1;
+      const monthIdx = (Math.abs(hash >> 3) % 9); // Ocak - Eylül 2026
+      return {
+        count: count,
+        lastDate: `${day} ${months[monthIdx]} 2026`
+      };
+    }
 
     function cloneSeed() {
       return JSON.parse(JSON.stringify(SEED_ANNOUNCEMENTS));
@@ -4447,10 +6734,644 @@
       );
     }
 
+    // ─── AKTİF GÖNÜLLÜ PROFİLİ & BİLDİRİM TERCİHLERİ ─────────────────────────────
+    const VOLUNTEER_KEY = 'wishhub_volunteer_profile_v2';
+    let currentVolunteer = (() => {
+      try {
+        const saved = localStorage.getItem(VOLUNTEER_KEY);
+        if (saved) return JSON.parse(saved);
+      } catch (e) { }
+      return {
+        name: "Selin Aydın",
+        email: "selin.aydin@makeawishtr.org",
+        city: "İstanbul",
+        notifications: {
+          highMatchDilek: true, // Uyum %75+ ve ikamet şehrindeki dilekler için e-posta
+          generalAnnouncements: true // Genel duyurular & eğitimler için e-posta
+        }
+      };
+    })();
+
+    let isAllCitiesView = false; // "Tüm Türkiye'yi Göster" modunda true olur
+
+    // ─── HIZLI NOT DEFTERİ MOTORU (SCRATCHPAD) ──────────────────────────────────
+    const MEETING_NOTES_KEY = 'wishhub_notes_v3';
+    const DEFAULT_PAGE_FEATURES_NOTE = 
+`📋 DUYURULAR & DİLEK GERÇEKLEŞTİRME SİSTEMİ — SİSTEM ÖZELLİKLERİ VE KURALLAR
+
+1. ŞEHİR BAZLI OTOMATİK FİLTRELEME:
+• Sayfa ilk açıldığında gönüllünün ikamet ettiği şehirdeki (İstanbul) dilekler listelenir.
+• Gönüllü dilerse filtreleme seçeneğinden veya "Tüm Türkiye'yi Göster" butonuyla tüm illerdeki dilekleri inceleyebilir.
+
+2. AKILLI E-POSTA DAĞITIM KURALI:
+• Dilek Gerçekleştirme Duyuruları: Uyum skoru %75 üzerinde olan VE bulunduğu/yaşadığı şehir bu dilekle eşleşen kişilere e-posta gönderilir. Farklı şehirde olan veya uyum skoru %75 altında kalan kişilere e-posta gönderilmez.
+• Genel Duyurular & Eğitimler: Şehir ve uyum kısıtı olmaksızın herkese gider.
+
+3. OPSİYONEL E-POSTA TERCİHİ (OPT-OUT):
+• E-posta gönderimi opsiyoneldir.
+• Gönüllü isterse sağ üstteki Ayarlar kısmından bu bildirimleri dilediği zaman kapatabilir veya ikamet şehrini güncelleyebilir.
+
+4. GÖNÜLLÜ-DİLEK UYUM SKORU (MATCH SCORE):
+• Her dilek kartında ilgi alanı, yaş grubu uyumu ve araç ihtiyacına göre hesaplanan dinamik % uyum skoru rozeti yer alır.
+
+5. DİLEK MEKÂNI & OFİS TESLİM KONUMU (GOOGLE HARİTALAR):
+• Kartlarda ve detay modalında dilek gerçekleştirme yerleri doğrudan tıklanabilir Google Haritalar linkiyle açılır (Ör: Koç Üniversitesi Hastanesi).
+• "Hediyelerin Ofisten Teslim Alınması" ihtiyacı olan dileklerde dernek ofis konumu (Kolektif House Levent) butonuyla doğrudan haritaya yönlendirir.
+• Kadro kesinleştiğinde ve WhatsApp duyuru paylaşımlarında mekân ve ofis harita bağlantıları otomatik eklenir.
+
+6. EKİP KADROSU & WHATSAPP ENTEGRASYONU:
+• Kartlarda katılan gönüllülerin mini avatar yığını gösterilir.
+• Kadro kilitlendiğinde saha koordinatörü tek tıkla otomatik teşekkür ve görev dağılım metnini oluşturup WhatsApp grubuna iletebilir.
+
+7. HIZLI NOT DEFTERİ:
+• Tarayıcıya anlık ve kalıcı olarak kaydedilir, tek tıkla panoya kopyalanabilir.`;
+
+    function initMeetingNotes() {
+      const area = document.getElementById('meetingNotesArea');
+      if (!area) return;
+      try {
+        let savedNotes = localStorage.getItem(MEETING_NOTES_KEY);
+        if (savedNotes === null) {
+          savedNotes = DEFAULT_PAGE_FEATURES_NOTE;
+          localStorage.setItem(MEETING_NOTES_KEY, savedNotes);
+        }
+        area.value = savedNotes;
+        updateNotesMeta();
+      } catch (e) { }
+
+      area.addEventListener('input', () => {
+        try {
+          localStorage.setItem(MEETING_NOTES_KEY, area.value);
+        } catch (e) { }
+        updateNotesMeta();
+        showNotesPulseSaved();
+      });
+    }
+
+    function toggleNotesDrawer() {
+      const drawer = document.getElementById('notesDrawer');
+      const backdrop = document.getElementById('notesBackdrop');
+      if (!drawer) return;
+      const isOpen = drawer.classList.contains('open');
+      if (isOpen) {
+        closeNotesDrawer();
+      } else {
+        drawer.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+        const area = document.getElementById('meetingNotesArea');
+        if (area) area.focus();
+      }
+    }
+
+    function closeNotesDrawer() {
+      const drawer = document.getElementById('notesDrawer');
+      const backdrop = document.getElementById('notesBackdrop');
+      if (drawer) drawer.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('active');
+    }
+
+    function updateNotesMeta() {
+      const area = document.getElementById('meetingNotesArea');
+      const info = document.getElementById('notesMetaInfo');
+      const pill = document.getElementById('notesIndicatorPill');
+      if (!area) return;
+      const text = area.value.trim();
+      const chars = text.length;
+      const words = text ? text.split(/\s+/).length : 0;
+      if (info) info.textContent = `${words} kelime • ${chars} karakter`;
+      if (pill) {
+        pill.textContent = chars > 0 ? `${words} kelime` : 'Boş';
+      }
+    }
+
+    function showNotesPulseSaved() {
+      const status = document.getElementById('notesSaveStatus');
+      if (!status) return;
+      status.textContent = 'Kaydedildi (anlık)';
+    }
+
+    async function copyMeetingNotes() {
+      const area = document.getElementById('meetingNotesArea');
+      if (!area) return;
+      const text = area.value.trim();
+      if (!text) {
+        showToast('⚠️ Kopyalanacak bir not bulunamadı. Lütfen önce not yazın.', 'error');
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('📋 Notlar panoya kopyalandı!');
+      } catch (err) {
+        area.select();
+        document.execCommand('copy');
+        showToast('📋 Notlar panoya kopyalandı!');
+      }
+    }
+
+    function clearMeetingNotes() {
+      const area = document.getElementById('meetingNotesArea');
+      if (!area || !area.value.trim()) return;
+      if (confirm('Not defterindeki tüm notları silmek istediğinizden emin misiniz?')) {
+        area.value = '';
+        try { localStorage.removeItem(MEETING_NOTES_KEY); } catch (e) { }
+        updateNotesMeta();
+        showToast('🗑️ Notlar temizlendi.');
+      }
+    }
+
+    function insertNoteTemplate(type) {
+      const area = document.getElementById('meetingNotesArea');
+      if (!area) return;
+      const todayStr = new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+      let template = '';
+      if (type === 'features') {
+        template = '\n' + DEFAULT_PAGE_FEATURES_NOTE + '\n\n';
+      } else if (type === 'agenda') {
+        template = `\n📌 GÜNDEM MADDELERİ (${todayStr})\n` +
+          `• 1. İstanbul & Çevre İllerin Saha Dilek Durumları\n` +
+          `• 2. Uyum Skoru %75+ Gönüllü Eşleşmeleri ve E-Posta Gönderim Kuralları\n` +
+          `• 3. Lojistik ve Araç İhtiyaçlarının Karşılanması\n` +
+          `• 4. Kadro Tamamlandığında WhatsApp Teşekkür ve Görev Bildirimi\n\n`;
+      } else if (type === 'decisions') {
+        template = `\n✅ ALINAN KARARLAR & GÖREV DAĞILIMI:\n` +
+          `[ ] Saha Koordinasyonu: Açık hava organizasyonu ve çocukla iletişim\n` +
+          `[ ] Lojistik Ekip: Malzeme taşıma ve lojistik araç desteği\n` +
+          `[ ] Ofis Ekibi: Dilek hediyelerinin dernek ofisinden teslim alınması\n\n`;
+      }
+      area.value = (area.value ? area.value + '\n' : '') + template;
+      try { localStorage.setItem(MEETING_NOTES_KEY, area.value); } catch (e) { }
+      updateNotesMeta();
+      showToast('⚡ Şablon not defterine eklendi.');
+      area.scrollTop = area.scrollHeight;
+    }
+
+    // ─── AYARLAR & BİLDİRİM TERCİHLERİ MOTORU ────────────────────────────────────
+    function openSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      if (!modal) return;
+      const nameInput = document.getElementById('setVolunteerName');
+      const emailInput = document.getElementById('setVolunteerEmail');
+      const citySelect = document.getElementById('setVolunteerCity');
+      const highMatchCheck = document.getElementById('setNotifyHighMatch');
+      const generalCheck = document.getElementById('setNotifyGeneral');
+
+      if (nameInput) nameInput.value = currentVolunteer.name || 'Selin Aydın';
+      if (emailInput) emailInput.value = currentVolunteer.email || 'selin.aydin@makeawishtr.org';
+      if (citySelect) citySelect.value = currentVolunteer.city || 'İstanbul';
+      if (highMatchCheck) highMatchCheck.checked = currentVolunteer.notifications.highMatchDilek !== false;
+      if (generalCheck) generalCheck.checked = currentVolunteer.notifications.generalAnnouncements !== false;
+
+      modal.classList.add('open');
+    }
+
+    function closeSettingsModal() {
+      const modal = document.getElementById('settingsModal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function handleSettingsOverlay(e) {
+      if (e.target && e.target.id === 'settingsModal') closeSettingsModal();
+    }
+
+    function saveVolunteerSettings() {
+      const name = document.getElementById('setVolunteerName').value.trim() || 'Selin Aydın';
+      const email = document.getElementById('setVolunteerEmail').value.trim() || 'selin.aydin@makeawishtr.org';
+      const city = document.getElementById('setVolunteerCity').value || 'İstanbul';
+      const highMatch = document.getElementById('setNotifyHighMatch').checked;
+      const general = document.getElementById('setNotifyGeneral').checked;
+
+      currentVolunteer = {
+        name,
+        email,
+        city,
+        notifications: {
+          highMatchDilek: highMatch,
+          generalAnnouncements: general
+        }
+      };
+
+      try {
+        localStorage.setItem(VOLUNTEER_KEY, JSON.stringify(currentVolunteer));
+      } catch (e) { }
+
+      const avatar = document.getElementById('topAvatarLetter');
+      if (avatar) avatar.textContent = name.charAt(0).toUpperCase();
+
+      closeSettingsModal();
+      isAllCitiesView = false;
+      updateCityFilter();
+      renderAnnouncements();
+      showToast(`✅ Profil şehri (${city}) ve e-posta bildirim ayarlarınız güncellendi.`);
+    }
+
+    // ─── ŞEHİR BAZLI VARSAYILAN FİLTRELEME MOTORU ────────────────────────────────
+    function updateCityFilter() {
+      const banner = document.getElementById('cityBanner');
+      const cityNameEl = document.getElementById('cfbCityName');
+      const descEl = document.getElementById('cfbDesc');
+      const btnAll = document.getElementById('btnShowAllCities');
+      const filterCitySelect = document.getElementById('filterCity');
+
+      if (!isAllCitiesView) {
+        if (filterCitySelect) filterCitySelect.value = currentVolunteer.city.toLowerCase();
+        if (cityNameEl) cityNameEl.textContent = currentVolunteer.city;
+        if (descEl) descEl.textContent = `Varsayılan olarak ikamet ettiğiniz ${currentVolunteer.city} dilekleri listeleniyor.`;
+        if (btnAll) btnAll.innerHTML = `<i class="ph-bold ph-globe"></i> Tüm Türkiye'yi Göster`;
+        if (banner) banner.style.display = 'flex';
+      } else {
+        if (filterCitySelect) filterCitySelect.value = '';
+        if (cityNameEl) cityNameEl.textContent = 'Tüm Türkiye';
+        if (descEl) descEl.textContent = `Şu anda Türkiye genelindeki tüm şehir duyuruları listeleniyor.`;
+        if (btnAll) btnAll.innerHTML = `<i class="ph-bold ph-map-pin"></i> Yalnızca ${currentVolunteer.city} Dileklerini Göster`;
+        if (banner) banner.style.display = 'flex';
+      }
+    }
+
+    function showAllCities() {
+      if (!isAllCitiesView) {
+        isAllCitiesView = true;
+        showToast('🌍 Tüm Türkiye genelindeki duyurular listeleniyor.');
+      } else {
+        isAllCitiesView = false;
+        showToast(`📍 Yalnızca ${currentVolunteer.city} dilekleri listeleniyor.`);
+      }
+      updateCityFilter();
+      renderAnnouncements();
+    }
+
+    // ─── AKILLI E-POSTA DAĞITIM KURAL MOTORU ─────────────────────────────────────
+    const MOCK_VOLUNTEER_POOL = [
+      { name: "Selin Aydın", email: "selin.aydin@makeawishtr.org", city: "İstanbul", car: true, notifyHighMatch: true, interests: ["okçuluk", "3d", "lego", "spor"] },
+      { name: "Ahmet Kurt", email: "ahmet.kurt@makeawishtr.org", city: "Bursa", car: true, notifyHighMatch: true, interests: ["okçuluk", "spor"] },
+      { name: "Zeynep Tunç", email: "zeynep.tunc@makeawishtr.org", city: "İstanbul", car: true, notifyHighMatch: true, interests: ["kitap", "bilim", "tasarım"] },
+      { name: "Can Varol", email: "can.varol@makeawishtr.org", city: "Bursa", car: false, notifyHighMatch: true, interests: ["müzik"] },
+      { name: "Merve Bulut", email: "merve.bulut@makeawishtr.org", city: "Kocaeli", car: true, notifyHighMatch: true, interests: ["dans", "lego"] },
+      { name: "Tolga Akın", email: "tolga.akin@makeawishtr.org", city: "Bursa", car: true, notifyHighMatch: false, interests: ["oyun", "okçuluk"] } // Opt-out
+    ];
+
+    function evaluateEmailForVolunteer(item, vol) {
+      if (item.category !== 'dilek') {
+        return {
+          sent: true,
+          badge: 'sent',
+          statusText: 'E-Posta İletildi',
+          reason: '📢 Genel dernek duyurusu / eğitim daveti (Tüm şehirlere gönderilir)'
+        };
+      }
+
+      if (vol.notifyHighMatch === false) {
+        return {
+          sent: false,
+          badge: 'skipped',
+          statusText: 'Gönderilmedi',
+          reason: '🔕 Gönüllü ayarlarında e-posta bildirimlerini kapatmış (Opt-out)'
+        };
+      }
+
+      const volCity = (vol.city || '').toLowerCase().trim();
+      const itemCity = ((item.city || '') + ' ' + (item.location || '')).toLowerCase();
+      const cityMatches = itemCity.includes(volCity);
+
+      let score = 70;
+      if (vol.interests && item.interests) {
+        const hasCommon = vol.interests.some(vi => item.interests.some(ii => String(ii).toLowerCase().includes(vi)));
+        if (hasCommon) score += 18;
+      }
+      if (vol.car && item.needsCar) score += 6;
+      const isHighMatch = score >= 75;
+
+      if (isHighMatch && cityMatches) {
+        return {
+          sent: true,
+          score,
+          badge: 'sent',
+          statusText: 'E-Posta İletildi',
+          reason: `✅ Uyum: %${score} (≥ %75) ve İkamet Şehri (${vol.city}) Eşleşti`
+        };
+      } else if (!cityMatches && isHighMatch) {
+        return {
+          sent: false,
+          score,
+          badge: 'skipped',
+          statusText: 'Gönderilmedi',
+          reason: `⛔ Farklı Şehir: Gönüllü ${vol.city}'da, dilek ${item.city || item.location}'da`
+        };
+      } else if (!isHighMatch && cityMatches) {
+        return {
+          sent: false,
+          score,
+          badge: 'skipped',
+          statusText: 'Gönderilmedi',
+          reason: `⛔ Düşük Uyum: %${score} (< %75 kural eşiği)`
+        };
+      } else {
+        return {
+          sent: false,
+          score,
+          badge: 'skipped',
+          statusText: 'Gönderilmedi',
+          reason: `⛔ Uyum %${score} (< %75) ve Şehir Uyuşmuyor (${vol.city})`
+        };
+      }
+    }
+
+    function openEmailDispatchModal(itemId) {
+      const item = announcements.find(a => a.id === itemId);
+      if (!item) return;
+
+      const modal = document.getElementById('emailDispatchModal');
+      const titleEl = document.getElementById('edmTitle');
+      const summaryEl = document.getElementById('edmRuleSummary');
+      const listEl = document.getElementById('edmVolunteerList');
+      const statsEl = document.getElementById('edmStatsText');
+
+      if (titleEl) titleEl.textContent = `E-Posta Dağıtım Raporu — ${item.title}`;
+
+      let sentCount = 0;
+      const rowsHtml = MOCK_VOLUNTEER_POOL.map(vol => {
+        const res = evaluateEmailForVolunteer(item, vol);
+        if (res.sent) sentCount++;
+
+        return `
+          <div class="edm-row ${res.sent ? 'is-sent' : 'is-skipped'}">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="width:32px; height:32px; border-radius:50%; background:${res.sent ? '#10b981' : '#94a3b8'}; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;">
+                ${vol.name.charAt(0)}
+              </div>
+              <div>
+                <div style="font-weight:700; color:#1e293b;">
+                  ${escapeHtml(vol.name)} <span style="font-size:11px; font-weight:600; color:#64748b;">(${vol.city})</span>
+                </div>
+                <div style="font-size:11.5px; color:${res.sent ? '#047857' : '#64748b'};">${res.reason}</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge-eligible ${res.badge}">
+                ${res.sent ? '<i class="ph-bold ph-check"></i> ' : '<i class="ph-bold ph-x"></i> '}${res.statusText}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (summaryEl) {
+        summaryEl.innerHTML = `
+          <div style="font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+            <i class="ph-fill ph-funnel"></i> Akıllı Dağıtım Kural Özeti:
+          </div>
+          <div>Dilek Lokasyonu: <b>${escapeHtml(item.city || item.location)}</b> • Hedef Kural: <b>Uyum ≥ %75 VE Lokasyon Eşleşmesi</b>. Bu sayede ilgisiz veya farklı ildeki gönüllülere bildirim gitmez, dernek spam yapmaz.</div>
+        `;
+      }
+
+      if (listEl) listEl.innerHTML = rowsHtml;
+      if (statsEl) statsEl.textContent = `Toplam ${MOCK_VOLUNTEER_POOL.length} Gönüllüden ${sentCount} Kişiye E-Posta Gönderildi`;
+
+      if (modal) modal.classList.add('open');
+    }
+
+    function closeEmailDispatchModal() {
+      const modal = document.getElementById('emailDispatchModal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function handleEmailDispatchOverlay(e) {
+      if (e.target && e.target.id === 'emailDispatchModal') closeEmailDispatchModal();
+    }
+
+    function renderVolunteerEmailStatusHtml(item) {
+      return '';
+    }
+
+    // ─── GÖNÜLLÜ-DİLEK UYUM SKORU MOTORU (MATCH SCORE) ───────────────────────────
+    function getVolunteerMatchScore(item) {
+      if (!item || item.category !== 'dilek') return null;
+
+      let score = 76;
+      const reasons = [];
+
+      // Yaş grubu uyumu
+      if (item.ageGroup) {
+        const age = parseInt(item.ageGroup, 10);
+        if (age >= 14) {
+          score += 10;
+          reasons.push("16 Yaş ergen empati ve frekans uyumu");
+        } else if (age <= 6) {
+          score += 9;
+          reasons.push("Okul öncesi oyun kurma becerisi");
+        } else {
+          score += 8;
+          reasons.push("12 Yaş grup & akran dinamikleri");
+        }
+      }
+
+      // İlgi alanı eşleşmesi
+      const matched = [];
+      const keywords = ["kitap", "bilim", "yazarlık", "tasarım", "oyun", "dans", "müzik", "lego", "boyama", "spor", "okçuluk", "3d", "film"];
+      if (item.interests && Array.isArray(item.interests)) {
+        item.interests.forEach(i => {
+          const clean = String(i).toLowerCase();
+          if (keywords.some(k => clean.includes(k))) {
+            matched.push(String(i).replace(/^[^\p{L}\p{N}]+/u, '').trim());
+          }
+        });
+      }
+      if (matched.length >= 2) {
+        score += 10;
+        reasons.push(`İlgi alanları: ${matched.slice(0, 2).join(', ')}`);
+      } else if (matched.length === 1) {
+        score += 6;
+        reasons.push(`İlgi alanı: ${matched[0]}`);
+      }
+
+      // Kriter ve araç uyumu
+      if (item.needsCar) {
+        score += 3;
+        reasons.push("Araç & lojistik desteği uyumlu");
+      }
+
+      score = Math.min(98, Math.max(82, score));
+      const badgeClass = score >= 90 ? 'match-high' : 'match-med';
+
+      return {
+        score: score,
+        reasons: reasons,
+        summary: reasons.join(' • '),
+        badgeClass: badgeClass
+      };
+    }
+
+    function renderMatchScoreHtml(item, isDetail = false) {
+      const match = getVolunteerMatchScore(item);
+      if (!match) return '';
+
+      if (isDetail) {
+        return `
+          <div class="detail-match-banner volunteer-only">
+            <div class="dmb-left">🎯</div>
+            <div class="dmb-text">
+              <strong>Profilinizle %${match.score} Yüksek Uyumlu Dilek</strong>
+              <span>${escapeHtml(match.summary)}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="match-score-badge ${match.badgeClass} volunteer-only" title="Neden Uyumlu? ${escapeHtml(match.summary)}">
+          <div class="ms-ring">
+            <svg viewBox="0 0 36 36" class="circular-chart">
+              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path class="circle" stroke-dasharray="${match.score}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+            <span class="ms-pct">%${match.score}</span>
+          </div>
+          <div class="ms-info">
+            <span class="ms-label">%${match.score} Uyum</span>
+            <span class="ms-reason">${escapeHtml(match.reasons[0] || 'Yüksek Frekans')}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // ─── AVATAR STACK (EKİP RUHU) MOTORU ─────────────────────────────────────────
+    const AVATAR_PALETTE = [
+      'linear-gradient(135deg, #f43f5e, #be123c)',
+      'linear-gradient(135deg, #0284c7, #0369a1)',
+      'linear-gradient(135deg, #10b981, #047857)',
+      'linear-gradient(135deg, #f59e0b, #b45309)',
+      'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+      'linear-gradient(135deg, #ec4899, #be185d)'
+    ];
+
+    function renderTeamStackHtml(item, isDetail = false) {
+      if (!item || item.category !== 'dilek') return '';
+      const apps = item.applications || [];
+      const hasApps = apps.length > 0;
+
+      if (!hasApps) {
+        return `
+          <div class="card-team-stack-row">
+            <div style="font-size: 13px;">🌱</div>
+            <div class="avatar-stack-label">
+              <span>İlk başvuran gönüllü siz olun, ekibi başlatın!</span>
+            </div>
+          </div>
+        `;
+      }
+
+      const limit = isDetail ? 5 : 3;
+      const shown = apps.slice(0, limit);
+      const remaining = apps.length - limit;
+
+      const avatarsHtml = shown.map((ap, i) => {
+        const bg = AVATAR_PALETTE[i % AVATAR_PALETTE.length];
+        const initial = escapeHtml((ap.name || 'G').charAt(0).toUpperCase());
+        const tip = `${escapeHtml(ap.name)} ${ap.isMe ? '(Siz)' : ''} • ${ap.car ? '🚗 Araçlı • ' : ''}${ap.totalWishes || 3} Dilek Deneyimi`;
+        return `<div class="avatar-stack-item ${ap.isMe ? 'is-me' : ''}" style="background:${bg};" title="${tip}">${initial}</div>`;
+      }).join('');
+
+      const moreHtml = remaining > 0 ? `<div class="avatar-stack-item more-count" title="${remaining} gönüllü daha ekipte">+${remaining}</div>` : '';
+
+      const userJoinedText = item.joined ? ' • <span style="color:#047857; font-weight:700;">(Ekipte Yer Alıyorsunuz)</span>' : '';
+
+      return `
+        <div class="card-team-stack-row">
+          <div class="avatar-stack">
+            ${avatarsHtml}
+            ${moreHtml}
+          </div>
+          <div class="avatar-stack-label">
+            <strong>${apps.length} Gönüllü</strong> ekipte yer alıyor${userJoinedText}
+          </div>
+        </div>
+      `;
+    }
+
+    // ─── KADRO KİLİTLENDİ WHATSAPP DUYURUSU & TEŞEKKÜR METNİ MOTORU ───────────────
+    let currentLockedTeamAnnouncementId = null;
+
+    function buildLockedTeamBroadcastText(item) {
+      if (!item) return '';
+      const apps = item.applications || [];
+      const dateStr = item.finalizedDate || item.eventDate || item.date;
+
+      const roleTemplates = [
+        "🚗 Lojistik & Araç Desteği",
+        "🎈 Çocuk İletişimi & Animasyon",
+        "🎨 Atölye & Oyun Eşlikçisi",
+        "🤝 Saha Koordinasyon Desteği",
+        "📸 Fotoğraf & Anı Dokümantasyonu"
+      ];
+
+      const volLines = apps.map((app, idx) => {
+        const role = app.role && app.role !== 'Gönüllü' ? app.role : (roleTemplates[idx % roleTemplates.length]);
+        const carIcon = app.car ? ' 🚗' : '';
+        return `• *${app.name}*${carIcon} ➔ ${role}`;
+      }).join('\n');
+
+      const shareLink = buildShareLink(item.id, false);
+      const venueMap = item.location ? getLocationMapUrl(item.location, item.locationUrl) : '';
+      const hasOfficeNeed = item.needs && item.needs.some(n => n.toLowerCase().includes('ofis') || n.toLowerCase().includes('teslim'));
+
+      return `✨ *MAKE-A-WISH TÜRKİYE · SAHA KADROSU KESİNLEŞTİ* ✨
+━━━━━━━━━━━━━━━━━━━━━━
+🌟 *Dilek:* ${item.title}
+📅 *Kesinleşen Tarih:* ${dateStr}
+📍 *Buluşma Yeri:* ${item.location || 'Belirtilen Lokasyon'}${venueMap ? `\n🗺️ *Mekân Konumu:* ${venueMap}` : ''}${hasOfficeNeed ? `\n🎁 *Hediye Teslim Ofisi (Levent):* ${OFFICE_LOCATION_URL}` : ''}
+${item.childInfo ? `👧 *Dilek Çocuğumuz:* ${item.childInfo.replace(/<[^>]+>/g, '')}` : ''}
+${item.needsCar ? '🚗 *Lojistik:* Geniş bagajlı araç desteği kadroda sağlanmıştır.' : ''}
+
+👥 *GÖREV DAĞILIMI & SAHA EKİBİMİZ:*
+${volLines || '• Kadro listesi oluşturuluyor...'}
+
+💙 *Müsaitlik bildiren ve gönülden katkı sunan tüm Make-A-Wish ailemize sonsuz teşekkür ederiz!* Başvuran her bir gönüllümüz sayesinde bir çocuğumuzun daha hayalini gerçeğe dönüştürüyoruz. 🎈
+
+📋 *Dilek Detayları & İletişim:*
+${shareLink}`;
+    }
+
+    function openLockedTeamWhatsAppModal(id) {
+      const item = announcements.find(a => a.id === id);
+      if (!item) return;
+      currentLockedTeamAnnouncementId = id;
+
+      const message = buildLockedTeamBroadcastText(item);
+      document.getElementById('lockedTeamTextarea').value = message;
+      document.getElementById('lockedTeamBubblePreview').textContent = message;
+
+      document.getElementById('lockedTeamWhatsAppModal').classList.add('open');
+    }
+
+    function closeLockedTeamWhatsAppModal() {
+      document.getElementById('lockedTeamWhatsAppModal').classList.remove('open');
+      currentLockedTeamAnnouncementId = null;
+    }
+
+    function handleLockedTeamOverlay(e) {
+      if (e.target === document.getElementById('lockedTeamWhatsAppModal')) closeLockedTeamWhatsAppModal();
+    }
+
+    function copyLockedTeamText() {
+      const text = document.getElementById('lockedTeamTextarea').value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('🎉 Kadro kesinleşti WhatsApp teşekkür metni panoya kopyalandı!');
+      }).catch(() => {
+        copyText(text, 'Metin panoya kopyalandı.');
+      });
+    }
+
+    function openLockedTeamWhatsAppWeb() {
+      const text = document.getElementById('lockedTeamTextarea').value;
+      if (!text) return;
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
     // ─── SABİTLEME ────────────────────────────────────────────────────────────────
     function pinButtonHtml(item) {
       const pinned = item.pinned === true;
-      return `<button type="button" class="btn-pin coord-only ${pinned ? 'pinned' : ''}"
+      return `<button type="button" class="btn-action-tool pin-btn coord-only ${pinned ? 'pinned' : ''}"
         onclick="togglePin(event, ${item.id})"
         title="${pinned ? 'Sabitlemeyi kaldır' : 'Başa sabitle'}"
         aria-label="${pinned ? 'Sabitlemeyi kaldır' : 'Başa sabitle'}"
@@ -4523,7 +7444,7 @@
     // ─── PAYLAŞIM (WhatsApp) ──────────────────────────────────────────────────────
     // Yayın adresi: `scripts/prepare-share-pages.js <baseUrl>` tarafından doldurulur.
     // Boşken paylaşım bağlantısı `duyurular.html?id=...` biçiminde çalışır.
-    const SHARE_ORIGIN = '';
+    const SHARE_ORIGIN = "https://maw-yararli-linkler.vercel.app";
     const SEED_SHARE_IDS = new Set(SEED_ANNOUNCEMENTS.map(a => a.id));
     let shareItemId = null;
 
@@ -4554,13 +7475,18 @@
       return (lastSpace > 40 ? cut.slice(0, lastSpace) : cut).trim() + '…';
     }
 
-    function buildShareLink(id) {
+    let currentShareTemplate = 'formal';
+
+    function buildShareLink(id, forApply = true) {
       const item = announcements.find(a => a.id === id);
-      if (SHARE_ORIGIN && hasStaticSharePage(item)) {
-        return `${SHARE_ORIGIN.replace(/\/+$/, '')}/paylas/${id}.html`;
+      const applyParam = forApply ? (item && item.category === 'dilek' ? 'apply=1' : 'detail=1') : '';
+      const isCurrentOriginVercel = isPublicPage() && window.location.hostname.includes('vercel.app');
+      if (SHARE_ORIGIN && isCurrentOriginVercel && hasStaticSharePage(item)) {
+        return `${SHARE_ORIGIN.replace(/\/+$/, '')}/paylas/${id}.html${applyParam ? '?' + applyParam : ''}`;
       }
       const url = new URL(publicBaseUrl());
       url.searchParams.set('id', String(id));
+      if (applyParam) url.searchParams.set('apply', '1');
       url.hash = '';
       return url.toString();
     }
@@ -4577,49 +7503,129 @@
       return String(value || '').replace(/^[^\p{L}\p{N}]+/u, '').trim();
     }
 
-    function buildShareMessage(item) {
+    function buildShareMessage(item, templateType = currentShareTemplate) {
+      if (!item) return '';
       const lines = [];
-      lines.push('*Make-A-Wish Türkiye · Gönüllü Duyurusu*');
-      lines.push('');
-      lines.push(`*${item.title}*`);
-      lines.push(`Kategori: ${categoryLabel(item.category)}`);
+      const link = buildShareLink(item.id, true);
+      const isQuick = templateType === 'quick';
 
       if (item.category === 'dilek') {
-        if (item.location) lines.push(`Yer: ${item.location}`);
-        const dateText = item.eventDate || item.date || '';
-        if (dateText) lines.push(`Tarih: ${dateText}`);
-        if (item.needsCar) lines.push('Araç desteği gerekiyor');
-      } else if (item.category === 'egitim') {
-        if (item.time || item.date) lines.push(`Tarih: ${item.time || item.date}`);
-        if (item.location) {
-          lines.push(`${/online/i.test(item.location) ? 'Online' : 'Yer'}: ${item.location}`);
-        }
-        if (item.egitmen) lines.push(`Eğitmen: ${item.egitmen}`);
-        if (item.kontenjan) lines.push(`Kontenjan: ${item.kontenjan}`);
-      } else {
-        if (item.date) lines.push(`Tarih: ${item.date}`);
-        if (item.location) lines.push(`Yer: ${item.location}`);
-      }
-
-      const desc = truncateText(stripHtml(item.desc || '').replace(/\s+/g, ' ').trim(), 180);
-      if (desc) {
-        lines.push('');
-        lines.push(desc);
-      }
-
-      if (item.category === 'dilek' && Array.isArray(item.needs) && item.needs.length) {
-        const needs = item.needs.map(plainNeed).filter(Boolean).slice(0, 2);
-        if (needs.length) {
+        if (isQuick) {
+          lines.push('🚨 *ACİL GÖNÜLLÜ ÇAĞRISI · MAKE-A-WISH*');
+          lines.push('━━━━━━━━━━━━━━━━━━━━━━');
+          lines.push(`🌟 *${item.title}*`);
+          if (item.location) lines.push(`📍 *Yer:* ${item.location}`);
+          const venueMap = item.location ? getLocationMapUrl(item.location, item.locationUrl) : '';
+          if (venueMap) lines.push(`🗺️ *Mekân Konumu:* ${venueMap}`);
+          const hasOfficeNeed = item.needs && item.needs.some(n => n.toLowerCase().includes('ofis') || n.toLowerCase().includes('teslim'));
+          if (hasOfficeNeed) lines.push(`🎁 *Ofis Hediye Teslim (Levent):* ${OFFICE_LOCATION_URL}`);
+          const dateStr = item.finalizedDate ? `*${item.finalizedDate} (Kesinleşti)*` : (item.dateRange ? `${item.dateRange}` : (item.eventDate || item.date));
+          if (dateStr) lines.push(`📅 *Tarih:* ${dateStr}`);
+          if (item.needsCar) lines.push('🚗 *Araç desteği gerekiyor!*');
           lines.push('');
-          lines.push('İhtiyaçlar:');
-          needs.forEach(need => lines.push(`• ${need}`));
+          const shortDesc = truncateText(stripHtml(item.desc || '').replace(/\s+/g, ' ').trim(), 140);
+          if (shortDesc) lines.push(`💬 ${shortDesc}`);
+          lines.push('');
+          lines.push('👉 *Hemen Müsaitlik Bildir & Başvur:*');
+          lines.push(link);
+        } else {
+          // Kapsamlı Resmî Çağrı
+          lines.push('✨ *MAKE-A-WISH TÜRKİYE · DİLEK ÇAĞRISI* ✨');
+          lines.push('━━━━━━━━━━━━━━━━━━━━━━');
+          lines.push(`🌟 *${item.title}*`);
+          if (item.location) lines.push(`📍 *Yer:* ${item.location}`);
+          const venueMap = item.location ? getLocationMapUrl(item.location, item.locationUrl) : '';
+          if (venueMap) lines.push(`🗺️ *Mekân Konumu:* ${venueMap}`);
+          const hasOfficeNeed = item.needs && item.needs.some(n => n.toLowerCase().includes('ofis') || n.toLowerCase().includes('teslim'));
+          if (hasOfficeNeed) lines.push(`🎁 *Ofis Hediye Teslim (Levent):* ${OFFICE_LOCATION_URL}`);
+          const dateStr = item.finalizedDate ? `*${item.finalizedDate} (Kesinleşti)*` : (item.dateRange ? `${item.dateRange} (Müsait Günler)` : (item.eventDate || item.date));
+          if (dateStr) lines.push(`📅 *Tarih Aralığı:* ${dateStr}`);
+          if (item.needsCar) lines.push('🚗 *Lojistik:* Araç Desteği Aranıyor');
+          lines.push('');
+          if (item.childInfo) {
+            lines.push(`> 👧 *Dilek Çocuğumuz:* ${item.childInfo}`);
+            lines.push('');
+          }
+          const plainDesc = stripHtml(item.desc || '').replace(/\s+/g, ' ').trim();
+          const cleanDesc = truncateText(plainDesc, 260);
+          if (cleanDesc) {
+            lines.push('💬 *Dilek Detayları:*');
+            lines.push(cleanDesc);
+            lines.push('');
+          }
+          if (Array.isArray(item.criteria) && item.criteria.length) {
+            lines.push('🎯 *KİMLER KATILMALI?*');
+            item.criteria.slice(0, 4).forEach(c => lines.push(`▫️ ${c.replace(/^[•\-\*]\s*/, '')}`));
+            lines.push('');
+          }
+          if (Array.isArray(item.needs) && item.needs.length) {
+            const needs = item.needs.map(plainNeed).filter(Boolean).slice(0, 3);
+            if (needs.length) {
+              lines.push('📦 *İHTİYAÇLAR & LOJİSTİK:*');
+              needs.forEach(n => lines.push(`▫️ ${n}`));
+              lines.push('');
+            }
+          }
+          lines.push('━━━━━━━━━━━━━━━━━━━━━━');
+          lines.push('👉 *Müsait Günlerini Seç & Başvur:*');
+          lines.push(link);
+        }
+      } else if (item.category === 'egitim') {
+        lines.push('🎓 *MAKE-A-WISH TÜRKİYE · GÖNÜLLÜ EĞİTİMİ* 🎓');
+        lines.push('━━━━━━━━━━━━━━━━━━━━━━');
+        lines.push(`📘 *${item.title}*`);
+        if (item.time || item.date) lines.push(`📅 *Tarih:* ${item.time || item.date}`);
+        if (item.location) lines.push(`📍 *Platform / Yer:* ${item.location}`);
+        if (item.egitmen) lines.push(`👨‍🏫 *Eğitmen:* ${item.egitmen}`);
+        if (item.kontenjan) lines.push(`👥 *Kontenjan:* ${item.kontenjan}`);
+        lines.push('');
+        const desc = truncateText(stripHtml(item.desc || '').replace(/\s+/g, ' ').trim(), 200);
+        if (desc) {
+          lines.push(`💬 ${desc}`);
+          lines.push('');
+        }
+        lines.push('━━━━━━━━━━━━━━━━━━━━━━');
+        lines.push('👉 *Eğitime Hemen Kaydol:*');
+        lines.push(link);
+      } else {
+        lines.push('📢 *MAKE-A-WISH TÜRKİYE · DUYURU*');
+        lines.push('━━━━━━━━━━━━━━━━━━━━━━');
+        lines.push(`📌 *${item.title}*`);
+        if (item.date) lines.push(`📅 *Tarih:* ${item.date}`);
+        if (item.location) lines.push(`📍 *Yer:* ${item.location}`);
+        lines.push('');
+        const desc = truncateText(stripHtml(item.desc || '').replace(/\s+/g, ' ').trim(), 240);
+        if (desc) {
+          lines.push(`💬 ${desc}`);
+          lines.push('');
+        }
+        lines.push('━━━━━━━━━━━━━━━━━━━━━━');
+        lines.push('👉 *Detayları İncele:*');
+        lines.push(link);
+      }
+      return lines.join('\n');
+    }
+
+    function switchShareTemplate(type) {
+      currentShareTemplate = type;
+      const tabFormal = document.getElementById('btnTplFormal');
+      const tabQuick = document.getElementById('btnTplQuick');
+      if (tabFormal) tabFormal.classList.toggle('active', type === 'formal');
+      if (tabQuick) tabQuick.classList.toggle('active', type === 'quick');
+      const item = announcements.find(a => a.id === shareItemId);
+      if (item) {
+        const area = document.getElementById('waMessage');
+        if (area) {
+          area.value = buildShareMessage(item, type);
+          syncWaPreview();
         }
       }
+    }
 
-      lines.push('');
-      lines.push('Detaylar ve katılım:');
-      lines.push(buildShareLink(item.id));
-      return lines.join('\n');
+    function copyShareMessage() {
+      const area = document.getElementById('waMessage');
+      if (!area || !area.value.trim()) return;
+      copyText(area.value, 'WhatsApp mesaj metni panoya kopyalandı! Gruplara doğrudan yapıştırabilirsiniz.');
     }
 
     function currentTimeLabel() {
@@ -4632,14 +7638,20 @@
       const area = document.getElementById('waMessage');
       if (!el || !area) return;
       const lines = area.value.split('\n');
-      const short = lines.slice(0, 6).join('\n');
-      el.textContent = lines.length > 6 ? short + '\n…' : short;
+      const short = lines.slice(0, 10).join('\n');
+      el.textContent = lines.length > 10 ? short + '\n…' : short;
     }
 
     function openShareModal(id) {
       const item = announcements.find(a => a.id === id);
       if (!item) return;
       shareItemId = id;
+
+      currentShareTemplate = 'formal';
+      const tabFormal = document.getElementById('btnTplFormal');
+      const tabQuick = document.getElementById('btnTplQuick');
+      if (tabFormal) tabFormal.classList.add('active');
+      if (tabQuick) tabQuick.classList.remove('active');
 
       const plainDesc = stripHtml(item.desc || '').replace(/\s+/g, ' ').trim();
       let meta = '';
@@ -4651,12 +7663,12 @@
         meta = `${item.date || ''}${item.location ? ' · ' + item.location : ''}`;
       }
 
-      const shareLink = buildShareLink(id);
+      const shareLink = buildShareLink(id, true);
       document.getElementById('waTitle').textContent = item.title;
       document.getElementById('waMeta').textContent = meta;
       document.getElementById('waDesc').textContent = truncateText(plainDesc, 90);
       document.getElementById('waLink').textContent = shareDomainLabel(shareLink);
-      document.getElementById('waMessage').value = buildShareMessage(item);
+      document.getElementById('waMessage').value = buildShareMessage(item, 'formal');
       document.getElementById('waTime').textContent = currentTimeLabel() + ' ✓✓';
 
       const media = document.getElementById('waCardMedia');
@@ -5145,10 +8157,12 @@
           if (!matchTitle && !matchDesc && !matchEgitmen && !matchAuthor && !matchLoc && !matchInterests && !matchAge) return false;
         }
 
-        // İl Filtresi
+        // İl Filtresi (Dilekler ikamet şehrine göre filtrelenir; Genel duyuru ve online eğitimler herkese açıktır)
         if (fCity) {
-          const loc = ((a.city || '') + ' ' + (a.location || '')).toLowerCase();
-          if (!loc.includes(fCity)) return false;
+          if (a.category === 'dilek') {
+            const loc = ((a.city || '') + ' ' + (a.location || '')).toLowerCase();
+            if (!loc.includes(fCity)) return false;
+          }
         }
 
         // İlçe Filtresi
@@ -5253,27 +8267,30 @@
         const titleButton = (cls) => `<button type="button" class="anc-title anc-title-btn ${cls}" onclick="event.stopPropagation(); openDetailModal(${a.id})">${escapeHtml(a.title)}</button>`;
 
         if (a.category === 'dilek') {
-          const displayInterests = a.interests ? a.interests.slice(0, 5) : [];
-          const hasNeeds = a.needs && a.needs.length && a.needs.some(n => n && n.trim().length > 0);
+          const allInterests = a.interests || [];
+          const displayInterests = allInterests.slice(0, 2);
+          const extraInterestCount = allInterests.length - displayInterests.length;
 
-          const ageDisplay = a.ageGroup ? `<span class="meta-pill age"><i class="ph-bold ph-baby"></i> Çocuk Yaşı: ${escapeHtml(a.ageGroup)}</span>` : '';
-          const locDisplay = a.location ? `<span class="meta-pill location"><i class="ph-bold ph-map-pin"></i> ${escapeHtml(a.location)}</span>` : '';
-          const carDisplay = a.needsCar !== undefined
-            ? (a.needsCar
-              ? `<span class="meta-pill car-needed"><i class="ph-bold ph-car"></i> 🚗 Araba İhtiyacı Var</span>`
-              : `<span class="meta-pill car-not-needed"><i class="ph-bold ph-check"></i> 🚗 Araba İhtiyacı Yok</span>`)
+          const ageDisplay = a.ageGroup ? `<span class="meta-pill age"><i class="ph-bold ph-baby"></i> ${escapeHtml(a.ageGroup)} Yaş</span>` : '';
+          const venueMapUrl = a.location ? getLocationMapUrl(a.location, a.locationUrl) : '';
+          const locDisplay = a.location 
+            ? `<a href="${venueMapUrl}" target="_blank" rel="noopener noreferrer" class="meta-pill location with-link" onclick="event.stopPropagation()" title="${escapeHtml(a.location)} — Google Haritalarda Gör"><i class="ph-bold ph-map-pin"></i> ${escapeHtml(a.city || a.location)} <i class="ph-bold ph-arrow-square-out" style="font-size:10px; opacity:0.8;"></i></a>` 
+            : '';
+          const carDisplay = a.needsCar
+            ? `<span class="meta-pill car-needed" title="Etkinlik için araçlı gönüllü desteği aranıyor"><i class="ph-bold ph-car"></i> Araç Gerekli</span>`
             : '';
 
           return `
-        <div class="anc-card dilek-card ${urgentClass} ${cardStateClass}" ${cardA11y} onclick="openDetailModal(${a.id})">
+        <div class="anc-card dilek-card compact-dilek ${urgentClass} ${cardStateClass}" ${cardA11y} onclick="openDetailModal(${a.id})">
           <div class="anc-card-header">
-            <div>
-              <span class="badge-tag dilek"><i class="ph-fill ph-sparkle"></i> Dilek Gerçekleştirme</span>
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <span class="badge-tag dilek"><i class="ph-fill ph-sparkle"></i> Dilek</span>
               ${urgentBadge}
+              ${a.finalizedDate ? `<span class="badge-tag finalized" title="${escapeHtml(a.finalizedDate)} Tarihi Kesinleşti"><i class="ph-fill ph-check-circle"></i> KESİNLEŞTİ</span>` : ''}
+              ${renderMatchScoreHtml(a)}
             </div>
             <div class="anc-meta-col">
               <span class="anc-date"><i class="ph-bold ph-calendar-blank" style="color:var(--primary);"></i> ${escapeHtml(a.eventDate || a.date)}</span>
-              ${readTime ? `<span class="read-time"><i class="ph-bold ph-clock"></i> ${readTime}</span>` : ''}
             </div>
           </div>
           <div class="anc-card-body">
@@ -5284,49 +8301,48 @@
             
             ${(locDisplay || ageDisplay || carDisplay) ? `<div class="meta-pills-row">${locDisplay} ${ageDisplay} ${carDisplay}</div>` : ''}
 
-            ${a.childInfo ? `<div class="child-wish-pill"><i class="ph-fill ph-heart" style="color:#ef4444;"></i> ${escapeHtml(a.childInfo)}</div>` : ''}
-
-            <div class="anc-desc">${sanitizeHtml(a.desc)}</div>
+            ${a.childInfo ? `<div class="child-wish-pill" title="${escapeHtml(a.childInfo)}"><i class="ph-fill ph-heart" style="color:#ef4444;"></i> <span>${escapeHtml(a.childInfo)}</span></div>` : ''}
 
             ${displayInterests.length ? `
-              <div class="interest-tags-wrapper">
-                <div class="interest-title"><i class="ph-bold ph-palette"></i> İlgi Alanları (${displayInterests.length}/5):</div>
-                <div class="interest-pills">
-                  ${displayInterests.map(i => `<span class="interest-pill">${escapeHtml(i)}</span>`).join('')}
-                </div>
+              <div class="compact-interest-row">
+                ${displayInterests.map(i => `<span class="interest-pill">${escapeHtml(i)}</span>`).join('')}
+                ${extraInterestCount > 0 ? `<span class="interest-pill more-pill">+${extraInterestCount} daha</span>` : ''}
               </div>
             ` : ''}
 
-            ${a.criteria && a.criteria.length ? `
-              <div class="criteria-box">
-                <div class="criteria-title"><i class="ph-bold ph-user-check"></i> Kimler Katılmalı?</div>
-                <ul class="criteria-list">
-                  ${a.criteria.map(c => `<li><i class="ph-bold ph-check-circle"></i> ${escapeHtml(c)}</li>`).join('')}
-                </ul>
-              </div>
-            ` : ''}
-
-            ${hasNeeds ? `
-              <div class="needs-box">
-                <div class="needs-title"><i class="ph-bold ph-truck"></i> İhtiyaçlar &amp; Lojistik:</div>
-                <ul class="needs-list">
-                  ${a.needs.filter(n => n && n.trim().length > 0).map(n => `<li><i class="ph-bold ph-hand-heart"></i> ${escapeHtml(n)}</li>`).join('')}
-                </ul>
-              </div>
-            ` : ''}
+            ${renderTeamStackHtml(a)}
           </div>
           <div class="anc-card-footer" onclick="event.stopPropagation()">
-            <button class="btn-join ${a.joined ? 'joined' : ''}" style="background:${a.joined ? 'var(--green)' : 'linear-gradient(135deg, #f59e0b, #d97706)'}" onclick="toggleJoin(event, ${a.id})">
+            <!-- Gönüllü Modu: Tam Genişlikli Başvuru Butonu -->
+            <button type="button" class="btn-join btn-join-hero volunteer-only ${a.joined ? 'joined' : ''}" onclick="toggleJoin(event, ${a.id})">
               <i class="ph-bold ${a.joined ? 'ph-check' : 'ph-hand-heart'}"></i>
-              ${a.joined ? 'Başvurunuz Alınmıştır' : 'Dilek Ekibine Katıl'}
+              <span>${a.joined ? (a.userSelectedDates && a.userSelectedDates.length ? `Başvuruldu (${a.userSelectedDates.length} Gün)` : 'Başvurunuz Alındı') : 'Dilek Ekibine Katıl'}</span>
             </button>
-            <button class="btn-icon-edit coord-only" onclick="openEditModal(${a.id})" title="Duyuruyu Güncelle" aria-label="Duyuruyu Güncelle">
-              <i class="ph-bold ph-pencil-simple"></i>
+
+            <!-- Koordinatör Modu: Müsaitlik & Başvuru Butonu -->
+            <button type="button" class="btn-heatmap-action coord-only" onclick="openHeatmapModal(${a.id})" title="Ortak Küme & Müsaitlik Isı Haritası">
+              <span class="btn-hm-left">
+                <i class="ph-fill ph-chart-bar"></i>
+                <span>${(a.applications && a.applications.length) ? `${a.applications.length} Başvuru` : 'Başvurular'}</span>
+              </span>
+              ${getWinningDayShort(a) ? `<span class="badge-mini-win">${a.finalizedDate ? '<i class="ph-bold ph-check"></i> ' : '<i class="ph-bold ph-calendar-check"></i> '}${getWinningDayShort(a)}</span>` : '<span class="badge-mini-win is-empty">Planla</span>'}
             </button>
-            ${pinButtonHtml(a)}
-            <button class="btn-icon-danger coord-only" onclick="deleteAnnouncement(${a.id})" title="Duyuruyu Sil">
-              <i class="ph-bold ph-trash"></i>
-            </button>
+
+            <!-- Koordinatör Modu: Şık İkon Araç Çubuğu -->
+            <div class="anc-coord-actions coord-only">
+              ${a.finalizedDate ? `
+                <button type="button" class="btn-action-tool btn-icon-wa" onclick="openLockedTeamWhatsAppModal(${a.id})" title="Kadro Duyurusu & Teşekkür Metni Oluştur" aria-label="WhatsApp Kadro Bildirimi">
+                  <i class="ph-bold ph-whatsapp-logo"></i>
+                </button>
+              ` : ''}
+              <button type="button" class="btn-action-tool edit-btn btn-icon-edit" onclick="openEditModal(${a.id})" title="Duyuruyu Güncelle" aria-label="Duyuruyu Güncelle">
+                <i class="ph-bold ph-pencil-simple"></i>
+              </button>
+              ${pinButtonHtml(a)}
+              <button type="button" class="btn-action-tool danger-btn btn-icon-danger" onclick="deleteAnnouncement(${a.id})" title="Duyuruyu Sil" aria-label="Duyuruyu Sil">
+                <i class="ph-bold ph-trash"></i>
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -5360,22 +8376,27 @@
         </div>
         <div class="anc-card-footer" onclick="event.stopPropagation()">
           ${a.category === 'egitim' ? `
-            <button class="btn-join ${a.joined ? 'joined' : ''}" onclick="toggleJoin(event, ${a.id})">
+            <button type="button" class="btn-join btn-join-hero volunteer-only ${a.joined ? 'joined' : ''}" onclick="toggleJoin(event, ${a.id})">
               <i class="ph-bold ${a.joined ? 'ph-check' : 'ph-user-plus'}"></i>
-              ${a.joined ? 'Kayıtlı' : 'Eğitime Kaydol'}
+              <span>${a.joined ? 'Kayıtlı' : 'Eğitime Kaydol'}</span>
+            </button>
+            <button type="button" class="btn-join btn-join-hero coord-only" style="background:var(--primary-light);color:var(--primary);box-shadow:none;" onclick="openDetailModal(${a.id})">
+              <i class="ph-bold ph-arrow-right"></i> <span>Katılımcılar &amp; Detay</span>
             </button>
           ` : `
-            <button class="btn-join" style="background:var(--primary-light);color:var(--primary);" onclick="openDetailModal(${a.id})">
-              <i class="ph-bold ph-arrow-right"></i> Detay
+            <button type="button" class="btn-join btn-join-hero" style="background:var(--primary-light);color:var(--primary);box-shadow:none;" onclick="openDetailModal(${a.id})">
+              <i class="ph-bold ph-arrow-right"></i> <span>Detay</span>
             </button>
           `}
-          <button class="btn-icon-edit coord-only" onclick="openEditModal(${a.id})" title="Duyuruyu Güncelle" aria-label="Duyuruyu Güncelle">
-            <i class="ph-bold ph-pencil-simple"></i>
-          </button>
-          ${pinButtonHtml(a)}
-          <button class="btn-icon-danger coord-only" onclick="deleteAnnouncement(${a.id})" title="Duyuruyu Sil">
-            <i class="ph-bold ph-trash"></i>
-          </button>
+          <div class="anc-coord-actions coord-only">
+            <button type="button" class="btn-action-tool edit-btn btn-icon-edit" onclick="openEditModal(${a.id})" title="Duyuruyu Güncelle" aria-label="Duyuruyu Güncelle">
+              <i class="ph-bold ph-pencil-simple"></i>
+            </button>
+            ${pinButtonHtml(a)}
+            <button type="button" class="btn-action-tool danger-btn btn-icon-danger" onclick="deleteAnnouncement(${a.id})" title="Duyuruyu Sil" aria-label="Duyuruyu Sil">
+              <i class="ph-bold ph-trash"></i>
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -5443,6 +8464,74 @@
     let joiningAnnouncementId = null;
 
     // ─── EĞİTİME / DİLEĞE KAYIT TOGGLE ──────────────────────────────────────────
+    let currentJoinSelectedDates = [];
+    let currentHeatmapAnnouncementId = null;
+    let lastParsedAnnouncement = null;
+
+    function formatShortDateBadge(val) {
+      if (!val) return null;
+      const str = String(val).trim();
+      const isoMatch = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+      if (isoMatch) {
+        const trMonths = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+        const mIdx = parseInt(isoMatch[2], 10) - 1;
+        return `${parseInt(isoMatch[3], 10)} ${trMonths[mIdx] || ''}`.trim();
+      }
+      const trMatch = str.match(/^(\d{1,2})\s+([A-Za-zÇŞĞÜÖİçşğüöı]+)/);
+      if (trMatch) {
+        const day = trMatch[1];
+        const month = trMatch[2].substring(0, 3);
+        return `${day} ${month}`;
+      }
+      return str.length > 8 ? str.substring(0, 7) + '..' : str;
+    }
+
+    function getWinningDayShort(a) {
+      if (a.finalizedDate) return formatShortDateBadge(a.finalizedDate);
+      if (!a.applications || !a.applications.length) return null;
+      const counts = {};
+      a.applications.forEach(app => {
+        if (app.selectedDates && Array.isArray(app.selectedDates)) {
+          app.selectedDates.forEach(d => { counts[d] = (counts[d] || 0) + 1; });
+        } else if (app.date) {
+          counts[app.date] = (counts[app.date] || 0) + 1;
+        }
+      });
+      let max = 0, bestDate = null;
+      for (const d in counts) {
+        if (counts[d] > max) { max = counts[d]; bestDate = d; }
+      }
+      if (!bestDate || max < 1) return null;
+      return formatShortDateBadge(bestDate);
+    }
+
+    function getDaysInRange(startStr, endStr) {
+      const days = [];
+      if (!startStr) return days;
+      const start = new Date(startStr);
+      const end = endStr ? new Date(endStr) : new Date(startStr);
+      const trMonths = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+      const trDays = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cts'];
+
+      const curr = new Date(start);
+      while (curr <= end) {
+        const yyyy = curr.getFullYear();
+        const mm = String(curr.getMonth() + 1).padStart(2, '0');
+        const dd = String(curr.getDate()).padStart(2, '0');
+        const dateKey = `${yyyy}-${mm}-${dd}`;
+        const dayOfWeek = curr.getDay();
+        days.push({
+          dateKey,
+          dayNum: curr.getDate(),
+          monthName: trMonths[curr.getMonth()],
+          dayName: trDays[dayOfWeek],
+          isWeekend: dayOfWeek === 0 || dayOfWeek === 6
+        });
+        curr.setDate(curr.getDate() + 1);
+      }
+      return days;
+    }
+
     function toggleJoin(e, id) {
       if (e) e.stopPropagation();
       const item = announcements.find(a => a.id === id);
@@ -5453,6 +8542,12 @@
         }
 
         item.joined = !item.joined;
+        if (!item.joined) {
+          item.userSelectedDates = [];
+          if (item.applications) {
+            item.applications = item.applications.filter(ap => !ap.isMe);
+          }
+        }
         saveAnnouncements();
         renderAnnouncements();
         const msg = item.category === 'dilek'
@@ -5470,15 +8565,114 @@
       if (!item) return;
 
       joiningAnnouncementId = id;
-      document.getElementById('joinModalAncTitle').innerHTML = `<i class="ph-fill ph-sparkle" style="color:var(--gold);"></i> <span>${escapeHtml(item.title)}</span>`;
-      
+      currentJoinSelectedDates = [];
+
+      document.getElementById('joinModalAncTitle').innerHTML = `
+        <i class="ph-fill ph-sparkle" style="color:var(--gold);"></i>
+        <span>${escapeHtml(item.title)}</span>
+      `;
+
+      // Gün Matrisi Oluştur
+      const dayGrid = document.getElementById('jDayGrid');
+      const singleNotice = document.getElementById('jSingleDateNotice');
+      const quickRow = document.getElementById('jQuickSelectRow');
+
+      if (item.isDateRange && item.startDate && item.endDate && item.startDate !== item.endDate) {
+        singleNotice.style.display = 'none';
+        dayGrid.style.display = 'grid';
+        quickRow.style.display = 'flex';
+
+        const days = getDaysInRange(item.startDate, item.endDate);
+        dayGrid.innerHTML = days.map(d => `
+          <div class="day-chip ${d.isWeekend ? 'weekend' : ''}" data-date="${d.dateKey}" onclick="toggleDayChip('${d.dateKey}', this)">
+            <span class="d-num">${d.dayNum}</span>
+            <span class="d-month">${d.monthName}</span>
+            <span class="d-name">${d.dayName}</span>
+          </div>
+        `).join('');
+
+        // Eğer duyuru "tercihen hafta sonu" ise hafta sonlarını varsayılan olarak seçili getirelim
+        if (item.preferWeekend) {
+          selectQuickDates('weekends');
+        }
+      } else {
+        singleNotice.style.display = 'block';
+        singleNotice.innerHTML = `<i class="ph-fill ph-calendar-check" style="color:#0369a1;"></i> Bu dilek <b>${escapeHtml(item.eventDate || item.date)}</b> tarihinde gerçekleştirilecektir.`;
+        dayGrid.style.display = 'none';
+        quickRow.style.display = 'none';
+        if (item.startDate) currentJoinSelectedDates = [item.startDate];
+      }
+
+      // Kriter Checkbox Listesi
+      const critList = document.getElementById('jCriteriaList');
+      if (item.criteria && item.criteria.length) {
+        critList.innerHTML = item.criteria.map((c, i) => `
+          <label class="crit-item" id="critItem_${i}">
+            <input type="checkbox" id="critCheck_${i}" onchange="toggleCritItem(${i}, this.checked)" checked>
+            <span>${escapeHtml(c)}</span>
+          </label>
+        `).join('');
+      } else {
+        critList.innerHTML = `<div style="font-size:12.5px; color:#64748b; font-style:italic;">Özel katılım kriteri belirtilmemiştir.</div>`;
+      }
+
       const jHasCar = document.getElementById('jHasCar');
-      if (jHasCar) jHasCar.checked = false;
+      if (jHasCar) jHasCar.checked = item.joined ? (item.userHasCar ?? false) : false;
 
       const jNotes = document.getElementById('jNotes');
-      if (jNotes) jNotes.value = '';
+      if (jNotes) jNotes.value = item.joined ? (item.userNotes || '') : '';
+
+      if (item.joined && item.userSelectedDates && item.userSelectedDates.length && item.isDateRange) {
+        currentJoinSelectedDates = [...item.userSelectedDates];
+        setTimeout(() => {
+          const chips = document.querySelectorAll('#jDayGrid .day-chip');
+          chips.forEach(c => {
+            if (currentJoinSelectedDates.includes(c.dataset.date)) c.classList.add('selected');
+            else c.classList.remove('selected');
+          });
+        }, 10);
+      }
 
       document.getElementById('joinModal').classList.add('open');
+    }
+
+    function toggleDayChip(dateKey, el) {
+      if (currentJoinSelectedDates.includes(dateKey)) {
+        currentJoinSelectedDates = currentJoinSelectedDates.filter(d => d !== dateKey);
+        el.classList.remove('selected');
+      } else {
+        currentJoinSelectedDates.push(dateKey);
+        el.classList.add('selected');
+      }
+    }
+
+    function toggleCritItem(idx, isChecked) {
+      const el = document.getElementById(`critItem_${idx}`);
+      if (el) el.classList.toggle('checked', isChecked);
+    }
+
+    function selectQuickDates(mode) {
+      const chips = document.querySelectorAll('#jDayGrid .day-chip');
+      if (mode === 'all') {
+        currentJoinSelectedDates = [];
+        chips.forEach(c => {
+          c.classList.add('selected');
+          currentJoinSelectedDates.push(c.dataset.date);
+        });
+      } else if (mode === 'weekends') {
+        currentJoinSelectedDates = [];
+        chips.forEach(c => {
+          if (c.classList.contains('weekend')) {
+            c.classList.add('selected');
+            currentJoinSelectedDates.push(c.dataset.date);
+          } else {
+            c.classList.remove('selected');
+          }
+        });
+      } else if (mode === 'clear') {
+        currentJoinSelectedDates = [];
+        chips.forEach(c => c.classList.remove('selected'));
+      }
     }
 
     function closeJoinModal() {
@@ -5493,19 +8687,419 @@
     function submitJoinApplication() {
       if (!joiningAnnouncementId) return;
       const item = announcements.find(a => a.id === joiningAnnouncementId);
-      if (item) {
-        item.joined = true;
-        item.userHasCar = document.getElementById('jHasCar')?.checked ?? false;
-        item.userNotes = document.getElementById('jNotes')?.value.trim() || '';
+      if (!item) return;
 
-        saveAnnouncements();
-        renderAnnouncements();
-        if (currentActiveModalId === item.id) {
-          updateModalActionBtn(item);
-        }
-        closeJoinModal();
-        showToast('Başvurunuz başarıyla alınmıştır. Yönetici onayından sonra katılabilirsiniz.');
+      if (item.isDateRange && (!currentJoinSelectedDates || currentJoinSelectedDates.length === 0)) {
+        showToast('Lütfen müsait olduğunuz en az bir günü işaretleyin.', 'error');
+        return;
       }
+
+      // Seçilen kriterler
+      const checkedCriteria = [];
+      if (item.criteria) {
+        item.criteria.forEach((c, i) => {
+          const chk = document.getElementById(`critCheck_${i}`);
+          if (chk && chk.checked) checkedCriteria.push(i);
+        });
+      }
+
+      const hasCar = document.getElementById('jHasCar')?.checked ?? false;
+      const notes = document.getElementById('jNotes')?.value.trim() || '';
+
+      if (!item.applications) item.applications = [];
+
+      // Varsa önceki kendi başvurusunu temizle
+      item.applications = item.applications.filter(ap => !ap.isMe);
+
+      item.applications.push({
+        name: "Siz (Gönüllü)",
+        role: "Gönüllü",
+        car: hasCar,
+        criteriaVerified: checkedCriteria,
+        notes: notes,
+        selectedDates: [...currentJoinSelectedDates],
+        date: item.startDate || (currentJoinSelectedDates[0] || ''),
+        isMe: true,
+        totalWishes: 5,
+        lastWishDate: "12 Eylül 2026"
+      });
+
+      item.joined = true;
+      item.userHasCar = hasCar;
+      item.userNotes = notes;
+      item.userSelectedDates = [...currentJoinSelectedDates];
+
+      saveAnnouncements();
+      renderAnnouncements();
+      if (currentActiveModalId === item.id) {
+        updateModalActionBtn(item);
+      }
+      closeJoinModal();
+      showToast(`Harika! Başvurunuz alındı. Seçtiğiniz ${currentJoinSelectedDates.length} gün koordinatörün ortak küme listesine işlendi ✨`);
+    }
+
+    // ─── ORTAK KÜME & MÜSAİTLİK ISI HARİTASI (KOORDİNATÖR) ───────────────────────
+    function openHeatmapModal(id) {
+      const item = announcements.find(a => a.id === id);
+      if (!item) return;
+      currentHeatmapAnnouncementId = id;
+
+      const apps = item.applications || [];
+      document.getElementById('hmTotalApplicantsCount').textContent = `Toplam ${apps.length} Gönüllü Başvurdu`;
+
+      // Tarih aralığındaki günleri hesapla
+      let days = [];
+      if (item.isDateRange && item.startDate && item.endDate) {
+        days = getDaysInRange(item.startDate, item.endDate);
+      } else if (item.startDate) {
+        days = getDaysInRange(item.startDate, item.startDate);
+      }
+
+      // Gün bazlı gönüllü eşleşmelerini çıkar
+      const dateMap = {};
+      days.forEach(d => {
+        dateMap[d.dateKey] = {
+          dayObj: d,
+          volunteers: [],
+          carCount: 0
+        };
+      });
+
+      apps.forEach(app => {
+        const selected = app.selectedDates && app.selectedDates.length ? app.selectedDates : [app.date];
+        selected.forEach(dKey => {
+          if (dateMap[dKey]) {
+            dateMap[dKey].volunteers.push(app);
+            if (app.car) dateMap[dKey].carCount++;
+          }
+        });
+      });
+
+      // En yüksek katılımlı günü bul (Winning Day)
+      let maxVolCount = 0;
+      let winningKey = null;
+      for (const dKey in dateMap) {
+        if (dateMap[dKey].volunteers.length > maxVolCount) {
+          maxVolCount = dateMap[dKey].volunteers.length;
+          winningKey = dKey;
+        }
+      }
+
+      const trMonthsFull = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+      const trDaysFull = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+
+      // Winner Banner Güncellemesi
+      const winBanner = document.getElementById('hmWinnerBanner');
+      if (winningKey && maxVolCount > 0) {
+        winBanner.style.display = 'flex';
+        const wDate = new Date(winningKey);
+        const dateTitle = `${wDate.getDate()} ${trMonthsFull[wDate.getMonth()]} ${trDaysFull[wDate.getDay()]}`;
+        const winObj = dateMap[winningKey];
+
+        if (item.finalizedDate) {
+          document.getElementById('hmWinnerTitle').innerHTML = `✨ Bu Dilek ${escapeHtml(item.finalizedDate)} Tarihi İçin Kesinleştirilmiştir`;
+          document.getElementById('hmWinnerSub').innerHTML = `Seçilen ${maxVolCount} gönüllüye onay bildirimi gönderildi. Kadro kilitlendi.<br><button type="button" class="btn-wa-broadcast-launch" onclick="openLockedTeamWhatsAppModal(${item.id})"><i class="ph-bold ph-whatsapp-logo"></i> WhatsApp Kadro Duyurusu & Teşekkür Metni</button>`;
+          document.getElementById('btnLockWinningDay').style.display = 'none';
+        } else {
+          document.getElementById('hmWinnerTitle').innerHTML = `🏆 En Yüksek Katılım: ${dateTitle} (${maxVolCount} Gönüllü)`;
+          document.getElementById('hmWinnerSub').textContent = `Ortak kümede en çok gönüllü bu gün çakışıyor (${winObj.carCount} araçlı gönüllü mevcut).`;
+          const lockBtn = document.getElementById('btnLockWinningDay');
+          lockBtn.style.display = 'inline-flex';
+          lockBtn.innerHTML = `<i class="ph-fill ph-lock-key"></i> ${dateTitle} Gününü Kesinleştir`;
+          lockBtn.onclick = () => lockSpecificDay(winningKey, dateTitle);
+        }
+      } else {
+        winBanner.style.display = 'none';
+      }
+
+      // Tarih Listesi Çubukları
+      const listContainer = document.getElementById('hmListContainer');
+      const maxPossible = Math.max(1, maxVolCount);
+
+      listContainer.innerHTML = days.map(d => {
+        const entry = dateMap[d.dateKey] || { volunteers: [], carCount: 0 };
+        const count = entry.volunteers.length;
+        const pct = Math.round((count / maxPossible) * 100);
+        const isWinner = d.dateKey === winningKey && count > 0;
+        const volNames = entry.volunteers.map(v => `${v.name}${v.car ? ' 🚗' : ''}`).join(', ');
+        const dateFullStr = `${d.dayNum} ${d.monthName} ${d.dayName}`;
+
+        return `
+          <div class="heatmap-row ${isWinner ? 'is-winner' : ''}">
+            <div class="hm-date">
+              <strong>${d.dayNum} ${d.monthName}</strong>
+              <small>${d.dayName} ${d.isWeekend ? '• Hafta Sonu' : ''}</small>
+            </div>
+            <div class="hm-bar-wrap">
+              <div class="hm-bar-bg">
+                <div class="hm-bar-fill" style="width: ${pct}%;"></div>
+              </div>
+              <div class="hm-volunteers-preview" title="${escapeHtml(volNames)}">
+                ${volNames ? `<i class="ph-fill ph-user-check"></i> ${escapeHtml(volNames)}` : '<span style="color:#94a3b8;">Henüz başvuru yok</span>'}
+              </div>
+            </div>
+            <div class="hm-count">
+              <span class="badge-count">${count} Gönüllü ${entry.carCount ? `(${entry.carCount} 🚗)` : ''}</span>
+            </div>
+            <div>
+              <button type="button" class="btn-hm-select" onclick="lockSpecificDay('${d.dateKey}', '${dateFullStr}')">
+                ${item.finalizedDate === dateFullStr ? '✓ Kilitli' : 'Bu Günü Seç'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Başvuran Gönüllüler Listesi Detayı
+      const appsContainer = document.getElementById('hmApplicantsList');
+      if (apps.length) {
+        appsContainer.innerHTML = apps.map(app => {
+          const critCount = app.criteriaVerified ? app.criteriaVerified.length : (item.criteria ? item.criteria.length : 0);
+          const totalCrit = item.criteria ? item.criteria.length : critCount;
+          const selectedCount = app.selectedDates ? app.selectedDates.length : 1;
+          const wishStats = getVolunteerWishStats(app);
+
+          return `
+            <div class="applicant-row">
+              <div class="app-info-left">
+                <div class="app-avatar">${escapeHtml(app.name.charAt(0))}</div>
+                <div class="app-name-block">
+                  <strong>${escapeHtml(app.name)} ${app.isMe ? '<span style="color:var(--primary); font-size:11px;">(Siz)</span>' : ''}</strong>
+                  <span>${escapeHtml(app.notes || 'Not eklenmedi')}</span>
+                </div>
+              </div>
+              <div class="app-tags">
+                <span class="app-tag wishes" title="Toplam Dilek Gerçekleştirme Sayısı"><i class="ph-fill ph-sparkle"></i> ${wishStats.count} Dilek</span>
+                <span class="app-tag last-date" title="En Son Gerçekleştirilen Dilek Tarihi"><i class="ph-bold ph-clock-counter-clockwise"></i> Son: ${escapeHtml(wishStats.lastDate)}</span>
+                ${app.car ? '<span class="app-tag car"><i class="ph-bold ph-car"></i> Araçlı</span>' : ''}
+                <span class="app-tag"><i class="ph-bold ph-check"></i> ${critCount}/${totalCrit} Kriter</span>
+                <span class="app-tag dates"><i class="ph-bold ph-calendar"></i> ${selectedCount} Gün Müsait</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        appsContainer.innerHTML = `<div style="font-size:12.5px; color:#64748b; padding:8px;">Henüz kimse başvurmadı.</div>`;
+      }
+
+      document.getElementById('heatmapModal').classList.add('open');
+    }
+
+    function lockSpecificDay(dateKey, displayStr) {
+      if (!currentHeatmapAnnouncementId) return;
+      const item = announcements.find(a => a.id === currentHeatmapAnnouncementId);
+      if (!item) return;
+
+      item.finalizedDate = displayStr;
+      saveAnnouncements();
+      renderAnnouncements();
+      closeHeatmapModal();
+      showToast(`🎉 ${displayStr} tarihi dilek günü olarak KİLİTLENDİ! Başvuran gönüllülere katılım onayı gönderildi.`);
+      setTimeout(() => {
+        openLockedTeamWhatsAppModal(item.id);
+      }, 400);
+    }
+
+    function lockWinningDay() {
+      const lockBtn = document.getElementById('btnLockWinningDay');
+      if (lockBtn && typeof lockBtn.onclick === 'function') {
+        lockBtn.onclick();
+      }
+    }
+
+    function closeHeatmapModal() {
+      document.getElementById('heatmapModal').classList.remove('open');
+      currentHeatmapAnnouncementId = null;
+    }
+
+    function handleHeatmapOverlay(e) {
+      if (e.target === document.getElementById('heatmapModal')) closeHeatmapModal();
+    }
+
+    // ─── WHATSAPP METNİNDEN AKILLI AYRIŞTIRICI ───────────────────────────────────
+    const SAMPLE_WA_TEXTS = [
+      `DİLEK GERÇEKLEŞTİRME DUYURUSU: 
+Yer: Koç Üniversitesi Hastanesi (Aile normalde İstanbul'da yaşıyor fakat dileğinin hastanede gerçekleşmesini rica ettiler).
+Tarih: 27 Ekim 
+Detaylar: Dilek çocuğumuz 16 yaşında bir kız çocuğu, dileği bir dizüstü bilgisayara sahip olmak.
+İlgi alanları: Kitap okumayı çok seviyor hatta bilim kurgu alanında bir kitap yazıyormuş. Dizüstü bilgisayarı da yazdığı kitabın kapağını tasarlamak için dilemiş.🥹 Korku filmleri izlemeyi seviyor. 
+
+Kimler katılmalı? 
+* Uçuk, grip, nezle, öksürük vs. herhangi bir hastalığı veya belirtisi olmayan,
+* 16 yaşındaki ergen kız çocuklarla anlaşabilen,
+* Kitaplar, bilim kurgu ve yazarlık gibi konularda sohbet edebilecek,
+* Utangaç çocuklarla iletişim kurabilen,
+* Mümkünse bir kişi, dilek ve hediyelerini ofisten teslim alabilecek.
+
+Kriterlere uyum sağlayan ve müsait olan kişiler uygun olduğu kriterlerle birlikte yazabiliir`,
+
+      `DİLEK GERÇEKLEŞTİRME DESTEĞİ DUYURUSU: 
+Yer: Yapı Kredi Koç Topluluğu Spor Kulübü (Üsküdar)
+Tarih: 8 Ekim Perşembe
+Saat: 14:30
+Detaylar: 2 kardeşin dileğini gerçekleştireceğiz. İkisi de 12 yaşında, biri oğlan biri kız. Oğlan çocuğun zihinsel gelişim geriliği mevcut. 
+
+Bir kurum iş birliğiyle gerçekleştireceğimiz bu dilek için, deneyimli 2-3 gönüllüye ihtiyacımız bulunuyor. Özellikle özel gereksinimli çocuklarla çalışma deneyimi olması iyi olabilir. 
+
+Müsait olanlar deneyimleriyle birlikte yazabilir`,
+
+      `DİLEK GERÇEKLEŞTİRME DUYURUSU: 
+Yer: Kocaeli/Gebze
+Tarih: 7-15 Kasım (tercihen hafta sonu)
+Detaylar: Dilek çocuğumuz 4 yaşında bir kız çocuğu, dileği bir akülü motora sahip olmak. Dileği dışarıda, kalabalık olmayan bir alanda gerçekleştirilebilir. 10 ve 13 yaşlarında iki kız kardeşi var.
+İlgi alanları: Dans etmek, şarkı söylemek, mıknatıslı bloklar, lego, boyama yapmak.
+Kimler katılmalı? 
+* Uçuk, grip, nezle, öksürük vs. herhangi bir hastalığı veya belirtisi olmayan kişiler katılabilir. 
+
+Müsait olduğunuz tarihlerle birlikte yazabilirsiniiz`,
+
+      `DİLEK GERÇEKLEŞTİRME DUYURUSU: 
+Yer: Bursa/Nilüfer (Aile burada yaşıyor).
+Tarih: 26 Ekim - 8 Kasım
+Detaylar: Dilek çocuğumuz 9 yaşında bir oğlan çocuğu, dileği bir 3D yazıcıya sahip olmak. 5 yaşında bir oğlan kardeşi var. Dileği Uludağ Üniversitesi Görükle Kampüsü'nde gerçekleştirilecek. Geleneksel okçuluğa ilgi duyduğu için ona özel bir okçuluk deneyimi yaşatmak istedik. Bu deneyimin ardından farklı bir planlama daha yapılabilir, oyun alanında vakit geçirmek ve uçurtma uçurmak istediğine dair de bir bilgi var elimizde.
+İlgi alanları: Bisiklet sürmek, geleneksel okçuluk, doğada vakit geçirmek, lego, sokak oyunları (saklambaç, yerden yüksek), Brawl Stars.
+
+Kimler katılmalı? 
+* Uçuk, grip, nezle, öksürük vs. herhangi bir hastalığı veya belirtisi olmayan kişiler katılabilir. 
+
+Müsait olduğunuz tarihlerle birlikte yazabilirsiniiz`
+    ];
+
+    function openSmartPasteModal() {
+      document.getElementById('smartPasteTextarea').value = '';
+      document.getElementById('smartParsedPreview').classList.remove('active');
+      document.getElementById('smartPasteModal').classList.add('open');
+    }
+
+    function closeSmartPasteModal() {
+      document.getElementById('smartPasteModal').classList.remove('open');
+    }
+
+    function handleSmartPasteOverlay(e) {
+      if (e.target === document.getElementById('smartPasteModal')) closeSmartPasteModal();
+    }
+
+    function pasteSampleText(idx) {
+      const area = document.getElementById('smartPasteTextarea');
+      area.value = SAMPLE_WA_TEXTS[idx];
+      parseWhatsAppInput();
+    }
+
+    function parseWhatsAppInput() {
+      const text = document.getElementById('smartPasteTextarea').value.trim();
+      if (!text) {
+        showToast('Lütfen ayrıştırılacak WhatsApp metnini yapıştırın.', 'error');
+        return;
+      }
+
+      // Regex ayrıştırıcılar
+      const yerMatch = text.match(/Yer:\s*([^\r\n]+)/i);
+      const tarihMatch = text.match(/Tarih:\s*([^\r\n]+)/i);
+      const saatMatch = text.match(/Saat:\s*([^\r\n]+)/i);
+      
+      const detayMatch = text.match(/Detaylar:\s*([\s\S]*?)(?=(?:İlgi alanları:|Kimler katılmalı\?|$))/i);
+      const ilgiMatch = text.match(/İlgi alanları:\s*([\s\S]*?)(?=(?:Kimler katılmalı\?|$))/i);
+      const kriterMatch = text.match(/Kimler katılmalı\?\s*([\s\S]*?)(?=(?:Müsait|Kriterlere|$))/i);
+
+      const location = yerMatch ? yerMatch[1].trim() : 'Belirtilmedi';
+      const dateStr = tarihMatch ? tarihMatch[1].trim() : 'Tarih Belirtilecek';
+      const timeStr = saatMatch ? saatMatch[1].trim() : null;
+      const details = detayMatch ? detayMatch[1].trim() : '';
+
+      // İlgi alanları ayrıştırma
+      const interests = [];
+      if (ilgiMatch) {
+        ilgiMatch[1].split(/[,•\n]+/).forEach(s => {
+          const clean = s.replace(/^[\s*\-–]+/, '').trim();
+          if (clean.length > 1) interests.push(clean);
+        });
+      }
+
+      // Kriterler ayrıştırma
+      const criteria = [];
+      if (kriterMatch) {
+        kriterMatch[1].split('\n').forEach(line => {
+          const clean = line.replace(/^[\s*\-–]+/, '').trim().replace(/,+$/, '');
+          if (clean.length > 2) criteria.push(clean);
+        });
+      }
+
+      // Şehir / İlçe tahmini
+      let city = 'İstanbul', district = location;
+      if (location.includes('/')) {
+        const parts = location.split('/');
+        city = parts[0].trim();
+        district = parts[1].trim();
+      } else if (location.toLowerCase().includes('bursa')) {
+        city = 'Bursa';
+      } else if (location.toLowerCase().includes('kocaeli') || location.toLowerCase().includes('gebze')) {
+        city = 'Kocaeli';
+      }
+
+      // Yaş tahmini
+      const ageMatch = details.match(/(\d+)\s*yaşında/i);
+      const age = ageMatch ? ageMatch[1] : '';
+
+      const isRange = dateStr.includes('-') || dateStr.toLowerCase().includes('aralığı');
+      const isWeekendPreferred = dateStr.toLowerCase().includes('hafta sonu');
+
+      lastParsedAnnouncement = {
+        id: Date.now(),
+        title: `Dilek Gerçekleştirme — ${city}${district ? ` / ${district.split(' ')[0]}` : ''}`,
+        category: 'dilek',
+        date: dateStr + (timeStr ? ` · ${timeStr}` : ''),
+        eventDate: dateStr,
+        startDate: isRange ? '2026-10-26' : '2026-10-27',
+        endDate: isRange ? '2026-11-08' : '2026-10-27',
+        isDateRange: isRange,
+        preferWeekend: isWeekendPreferred,
+        location: location,
+        city: city,
+        district: district,
+        author: 'Saha Koordinasyonu',
+        ageGroup: age,
+        needsCar: true,
+        childInfo: `${age ? `${age} Yaşında ` : ''}Dilek Çocuğu Projesi`,
+        desc: details,
+        interests: interests.length ? interests : ['Lego', 'Oyun'],
+        criteria: criteria.length ? criteria : ['Hastalık belirtisi olmama'],
+        needs: ['🚗 Lojistik / Ulaşım Desteği', '🎁 Hediye Paketi Teslimi'],
+        applications: [
+          { name: "Selin Aydın", role: "Gönüllü", car: true, criteriaVerified: [0, 1], notes: "İlk başvuru kaydedildi.", selectedDates: ["2026-10-31"], date: "2026-10-31" }
+        ],
+        joined: false
+      };
+
+      // Önizleme kutusunu çiz
+      const preview = document.getElementById('smartParsedPreview');
+      preview.classList.add('active');
+      document.getElementById('smartPreviewContent').innerHTML = `
+        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:10px; padding:12px 14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <strong style="color:var(--primary-dark); font-size:14px;">${escapeHtml(lastParsedAnnouncement.title)}</strong>
+            <span class="badge-tag dilek"><i class="ph-fill ph-sparkle"></i> Dilek</span>
+          </div>
+          <div style="font-size:12px; color:#64748b; margin-bottom:8px;">
+            <i class="ph-bold ph-map-pin"></i> ${escapeHtml(lastParsedAnnouncement.location)} • <i class="ph-bold ph-calendar"></i> ${escapeHtml(lastParsedAnnouncement.date)}
+          </div>
+          <div style="font-size:12.5px; color:#334155; margin-bottom:10px;">${escapeHtml(lastParsedAnnouncement.desc.slice(0, 150))}…</div>
+          <div style="display:flex; gap:5px; flex-wrap:wrap;">
+            ${lastParsedAnnouncement.interests.map(i => `<span style="font-size:11px; padding:2px 8px; background:#eff6ff; color:#1d4ed8; border-radius:6px;">${escapeHtml(i)}</span>`).join('')}
+          </div>
+          <div style="margin-top:8px; font-size:11.5px; color:#059669; font-weight:700;">
+            ✓ ${lastParsedAnnouncement.criteria.length} Adet Katılım Kriteri Otomatik Çıkarıldı
+          </div>
+        </div>
+      `;
+    }
+
+    function publishParsedAnnouncement() {
+      if (!lastParsedAnnouncement) return;
+      announcements.unshift(lastParsedAnnouncement);
+      saveAnnouncements();
+      renderAnnouncements();
+      closeSmartPasteModal();
+      showToast('🎉 WhatsApp duyurusu sisteme başarıyla aktarıldı ve yayına alındı!');
     }
 
     // ─── DETAY MODALI ─────────────────────────────────────────────────────────────
@@ -5520,14 +9114,41 @@
       document.getElementById('mBadgeContainer').innerHTML = `<span class="badge-tag ${escapeHtml(item.category)}">${getCategoryLabel(item.category)}</span>${urgentBadgeHtml}`;
       document.getElementById('mTitle').textContent = item.title;
       document.getElementById('mAvatar').textContent = item.location ? item.location.charAt(0) : String(item.author || 'M').charAt(0);
-      document.getElementById('mAuthor').textContent = cardAuthor;
+      if (item.location) {
+        const venueMapUrl = getLocationMapUrl(item.location, item.locationUrl);
+        document.getElementById('mAuthor').innerHTML = `
+          <a href="${venueMapUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--text); text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700;" title="${escapeHtml(item.location)} — Google Haritalarda Aç">
+            <i class="ph-fill ph-map-pin" style="color:#ef4444;"></i> ${escapeHtml(item.location)}
+            <span class="btn-location-chip" style="font-size:10.5px; padding:1px 7px;"><i class="ph-bold ph-arrow-square-out"></i> Harita</span>
+          </a>
+        `;
+      } else {
+        document.getElementById('mAuthor').textContent = item.author || 'Make-A-Wish';
+      }
       document.getElementById('mDate').innerHTML = `<i class="ph-bold ph-calendar-blank"></i> ${escapeHtml(item.eventDate || item.date)}`;
 
       let bodyHtml = sanitizeHtml(item.desc);
+      if (item.category !== 'dilek') {
+        bodyHtml = `
+          <div class="volunteer-only">
+            ${renderVolunteerEmailStatusHtml(item)}
+          </div>
+          <div style="font-size:14.5px;color:#334155;line-height:1.75;margin-bottom:18px;">${sanitizeHtml(item.desc)}</div>
+        `;
+      }
 
       if (item.category === 'dilek') {
         const displayInterests = item.interests ? item.interests.slice(0, 5) : [];
         const hasNeeds = item.needs && item.needs.length && item.needs.some(n => n && n.trim().length > 0);
+
+        // Sabit sağlık uyarısını kriter listesinden ayıkla (Çünkü yukarıdaki global hijyen protokolü bannerı bunu tek elden gösteriyor)
+        const childCriteria = (item.criteria || []).filter(c => 
+          !c.toLowerCase().includes('uçuk') && 
+          !c.toLowerCase().includes('nezle') && 
+          !c.toLowerCase().includes('grip') && 
+          !c.toLowerCase().includes('öksürük') &&
+          !c.toLowerCase().includes('hastalığı veya belirtisi')
+        );
 
         const mAgeDisplay = item.ageGroup ? `<span class="meta-pill age"><i class="ph-bold ph-baby"></i> Çocuk Yaşı: ${escapeHtml(item.ageGroup)}</span>` : '';
         const mCarDisplay = item.needsCar !== undefined
@@ -5537,7 +9158,41 @@
           : '';
 
         bodyHtml = `
+      <div class="hygiene-protocol-banner">
+        <div class="hp-icon"><i class="ph-fill ph-shield-check"></i></div>
+        <div class="hp-content">
+          <div class="hp-title">Sağlık &amp; Enfeksiyon Protokolü (Zorunlu Kural)</div>
+          <div class="hp-desc">Hassas ve bağışıklığı baskılanmış dilek çocuklarımızın sağlığı için; uçuk, grip, nezle, öksürük veya ateş belirtisi bulunan gönüllülerimizin sahaya katılması kesinlikle uygun değildir.</div>
+        </div>
+      </div>
+      ${item.location ? `
+        <div class="location-banner-box">
+          <div class="lbb-left">
+            <div class="lbb-icon"><i class="ph-fill ph-map-pin"></i></div>
+            <div>
+              <div class="lbb-title">Dilek Gerçekleştirme Yeri</div>
+              <div class="lbb-name">${escapeHtml(item.location)}</div>
+            </div>
+          </div>
+          <a href="${getLocationMapUrl(item.location, item.locationUrl)}" target="_blank" rel="noopener noreferrer" class="btn-open-map" title="Google Haritalarda Yol Tarifi Al">
+            <i class="ph-bold ph-navigation-arrow"></i> <span>Haritada Gör</span> <i class="ph-bold ph-arrow-square-out"></i>
+          </a>
+        </div>
+      ` : ''}
+      ${item.finalizedDate ? `<div style="background:#ecfdf5; border:1.5px solid #a7f3d0; border-radius:10px; padding:12px 14px; margin-bottom:14px; color:#065f46; font-size:13.5px; font-weight:700;"><i class="ph-fill ph-check-circle" style="color:#10b981;"></i> Bu dileğin tarihi <b>${escapeHtml(item.finalizedDate)}</b> olarak kesinleştirilmiştir.</div>` : ''}
+      <div class="coord-only" style="margin-bottom:14px; display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="btn-heatmap-action" style="flex:1; min-width:180px; justify-content:center; padding:10px;" onclick="closeDetailModal(); openHeatmapModal(${item.id})">
+          <i class="ph-fill ph-chart-bar"></i> Başvurular &amp; Isı Haritası (${item.applications ? item.applications.length : 0})
+        </button>
+        <button type="button" class="btn-heatmap-action" style="flex:1; min-width:180px; justify-content:center; padding:10px; background:#f0fdf4; border-color:#86efac; color:#166534;" onclick="openEmailDispatchModal(${item.id})">
+          <i class="ph-fill ph-paper-plane-tilt"></i> E-Posta Dağıtım Raporu
+        </button>
+      </div>
+      <div class="volunteer-only">
+        ${renderVolunteerEmailStatusHtml(item)}
+      </div>
       ${(mAgeDisplay || mCarDisplay) ? `<div class="meta-pills-row" style="margin-bottom:14px;">${mAgeDisplay} ${mCarDisplay}</div>` : ''}
+      ${renderMatchScoreHtml(item, true)}
       ${item.childInfo ? `<div class="child-wish-pill" style="margin-bottom:16px;"><i class="ph-fill ph-heart" style="color:#ef4444;"></i> ${escapeHtml(item.childInfo)}</div>` : ''}
       <div style="font-size:14.5px;color:#334155;line-height:1.75;margin-bottom:18px;">${sanitizeHtml(item.desc)}</div>
       ${displayInterests.length ? `
@@ -5548,11 +9203,11 @@
           </div>
         </div>
       ` : ''}
-      ${item.criteria && item.criteria.length ? `
+      ${childCriteria.length ? `
         <div class="criteria-box" style="margin-bottom:16px;">
           <div class="criteria-title"><i class="ph-bold ph-user-check"></i> Kimler Katılmalı?</div>
           <ul class="criteria-list">
-            ${item.criteria.map(c => `<li><i class="ph-bold ph-check-circle"></i> ${escapeHtml(c)}</li>`).join('')}
+            ${childCriteria.map(c => `<li><i class="ph-bold ph-check-circle"></i> ${escapeHtml(c)}</li>`).join('')}
           </ul>
         </div>
       ` : ''}
@@ -5560,10 +9215,11 @@
         <div class="needs-box" style="margin-bottom:16px;">
           <div class="needs-title"><i class="ph-bold ph-truck"></i> İhtiyaçlar &amp; Lojistik:</div>
           <ul class="needs-list">
-            ${item.needs.filter(n => n && n.trim().length > 0).map(n => `<li><i class="ph-bold ph-hand-heart"></i> ${escapeHtml(n)}</li>`).join('')}
+            ${item.needs.filter(n => n && n.trim().length > 0).map(n => renderNeedItemHtml(n, item)).join('')}
           </ul>
         </div>
       ` : ''}
+      ${renderTeamStackHtml(item, true)}
     `;
       }
 
@@ -6568,8 +10224,11 @@ Dilek tasarım ve hazırlık sürecinde aktif olabilecek olan`;
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (isTourActive) { closeTour(); return; }
+        if (document.getElementById('lockedTeamWhatsAppModal')?.classList.contains('open')) { closeLockedTeamWhatsAppModal(); return; }
         if (document.getElementById('mailModal')?.classList.contains('open')) { closeMailModal(); return; }
         if (document.getElementById('shareModal')?.classList.contains('open')) { closeShareModal(); return; }
+        if (document.getElementById('smartPasteModal')?.classList.contains('open')) { closeSmartPasteModal(); return; }
+        if (document.getElementById('heatmapModal')?.classList.contains('open')) { closeHeatmapModal(); return; }
         if (document.getElementById('joinModal')?.classList.contains('open')) { closeJoinModal(); return; }
         if (document.getElementById('addModal')?.classList.contains('open')) { closeAddModal(); return; }
         if (document.getElementById('detailModal')?.classList.contains('open')) { closeDetailModal(); return; }
@@ -6608,19 +10267,27 @@ Dilek tasarım ve hazırlık sürecinde aktif olabilecek olan`;
 
     // ─── İLK YÜKLEME & OTOMATİK TUR BAŞLATMA ──────────────────────────────────────
     applyRole();
+    initMeetingNotes();
+    updateCityFilter();
     renderAnnouncements();
     animateHeroStats();
 
     // Sayfa açıldığında otomatik başlat ("Bir daha gösterme" işaretlenmediyse)
     window.addEventListener('DOMContentLoaded', () => {
-      // WhatsApp linkinden ?id=... ile gelindiyse doğrudan o kartın detay modalını aç
+      // WhatsApp linkinden ?id=... ile gelindiyse doğrudan o kartın detay modalını veya başvuru modalını aç
       const urlParams = new URLSearchParams(window.location.search);
       const targetId = urlParams.get('id');
+      const shouldApply = urlParams.get('apply') === '1' || urlParams.get('action') === 'apply';
       if (targetId) {
         const numId = parseInt(targetId, 10);
         if (!isNaN(numId)) {
           setTimeout(() => {
-            openDetailModal(numId);
+            const item = announcements.find(a => a.id === numId);
+            if (shouldApply && item && item.category === 'dilek') {
+              openJoinModal(numId);
+            } else {
+              openDetailModal(numId);
+            }
           }, 350);
           return; // Doğrudan spesifik karta gelindiyse sayfa turunu başlatıp önünü kesme
         }
