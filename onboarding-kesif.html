@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Dilek Kaşifi Keşif Yolculuğu — Make-A-Wish Türkiye</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=2" />
+  <link rel="alternate icon" type="image/svg+xml" href="../images/wishhub-logo.svg?v=2" />
+  
+  <!-- Google Fonts: Masalsı & Samimi Tipografi -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <style>
+    /* ── MAKE-A-WISH & DISNEY MASALSI PALETİ (ASLA NEON YOK) ── */
+    :root {
+      --maw-navy: #002B7F;       /* Make-A-Wish Asil Gece Mavisi */
+      --maw-deep: #001A52;       /* Derin Gökyüzü Mavisi */
+      --maw-sky: #00A9E0;        /* Masal Gök Mavisi */
+      --maw-sky-soft: #E8F6FC;   /* Yumuşak Bulut Mavisi */
+      
+      --disney-gold: #DDA323;    /* Masalsı Sıcak Altın */
+      --disney-gold-light: #F9E7B4; /* Şampanya Parıltısı */
+      --disney-gold-soft: #FDF9EC;  /* Sıcak Yıldız Işığı */
+      
+      --cream-bg: #F7F9FD;       /* Sıcak Kağıt / Bulut Beyazı */
+      --card-bg: #FFFFFF;        /* Temiz Kart Zemin */
+      --border-subtle: #E2E8F4;  /* İnce Zarif Çerçeve */
+      --border-hover: #BFD7F5;   /* Yumuşak Vurgu */
+      
+      --text-main: #102048;      /* Mürekkep Mavisi */
+      --text-muted: #4A5B7D;     /* Masal Grisi */
+      --text-light: #7E8DA8;     /* Açık Etiket Grisi */
+      
+      --shadow-sm: 0 4px 12px rgba(0, 43, 127, 0.05);
+      --shadow-md: 0 10px 28px rgba(0, 43, 127, 0.08);
+      --shadow-lg: 0 20px 50px rgba(0, 43, 127, 0.12);
+      --shadow-gold: 0 8px 24px rgba(221, 163, 35, 0.20);
+      
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+      --radius-pill: 9999px;
+      
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: var(--cream-bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.55;
+      position: relative;
+    }
+
+    /* ── MASALSI GÖKYÜZÜ VE PERİ TOZU ARKA PLANI (CANVAS) ── */
+    #fairyDustCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-sky {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 40% at 50% 0%, rgba(0, 169, 224, 0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 85% 20%, rgba(221, 163, 35, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 15% 85%, rgba(0, 43, 127, 0.05) 0%, transparent 70%),
+        linear-gradient(180deg, #F0F5FD 0%, #FAFBFD 40%, #FFFFFF 100%);
+    }
+
+    /* ── ÜST BAR & LOGO ── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: var(--transition);
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .topbar-logo-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--maw-navy), var(--maw-sky));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+      box-shadow: 0 4px 14px rgba(0, 43, 127, 0.2);
+    }
+
+    .topbar-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--maw-navy);
+      letter-spacing: -0.2px;
+    }
+
+    .topbar-subtitle {
+      font-size: 11.5px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .topbar-city-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--maw-sky-soft);
+      border: 1px solid rgba(0, 169, 224, 0.25);
+      color: var(--maw-navy);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    /* ── STICKY SİHİRLİ İLERLEME ÇUBUĞU (MAGIC MATCH METER) ── */
+    .magic-meter-bar {
+      position: sticky;
+      top: 69px;
+      z-index: 95;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 24px;
+      box-shadow: 0 6px 20px rgba(0, 43, 127, 0.04);
+    }
+
+    .meter-container {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .meter-text-block {
+      min-width: 220px;
+    }
+
+    .meter-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--disney-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .meter-status {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--maw-navy);
+    }
+
+    .meter-track {
+      flex: 1;
+      height: 12px;
+      background: #E8EEF8;
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 15%;
+      background: linear-gradient(90deg, #00A9E0 0%, #002B7F 70%, #DDA323 100%);
+      border-radius: var(--radius-pill);
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .meter-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 16px;
+      background: #FFFFFF;
+      opacity: 0.6;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 0 8px #FFFFFF;
+    }
+
+    .meter-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--maw-navy);
+      background: var(--disney-gold-soft);
+      border: 1px solid var(--disney-gold-light);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      white-space: nowrap;
+    }
+
+    /* ── ANA SAYFA DÜZENİ ── */
+    .main-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 36px 20px 80px;
+    }
+
+    /* ── HERO BANNER: MASALSI DİLEK TUT KARŞILAMASI ── */
+    .hero-banner {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 40px;
+      position: relative;
+    }
+
+    .hero-star-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--disney-gold-soft) 0%, #FFFFFF 100%);
+      border: 2px solid var(--disney-gold-light);
+      box-shadow: var(--shadow-gold);
+      color: var(--disney-gold);
+      font-size: 28px;
+      margin-bottom: 18px;
+      animation: gentleFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(4deg); }
+    }
+
+    .hero-eyebrow {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--disney-gold);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(28px, 4.5vw, 40px);
+      font-weight: 800;
+      color: var(--maw-navy);
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--maw-sky);
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── BÖLÜM KARTLARI (SECTIONS) ── */
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 32px 36px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-hover);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .section-step-num {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--maw-sky-soft);
+      border: 1px solid rgba(0, 169, 224, 0.25);
+      color: var(--maw-navy);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-header-text h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--maw-navy);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-header-text p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+    }
+
+    .section-badge {
+      margin-left: auto;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--disney-gold);
+      background: var(--disney-gold-soft);
+      border: 1px solid var(--disney-gold-light);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      white-space: nowrap;
+    }
+
+    /* ── 1. YAŞ GRUPLARI KARTLARI (DISNEY MASAL KARTLARI) ── */
+    .age-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .age-card {
+      background: #FFFFFF;
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px 18px;
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .age-card:hover {
+      border-color: var(--maw-sky);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .age-card.selected {
+      border-color: var(--maw-navy);
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--maw-sky-soft) 100%);
+      box-shadow: 0 8px 22px rgba(0, 43, 127, 0.12);
+    }
+
+    .age-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .age-card-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .age-check-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #CBD5E1;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: transparent;
+      transition: var(--transition);
+    }
+
+    .age-card.selected .age-check-circle {
+      background: var(--maw-navy);
+      border-color: var(--maw-navy);
+      color: #FFFFFF;
+    }
+
+    .age-card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--maw-navy);
+    }
+
+    .age-card-subtitle {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--disney-gold);
+    }
+
+    .age-card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* ── 2. ÇOCUK GRUPLARI (REHBERLİK & ANLAYIŞ KARTLARI) ── */
+    .child-groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
+    .child-group-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+    }
+
+    .child-group-item:hover {
+      border-color: var(--border-hover);
+      background: #FDFEFE;
+      transform: translateY(-2px);
+    }
+
+    .child-group-item.selected {
+      border-color: var(--maw-navy);
+      background: var(--maw-sky-soft);
+      box-shadow: 0 4px 14px rgba(0, 43, 127, 0.08);
+    }
+
+    .custom-check-box {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid #CBD5E1;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-size: 13px;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .child-group-item.selected .custom-check-box {
+      background: var(--maw-navy);
+      border-color: var(--maw-navy);
+      color: #FFFFFF;
+    }
+
+    .child-group-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    /* ── 3. YETENEKLER & SAHİPLİKLER PILLS (ETİKETLER) ── */
+    .tag-cloud-wrapper {
+      margin-bottom: 24px;
+    }
+
+    .tag-cloud-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .magical-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+    }
+
+    .magical-tag:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .magical-tag.selected {
+      background: var(--maw-navy);
+      border-color: var(--maw-navy);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(0, 43, 127, 0.18);
+    }
+
+    .magical-tag .tag-emoji {
+      font-size: 16px;
+    }
+
+    .magical-tag.selected .tag-check {
+      display: inline-flex;
+    }
+
+    .tag-check {
+      display: none;
+      font-size: 12px;
+      color: var(--disney-gold-light);
+      margin-left: 2px;
+    }
+
+    /* ── 4. HOBİLER (NURCAN'DAN GELECEK TEMSİLİ MASAL ALANI) ── */
+    .hobby-notice-banner {
+      background: var(--disney-gold-soft);
+      border: 1px dashed var(--disney-gold);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      font-size: 13px;
+      color: #7A5300;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    /* ── CANLI DİLEK KAŞİFİ PASAPORT ÖN İZLEMESİ (PREVIEW CARD) ── */
+    .passport-preview-box {
+      background: linear-gradient(135deg, #001A52 0%, #002B7F 100%);
+      border-radius: var(--radius-lg);
+      padding: 32px 36px;
+      color: #FFFFFF;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(221, 163, 35, 0.35);
+    }
+
+    .passport-preview-box::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(221, 163, 35, 0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .passport-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 18px;
+      margin-bottom: 20px;
+    }
+
+    .passport-logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .passport-logo-star {
+      color: var(--disney-gold-light);
+      font-size: 26px;
+    }
+
+    .passport-inst-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+
+    .passport-inst-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .passport-doc-code {
+      font-family: monospace;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: var(--disney-gold-light);
+    }
+
+    .passport-body {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .passport-avatar-circle {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 2px solid var(--disney-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .passport-info h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #FFFFFF;
+    }
+
+    .passport-info p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 12px;
+    }
+
+    .passport-badges-tray {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .passport-mini-badge {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(221, 163, 35, 0.4);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--disney-gold-light);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ── ALT BUTON BAR (ACTION BAR) ── */
+    .action-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px 32px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .footer-summary {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .footer-summary-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--maw-navy);
+    }
+
+    .footer-summary-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .btn-complete-journey {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--maw-navy) 0%, #001A52 100%);
+      color: #FFFFFF;
+      border: 2px solid var(--disney-gold);
+      padding: 16px 36px;
+      border-radius: var(--radius-pill);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0, 43, 127, 0.25);
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .btn-complete-journey:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 43, 127, 0.35);
+      background: linear-gradient(135deg, #001A52 0%, var(--maw-navy) 100%);
+    }
+
+    /* ── TEBRİKLER & YÖNLENDİRME MODALI ── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 26, 82, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .congrats-modal-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      max-width: 500px;
+      width: 100%;
+      padding: 40px 36px;
+      text-align: center;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.92);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 2px solid var(--disney-gold-light);
+    }
+
+    .modal-backdrop.active .congrats-modal-card {
+      transform: scale(1);
+    }
+
+    .congrats-star-burst {
+      font-size: 64px;
+      margin-bottom: 16px;
+      display: inline-block;
+      animation: pulseStar 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseStar {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15) rotate(6deg); }
+    }
+
+    .congrats-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--maw-navy);
+      margin-bottom: 10px;
+    }
+
+    .congrats-desc {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .congrats-btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-modal-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--maw-navy);
+      color: #FFFFFF;
+      padding: 14px 28px;
+      border-radius: var(--radius-pill);
+      font-size: 14.5px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-modal-primary:hover {
+      background: var(--maw-deep);
+      transform: translateY(-2px);
+    }
+
+    .btn-modal-secondary {
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-modal-secondary:hover {
+      color: var(--maw-navy);
+    }
+
+    /* ── MOBİL UYUMLULUK ── */
+    @media (max-width: 768px) {
+      .topbar { padding: 12px 16px; }
+      .magic-meter-bar { padding: 10px 16px; top: 65px; }
+      .meter-container { flex-direction: column; align-items: stretch; gap: 8px; }
+      .meter-text-block { display: flex; justify-content: space-between; align-items: center; min-width: auto; }
+      .main-wrapper { padding: 20px 14px 60px; }
+      .section-card { padding: 22px 18px; border-radius: var(--radius-md); }
+      .passport-body { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+      .passport-badges-tray { justify-content: center; }
+      .action-footer { flex-direction: column; text-align: center; padding: 20px; }
+      .btn-complete-journey { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Masalsı Gökyüzü ve Peri Tozu Canvas'ı -->
+  <div class="ambient-sky"></div>
+  <canvas id="fairyDustCanvas"></canvas>
+
+  <!-- ── 1. ÜST BAR ── -->
+  <header class="topbar">
+    <a href="../static-pages/duyurular.html" class="topbar-brand">
+      <div class="topbar-logo-badge">
+        <i class="ph-fill ph-sparkle"></i>
+      </div>
+      <div>
+        <div class="topbar-title">Make-A-Wish Türkiye</div>
+        <div class="topbar-subtitle">WishHub — Gönüllü Portalı</div>
+      </div>
+    </a>
+
+    <div class="topbar-city-pill" title="İkamet Şehriniz">
+      <i class="ph-fill ph-map-pin"></i>
+      <span id="volunteerCityDisplay">İstanbul</span>
+    </div>
+  </header>
+
+  <!-- ── 2. STICKY SİHİRLİ İLERLEME ÇUBUĞU (MAGIC MATCH METER) ── -->
+  <div class="magic-meter-bar">
+    <div class="meter-container">
+      <div class="meter-text-block">
+        <div class="meter-label">✦ Dilek Frekansı &amp; Uyum Gücü</div>
+        <div class="meter-status" id="meterStatusText">Keşif Yolculuğu Başladı ✨</div>
+      </div>
+      
+      <div class="meter-track">
+        <div class="meter-fill" id="meterFillBar"></div>
+      </div>
+
+      <div class="meter-badge" id="meterBadgeText">
+        <span>%20</span> &nbsp;✦&nbsp; <span>Başlangıç</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. ANA İÇERİK ── -->
+  <main class="main-wrapper">
+    
+    <!-- Hero Giriş -->
+    <div class="hero-banner">
+      <div class="hero-star-icon">
+        <i class="ph-fill ph-star"></i>
+      </div>
+      <div class="hero-eyebrow">✦ BİR DİLEK BİR MUCİZE ✦</div>
+      <h1 class="hero-title">Hoş Geldin Dilek Kaşifimiz! 🌟<br><em>Süper Güçlerini Belirleyelim</em></h1>
+      <p class="hero-desc">
+        Hayati tehlikesi olan çocuklarımızın her birinin dünyası, hayalleri ve enerjisi biriciktir. 
+        Seni en doğru çocukla buluşturabilmemiz için ilgi alanlarını, tecrübelerini ve tutkularını birlikte seçelim.
+      </p>
+    </div>
+
+    <!-- ── BÖLÜM 1: YAŞ GRUPLARI ── -->
+    <section class="section-card" id="secAgeGroups">
+      <div class="section-header">
+        <div class="section-step-num">1</div>
+        <div class="section-header-text">
+          <h2>Kiminle Frekansın Daha Yüksek? <i class="ph-fill ph-heart" style="color: #E11D48; font-size: 18px;"></i></h2>
+          <p>Hangi yaş grubundaki çocuklarla iletişim kurarken enerjin daha yüksek hissediyorsun? (Birden fazla seçebilirsin)</p>
+        </div>
+        <span class="section-badge">Zorunlu Alan</span>
+      </div>
+
+      <div class="age-cards-grid">
+        <!-- 3-6 Yaş -->
+        <div class="age-card selected" onclick="toggleAgeGroup(this, '3-6 Yaş')">
+          <div class="age-card-top">
+            <span class="age-card-icon">🎈</span>
+            <div class="age-check-circle"><i class="ph-bold ph-check"></i></div>
+          </div>
+          <div class="age-card-title">3 – 6 Yaş</div>
+          <div class="age-card-subtitle">Masal &amp; Oyun Çağı</div>
+          <div class="age-card-desc">Oyun hamurları, oyuncak bebekler, boyama kitapları ve ilk adımların saf neşesi.</div>
+        </div>
+
+        <!-- 7-9 Yaş -->
+        <div class="age-card selected" onclick="toggleAgeGroup(this, '7-9 Yaş')">
+          <div class="age-card-top">
+            <span class="age-card-icon">🧪</span>
+            <div class="age-check-circle"><i class="ph-bold ph-check"></i></div>
+          </div>
+          <div class="age-card-title">7 – 9 Yaş</div>
+          <div class="age-card-subtitle">Merak &amp; Macera Çağı</div>
+          <div class="age-card-desc">Bitmeyen sorular, kutu oyunları, ilk legolar, çizimler ve sınırsız merak.</div>
+        </div>
+
+        <!-- 10-13 Yaş -->
+        <div class="age-card" onclick="toggleAgeGroup(this, '10-13 Yaş')">
+          <div class="age-card-top">
+            <span class="age-card-icon">🔮</span>
+            <div class="age-check-circle"><i class="ph-bold ph-check"></i></div>
+          </div>
+          <div class="age-card-title">10 – 13 Yaş</div>
+          <div class="age-card-subtitle">Trend &amp; Dijital Çağ</div>
+          <div class="age-card-desc">Minecraft, Roblox, YouTube trendleri, kutu kutu legolar ve macera arayışı.</div>
+        </div>
+
+        <!-- 14-17 Yaş -->
+        <div class="age-card" onclick="toggleAgeGroup(this, '14-17 Yaş')">
+          <div class="age-card-top">
+            <span class="age-card-icon">🎓</span>
+            <div class="age-check-circle"><i class="ph-bold ph-check"></i></div>
+          </div>
+          <div class="age-card-title">14 – 17 Yaş</div>
+          <div class="age-card-subtitle">Gençlik &amp; İlham Çağı</div>
+          <div class="age-card-desc">Müzik, teknoloji, felsefe, gelecek planları ve derin dostluk sohbetleri.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── BÖLÜM 2: ÇOCUK GRUPLARI ── -->
+    <section class="section-card" id="secChildGroups">
+      <div class="section-header">
+        <div class="section-step-num">2</div>
+        <div class="section-header-text">
+          <h2>Hangi Çocuk Dünyasına Dokunabilirsin? <i class="ph-fill ph-hands-clapping" style="color: var(--maw-sky); font-size: 18px;"></i></h2>
+          <p>Her çocuğun iletişim tarzı farklıdır. Kendini yakın ve rahat hissettiğin durumları işaretle.</p>
+        </div>
+        <span class="section-badge">Zorunlu Alan</span>
+      </div>
+
+      <div class="child-groups-grid">
+        <div class="child-group-item selected" onclick="toggleChildGroup(this, 'İçe kapanık, utangaç çocuklar')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">İçe kapanık, utangaç, konuşmak istemeyen çocuklar</span>
+        </div>
+
+        <div class="child-group-item" onclick="toggleChildGroup(this, 'İstekli ama çekingen çocuklar')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">İstekli ama adım atmakta zorlanan çocuklar</span>
+        </div>
+
+        <div class="child-group-item selected" onclick="toggleChildGroup(this, 'DEHB ve dikkat dağınıklığı')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">DEHB'li ve dikkat dağınıklığı yaşayan çocuklar</span>
+        </div>
+
+        <div class="child-group-item" onclick="toggleChildGroup(this, 'İletişimde zorlanan çocuklar')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">İletişim kurmakta ve kendini ifade etmekte zorlanan çocuklar</span>
+        </div>
+
+        <div class="child-group-item" onclick="toggleChildGroup(this, 'Konuşma ve dil gelişimi')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">Konuşma ve dil gelişim geriliği yaşayan çocuklar</span>
+        </div>
+
+        <div class="child-group-item" onclick="toggleChildGroup(this, 'Motivasyon kaybı yaşayan çocuklar')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">Motivasyon kaybı ve isteksizlik yaşayan çocuklar</span>
+        </div>
+
+        <div class="child-group-item" onclick="toggleChildGroup(this, 'Yönlendirme ihtiyacı olanlar')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">Kararsız ve yönlendirme ihtiyacı olan çocuklar</span>
+        </div>
+
+        <div class="child-group-item" onclick="toggleChildGroup(this, 'Aile yönlendirmesine maruz kalanlar')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">Aile yönlendirmesine maruz kalan çocuklar</span>
+        </div>
+
+        <div class="child-group-item" onclick="toggleChildGroup(this, 'Otizm spektrumundaki çocuklar')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">Otizm spektrum bozukluğu yaşayan çocuklar</span>
+        </div>
+
+        <div class="child-group-item" onclick="toggleChildGroup(this, 'Özel gereksinimli çocuklar')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">Özel gereksinimli çocuklar</span>
+        </div>
+
+        <div class="child-group-item selected" onclick="toggleChildGroup(this, 'Girişimci ve yaratıcı ruhlar')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">Girişimci ruhlu ve yaratıcı çocuklar</span>
+        </div>
+
+        <div class="child-group-item" onclick="toggleChildGroup(this, 'Ergenlik dönemindeki gençler')">
+          <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
+          <span class="child-group-text">Ergenlik dönemindeki çocuklar</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── BÖLÜM 3: YETENEKLER & SAHA İMKÂNLARI ── -->
+    <section class="section-card" id="secCapabilities">
+      <div class="section-header">
+        <div class="section-step-num">3</div>
+        <div class="section-header-text">
+          <h2>Süper Güçlerin &amp; Saha İmkânların <i class="ph-fill ph-magic-wand" style="color: var(--disney-gold); font-size: 18px;"></i></h2>
+          <p>Dilek randevuları veya hayal gerçekleştirme günlerinde derneğimize sunabileceğin yetenek ve araçlar.</p>
+        </div>
+        <span class="section-badge">Genişletilebilir</span>
+      </div>
+
+      <!-- Yetenekler -->
+      <div class="tag-cloud-wrapper">
+        <div class="tag-cloud-title"><i class="ph-fill ph-target"></i> Özel Yetenekler &amp; Formasyonlar</div>
+        <div class="tag-cloud">
+          <div class="magical-tag selected" onclick="toggleTag(this, 'İngilizce')">
+            <span class="tag-emoji">🇬🇧</span>
+            <span>İngilizce Biliyorum</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'Kürtçe')">
+            <span class="tag-emoji">🗣️</span>
+            <span>Kürtçe Biliyorum</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'Arapça')">
+            <span class="tag-emoji">🇸🇦</span>
+            <span>Arapça Biliyorum</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag selected" onclick="toggleTag(this, 'Gitar')">
+            <span class="tag-emoji">🎸</span>
+            <span>Gitar Çalabiliyorum</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'İşaret Dili')">
+            <span class="tag-emoji">🤟</span>
+            <span>İşaret Dili Biliyorum</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag selected" onclick="toggleTag(this, 'Psikolojik İlk Yardım')">
+            <span class="tag-emoji">🩺</span>
+            <span>Psikolojik İlk Yardım Eğitimi</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'Yüz Boyama')">
+            <span class="tag-emoji">🎨</span>
+            <span>Yüz Boyama Biliyorum</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'Animatör')">
+            <span class="tag-emoji">🎭</span>
+            <span>Animatör / Palyaço Tecrübesi</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saha İmkânları -->
+      <div class="tag-cloud-wrapper">
+        <div class="tag-cloud-title"><i class="ph-fill ph-key"></i> Araç &amp; Ekipman İmkânları (Etkinlik Katkısı)</div>
+        <div class="tag-cloud">
+          <div class="magical-tag selected" onclick="toggleTag(this, 'Binek Araç')">
+            <span class="tag-emoji">🚗</span>
+            <span>Binek Araç (Sedan / Hatchback)</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'Geniş Araç')">
+            <span class="tag-emoji">🚐</span>
+            <span>Geniş Araç (Minivan / Doblo vs.)</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'Drone')">
+            <span class="tag-emoji">🛸</span>
+            <span>Drone (Uçan Kamera)</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'Fotoğraf Makinesi')">
+            <span class="tag-emoji">📸</span>
+            <span>Profesyonel Fotoğraf Makinesi</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'Kamp Çadırı')">
+            <span class="tag-emoji">🏕️</span>
+            <span>Karavan / Kamp Çadırı</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+
+          <div class="magical-tag" onclick="toggleTag(this, 'Tekne')">
+            <span class="tag-emoji">⛵</span>
+            <span>Tekne</span>
+            <i class="ph-bold ph-check tag-check"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── BÖLÜM 4: TUTKULAR & HOBİLER (NURCAN'DAN GELECEK LİSTE ALANI) ── -->
+    <section class="section-card" id="secHobbies">
+      <div class="section-header">
+        <div class="section-step-num">4</div>
+        <div class="section-header-text">
+          <h2>Tutkuların &amp; Hobilerin <i class="ph-fill ph-game-controller" style="color: #10B981; font-size: 18px;"></i></h2>
+          <p>Çocuklarla ortak dil oluşturmanın en sihirli yolu! Nelerden keyif alırsın?</p>
+        </div>
+        <span class="section-badge">Ortak Noktalar</span>
+      </div>
+
+      <div class="hobby-notice-banner">
+        <i class="ph-fill ph-info" style="font-size: 20px;"></i>
+        <span><strong>Koordinatör Notu:</strong> Bu liste Nurcan ve ekip tarafından düzenli olarak güncellenmektedir. Çocukların hayallerindeki en popüler ilgi alanları aşağıdadır:</span>
+      </div>
+
+      <div class="tag-cloud">
+        <div class="magical-tag selected" onclick="toggleTag(this, 'Lego')">
+          <span class="tag-emoji">🧱</span>
+          <span>Lego Mimarlığı &amp; Setler</span>
+          <i class="ph-bold ph-check tag-check"></i>
+        </div>
+
+        <div class="magical-tag selected" onclick="toggleTag(this, 'Minecraft')">
+          <span class="tag-emoji">🎮</span>
+          <span>Minecraft &amp; Roblox Dünyası</span>
+          <i class="ph-bold ph-check tag-check"></i>
+        </div>
+
+        <div class="magical-tag" onclick="toggleTag(this, 'Resim')">
+          <span class="tag-emoji">🎨</span>
+          <span>Resim, Çizim &amp; El Sanatları</span>
+          <i class="ph-bold ph-check tag-check"></i>
+        </div>
+
+        <div class="magical-tag" onclick="toggleTag(this, 'Müzik')">
+          <span class="tag-emoji">🎵</span>
+          <span>Müzik &amp; Enstrüman Dinletisi</span>
+          <i class="ph-bold ph-check tag-check"></i>
+        </div>
+
+        <div class="magical-tag" onclick="toggleTag(this, 'Süper Kahramanlar')">
+          <span class="tag-emoji">🦸</span>
+          <span>Marvel / Disney / Süper Kahramanlar</span>
+          <i class="ph-bold ph-check tag-check"></i>
+        </div>
+
+        <div class="magical-tag" onclick="toggleTag(this, 'Spor')">
+          <span class="tag-emoji">⚽</span>
+          <span>Futbol / Basketbol / Spor</span>
+          <i class="ph-bold ph-check tag-check"></i>
+        </div>
+
+        <div class="magical-tag" onclick="toggleTag(this, 'Kitap & Masal')">
+          <span class="tag-emoji">📚</span>
+          <span>Masal Anlatıcılığı &amp; Kitaplar</span>
+          <i class="ph-bold ph-check tag-check"></i>
+        </div>
+
+        <div class="magical-tag" onclick="toggleTag(this, 'Uzay')">
+          <span class="tag-emoji">🚀</span>
+          <span>Uzay, Bilim &amp; Robotik</span>
+          <i class="ph-bold ph-check tag-check"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 5. CANLI DİLEK KAŞİFİ PASAPORT ÖN İZLEMESİ ── -->
+    <div class="passport-preview-box">
+      <div class="passport-header">
+        <div class="passport-logo-area">
+          <i class="ph-fill ph-sparkle passport-logo-star"></i>
+          <div>
+            <div class="passport-inst-title">Bir Dilek Tut Derneği / Make-A-Wish Türkiye</div>
+            <div class="passport-inst-sub">Resmi Gönüllü Dilek Kaşifi Dijital Pasaportu</div>
+          </div>
+        </div>
+        <div class="passport-doc-code" id="passportDocCode">WISH-2026-TR</div>
+      </div>
+
+      <div class="passport-body">
+        <div class="passport-avatar-circle">
+          <span>🌟</span>
+        </div>
+        <div class="passport-info">
+          <h3 id="passportVolunteerName">Ayşe Yılmaz</h3>
+          <p><i class="ph-fill ph-map-pin"></i> İstanbul &nbsp;•&nbsp; ✦ Aktif Gönüllü Adayı &nbsp;•&nbsp; <strong>Uyum Puanı: %100</strong></p>
+          
+          <div class="passport-badges-tray" id="passportBadgesTray">
+            <span class="passport-mini-badge">🎈 3-6 Yaş</span>
+            <span class="passport-mini-badge">🧪 7-9 Yaş</span>
+            <span class="passport-mini-badge">🧱 Lego</span>
+            <span class="passport-mini-badge">🎮 Minecraft</span>
+            <span class="passport-mini-badge">🎸 Gitar</span>
+            <span class="passport-mini-badge">🚗 Binek Araç</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 6. ALT AKSİYON BARI (SUBMIT FOOTER) ── -->
+    <footer class="action-footer">
+      <div class="footer-summary">
+        <div class="footer-summary-title">Süper Güçlerin Hazır mı?</div>
+        <div class="footer-summary-desc">Tamamladığında profilin koordinatörümüz Nurcan'ın onay masasına iletilecek.</div>
+      </div>
+
+      <button type="button" class="btn-complete-journey" onclick="openCongratsModal()">
+        <span>✦ Keşfi Tamamla &amp; Nurcan'a İlet</span>
+        <i class="ph-bold ph-arrow-right"></i>
+      </button>
+    </footer>
+
+  </main>
+
+  <!-- ── 7. KUTLAMA VE ONAY BEKLEME YÖNLENDİRME MODALI ── -->
+  <div class="modal-backdrop" id="congratsModal" onclick="closeCongratsModal()">
+    <div class="congrats-modal-card" onclick="event.stopPropagation()">
+      <div class="congrats-star-burst">🎉</div>
+      <h3 class="congrats-title">Harikasın Dilek Kaşifi!</h3>
+      <p class="congrats-desc">
+        Süper güçlerin ve ilgi alanların <strong>%100 sevgiyle kaydedildi</strong>.<br/>
+        Başvurun koordinatörümüz Nurcan ve dernek ekibimize ulaştı. Onay sürecini ve duyuruları takip etmek için başvuru durum sayfana aktarılıyorsun.
+      </p>
+
+      <div class="congrats-btn-row">
+        <a href="../Account/Pending_Approval?email=gonullu@makeawishturkiye.org" class="btn-modal-primary" id="btnGoToPending">
+          <span>Başvuru Durumunu Takip Et</span>
+          <i class="ph-bold ph-arrow-right"></i>
+        </a>
+        <button type="button" class="btn-modal-secondary" onclick="closeCongratsModal()">
+          Tekrar Gözden Geçir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SİHİRLİ JAVASCRIPT: PERİ TOZU VE ETKİLEŞİM YÖNETİMİ ── -->
+  <script>
+    // ── 1. SİHİRLİ PERİ TOZU / YILDIZ TOZU ANİMASYONU (ASLA NEON DEĞİL) ──
+    const canvas = document.getElementById('fairyDustCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class FairyDustParticle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = Math.random() * 2.2 + 0.8;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.speedY = -(Math.random() * 0.3 + 0.1);
+        this.opacity = Math.random() * 0.6 + 0.2;
+        this.fadeSpeed = Math.random() * 0.008 + 0.004;
+        this.color = Math.random() < 0.6 ? '#DDA323' : '#00A9E0'; // Masalsı Altın & Gök Mavisi
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.opacity -= this.fadeSpeed;
+        if (this.opacity <= 0 || this.y < 0) {
+          this.reset();
+          this.y = height + 10;
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.opacity * 0.7;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // 40 sakin peri tozu parçacığı
+    for (let i = 0; i < 40; i++) {
+      particles.push(new FairyDustParticle());
+    }
+
+    function animateFairyDust() {
+      ctx.clearRect(0, 0, width, height);
+      for (let p of particles) {
+        p.update();
+        p.draw();
+      }
+      requestAnimationFrame(animateFairyDust);
+    }
+    animateFairyDust();
+
+    // ── 2. SEÇİM & İLERLEME HESAPLAMA SİSTEMİ ──
+    function calculateProgress() {
+      const selectedAges = document.querySelectorAll('.age-card.selected').length;
+      const selectedChildGroups = document.querySelectorAll('.child-group-item.selected').length;
+      const selectedTags = document.querySelectorAll('.magical-tag.selected').length;
+
+      let score = 20; // Kayıt olan herkes %20 başlar
+      if (selectedAges > 0) score += 25;
+      if (selectedChildGroups > 0) score += 25;
+      if (selectedTags >= 3) score += 30;
+      else if (selectedTags > 0) score += (selectedTags * 10);
+
+      if (score > 100) score = 100;
+
+      // Çubuğu güncelle
+      const fillBar = document.getElementById('meterFillBar');
+      const badge = document.getElementById('meterBadgeText');
+      const statusText = document.getElementById('meterStatusText');
+
+      fillBar.style.width = score + '%';
+
+      if (score < 45) {
+        badge.innerHTML = `<span>%${score}</span> &nbsp;✦&nbsp; <span>Frekans Aranıyor</span>`;
+        statusText.textContent = "Yaş gruplarını seçerek başla ✨";
+      } else if (score < 75) {
+        badge.innerHTML = `<span>%${score}</span> &nbsp;✦&nbsp; <span>Güçler Yükleniyor</span>`;
+        statusText.textContent = "Harika gidiyorsun! Çocuk grupları uyumlanıyor 🎈";
+      } else if (score < 100) {
+        badge.innerHTML = `<span>%${score}</span> &nbsp;✦&nbsp; <span>Neredeyse Hazır</span>`;
+        statusText.textContent = "Süper güçlerin ve hobilerin eşleşiyor 🧱";
+      } else {
+        badge.innerHTML = `<span>%100</span> &nbsp;✦&nbsp; <span>Mükemmel Kaşif</span>`;
+        statusText.textContent = "Tebrikler! Dilek Kaşifi Profilin Tamamlandı 🎉";
+      }
+
+      updatePassportBadges();
+    }
+
+    function toggleAgeGroup(card, label) {
+      card.classList.toggle('selected');
+      calculateProgress();
+    }
+
+    function toggleChildGroup(item, label) {
+      item.classList.toggle('selected');
+      calculateProgress();
+    }
+
+    function toggleTag(tag, label) {
+      tag.classList.toggle('selected');
+      calculateProgress();
+    }
+
+    // ── 3. CANLI PASAPORT ROZETLERİNİ GÜNCELLE ──
+    function updatePassportBadges() {
+      const tray = document.getElementById('passportBadgesTray');
+      tray.innerHTML = '';
+
+      // Seçilen yaş grupları
+      document.querySelectorAll('.age-card.selected').forEach(card => {
+        const title = card.querySelector('.age-card-title').textContent.trim();
+        const icon = card.querySelector('.age-card-icon').textContent.trim();
+        const pill = document.createElement('span');
+        pill.className = 'passport-mini-badge';
+        pill.textContent = `${icon} ${title}`;
+        tray.appendChild(pill);
+      });
+
+      // Seçilen hobiler & yetenekler (ilk 5 tanesi)
+      const selectedTags = document.querySelectorAll('.magical-tag.selected');
+      let count = 0;
+      selectedTags.forEach(tag => {
+        if (count < 5) {
+          const text = tag.querySelector('span:nth-child(2)').textContent.trim();
+          const emoji = tag.querySelector('.tag-emoji').textContent.trim();
+          const pill = document.createElement('span');
+          pill.className = 'passport-mini-badge';
+          pill.textContent = `${emoji} ${text}`;
+          tray.appendChild(pill);
+          count++;
+        }
+      });
+
+      if (selectedTags.length > 5) {
+        const morePill = document.createElement('span');
+        morePill.className = 'passport-mini-badge';
+        morePill.textContent = `+${selectedTags.length - 5} yetenek`;
+        tray.appendChild(morePill);
+      }
+    }
+
+    // ── 4. TEBRİKLER MODALI AÇMA / KAPAMA ──
+    function openCongratsModal() {
+      const modal = document.getElementById('congratsModal');
+      modal.classList.add('active');
+    }
+
+    function closeCongratsModal() {
+      const modal = document.getElementById('congratsModal');
+      modal.classList.remove('active');
+    }
+
+    // İlk hesaplama
+    calculateProgress();
+  </script>
+</body>
+</html>
