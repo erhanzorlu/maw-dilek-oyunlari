@@ -3,51 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Dilek Kaşifi Keşif Yolculuğu — Make-A-Wish Türkiye</title>
-  
+  <title>Gönüllü Yıldız Yolculuğu — Make-A-Wish Türkiye</title>
+
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=2" />
   <link rel="alternate icon" type="image/svg+xml" href="../images/wishhub-logo.svg?v=2" />
-  
-  <!-- Google Fonts: Masalsı & Samimi Tipografi -->
+
+  <!-- Google Fonts: Kraliyet Masalı & Modern Tipografi -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- GSAP (GreenSock) & Canvas-Confetti -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
   <style>
     /* ── MAKE-A-WISH & DISNEY MASALSI PALETİ (ASLA NEON YOK) ── */
     :root {
-      --maw-navy: #002B7F;       /* Make-A-Wish Asil Gece Mavisi */
-      --maw-deep: #001A52;       /* Derin Gökyüzü Mavisi */
-      --maw-sky: #00A9E0;        /* Masal Gök Mavisi */
-      --maw-sky-soft: #E8F6FC;   /* Yumuşak Bulut Mavisi */
-      
-      --disney-gold: #DDA323;    /* Masalsı Sıcak Altın */
+      --maw-navy: #002B7F;          /* Make-A-Wish Asil Gece Mavisi */
+      --maw-deep: #001A52;          /* Derin Gökyüzü Mavisi */
+      --maw-sky: #00A9E0;           /* Masal Gök Mavisi */
+      --maw-sky-soft: #E8F6FC;      /* Yumuşak Bulut Mavisi */
+
+      --disney-gold: #DDA323;       /* Masalsı Sıcak Altın */
       --disney-gold-light: #F9E7B4; /* Şampanya Parıltısı */
       --disney-gold-soft: #FDF9EC;  /* Sıcak Yıldız Işığı */
-      
-      --cream-bg: #F7F9FD;       /* Sıcak Kağıt / Bulut Beyazı */
-      --card-bg: #FFFFFF;        /* Temiz Kart Zemin */
-      --border-subtle: #E2E8F4;  /* İnce Zarif Çerçeve */
-      --border-hover: #BFD7F5;   /* Yumuşak Vurgu */
-      
-      --text-main: #102048;      /* Mürekkep Mavisi */
-      --text-muted: #4A5B7D;     /* Masal Grisi */
-      --text-light: #7E8DA8;     /* Açık Etiket Grisi */
-      
+      --gold-bright: #FCE38A;
+
+      --cream-bg: #F7F9FD;          /* Sıcak Kağıt / Bulut Beyazı */
+      --card-bg: #FFFFFF;           /* Temiz Kart Zemin */
+      --border-subtle: #E2E8F4;     /* İnce Zarif Çerçeve */
+      --border-hover: #BFD7F5;      /* Yumuşak Vurgu */
+
+      --text-main: #102048;         /* Mürekkep Mavisi */
+      --text-muted: #4A5B7D;        /* Masal Grisi */
+      --text-light: #7E8DA8;        /* Açık Etiket Grisi */
+
       --shadow-sm: 0 4px 12px rgba(0, 43, 127, 0.05);
       --shadow-md: 0 10px 28px rgba(0, 43, 127, 0.08);
       --shadow-lg: 0 20px 50px rgba(0, 43, 127, 0.12);
       --shadow-gold: 0 8px 24px rgba(221, 163, 35, 0.20);
-      
+
       --radius-sm: 12px;
       --radius-md: 18px;
       --radius-lg: 24px;
       --radius-pill: 9999px;
-      
+
       --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -55,6 +60,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html {
@@ -69,41 +75,313 @@
       overflow-x: hidden;
       line-height: 1.55;
       position: relative;
+      padding-bottom: 110px;
     }
 
-    /* ── MASALSI GÖKYÜZÜ VE PERİ TOZU ARKA PLANI (CANVAS) ── */
-    #fairyDustCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 0;
-    }
-
+    /* ── MASALSI GÖKYÜZÜ ARKA PLANI & TAKIMYILDIZI CANVAS'I ── */
     .ambient-sky {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
       background:
-        radial-gradient(ellipse 70% 40% at 50% 0%, rgba(0, 169, 224, 0.10) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 50% at 85% 20%, rgba(221, 163, 35, 0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 15% 85%, rgba(0, 43, 127, 0.05) 0%, transparent 70%),
-        linear-gradient(180deg, #F0F5FD 0%, #FAFBFD 40%, #FFFFFF 100%);
+        radial-gradient(ellipse 70% 40% at 50% 0%, rgba(0, 169, 224, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 85% 20%, rgba(221, 163, 35, 0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 15% 85%, rgba(0, 43, 127, 0.06) 0%, transparent 70%),
+        linear-gradient(180deg, #EEF4FC 0%, #FAFBFD 45%, #FFFFFF 100%);
     }
 
-    /* ── ÜST BAR & LOGO ── */
+    /* Yıldız Bağlantıları Canvas'ı: Hem Karşılama Perdesinde Hem Sayfada Aktif! */
+    #cosmosCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2001; /* Perde açıkken perdenin üzerinde parlar, perde kalkınca z-index: 1'e iner */
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       ADIM 0: BEĞENİLEN KRALİYET USTURLABI & TAKIMYILDIZI KARŞILAMA KAPISI (%100 KORUNDU)
+       ══════════════════════════════════════════════════════════════════════════ */
+    .welcome-curtain {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: radial-gradient(ellipse at 50% 35%, #091E52 0%, #020716 80%);
+      overflow-y: auto;
+    }
+
+    .royal-portal-frame {
+      position: relative;
+      z-index: 2005;
+      max-width: 600px;
+      width: 100%;
+      background: linear-gradient(165deg, rgba(12, 31, 82, 0.82) 0%, rgba(4, 12, 36, 0.94) 100%);
+      border: 1.5px solid rgba(221, 163, 35, 0.48);
+      border-radius: 32px;
+      padding: 40px 32px 34px;
+      text-align: center;
+      box-shadow:
+        0 30px 90px rgba(0, 0, 0, 0.75),
+        0 0 70px rgba(0, 169, 224, 0.15),
+        inset 0 0 40px rgba(221, 163, 35, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+
+    .royal-portal-frame::before {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border-radius: 24px;
+      border: 1px solid rgba(252, 227, 138, 0.22);
+      pointer-events: none;
+    }
+
+    .corner-ornament {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      pointer-events: none;
+      opacity: 0.75;
+    }
+    .corner-ornament.tl { top: 16px; left: 16px; }
+    .corner-ornament.tr { top: 16px; right: 16px; transform: scaleX(-1); }
+    .corner-ornament.bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+    .corner-ornament.br { bottom: 16px; right: 16px; transform: scale(-1, -1); }
+
+    .astrolabe-stage {
+      position: relative;
+      width: 154px;
+      height: 154px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .astrolabe-glow {
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(252, 227, 138, 0.38) 0%, rgba(0, 169, 224, 0.22) 50%, transparent 72%);
+      filter: blur(14px);
+      animation: pulseHalo 3.2s ease-in-out infinite;
+    }
+
+    @keyframes pulseHalo {
+      0%, 100% { transform: scale(0.95); opacity: 0.75; }
+      50% { transform: scale(1.12); opacity: 1; }
+    }
+
+    .astrolabe-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 0 16px rgba(221, 163, 35, 0.45));
+    }
+
+    .astro-ring-outer {
+      transform-origin: 100px 100px;
+      animation: spinSlowCW 28s linear infinite;
+    }
+
+    .astro-ring-middle {
+      transform-origin: 100px 100px;
+      animation: spinSlowCCW 20s linear infinite;
+    }
+
+    .astro-core-star {
+      transform-origin: 100px 100px;
+      animation: starBreath 4s ease-in-out infinite;
+    }
+
+    @keyframes spinSlowCW {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes spinSlowCCW {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    @keyframes starBreath {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.09) rotate(6deg); }
+    }
+
+    .portal-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(90deg, rgba(221, 163, 35, 0.12), rgba(221, 163, 35, 0.25), rgba(221, 163, 35, 0.12));
+      border: 1px solid rgba(252, 227, 138, 0.4);
+      color: var(--gold-bright);
+      padding: 6px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .portal-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(30px, 6vw, 44px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      color: #FFFFFF;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .portal-title em {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 1.12em;
+      background: linear-gradient(135deg, #FFF6D6 0%, #FCE38A 45%, #DDA323 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .portal-desc {
+      font-size: 14.5px;
+      color: #E2ECFF;
+      line-height: 1.65;
+      max-width: 470px;
+      margin: 0 auto 24px;
+    }
+
+    .constellation-journey-map {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      max-width: 460px;
+      margin: 0 auto 28px;
+      padding: 0 6px;
+    }
+
+    .constellation-journey-map::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 36px;
+      right: 36px;
+      height: 1.5px;
+      background: linear-gradient(90deg, rgba(0, 169, 224, 0.3), rgba(252, 227, 138, 0.75), rgba(0, 169, 224, 0.3));
+      z-index: 0;
+    }
+
+    .c-node {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .c-node-orb {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #173785, #071438);
+      border: 1.5px solid var(--gold-bright);
+      box-shadow: 0 0 14px rgba(221, 163, 35, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold-bright);
+      font-size: 15px;
+    }
+
+    .c-node-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #E2ECFF;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-ignite-journey {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 360px;
+      background: linear-gradient(135deg, #FDE68A 0%, #DDA323 50%, #B47B10 100%);
+      color: #030B21;
+      border: 2px solid #FFFBEB;
+      padding: 17px 30px;
+      border-radius: var(--radius-pill);
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      box-shadow:
+        0 14px 36px rgba(221, 163, 35, 0.45),
+        0 0 22px rgba(252, 227, 138, 0.4);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    }
+
+    .btn-ignite-journey::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 45%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+      transform: rotate(25deg);
+      animation: shimmerSweep 3.2s infinite;
+    }
+
+    @keyframes shimmerSweep {
+      0% { left: -60%; }
+      55%, 100% { left: 130%; }
+    }
+
+    .btn-ignite-journey:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow:
+        0 18px 46px rgba(221, 163, 35, 0.65),
+        0 0 32px rgba(252, 227, 138, 0.65);
+    }
+
+    .portal-footer-meta {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #9FB4D9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════════
+       PERDE ARKASI: ORİJİNAL SICAK MAKE-A-WISH & DISNEY MASAL TASARIMI
+       ══════════════════════════════════════════════════════════════════════════ */
     .topbar {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255, 255, 255, 0.90);
+      height: 62px;
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 14px 24px;
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -115,18 +393,20 @@
       align-items: center;
       gap: 12px;
       text-decoration: none;
+      min-width: 0;
     }
 
     .topbar-logo-badge {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: var(--radius-sm);
       background: linear-gradient(135deg, var(--maw-navy), var(--maw-sky));
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 20px;
+      font-size: 19px;
+      flex-shrink: 0;
       box-shadow: 0 4px 14px rgba(0, 43, 127, 0.2);
     }
 
@@ -135,37 +415,62 @@
       font-weight: 800;
       color: var(--maw-navy);
       letter-spacing: -0.2px;
+      line-height: 1.2;
+      white-space: nowrap;
     }
 
     .topbar-subtitle {
       font-size: 11.5px;
       color: var(--text-light);
       font-weight: 500;
+      line-height: 1.2;
+      white-space: nowrap;
     }
 
-    .topbar-city-pill {
+    .topbar-right-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .sound-toggle-pill {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-subtle);
+      background: #FFFFFF;
+      color: var(--maw-navy);
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: var(--maw-sky-soft);
-      border: 1px solid rgba(0, 169, 224, 0.25);
-      color: var(--maw-navy);
-      padding: 6px 14px;
-      border-radius: var(--radius-pill);
-      font-size: 12.5px;
-      font-weight: 700;
+      justify-content: center;
+      font-size: 17px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* ── STICKY SİHİRLİ İLERLEME ÇUBUĞU (MAGIC MATCH METER) ── */
+    .sound-toggle-pill:hover {
+      border-color: var(--maw-sky);
+      background: var(--maw-sky-soft);
+      transform: translateY(-1px);
+    }
+
+    .sound-toggle-pill.muted {
+      color: var(--text-light);
+      background: #F1F5F9;
+    }
+
+    /* ── STICKY SİHİRLİ İLERLEME & 4 SAHNE STEPPER ÇUBUĞU ── */
     .magic-meter-bar {
       position: sticky;
-      top: 69px;
+      top: 62px;
       z-index: 95;
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 12px 24px;
+      padding: 10px 24px;
       box-shadow: 0 6px 20px rgba(0, 43, 127, 0.04);
     }
 
@@ -173,34 +478,91 @@
       max-width: 1040px;
       margin: 0 auto;
       display: flex;
-      align-items: center;
-      gap: 20px;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .meter-text-block {
-      min-width: 220px;
-    }
-
-    .meter-label {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--disney-gold);
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .meter-top-row {
       display: flex;
       align-items: center;
-      gap: 5px;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .step-dots-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-dot-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 13px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid var(--border-subtle);
+      background: #FFFFFF;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .step-dot-btn .dot-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #E2E8F0;
+      color: var(--text-main);
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-dot-btn.active {
+      border-color: var(--maw-navy);
+      background: var(--maw-navy);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 43, 127, 0.18);
+    }
+
+    .step-dot-btn.active .dot-num {
+      background: var(--disney-gold);
+      color: #FFFFFF;
+    }
+
+    .step-dot-btn.completed {
+      border-color: rgba(16, 185, 129, 0.45);
+      background: #ECFDF5;
+      color: #065F46;
+    }
+
+    .step-dot-btn.completed .dot-num {
+      background: #10B981;
+      color: #FFFFFF;
+    }
+
+    .meter-track-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
     .meter-status {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--maw-navy);
+      white-space: nowrap;
     }
 
     .meter-track {
       flex: 1;
-      height: 12px;
+      height: 11px;
       background: #E8EEF8;
       border-radius: var(--radius-pill);
       overflow: hidden;
@@ -209,29 +571,18 @@
 
     .meter-fill {
       height: 100%;
-      width: 15%;
+      width: 0%;
       background: linear-gradient(90deg, #00A9E0 0%, #002B7F 70%, #DDA323 100%);
       border-radius: var(--radius-pill);
-      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
       position: relative;
-    }
-
-    .meter-fill::after {
-      content: '';
-      position: absolute;
-      top: 0; right: 0; bottom: 0;
-      width: 16px;
-      background: #FFFFFF;
-      opacity: 0.6;
-      border-radius: var(--radius-pill);
-      box-shadow: 0 0 8px #FFFFFF;
     }
 
     .meter-badge {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       color: var(--maw-navy);
       background: var(--disney-gold-soft);
@@ -247,83 +598,173 @@
       z-index: 10;
       max-width: 1040px;
       margin: 0 auto;
-      padding: 36px 20px 80px;
+      padding: 26px 20px 60px;
     }
 
-    /* ── HERO BANNER: MASALSI DİLEK TUT KARŞILAMASI ── */
-    .hero-banner {
-      text-align: center;
-      max-width: 760px;
-      margin: 0 auto 40px;
+    /* ── TEMSİLİ DİLEK EŞLEŞME SİMÜLASYONU (ORİJİNAL SICAK BANNER) ── */
+    .live-match-banner {
+      background: linear-gradient(135deg, #FFFFFF 0%, #F5F9FF 60%, var(--disney-gold-soft) 100%);
+      border: 2px solid var(--disney-gold-light);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 32px rgba(221, 163, 35, 0.12), var(--shadow-sm);
       position: relative;
+      overflow: hidden;
+      transition: var(--transition);
     }
 
-    .hero-star-icon {
+    .match-banner-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .match-counter-badge {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      width: 58px;
-      height: 58px;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--disney-gold);
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 2px 10px rgba(221, 163, 35, 0.15);
+    }
+
+    .match-pulse-dot {
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--disney-gold-soft) 0%, #FFFFFF 100%);
-      border: 2px solid var(--disney-gold-light);
-      box-shadow: var(--shadow-gold);
-      color: var(--disney-gold);
-      font-size: 28px;
-      margin-bottom: 18px;
-      animation: gentleFloat 4s ease-in-out infinite;
+      background: #10B981;
+      display: inline-block;
+      animation: pulseGreen 2s infinite;
     }
 
-    @keyframes gentleFloat {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-6px) rotate(4deg); }
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
 
-    .hero-eyebrow {
+    .match-count-text {
       font-size: 12.5px;
       font-weight: 800;
-      color: var(--disney-gold);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
+      color: var(--maw-navy);
+    }
+
+    .match-city-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--maw-sky);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--maw-sky-soft);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+    }
+
+    .match-child-preview-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--disney-gold);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+      transition: all 0.35s ease;
+      box-shadow: 0 4px 16px rgba(0, 43, 127, 0.04);
+    }
+
+    .match-child-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--maw-sky-soft);
+      border: 2px solid var(--disney-gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .match-child-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .match-child-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--maw-navy);
+    }
+
+    .match-child-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #92400E;
+      background: #FEF3C7;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+    }
+
+    .match-child-wish {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.5;
       margin-bottom: 8px;
     }
 
-    .hero-title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(28px, 4.5vw, 40px);
-      font-weight: 800;
+    .match-child-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .match-tag-pill {
+      font-size: 11.5px;
+      font-weight: 700;
       color: var(--maw-navy);
-      line-height: 1.25;
-      margin-bottom: 14px;
+      background: var(--maw-sky-soft);
+      border: 1px solid rgba(0, 169, 224, 0.2);
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      transition: var(--transition);
     }
 
-    .hero-title em {
-      font-style: italic;
-      color: var(--maw-sky);
+    .match-tag-pill.highlight {
+      background: var(--disney-gold-soft);
+      border-color: var(--disney-gold);
+      color: #854D0E;
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(221, 163, 35, 0.2);
     }
 
-    .hero-desc {
-      font-size: 15px;
-      color: var(--text-muted);
-      line-height: 1.7;
-    }
-
-    /* ── BÖLÜM KARTLARI (SECTIONS) ── */
+    /* ── SAHNE KARTLARI (ORİJİNAL SICAK BEYAZ KARTLAR) ── */
     .section-card {
+      display: none;
       background: var(--card-bg);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 32px 36px;
-      margin-bottom: 28px;
+      padding: 30px 32px;
+      margin-bottom: 24px;
       box-shadow: var(--shadow-sm);
-      transition: var(--transition);
       position: relative;
       overflow: hidden;
     }
 
-    .section-card:hover {
-      box-shadow: var(--shadow-md);
-      border-color: var(--border-hover);
+    .section-card.active {
+      display: block;
     }
 
     .section-header {
@@ -350,19 +791,29 @@
       flex-shrink: 0;
     }
 
+    .section-header-text {
+      flex: 1;
+      min-width: 0;
+    }
+
     .section-header-text h2 {
       font-size: 20px;
       font-weight: 800;
       color: var(--maw-navy);
       margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      line-height: 1.3;
+      display: block;
+    }
+
+    .section-header-text h2 i {
+      vertical-align: -2px;
+      margin-left: 4px;
     }
 
     .section-header-text p {
       font-size: 13.5px;
       color: var(--text-muted);
+      line-height: 1.45;
     }
 
     .section-badge {
@@ -375,6 +826,7 @@
       padding: 4px 12px;
       border-radius: var(--radius-pill);
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     /* ── 1. YAŞ GRUPLARI KARTLARI (DISNEY MASAL KARTLARI) ── */
@@ -404,10 +856,24 @@
       box-shadow: var(--shadow-sm);
     }
 
+    @keyframes cardSelectSpring {
+      0% { transform: scale(1); }
+      35% { transform: scale(0.96); }
+      70% { transform: scale(1.025); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes checkPop {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
     .age-card.selected {
       border-color: var(--maw-navy);
       background: linear-gradient(180deg, #FFFFFF 0%, var(--maw-sky-soft) 100%);
       box-shadow: 0 8px 22px rgba(0, 43, 127, 0.12);
+      animation: cardSelectSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .age-card-top {
@@ -441,6 +907,10 @@
       color: #FFFFFF;
     }
 
+    .age-card.selected .age-check-circle i {
+      animation: checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
     .age-card-title {
       font-size: 16px;
       font-weight: 800;
@@ -459,10 +929,10 @@
       line-height: 1.45;
     }
 
-    /* ── 2. ÇOCUK GRUPLARI (REHBERLİK & ANLAYIŞ KARTLARI) ── */
+    /* ── 2. ÇOCUK GRUPLARI (ORİJİNAL REHBERLİK KARTLARI) ── */
     .child-groups-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
       gap: 12px;
     }
 
@@ -489,6 +959,7 @@
       border-color: var(--maw-navy);
       background: var(--maw-sky-soft);
       box-shadow: 0 4px 14px rgba(0, 43, 127, 0.08);
+      animation: cardSelectSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .custom-check-box {
@@ -519,9 +990,13 @@
       line-height: 1.4;
     }
 
-    /* ── 3. YETENEKLER & SAHİPLİKLER PILLS (ETİKETLER) ── */
+    /* ── 3 & 4. YETENEKLER VE HOBİLER PILLS (ORİJİNAL ETİKETLER) ── */
     .tag-cloud-wrapper {
       margin-bottom: 24px;
+    }
+
+    .tag-cloud-wrapper:last-child {
+      margin-bottom: 0;
     }
 
     .tag-cloud-title {
@@ -569,6 +1044,7 @@
       border-color: var(--maw-navy);
       color: #FFFFFF;
       box-shadow: 0 4px 14px rgba(0, 43, 127, 0.18);
+      animation: cardSelectSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .magical-tag .tag-emoji {
@@ -577,6 +1053,7 @@
 
     .magical-tag.selected .tag-check {
       display: inline-flex;
+      animation: checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     }
 
     .tag-check {
@@ -586,41 +1063,17 @@
       margin-left: 2px;
     }
 
-    /* ── 4. HOBİLER (NURCAN'DAN GELECEK TEMSİLİ MASAL ALANI) ── */
-    .hobby-notice-banner {
-      background: var(--disney-gold-soft);
-      border: 1px dashed var(--disney-gold);
-      border-radius: var(--radius-sm);
-      padding: 12px 18px;
-      font-size: 13px;
-      color: #7A5300;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    /* ── CANLI DİLEK KAŞİFİ PASAPORT ÖN İZLEMESİ (PREVIEW CARD) ── */
+    /* ── CANLI GÖNÜLLÜ YILDIZ PASAPORTU ÖN İZLEMESİ (ORİJİNAL PASAPORT KARTI) ── */
     .passport-preview-box {
       background: linear-gradient(135deg, #001A52 0%, #002B7F 100%);
       border-radius: var(--radius-lg);
-      padding: 32px 36px;
+      padding: 28px 32px;
       color: #FFFFFF;
       box-shadow: var(--shadow-lg);
-      margin-bottom: 32px;
+      margin-top: 26px;
       position: relative;
       overflow: hidden;
       border: 2px solid rgba(221, 163, 35, 0.35);
-    }
-
-    .passport-preview-box::before {
-      content: '';
-      position: absolute;
-      top: -60px; right: -60px;
-      width: 220px; height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(221, 163, 35, 0.18) 0%, transparent 70%);
-      pointer-events: none;
     }
 
     .passport-header {
@@ -628,8 +1081,8 @@
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      padding-bottom: 18px;
-      margin-bottom: 20px;
+      padding-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .passport-logo-area {
@@ -673,15 +1126,15 @@
     }
 
     .passport-avatar-circle {
-      width: 84px;
-      height: 84px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.12);
       border: 2px solid var(--disney-gold);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 38px;
+      font-size: 36px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
 
@@ -703,6 +1156,8 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+      min-height: 32px;
+      align-items: center;
     }
 
     .passport-mini-badge {
@@ -718,32 +1173,63 @@
       gap: 5px;
     }
 
-    /* ── ALT BUTON BAR (ACTION BAR) ── */
-    .action-footer {
+    .passport-empty-hint {
+      font-size: 12.5px;
+      color: rgba(255, 255, 255, 0.60);
+      font-style: italic;
+    }
+
+    /* ── SABİT ALT WIZARD BARI (SICAK MAKE-A-WISH STİLİ) ── */
+    .wizard-bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 120;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-subtle);
+      padding: 12px 24px;
+      box-shadow: 0 -8px 28px rgba(0, 43, 127, 0.08);
+    }
+
+    .bottom-bar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      background: #FFFFFF;
+      gap: 12px;
+    }
+
+    .btn-wizard-prev {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #F1F5F9;
+      color: var(--text-main);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 24px 32px;
-      box-shadow: var(--shadow-md);
+      padding: 13px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
     }
 
-    .footer-summary {
-      display: flex;
-      flex-direction: column;
+    .btn-wizard-prev:hover {
+      background: #E2E8F0;
     }
 
-    .footer-summary-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--maw-navy);
+    .btn-wizard-prev.hidden {
+      visibility: hidden;
+      pointer-events: none;
     }
 
-    .footer-summary-desc {
-      font-size: 12.5px;
+    .bottom-step-hint {
+      font-size: 13px;
+      font-weight: 700;
       color: var(--text-muted);
     }
 
@@ -754,71 +1240,71 @@
       background: linear-gradient(135deg, var(--maw-navy) 0%, #001A52 100%);
       color: #FFFFFF;
       border: 2px solid var(--disney-gold);
-      padding: 16px 36px;
+      padding: 14px 32px;
       border-radius: var(--radius-pill);
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 8px 24px rgba(0, 43, 127, 0.25);
       transition: var(--transition);
-      text-decoration: none;
     }
 
     .btn-complete-journey:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 30px rgba(0, 43, 127, 0.35);
-      background: linear-gradient(135deg, #001A52 0%, var(--maw-navy) 100%);
     }
 
-    /* ── TEBRİKLER & YÖNLENDİRME MODALI ── */
+    /* ── TEBRİKLER & MÜHÜRLÜ PASAPORT MODALI (ORİJİNAL 3D ALTIN MUM MÜHRÜYLE) ── */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 26, 82, 0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index: 999;
+      background: radial-gradient(circle at center, rgba(0, 43, 127, 0.65) 0%, rgba(0, 15, 55, 0.88) 100%);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 2100;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
     }
 
     .modal-backdrop.active {
       display: flex;
-      opacity: 1;
     }
 
     .congrats-modal-card {
       background: #FFFFFF;
       border-radius: var(--radius-lg);
-      max-width: 500px;
+      max-width: 620px;
       width: 100%;
-      padding: 40px 36px;
+      padding: 36px 34px 32px;
       text-align: center;
       position: relative;
-      box-shadow: var(--shadow-lg);
-      transform: scale(0.92);
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      border: 2px solid var(--disney-gold-light);
+      box-shadow: 0 30px 80px rgba(0, 43, 127, 0.45), 0 0 50px rgba(221, 163, 35, 0.25);
+      border: 2px solid var(--disney-gold);
+      max-height: 94vh;
+      overflow-y: auto;
     }
 
-    .modal-backdrop.active .congrats-modal-card {
-      transform: scale(1);
+    .congrats-close-btn {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(0, 43, 127, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 15px;
+      cursor: pointer;
     }
 
-    .congrats-star-burst {
-      font-size: 64px;
-      margin-bottom: 16px;
-      display: inline-block;
-      animation: pulseStar 2s infinite ease-in-out;
-    }
-
-    @keyframes pulseStar {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15) rotate(6deg); }
+    .congrats-eyebrow {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--disney-gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
     }
 
     .congrats-title {
@@ -826,79 +1312,591 @@
       font-size: 26px;
       font-weight: 800;
       color: var(--maw-navy);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .congrats-desc {
-      font-size: 14.5px;
+      font-size: 13.5px;
       color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 28px;
+      line-height: 1.55;
+      margin-bottom: 22px;
     }
 
-    .congrats-btn-row {
+    .passport-modal-preview {
+      background: linear-gradient(135deg, #001440 0%, #002266 50%, #002B7F 100%);
+      border-radius: var(--radius-md);
+      padding: 24px 26px;
+      color: #FFFFFF;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid var(--disney-gold);
+      box-shadow: 0 12px 36px rgba(0, 43, 127, 0.35);
+      margin-bottom: 22px;
+    }
+
+    /* ── ORİJİNAL DİSNEY USULÜ GERÇEKÇİ ALTIN MUM MÜHRÜ (WAX SEAL) ── */
+    .golden-wax-seal {
+      position: absolute;
+      bottom: 12px;
+      right: 18px;
+      width: 96px;
+      height: 96px;
+      z-index: 30;
+      pointer-events: none;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.5));
+    }
+
+    .wax-seal-outer {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #FEF3C7 0%, #F59E0B 35%, #D97706 70%, #92400E 100%);
+      box-shadow:
+        inset 0 3px 6px rgba(255, 255, 255, 0.8),
+        inset 0 -4px 8px rgba(114, 47, 4, 0.8),
+        0 6px 16px rgba(0, 0, 0, 0.35);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2.5px solid rgba(254, 243, 199, 0.55);
+    }
+
+    .wax-seal-outer::before {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 46% 54% 52% 48% / 48% 52% 48% 52%;
+      background: radial-gradient(circle at 30% 30%, rgba(254, 243, 199, 0.6) 0%, rgba(217, 119, 6, 0.8) 60%, rgba(146, 64, 14, 0.9) 100%);
+      z-index: -1;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .wax-seal-ring {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: 2px dashed rgba(254, 243, 199, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 8px rgba(146, 64, 14, 0.6);
+    }
+
+    .wax-seal-inner {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #FBBF24 0%, #D97706 60%, #78350F 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.5);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #FFFBEB;
+      text-shadow: 0 1px 2px rgba(120, 53, 15, 0.8), 0 0 4px rgba(255, 255, 255, 0.4);
+      user-select: none;
     }
 
-    .btn-modal-primary {
+    .wax-seal-star { font-size: 16px; line-height: 1; color: #FFFFFF; margin-bottom: 2px; }
+    .wax-seal-text-top { font-size: 7px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.1; }
+    .wax-seal-year { font-family: 'Playfair Display', Georgia, serif; font-size: 11px; font-weight: 800; color: #FEF3C7; letter-spacing: 1px; line-height: 1.1; }
+    .wax-seal-text-bottom { font-size: 6.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #FDE68A; line-height: 1.1; }
+
+    .golden-wax-seal.anim-stamp {
+      animation: waxSealSlam 0.75s cubic-bezier(0.19, 1, 0.22, 1) 0.25s both;
+    }
+
+    @keyframes waxSealSlam {
+      0% { opacity: 0; transform: translateY(-240px) scale(3.2) rotate(-35deg); filter: blur(12px) drop-shadow(0 40px 50px rgba(0,0,0,0.6)); }
+      65% { opacity: 1; transform: translateY(0) scale(0.92) rotate(2deg); filter: blur(0) drop-shadow(0 6px 12px rgba(0,0,0,0.4)); }
+      82% { transform: translateY(-6px) scale(1.05) rotate(-1deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); filter: drop-shadow(0 8px 18px rgba(0,0,0,0.5)); }
+    }
+
+    .candidate-lock-banner {
+      background: #FFFBEB;
+      border: 1.5px dashed #F59E0B;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      text-align: left;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+      color: #78350F;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+
+    .candidate-lock-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #FEF3C7;
+      color: #D97706;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .congrats-action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn-download-card {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: var(--maw-navy);
+      background: linear-gradient(135deg, #FFFFFF 0%, var(--disney-gold-soft) 100%);
+      color: #78350F;
+      border: 1.5px solid var(--disney-gold);
+      padding: 13px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(221, 163, 35, 0.25);
+      transition: var(--transition);
+    }
+
+    .btn-share-story {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #833AB4 0%, #FD1D1D 50%, #FCB045 100%);
       color: #FFFFFF;
-      padding: 14px 28px;
+      border: none;
+      padding: 13px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(225, 48, 108, 0.3);
+      transition: var(--transition);
+    }
+
+    .btn-proceed-pending {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: linear-gradient(135deg, var(--maw-navy) 0%, #001A52 100%);
+      color: #FFFFFF;
+      padding: 15px 28px;
       border-radius: var(--radius-pill);
       font-size: 14.5px;
       font-weight: 800;
       text-decoration: none;
-      transition: var(--transition);
-      border: none;
+      border: 1.5px solid var(--disney-gold);
+      box-shadow: 0 6px 20px rgba(0, 43, 127, 0.25);
       cursor: pointer;
     }
 
-    .btn-modal-primary:hover {
-      background: var(--maw-deep);
-      transform: translateY(-2px);
+    .magic-toast-bubble {
+      position: fixed;
+      bottom: 84px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: linear-gradient(135deg, #001A52 0%, var(--maw-navy) 100%);
+      color: #FFFFFF;
+      border: 1.5px solid var(--disney-gold);
+      box-shadow: 0 14px 40px rgba(0, 26, 82, 0.4);
+      padding: 12px 24px;
+      border-radius: var(--radius-pill);
+      font-size: 13.5px;
+      font-weight: 700;
+      z-index: 2500;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 90vw;
+      text-align: center;
     }
 
-    .btn-modal-secondary {
-      background: transparent;
-      border: none;
-      color: var(--text-light);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
+    .magic-toast-bubble.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
 
-    .btn-modal-secondary:hover {
-      color: var(--maw-navy);
-    }
-
-    /* ── MOBİL UYUMLULUK ── */
+    /* ══════════════════════════════════════════════════════════════════════════
+       MOBİL ODAKLI (MOBILE-FIRST) UX & EKRAN YERLEŞİMİ DÜZELTMELERİ
+       ══════════════════════════════════════════════════════════════════════════ */
     @media (max-width: 768px) {
-      .topbar { padding: 12px 16px; }
-      .magic-meter-bar { padding: 10px 16px; top: 65px; }
-      .meter-container { flex-direction: column; align-items: stretch; gap: 8px; }
-      .meter-text-block { display: flex; justify-content: space-between; align-items: center; min-width: auto; }
-      .main-wrapper { padding: 20px 14px 60px; }
-      .section-card { padding: 22px 18px; border-radius: var(--radius-md); }
-      .passport-body { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+      body {
+        padding-bottom: 92px;
+      }
+
+      /* 1. Karşılama Perdesi (Tam Ekran Mobil Uyum) */
+      .welcome-curtain { padding: 14px; }
+      .royal-portal-frame { padding: 22px 16px 20px; border-radius: 22px; }
+      .astrolabe-stage { width: 104px; height: 104px; margin-bottom: 10px; }
+      .portal-eyebrow { font-size: 9.5px; padding: 5px 12px; letter-spacing: 1.2px; margin-bottom: 10px; }
+      .portal-title { font-size: 28px; margin-bottom: 8px; }
+      .portal-desc { font-size: 13px; line-height: 1.5; margin-bottom: 18px; }
+      .constellation-journey-map { margin-bottom: 20px; padding: 0 2px; }
+      .c-node-orb { width: 32px; height: 32px; font-size: 14px; }
+      .c-node-label { font-size: 10px; }
+      .btn-ignite-journey { padding: 14px 22px; font-size: 14.5px; }
+      .portal-footer-meta { font-size: 11px; margin-top: 12px; }
+
+      /* 2. Üst Bar & İlerleme Çubuğu (0px Çakışma & Kompakt Yükseklik) */
+      .topbar {
+        height: 54px;
+        padding: 0 14px;
+      }
+      .topbar-logo-badge {
+        width: 34px;
+        height: 34px;
+        font-size: 17px;
+      }
+      .topbar-title { font-size: 14px; }
+      .topbar-subtitle { font-size: 10.5px; }
+      .sound-toggle-pill { width: 34px; height: 34px; font-size: 16px; }
+
+      .magic-meter-bar {
+        top: 54px;
+        padding: 8px 14px;
+      }
+      .meter-container { gap: 6px; }
+      .meter-top-row {
+        flex-wrap: nowrap;
+        gap: 8px;
+      }
+      .step-dots-nav { gap: 6px; }
+      .step-dot-btn {
+        padding: 4px 10px;
+      }
+      .step-dot-btn span.dot-label { display: none; }
+      .step-dot-btn .dot-num { width: 18px; height: 18px; font-size: 10.5px; }
+      .meter-badge {
+        font-size: 11px;
+        padding: 3px 10px;
+      }
+      .meter-track-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+      }
+      .meter-status {
+        font-size: 11.5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .meter-track {
+        height: 7px;
+        width: 100%;
+      }
+
+      /* 3. Ana Sayfa & Örnek Çocuk İlham Kutusu (Mobilde Ekranı Kaplamayan Zarif Boyut) */
+      .main-wrapper {
+        padding: 12px 12px 36px;
+      }
+      .live-match-banner {
+        padding: 12px 14px;
+        margin-bottom: 14px;
+        border-radius: 18px;
+      }
+      .match-banner-header {
+        margin-bottom: 8px;
+        gap: 6px;
+      }
+      .match-counter-badge {
+        padding: 4px 10px;
+        gap: 6px;
+      }
+      .match-count-text {
+        font-size: 11px;
+        line-height: 1.25;
+      }
+      .match-city-label {
+        display: none;
+      }
+      .match-child-preview-card {
+        padding: 10px 12px;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .match-child-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        margin-top: 2px;
+      }
+      .match-child-name { font-size: 13.5px; }
+      .match-child-badge { font-size: 10px; padding: 2px 7px; }
+      .match-child-wish {
+        font-size: 12px;
+        line-height: 1.4;
+        margin-bottom: 6px;
+      }
+      .match-tag-pill {
+        font-size: 10.5px;
+        padding: 2px 8px;
+      }
+
+      /* 4. Sahne Kartları & Başlık Sıkışması Çözümü */
+      .section-card {
+        padding: 16px 14px;
+        border-radius: 18px;
+        margin-bottom: 16px;
+      }
+      .section-header {
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .section-step-num {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+        border-radius: 10px;
+      }
+      .section-badge {
+        order: 2;
+        margin-left: auto;
+        font-size: 10.5px;
+        padding: 3px 10px;
+      }
+      .section-header-text {
+        order: 3;
+        flex: 0 0 100%;
+      }
+      .section-header-text h2 {
+        font-size: 17px;
+        margin-bottom: 3px;
+      }
+      .section-header-text p {
+        font-size: 12.5px;
+      }
+
+      /* 5. Sahne 1: Yaş Grupları Mobilde 2x2 Kompakt Grid (Kaydırmadan Tek Ekranda!) */
+      .age-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .age-card {
+        padding: 13px 12px;
+        gap: 5px;
+        border-radius: 14px;
+      }
+      .age-card-icon { font-size: 24px; }
+      .age-check-circle { width: 20px; height: 20px; font-size: 11px; }
+      .age-card-title { font-size: 14.5px; }
+      .age-card-subtitle { font-size: 11px; }
+      .age-card-desc {
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      /* 6. Sahne 2, 3, 4 & Pasaport Mobil Düzeni */
+      .child-groups-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .child-group-item {
+        padding: 11px 13px;
+        gap: 10px;
+      }
+      .child-group-text { font-size: 12.5px; }
+
+      .tag-cloud { gap: 8px; }
+      .magical-tag {
+        padding: 7px 12px;
+        font-size: 12.5px;
+        gap: 6px;
+      }
+
+      .passport-preview-box {
+        padding: 18px 16px;
+        margin-top: 18px;
+        border-radius: 18px;
+      }
+      .passport-header {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-bottom: 12px;
+        margin-bottom: 14px;
+      }
+      .passport-inst-title { font-size: 11.5px; }
+      .passport-inst-sub { font-size: 10.5px; }
+      .passport-body {
+        grid-template-columns: 1fr;
+        text-align: center;
+        justify-items: center;
+        gap: 12px;
+      }
+      .passport-avatar-circle { width: 64px; height: 64px; font-size: 30px; }
+      .passport-info h3 { font-size: 19px; }
+      .passport-info p { font-size: 12px; }
       .passport-badges-tray { justify-content: center; }
-      .action-footer { flex-direction: column; text-align: center; padding: 20px; }
-      .btn-complete-journey { width: 100%; justify-content: center; }
+
+      /* 7. Sabit Alt Bar & Kutlama Modalı */
+      .wizard-bottom-bar {
+        padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      }
+      .bottom-step-hint { display: none; }
+      .btn-wizard-prev.hidden {
+        display: none;
+      }
+      .btn-wizard-prev {
+        padding: 12px 16px;
+        font-size: 13px;
+      }
+      .btn-complete-journey {
+        flex: 1;
+        justify-content: center;
+        padding: 13px 20px;
+        font-size: 14px;
+      }
+
+      .modal-backdrop { padding: 12px; }
+      .congrats-modal-card { padding: 24px 16px 20px; }
+      .congrats-title { font-size: 21px; }
+      .congrats-desc { font-size: 12.5px; margin-bottom: 16px; }
+      .passport-modal-preview { padding: 16px 14px; margin-bottom: 16px; }
+      .golden-wax-seal { width: 76px; height: 76px; bottom: 10px; right: 10px; }
+      .wax-seal-ring { width: 60px; height: 60px; }
+      .wax-seal-inner { width: 48px; height: 48px; }
+      .wax-seal-star { font-size: 13px; }
+      .wax-seal-text-top, .wax-seal-text-bottom { font-size: 5.5px; }
+      .wax-seal-year { font-size: 9px; }
+      .congrats-action-grid { grid-template-columns: 1fr; gap: 10px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Masalsı Gökyüzü ve Peri Tozu Canvas'ı -->
+  <!-- Masalsı Gökyüzü ve İnteraktif Takımyıldızı Bağlantı Canvas'ı -->
   <div class="ambient-sky"></div>
-  <canvas id="fairyDustCanvas"></canvas>
+  <canvas id="cosmosCanvas"></canvas>
 
-  <!-- ── 1. ÜST BAR ── -->
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       ADIM 0: BEĞENDİĞİN KRALİYET USTURLABI & TAKIMYILDIZI KARŞILAMA KAPISI
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <div class="welcome-curtain" id="welcomeCurtain">
+    <div class="royal-portal-frame" id="curtainContent">
+
+      <!-- 4 Köşe Altın Filigran Süslemesi -->
+      <svg class="corner-ornament tl" viewBox="0 0 32 32" fill="none">
+        <path d="M2 30V10C2 5.58 5.58 2 10 2H30" stroke="#FCE38A" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="8" cy="8" r="2.5" fill="#FCE38A"/>
+      </svg>
+      <svg class="corner-ornament tr" viewBox="0 0 32 32" fill="none">
+        <path d="M2 30V10C2 5.58 5.58 2 10 2H30" stroke="#FCE38A" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="8" cy="8" r="2.5" fill="#FCE38A"/>
+      </svg>
+      <svg class="corner-ornament bl" viewBox="0 0 32 32" fill="none">
+        <path d="M2 30V10C2 5.58 5.58 2 10 2H30" stroke="#FCE38A" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="8" cy="8" r="2.5" fill="#FCE38A"/>
+      </svg>
+      <svg class="corner-ornament br" viewBox="0 0 32 32" fill="none">
+        <path d="M2 30V10C2 5.58 5.58 2 10 2H30" stroke="#FCE38A" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="8" cy="8" r="2.5" fill="#FCE38A"/>
+      </svg>
+
+      <!-- Dönen 3 Katmanlı Altın Gökyüzü Pusulası (Custom Celestial Astrolabe SVG) -->
+      <div class="astrolabe-stage">
+        <div class="astrolabe-glow"></div>
+        <svg class="astrolabe-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFF6D6" />
+              <stop offset="50%" stop-color="#FCE38A" />
+              <stop offset="100%" stop-color="#DDA323" />
+            </linearGradient>
+            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#7DD3FC" />
+              <stop offset="100%" stop-color="#00A9E0" />
+            </linearGradient>
+          </defs>
+
+          <g class="astro-ring-outer">
+            <circle cx="100" cy="100" r="88" stroke="url(#goldGrad)" stroke-width="1.2" stroke-dasharray="5 7" opacity="0.75" />
+            <circle cx="100" cy="100" r="78" stroke="url(#goldGrad)" stroke-width="1" opacity="0.35" />
+            <circle cx="100" cy="12" r="4" fill="#FCE38A" />
+            <circle cx="188" cy="100" r="3" fill="#00A9E0" />
+            <circle cx="100" cy="188" r="4" fill="#FCE38A" />
+            <circle cx="12" cy="100" r="3" fill="#00A9E0" />
+          </g>
+
+          <g class="astro-ring-middle">
+            <circle cx="100" cy="100" r="60" stroke="url(#skyGrad)" stroke-width="1.4" stroke-dasharray="12 6" opacity="0.65" />
+            <rect x="58" y="58" width="84" height="84" rx="10" transform="rotate(45 100 100)" stroke="url(#goldGrad)" stroke-width="1.1" opacity="0.45" />
+            <rect x="58" y="58" width="84" height="84" rx="10" stroke="url(#goldGrad)" stroke-width="1.1" opacity="0.45" />
+          </g>
+
+          <g class="astro-core-star">
+            <path d="M100 32 L114 86 L168 100 L114 114 L100 168 L86 114 L32 100 L86 86 Z" fill="url(#goldGrad)" opacity="0.22" />
+            <path d="M100 48 L108 92 L152 100 L108 108 L100 152 L92 108 L48 100 L92 92 Z" fill="url(#goldGrad)" transform="rotate(45 100 100)" opacity="0.7" />
+            <path d="M100 36 L111 89 L164 100 L111 111 L100 164 L89 111 L36 100 L89 89 Z" fill="url(#goldGrad)" />
+            <circle cx="100" cy="100" r="8" fill="#FFFFFF" />
+          </g>
+        </svg>
+      </div>
+
+      <div class="portal-eyebrow">
+        <i class="ph-fill ph-sparkle"></i>
+        <span>MAKE-A-WISH TÜRKİYE • BİR DİLEK TUT</span>
+        <i class="ph-fill ph-sparkle"></i>
+      </div>
+
+      <h1 class="portal-title">
+        Hoş Geldin <em>Ayşe!</em>
+      </h1>
+
+      <p class="portal-desc">
+        Hayati tehlikesi olan bir çocuğun hayalini gerçeğe dönüştürecek <strong>Dilek Gönüllüsü</strong> yolculuğun başlıyor.
+        Gökyüzündeki yıldızları birleştirerek senin süper güçlerini ve çocuklarla kuracağın <strong>kalp bağını</strong> keşfedelim.
+      </p>
+
+      <div class="constellation-journey-map">
+        <div class="c-node">
+          <div class="c-node-orb"><i class="ph-fill ph-planet"></i></div>
+          <span class="c-node-label">1. Yaş Grubu</span>
+        </div>
+        <div class="c-node">
+          <div class="c-node-orb"><i class="ph-fill ph-heart-straight"></i></div>
+          <span class="c-node-label">2. Çocuk Dünyası</span>
+        </div>
+        <div class="c-node">
+          <div class="c-node-orb"><i class="ph-fill ph-magic-wand"></i></div>
+          <span class="c-node-label">3. Süper Güçler</span>
+        </div>
+        <div class="c-node">
+          <div class="c-node-orb"><i class="ph-fill ph-seal-check"></i></div>
+          <span class="c-node-label">4. Pasaport</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn-ignite-journey" onclick="openMagicCurtain(event)">
+        <i class="ph-fill ph-sparkle"></i>
+        <span>Keşif Yolculuğunu Başlat</span>
+        <i class="ph-bold ph-arrow-right"></i>
+      </button>
+
+      <div class="portal-footer-meta">
+        <i class="ph-fill ph-clock-countdown" style="color: var(--gold-bright);"></i>
+        <span>45 Saniyelik İnteraktif Deneyim • Yazı yazmak yok, yıldızlara dokun ve seç</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       1. ÜST BAR (ORİJİNAL SICAK MAKE-A-WISH TEMASI)
+       ══════════════════════════════════════════════════════════════════════════ -->
   <header class="topbar">
     <a href="../static-pages/duyurular.html" class="topbar-brand">
       <div class="topbar-logo-badge">
@@ -910,60 +1908,101 @@
       </div>
     </a>
 
-    <div class="topbar-city-pill" title="İkamet Şehriniz">
-      <i class="ph-fill ph-map-pin"></i>
-      <span id="volunteerCityDisplay">İstanbul</span>
+    <div class="topbar-right-controls">
+      <button type="button" class="sound-toggle-pill" id="soundToggleBtn" onclick="toggleSoundEngine()" title="Stüdyo Ses Efektlerini Aç / Kapat">
+        <i class="ph-fill ph-speaker-high" id="soundToggleIcon"></i>
+      </button>
     </div>
   </header>
 
-  <!-- ── 2. STICKY SİHİRLİ İLERLEME ÇUBUĞU (MAGIC MATCH METER) ── -->
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       2. STICKY SİHİRLİ İLERLEME & 4 SAHNE STEPPER ÇUBUĞU
+       ══════════════════════════════════════════════════════════════════════════ -->
   <div class="magic-meter-bar">
     <div class="meter-container">
-      <div class="meter-text-block">
-        <div class="meter-label">✦ Dilek Frekansı &amp; Uyum Gücü</div>
-        <div class="meter-status" id="meterStatusText">Keşif Yolculuğu Başladı ✨</div>
-      </div>
-      
-      <div class="meter-track">
-        <div class="meter-fill" id="meterFillBar"></div>
+      <div class="meter-top-row">
+        <div class="step-dots-nav">
+          <button type="button" class="step-dot-btn active" id="navStep1" onclick="goToScene(1)">
+            <span class="dot-num">1</span>
+            <span class="dot-label">Yaş Grupları</span>
+          </button>
+          <button type="button" class="step-dot-btn" id="navStep2" onclick="goToScene(2)">
+            <span class="dot-num">2</span>
+            <span class="dot-label">Çocuk Dünyası</span>
+          </button>
+          <button type="button" class="step-dot-btn" id="navStep3" onclick="goToScene(3)">
+            <span class="dot-num">3</span>
+            <span class="dot-label">Süper Güçler</span>
+          </button>
+          <button type="button" class="step-dot-btn" id="navStep4" onclick="goToScene(4)">
+            <span class="dot-num">4</span>
+            <span class="dot-label">Hobiler &amp; Pasaport</span>
+          </button>
+        </div>
+
+        <div class="meter-badge" id="meterBadgeText">
+          <span>%0</span> &nbsp;✦&nbsp; <span>Keşif Bekleniyor</span>
+        </div>
       </div>
 
-      <div class="meter-badge" id="meterBadgeText">
-        <span>%20</span> &nbsp;✦&nbsp; <span>Başlangıç</span>
+      <div class="meter-track-row">
+        <div class="meter-status" id="meterStatusText">Seni tanımak için yaş gruplarını seçerek başla ✨</div>
+        <div class="meter-track">
+          <div class="meter-fill" id="meterFillBar" style="width: 0%;"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ── 3. ANA İÇERİK ── -->
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       3. ANA İÇERİK (ORİJİNAL SICAK BEYAZ MASAL KARTLARI - 4 SAHNE WIZARD)
+       ══════════════════════════════════════════════════════════════════════════ -->
   <main class="main-wrapper">
-    
-    <!-- Hero Giriş -->
-    <div class="hero-banner">
-      <div class="hero-star-icon">
-        <i class="ph-fill ph-star"></i>
+
+    <!-- Örnek Dilek Çocuğu Kartı (Orijinal Sıcak Tasarım) -->
+    <div class="live-match-banner" id="liveMatchBanner">
+      <div class="match-banner-header">
+        <div class="match-counter-badge">
+          <span class="match-pulse-dot"></span>
+          <span class="match-count-text">✦ Dokunabileceğin Bir Hayal (Örnek Dilek Çocuğu)</span>
+        </div>
+
+        <div class="match-city-label">
+          <i class="ph-fill ph-sparkle"></i>
+          <span>Make-A-Wish İlham Havuzu</span>
+        </div>
       </div>
-      <div class="hero-eyebrow">✦ BİR DİLEK BİR MUCİZE ✦</div>
-      <h1 class="hero-title">Hoş Geldin Dilek Kaşifimiz! 🌟<br><em>Süper Güçlerini Belirleyelim</em></h1>
-      <p class="hero-desc">
-        Hayati tehlikesi olan çocuklarımızın her birinin dünyası, hayalleri ve enerjisi biriciktir. 
-        Seni en doğru çocukla buluşturabilmemiz için ilgi alanlarını, tecrübelerini ve tutkularını birlikte seçelim.
-      </p>
+
+      <div class="match-child-preview-card" id="matchChildCard">
+        <div class="match-child-avatar" id="matchChildAvatar">🌟</div>
+        <div class="match-child-info">
+          <div class="match-child-name-row">
+            <span class="match-child-name" id="matchChildName">Dilek Çocukları Beklemede</span>
+            <span class="match-child-badge" id="matchChildBadge">Keşif Başlat</span>
+          </div>
+          <div class="match-child-wish" id="matchChildWish">
+            "Aşağıdan yaş gruplarını ve ilgi alanlarını seçtikçe, senin iletişim dilinle tam uyuşan örnek bir çocuğun dilek hikayesi burada canlanacak!"
+          </div>
+          <div class="match-child-tags" id="matchChildTags">
+            <span class="match-tag-pill">✨ Seçimlerini Yap</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- ── BÖLÜM 1: YAŞ GRUPLARI ── -->
-    <section class="section-card" id="secAgeGroups">
+    <!-- ── SAHNE 1: YAŞ GRUPLARI (ORİJİNAL DISNEY MASAL KARTLARI) ── -->
+    <section class="section-card active" id="scene1">
       <div class="section-header">
         <div class="section-step-num">1</div>
         <div class="section-header-text">
-          <h2>Kiminle Frekansın Daha Yüksek? <i class="ph-fill ph-heart" style="color: #E11D48; font-size: 18px;"></i></h2>
-          <p>Hangi yaş grubundaki çocuklarla iletişim kurarken enerjin daha yüksek hissediyorsun? (Birden fazla seçebilirsin)</p>
+          <h2>Hangi Yaş Grubuyla İletişimin Daha Güçlü? <i class="ph-fill ph-heart" style="color: #E11D48; font-size: 18px;"></i></h2>
+          <p>Hangi yaş grubundaki çocuklarla kalp bağı kurarken ve sohbet ederken kendini daha rahat hissediyorsun? (Birden fazla seçebilirsin)</p>
         </div>
         <span class="section-badge">Zorunlu Alan</span>
       </div>
 
       <div class="age-cards-grid">
-        <!-- 3-6 Yaş -->
-        <div class="age-card selected" onclick="toggleAgeGroup(this, '3-6 Yaş')">
+        <div class="age-card" data-age-enum="1" data-label="3-6 Yaş" onclick="toggleAgeGroup(this, event)">
           <div class="age-card-top">
             <span class="age-card-icon">🎈</span>
             <div class="age-check-circle"><i class="ph-bold ph-check"></i></div>
@@ -973,8 +2012,7 @@
           <div class="age-card-desc">Oyun hamurları, oyuncak bebekler, boyama kitapları ve ilk adımların saf neşesi.</div>
         </div>
 
-        <!-- 7-9 Yaş -->
-        <div class="age-card selected" onclick="toggleAgeGroup(this, '7-9 Yaş')">
+        <div class="age-card" data-age-enum="2" data-label="7-9 Yaş" onclick="toggleAgeGroup(this, event)">
           <div class="age-card-top">
             <span class="age-card-icon">🧪</span>
             <div class="age-check-circle"><i class="ph-bold ph-check"></i></div>
@@ -984,8 +2022,7 @@
           <div class="age-card-desc">Bitmeyen sorular, kutu oyunları, ilk legolar, çizimler ve sınırsız merak.</div>
         </div>
 
-        <!-- 10-13 Yaş -->
-        <div class="age-card" onclick="toggleAgeGroup(this, '10-13 Yaş')">
+        <div class="age-card" data-age-enum="3" data-label="10-13 Yaş" onclick="toggleAgeGroup(this, event)">
           <div class="age-card-top">
             <span class="age-card-icon">🔮</span>
             <div class="age-check-circle"><i class="ph-bold ph-check"></i></div>
@@ -995,8 +2032,7 @@
           <div class="age-card-desc">Minecraft, Roblox, YouTube trendleri, kutu kutu legolar ve macera arayışı.</div>
         </div>
 
-        <!-- 14-17 Yaş -->
-        <div class="age-card" onclick="toggleAgeGroup(this, '14-17 Yaş')">
+        <div class="age-card" data-age-enum="4" data-label="14-17 Yaş" onclick="toggleAgeGroup(this, event)">
           <div class="age-card-top">
             <span class="age-card-icon">🎓</span>
             <div class="age-check-circle"><i class="ph-bold ph-check"></i></div>
@@ -1008,8 +2044,8 @@
       </div>
     </section>
 
-    <!-- ── BÖLÜM 2: ÇOCUK GRUPLARI ── -->
-    <section class="section-card" id="secChildGroups">
+    <!-- ── SAHNE 2: ÇOCUK GRUPLARI (ORİJİNAL KARTLAR) ── -->
+    <section class="section-card" id="scene2">
       <div class="section-header">
         <div class="section-step-num">2</div>
         <div class="section-header-text">
@@ -1020,178 +2056,136 @@
       </div>
 
       <div class="child-groups-grid">
-        <div class="child-group-item selected" onclick="toggleChildGroup(this, 'İçe kapanık, utangaç çocuklar')">
+        <div class="child-group-item" data-cg-id="1" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">İçe kapanık, utangaç, konuşmak istemeyen çocuklar</span>
         </div>
 
-        <div class="child-group-item" onclick="toggleChildGroup(this, 'İstekli ama çekingen çocuklar')">
+        <div class="child-group-item" data-cg-id="2" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">İstekli ama adım atmakta zorlanan çocuklar</span>
         </div>
 
-        <div class="child-group-item selected" onclick="toggleChildGroup(this, 'DEHB ve dikkat dağınıklığı')">
+        <div class="child-group-item" data-cg-id="3" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">DEHB'li ve dikkat dağınıklığı yaşayan çocuklar</span>
         </div>
 
-        <div class="child-group-item" onclick="toggleChildGroup(this, 'İletişimde zorlanan çocuklar')">
+        <div class="child-group-item" data-cg-id="4" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">İletişim kurmakta ve kendini ifade etmekte zorlanan çocuklar</span>
         </div>
 
-        <div class="child-group-item" onclick="toggleChildGroup(this, 'Konuşma ve dil gelişimi')">
+        <div class="child-group-item" data-cg-id="5" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">Konuşma ve dil gelişim geriliği yaşayan çocuklar</span>
         </div>
 
-        <div class="child-group-item" onclick="toggleChildGroup(this, 'Motivasyon kaybı yaşayan çocuklar')">
+        <div class="child-group-item" data-cg-id="6" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">Motivasyon kaybı ve isteksizlik yaşayan çocuklar</span>
         </div>
 
-        <div class="child-group-item" onclick="toggleChildGroup(this, 'Yönlendirme ihtiyacı olanlar')">
+        <div class="child-group-item" data-cg-id="7" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">Kararsız ve yönlendirme ihtiyacı olan çocuklar</span>
         </div>
 
-        <div class="child-group-item" onclick="toggleChildGroup(this, 'Aile yönlendirmesine maruz kalanlar')">
+        <div class="child-group-item" data-cg-id="8" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">Aile yönlendirmesine maruz kalan çocuklar</span>
         </div>
 
-        <div class="child-group-item" onclick="toggleChildGroup(this, 'Otizm spektrumundaki çocuklar')">
+        <div class="child-group-item" data-cg-id="9" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">Otizm spektrum bozukluğu yaşayan çocuklar</span>
         </div>
 
-        <div class="child-group-item" onclick="toggleChildGroup(this, 'Özel gereksinimli çocuklar')">
+        <div class="child-group-item" data-cg-id="10" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">Özel gereksinimli çocuklar</span>
         </div>
 
-        <div class="child-group-item selected" onclick="toggleChildGroup(this, 'Girişimci ve yaratıcı ruhlar')">
+        <div class="child-group-item" data-cg-id="11" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">Girişimci ruhlu ve yaratıcı çocuklar</span>
         </div>
 
-        <div class="child-group-item" onclick="toggleChildGroup(this, 'Ergenlik dönemindeki gençler')">
+        <div class="child-group-item" data-cg-id="12" onclick="toggleChildGroup(this, event)">
           <div class="custom-check-box"><i class="ph-bold ph-check"></i></div>
           <span class="child-group-text">Ergenlik dönemindeki çocuklar</span>
         </div>
       </div>
     </section>
 
-    <!-- ── BÖLÜM 3: YETENEKLER & SAHA İMKÂNLARI ── -->
-    <section class="section-card" id="secCapabilities">
+    <!-- ── SAHNE 3: YETENEKLER & SAHA İMKÂNLARI (ORİJİNAL ETİKETLER) ── -->
+    <section class="section-card" id="scene3">
       <div class="section-header">
         <div class="section-step-num">3</div>
         <div class="section-header-text">
           <h2>Süper Güçlerin &amp; Saha İmkânların <i class="ph-fill ph-magic-wand" style="color: var(--disney-gold); font-size: 18px;"></i></h2>
           <p>Dilek randevuları veya hayal gerçekleştirme günlerinde derneğimize sunabileceğin yetenek ve araçlar.</p>
         </div>
-        <span class="section-badge">Genişletilebilir</span>
+        <span class="section-badge">İsteğe Bağlı</span>
       </div>
 
-      <!-- Yetenekler -->
       <div class="tag-cloud-wrapper">
         <div class="tag-cloud-title"><i class="ph-fill ph-target"></i> Özel Yetenekler &amp; Formasyonlar</div>
         <div class="tag-cloud">
-          <div class="magical-tag selected" onclick="toggleTag(this, 'İngilizce')">
-            <span class="tag-emoji">🇬🇧</span>
-            <span>İngilizce Biliyorum</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="İngilizce" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🇬🇧</span><span>İngilizce Biliyorum</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'Kürtçe')">
-            <span class="tag-emoji">🗣️</span>
-            <span>Kürtçe Biliyorum</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Kürtçe" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🗣️</span><span>Kürtçe Biliyorum</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'Arapça')">
-            <span class="tag-emoji">🇸🇦</span>
-            <span>Arapça Biliyorum</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Arapça" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🇸🇦</span><span>Arapça Biliyorum</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag selected" onclick="toggleTag(this, 'Gitar')">
-            <span class="tag-emoji">🎸</span>
-            <span>Gitar Çalabiliyorum</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Gitar" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🎸</span><span>Gitar Çalabiliyorum</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'İşaret Dili')">
-            <span class="tag-emoji">🤟</span>
-            <span>İşaret Dili Biliyorum</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="İşaret Dili" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🤟</span><span>İşaret Dili Biliyorum</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag selected" onclick="toggleTag(this, 'Psikolojik İlk Yardım')">
-            <span class="tag-emoji">🩺</span>
-            <span>Psikolojik İlk Yardım Eğitimi</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Psikolojik İlk Yardım" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🩺</span><span>Psikolojik İlk Yardım Eğitimi</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'Yüz Boyama')">
-            <span class="tag-emoji">🎨</span>
-            <span>Yüz Boyama Biliyorum</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Yüz Boyama" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🎨</span><span>Yüz Boyama Biliyorum</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'Animatör')">
-            <span class="tag-emoji">🎭</span>
-            <span>Animatör / Palyaço Tecrübesi</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Animatör" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🎭</span><span>Animatör / Palyaço Tecrübesi</span><i class="ph-bold ph-check tag-check"></i>
           </div>
         </div>
       </div>
 
-      <!-- Saha İmkânları -->
       <div class="tag-cloud-wrapper">
         <div class="tag-cloud-title"><i class="ph-fill ph-key"></i> Araç &amp; Ekipman İmkânları (Etkinlik Katkısı)</div>
         <div class="tag-cloud">
-          <div class="magical-tag selected" onclick="toggleTag(this, 'Binek Araç')">
-            <span class="tag-emoji">🚗</span>
-            <span>Binek Araç (Sedan / Hatchback)</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Binek Araç" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🚗</span><span>Binek Araç (Sedan / Hatchback)</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'Geniş Araç')">
-            <span class="tag-emoji">🚐</span>
-            <span>Geniş Araç (Minivan / Doblo vs.)</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Geniş Araç" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🚐</span><span>Geniş Araç (Minivan / Doblo vs.)</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'Drone')">
-            <span class="tag-emoji">🛸</span>
-            <span>Drone (Uçan Kamera)</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Drone" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🛸</span><span>Drone (Uçan Kamera)</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'Fotoğraf Makinesi')">
-            <span class="tag-emoji">📸</span>
-            <span>Profesyonel Fotoğraf Makinesi</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Fotoğraf Makinesi" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">📸</span><span>Profesyonel Fotoğraf Makinesi</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'Kamp Çadırı')">
-            <span class="tag-emoji">🏕️</span>
-            <span>Karavan / Kamp Çadırı</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Kamp Çadırı" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">🏕️</span><span>Karavan / Kamp Çadırı</span><i class="ph-bold ph-check tag-check"></i>
           </div>
-
-          <div class="magical-tag" onclick="toggleTag(this, 'Tekne')">
-            <span class="tag-emoji">⛵</span>
-            <span>Tekne</span>
-            <i class="ph-bold ph-check tag-check"></i>
+          <div class="magical-tag" data-label="Tekne" onclick="toggleTag(this, event)">
+            <span class="tag-emoji">⛵</span><span>Tekne</span><i class="ph-bold ph-check tag-check"></i>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ── BÖLÜM 4: TUTKULAR & HOBİLER (NURCAN'DAN GELECEK LİSTE ALANI) ── -->
-    <section class="section-card" id="secHobbies">
+    <!-- ── SAHNE 4: TUTKULAR & HOBİLER + ORİJİNAL PASAPORT ÖNİZLEMESİ ── -->
+    <section class="section-card" id="scene4">
       <div class="section-header">
         <div class="section-step-num">4</div>
         <div class="section-header-text">
@@ -1201,255 +2195,998 @@
         <span class="section-badge">Ortak Noktalar</span>
       </div>
 
-      <div class="hobby-notice-banner">
-        <i class="ph-fill ph-info" style="font-size: 20px;"></i>
-        <span><strong>Koordinatör Notu:</strong> Bu liste Nurcan ve ekip tarafından düzenli olarak güncellenmektedir. Çocukların hayallerindeki en popüler ilgi alanları aşağıdadır:</span>
+      <div class="tag-cloud">
+        <div class="magical-tag" data-label="Lego" onclick="toggleTag(this, event)">
+          <span class="tag-emoji">🧱</span><span>Lego Mimarlığı &amp; Setler</span><i class="ph-bold ph-check tag-check"></i>
+        </div>
+        <div class="magical-tag" data-label="Minecraft" onclick="toggleTag(this, event)">
+          <span class="tag-emoji">🎮</span><span>Minecraft &amp; Roblox Dünyası</span><i class="ph-bold ph-check tag-check"></i>
+        </div>
+        <div class="magical-tag" data-label="Resim" onclick="toggleTag(this, event)">
+          <span class="tag-emoji">🎨</span><span>Resim, Çizim &amp; El Sanatları</span><i class="ph-bold ph-check tag-check"></i>
+        </div>
+        <div class="magical-tag" data-label="Müzik" onclick="toggleTag(this, event)">
+          <span class="tag-emoji">🎵</span><span>Müzik &amp; Enstrüman Dinletisi</span><i class="ph-bold ph-check tag-check"></i>
+        </div>
+        <div class="magical-tag" data-label="Süper Kahramanlar" onclick="toggleTag(this, event)">
+          <span class="tag-emoji">🦸</span><span>Marvel / Disney / Süper Kahramanlar</span><i class="ph-bold ph-check tag-check"></i>
+        </div>
+        <div class="magical-tag" data-label="Spor" onclick="toggleTag(this, event)">
+          <span class="tag-emoji">⚽</span><span>Futbol / Basketbol / Spor</span><i class="ph-bold ph-check tag-check"></i>
+        </div>
+        <div class="magical-tag" data-label="Kitap & Masal" onclick="toggleTag(this, event)">
+          <span class="tag-emoji">📚</span><span>Masal Anlatıcılığı &amp; Kitaplar</span><i class="ph-bold ph-check tag-check"></i>
+        </div>
+        <div class="magical-tag" data-label="Uzay" onclick="toggleTag(this, event)">
+          <span class="tag-emoji">🚀</span><span>Uzay, Bilim &amp; Robotik</span><i class="ph-bold ph-check tag-check"></i>
+        </div>
       </div>
 
-      <div class="tag-cloud">
-        <div class="magical-tag selected" onclick="toggleTag(this, 'Lego')">
-          <span class="tag-emoji">🧱</span>
-          <span>Lego Mimarlığı &amp; Setler</span>
-          <i class="ph-bold ph-check tag-check"></i>
+      <!-- Canlı Gönüllü Yıldız Pasaportu Ön İzlemesi -->
+      <div class="passport-preview-box">
+        <div class="golden-wax-seal" id="pageWaxSeal" style="display: none;">
+          <div class="wax-seal-outer">
+            <div class="wax-seal-ring">
+              <div class="wax-seal-inner">
+                <div class="wax-seal-star">★</div>
+                <div class="wax-seal-text-top">MAKE-A-WISH</div>
+                <div class="wax-seal-year">2026</div>
+                <div class="wax-seal-text-bottom">RESMİ GÖNÜLLÜ</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="magical-tag selected" onclick="toggleTag(this, 'Minecraft')">
-          <span class="tag-emoji">🎮</span>
-          <span>Minecraft &amp; Roblox Dünyası</span>
-          <i class="ph-bold ph-check tag-check"></i>
+        <div class="passport-header">
+          <div class="passport-logo-area">
+            <i class="ph-fill ph-sparkle passport-logo-star"></i>
+            <div>
+              <div class="passport-inst-title">Bir Dilek Tut Derneği / Make-A-Wish Türkiye</div>
+              <div class="passport-inst-sub" id="previewPassportSubtitle">Gönüllü Yıldız Pasaportu</div>
+            </div>
+          </div>
+          <div class="passport-doc-code" id="passportDocCode">WISH-2026-TR</div>
         </div>
 
-        <div class="magical-tag" onclick="toggleTag(this, 'Resim')">
-          <span class="tag-emoji">🎨</span>
-          <span>Resim, Çizim &amp; El Sanatları</span>
-          <i class="ph-bold ph-check tag-check"></i>
-        </div>
-
-        <div class="magical-tag" onclick="toggleTag(this, 'Müzik')">
-          <span class="tag-emoji">🎵</span>
-          <span>Müzik &amp; Enstrüman Dinletisi</span>
-          <i class="ph-bold ph-check tag-check"></i>
-        </div>
-
-        <div class="magical-tag" onclick="toggleTag(this, 'Süper Kahramanlar')">
-          <span class="tag-emoji">🦸</span>
-          <span>Marvel / Disney / Süper Kahramanlar</span>
-          <i class="ph-bold ph-check tag-check"></i>
-        </div>
-
-        <div class="magical-tag" onclick="toggleTag(this, 'Spor')">
-          <span class="tag-emoji">⚽</span>
-          <span>Futbol / Basketbol / Spor</span>
-          <i class="ph-bold ph-check tag-check"></i>
-        </div>
-
-        <div class="magical-tag" onclick="toggleTag(this, 'Kitap & Masal')">
-          <span class="tag-emoji">📚</span>
-          <span>Masal Anlatıcılığı &amp; Kitaplar</span>
-          <i class="ph-bold ph-check tag-check"></i>
-        </div>
-
-        <div class="magical-tag" onclick="toggleTag(this, 'Uzay')">
-          <span class="tag-emoji">🚀</span>
-          <span>Uzay, Bilim &amp; Robotik</span>
-          <i class="ph-bold ph-check tag-check"></i>
+        <div class="passport-body">
+          <div class="passport-avatar-circle">
+            <span>🌟</span>
+          </div>
+          <div class="passport-info">
+            <h3 id="passportVolunteerName">Ayşe Yılmaz</h3>
+            <p>
+              <span id="passportVolunteerArchetype" style="color: var(--disney-gold-light); font-weight: 700;">✦ Resmi Dilek Gönüllüsü</span> &nbsp;•&nbsp;
+              <strong>Kalp Bağı &amp; Uyum: <span id="passportScoreDisplay">%0</span></strong>
+            </p>
+            <div class="passport-badges-tray" id="passportBadgesTray">
+              <span class="passport-empty-hint">✦ Henüz rozet seçilmedi. Yetenek ve ilgi alanlarını seçtikçe burada parlayacak! ✨</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ── 5. CANLI DİLEK KAŞİFİ PASAPORT ÖN İZLEMESİ ── -->
-    <div class="passport-preview-box">
-      <div class="passport-header">
-        <div class="passport-logo-area">
-          <i class="ph-fill ph-sparkle passport-logo-star"></i>
-          <div>
-            <div class="passport-inst-title">Bir Dilek Tut Derneği / Make-A-Wish Türkiye</div>
-            <div class="passport-inst-sub">Resmi Gönüllü Dilek Kaşifi Dijital Pasaportu</div>
-          </div>
-        </div>
-        <div class="passport-doc-code" id="passportDocCode">WISH-2026-TR</div>
-      </div>
-
-      <div class="passport-body">
-        <div class="passport-avatar-circle">
-          <span>🌟</span>
-        </div>
-        <div class="passport-info">
-          <h3 id="passportVolunteerName">Ayşe Yılmaz</h3>
-          <p><i class="ph-fill ph-map-pin"></i> İstanbul &nbsp;•&nbsp; ✦ Aktif Gönüllü Adayı &nbsp;•&nbsp; <strong>Uyum Puanı: %100</strong></p>
-          
-          <div class="passport-badges-tray" id="passportBadgesTray">
-            <span class="passport-mini-badge">🎈 3-6 Yaş</span>
-            <span class="passport-mini-badge">🧪 7-9 Yaş</span>
-            <span class="passport-mini-badge">🧱 Lego</span>
-            <span class="passport-mini-badge">🎮 Minecraft</span>
-            <span class="passport-mini-badge">🎸 Gitar</span>
-            <span class="passport-mini-badge">🚗 Binek Araç</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── 6. ALT AKSİYON BARI (SUBMIT FOOTER) ── -->
-    <footer class="action-footer">
-      <div class="footer-summary">
-        <div class="footer-summary-title">Süper Güçlerin Hazır mı?</div>
-        <div class="footer-summary-desc">Tamamladığında profilin koordinatörümüz Nurcan'ın onay masasına iletilecek.</div>
-      </div>
-
-      <button type="button" class="btn-complete-journey" onclick="openCongratsModal()">
-        <span>✦ Keşfi Tamamla &amp; Nurcan'a İlet</span>
-        <i class="ph-bold ph-arrow-right"></i>
-      </button>
-    </footer>
-
   </main>
 
-  <!-- ── 7. KUTLAMA VE ONAY BEKLEME YÖNLENDİRME MODALI ── -->
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       4. SABİT ALT WIZARD BARI
+       ══════════════════════════════════════════════════════════════════════════ -->
+  <footer class="wizard-bottom-bar">
+    <div class="bottom-bar-inner">
+      <button type="button" class="btn-wizard-prev hidden" id="btnPrevScene" onclick="prevScene()">
+        <i class="ph-bold ph-arrow-left"></i>
+        <span>Önceki Sahne</span>
+      </button>
+
+      <div class="bottom-step-hint" id="bottomStepHint">
+        Sahne 1 / 4 • En az 1 yaş grubu seçerek ilerle ✨
+      </div>
+
+      <button type="button" class="btn-complete-journey" id="btnNextScene" onclick="nextScene()">
+        <span id="btnNextText">2. Sahneye Geç</span>
+        <i class="ph-bold ph-arrow-right" id="btnNextIcon"></i>
+      </button>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       5. KUTLAMA, ALTIN MUM MÜHRÜ & DİJİTAL PASAPORT KARTI MODALI
+       ══════════════════════════════════════════════════════════════════════════ -->
   <div class="modal-backdrop" id="congratsModal" onclick="closeCongratsModal()">
     <div class="congrats-modal-card" onclick="event.stopPropagation()">
-      <div class="congrats-star-burst">🎉</div>
-      <h3 class="congrats-title">Harikasın Dilek Kaşifi!</h3>
-      <p class="congrats-desc">
-        Süper güçlerin ve ilgi alanların <strong>%100 sevgiyle kaydedildi</strong>.<br/>
-        Başvurun koordinatörümüz Nurcan ve dernek ekibimize ulaştı. Onay sürecini ve duyuruları takip etmek için başvuru durum sayfana aktarılıyorsun.
+      <button type="button" class="congrats-close-btn" onclick="closeCongratsModal()" title="Kapat">✕</button>
+
+      <div class="congrats-eyebrow" id="modalEyebrow">✦ BAŞVURUN VE KEŞFİN ALINDI ✦</div>
+      <h2 class="congrats-title" id="modalTitle">Harikasın Gönüllü Yıldızı! 🌟</h2>
+      <p class="congrats-desc" id="modalDesc">
+        Süper güçlerin ve ilgi alanların yöneticimizin onay masasına iletildi.
       </p>
 
-      <div class="congrats-btn-row">
-        <a href="../Account/Pending_Approval?email=gonullu@makeawishturkiye.org" class="btn-modal-primary" id="btnGoToPending">
-          <span>Başvuru Durumunu Takip Et</span>
+      <div class="passport-modal-preview" id="modalPassportCard">
+        <div class="golden-wax-seal" id="modalWaxSeal" style="display: none;">
+          <div class="wax-seal-outer">
+            <div class="wax-seal-ring">
+              <div class="wax-seal-inner">
+                <div class="wax-seal-star">★</div>
+                <div class="wax-seal-text-top">MAKE-A-WISH</div>
+                <div class="wax-seal-year">2026</div>
+                <div class="wax-seal-text-bottom">RESMİ GÖNÜLLÜ</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="passport-header">
+          <div class="passport-logo-area">
+            <i class="ph-fill ph-sparkle passport-logo-star"></i>
+            <div>
+              <div class="passport-inst-title">Bir Dilek Tut Derneği / Make-A-Wish Türkiye</div>
+              <div class="passport-inst-sub">Gönüllü Yıldız Pasaportu</div>
+            </div>
+          </div>
+          <div class="passport-doc-code" id="modalPassportDocCode">WISH-2026-TR</div>
+        </div>
+
+        <div class="passport-body">
+          <div class="passport-avatar-circle">
+            <span id="modalPassportAvatar">🌟</span>
+          </div>
+          <div class="passport-info">
+            <h3 id="modalPassportName">Ayşe Yılmaz</h3>
+            <p>
+              <span id="modalPassportArchetype" style="color: var(--disney-gold-light); font-weight: 700;">⏳ Yönetici Onayı Bekleniyor</span> &nbsp;•&nbsp;
+              <strong>Kalp Bağı &amp; Uyum: <span id="modalPassportScore">%100</span></strong>
+            </p>
+            <div class="passport-badges-tray" id="modalPassportBadges"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DURUM A: Aday Kilitli -->
+      <div id="candidatePendingBlock">
+        <div class="candidate-lock-banner">
+          <div class="candidate-lock-icon"><i class="ph-fill ph-lock-key"></i></div>
+          <div>
+            <strong>Resmi Mühürlü Instagram Story Pasaportun Hazırlanıyor!</strong><br/>
+            Güvenlik kurallarımız gereği, yöneticimiz gönüllü kaydını onayladığında <strong>Altın Mum Mühürlü Dijital Pasaportun</strong> açılacak ve <strong>Profil Düzenle</strong> sayfasından indirip paylaşabileceksin!
+          </div>
+        </div>
+
+        <button type="button" class="btn-proceed-pending" onclick="closeCongratsModal(); showToast('🕊️ Tercihlerin kaydedildi! Başvurun onaylandığında bilgilendirileceksin.')">
+          <i class="ph-bold ph-check-circle"></i>
+          <span>Anladım, Onay Bildirimini Bekliyorum</span>
+        </button>
+      </div>
+
+      <!-- DURUM B: Onaylı Gönüllü — HD Story İndirme Açık! -->
+      <div id="approvedVolunteerBlock" style="display: none;">
+        <div class="congrats-action-grid">
+          <button type="button" class="btn-download-card" onclick="downloadPassportCard()" id="btnDownloadCard">
+            <i class="ph-bold ph-download-simple"></i>
+            <span>Pasaportu İndir (HD / Story)</span>
+          </button>
+
+          <button type="button" class="btn-share-story" onclick="shareOnInstagramStory()" id="btnShareStory">
+            <i class="ph-bold ph-instagram-logo"></i>
+            <span>Instagram Story'de Paylaş</span>
+          </button>
+        </div>
+
+        <a href="../static-pages/duyurular.html" class="btn-proceed-pending">
+          <span>✦ Gönüllü Portalına (Dashboard) Geç</span>
           <i class="ph-bold ph-arrow-right"></i>
         </a>
-        <button type="button" class="btn-modal-secondary" onclick="closeCongratsModal()">
-          Tekrar Gözden Geçir
-        </button>
       </div>
     </div>
   </div>
 
-  <!-- ── SİHİRLİ JAVASCRIPT: PERİ TOZU VE ETKİLEŞİM YÖNETİMİ ── -->
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       JAVASCRIPT: TAKIMYILDIZI BAĞLANTISI + 4 SAHNE WIZARD + ORİJİNAL HD CANVAS
+       ══════════════════════════════════════════════════════════════════════════ -->
   <script>
-    // ── 1. SİHİRLİ PERİ TOZU / YILDIZ TOZU ANİMASYONU (ASLA NEON DEĞİL) ──
-    const canvas = document.getElementById('fairyDustCanvas');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let particles = [];
+    let currentScene = 1;
+    let isCurtainOpen = false;
+    let isApprovedSimulated = true;
+    const pageLoadTimestamp = Date.now();
 
-    function resizeCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+    // ══════════════════════════════════════════════════════════════════════════
+    // 0. 4 SAHNELİ MÜZİKAL STÜDYO SES MOTORU (WEB AUDIO API + CONCERT HALL REVERB)
+    //    - Başlangıç: Masalsı Perde Açılış Arp Glissando'su
+    //    - Sahne 1 (Yaş Grupları): C Lydian Celesta / Müzik Kutusu Notaları
+    //    - Sahne 2 (Çocuk Dünyası): F Major 9 Sıcak Konser Arpı & Çift Sesli Empati Akorları
+    //    - Sahne 3 (Süper Güçler): G Major Kristal Vibraphone / Marimba Notaları
+    //    - Sahne 4 (Hobiler & Pasaport): D Major Kraliyet Yıldız Çanları (2 Notalı Arpej)
+    //    - Sahne Geçişleri: Her sayfanın kendi makamında 3 notalı müzikal geçiş motifi
+    //    - Final Mühür: Kraliyet Fanfarı + Tok Mühür Darbesi + Bronz Katedral Çanı "DOOOOOONG!"
+    // ══════════════════════════════════════════════════════════════════════════
+    const SoundStudio = (() => {
+      let ctx = null;
+      let reverbNode = null;
+      let masterGain = null;
+      let isMuted = false;
+
+      // Her sahnenin kendi nota sayacı (Seçim yaptıkça kendi dizisinde müzikal olarak ilerler)
+      const sceneStepIndex = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+      // 4 Sahnenin Kendine Özgü Müzikal Dizileri (Hz)
+      const SCENE_SCALES = {
+        // Sahne 1 (Yaş Grupları - Masalsı C Lydian Celesta): C5, D5, E5, F#5, G5, A5, B5, C6
+        1: [523.25, 587.33, 659.25, 739.99, 783.99, 880.00, 987.77, 1046.50],
+        // Sahne 2 (Çocuk Dünyası - Sıcak Kalp F Major 9 Arp): F4, G4, A4, C5, D5, E5, F5, G5, A5, C6
+        2: [349.23, 392.00, 440.00, 523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 1046.50],
+        // Sahne 3 (Süper Güçler - Kahraman G Major Vibraphone): G4, A4, B4, D5, E5, G5, A5, B5, D6
+        3: [392.00, 440.00, 493.88, 587.33, 659.25, 783.99, 880.00, 987.77, 1174.66],
+        // Sahne 4 (Tutkular & Pasaport - Parlak D Major Yıldız Çanları): D5, E5, F#5, A5, B5, C#6, D6, E6, F#6
+        4: [587.33, 659.25, 739.99, 880.00, 987.77, 1108.73, 1174.66, 1318.51, 1479.98]
+      };
+
+      // Sahne Geçişlerinde Çalınan 3 Notalı İmza Akorları / Motifleri
+      const SCENE_TRANSITION_CHORDS = {
+        1: [523.25, 659.25, 783.99],  // C Major (Masal Başlangıcı)
+        2: [349.23, 440.00, 523.25],  // F Major (Sıcak Empati)
+        3: [392.00, 493.88, 587.33],  // G Major (Kahramanlık & Güç)
+        4: [587.33, 739.99, 880.00]   // D Major (Büyük Final & Pasaport)
+      };
+
+      function init() {
+        if (ctx) {
+          if (ctx.state === 'suspended') ctx.resume();
+          return;
+        }
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        ctx = new AudioCtx();
+
+        masterGain = ctx.createGain();
+        masterGain.gain.value = 0.90;
+        masterGain.connect(ctx.destination);
+
+        // Konser Salonu & Katedral Yankısı (2.8 saniye)
+        reverbNode = ctx.createConvolver();
+        const rate = ctx.sampleRate;
+        const length = rate * 2.8;
+        const impulse = ctx.createBuffer(2, length, rate);
+        for (let ch = 0; ch < 2; ch++) {
+          const data = impulse.getChannelData(ch);
+          for (let i = 0; i < length; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.3) * 0.40;
+          }
+        }
+        reverbNode.buffer = impulse;
+
+        const reverbGain = ctx.createGain();
+        reverbGain.gain.value = 0.48;
+        reverbNode.connect(reverbGain);
+        reverbGain.connect(masterGain);
+      }
+
+      // Enstrüman Karakterli Akustik Nota Sentezleyici
+      function playInstrumentVoice(freq, startTime, duration = 0.85, volume = 0.11, timbre = 'celesta') {
+        if (isMuted || !ctx) return;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+
+        const noteGain = ctx.createGain();
+        noteGain.gain.setValueAtTime(0.0001, startTime);
+
+        // 1. Ana Gövde Osilatörü
+        const oscMain = ctx.createOscillator();
+        // 2. Harmonik / Karakter Osilatörü
+        const oscHarm = ctx.createOscillator();
+        const harmGain = ctx.createGain();
+
+        if (timbre === 'celesta') {
+          // Sahne 1: Müzik Kutusu / Celesta (Parlak çan + oktav ışıltısı)
+          oscMain.type = 'sine';
+          oscMain.frequency.setValueAtTime(freq, startTime);
+          oscHarm.type = 'triangle';
+          oscHarm.frequency.setValueAtTime(freq * 2, startTime);
+          harmGain.gain.value = 0.22;
+          filter.frequency.setValueAtTime(3400, startTime);
+          filter.frequency.exponentialRampToValueAtTime(600, startTime + duration);
+          noteGain.gain.linearRampToValueAtTime(volume, startTime + 0.008);
+        } else if (timbre === 'harp') {
+          // Sahne 2: Sıcak Konser Arpı (Kadife gövde + yumuşak tel tınısı)
+          oscMain.type = 'triangle';
+          oscMain.frequency.setValueAtTime(freq, startTime);
+          oscHarm.type = 'sine';
+          oscHarm.frequency.setValueAtTime(freq * 1.5, startTime); // Beşli rezonans
+          harmGain.gain.value = 0.18;
+          filter.frequency.setValueAtTime(2300, startTime);
+          filter.frequency.exponentialRampToValueAtTime(380, startTime + duration);
+          noteGain.gain.linearRampToValueAtTime(volume * 1.15, startTime + 0.014);
+        } else if (timbre === 'vibraphone') {
+          // Sahne 3: Kristal Vibraphone / Marimba (Tok ahşap/kristal tokmak + 3. harmonik)
+          oscMain.type = 'sine';
+          oscMain.frequency.setValueAtTime(freq, startTime);
+          oscHarm.type = 'sine';
+          oscHarm.frequency.setValueAtTime(freq * 3, startTime);
+          harmGain.gain.value = 0.12;
+          filter.frequency.setValueAtTime(2900, startTime);
+          filter.frequency.exponentialRampToValueAtTime(480, startTime + duration);
+          noteGain.gain.linearRampToValueAtTime(volume * 1.1, startTime + 0.006);
+        } else {
+          // Sahne 4: Kraliyet Yıldız Çanları (Zengin orkestral çan parıltısı)
+          oscMain.type = 'sine';
+          oscMain.frequency.setValueAtTime(freq, startTime);
+          oscHarm.type = 'triangle';
+          oscHarm.frequency.setValueAtTime(freq * 2, startTime);
+          harmGain.gain.value = 0.28;
+          filter.frequency.setValueAtTime(3800, startTime);
+          filter.frequency.exponentialRampToValueAtTime(750, startTime + duration);
+          noteGain.gain.linearRampToValueAtTime(volume, startTime + 0.008);
+        }
+
+        noteGain.gain.exponentialRampToValueAtTime(volume * 0.32, startTime + duration * 0.35);
+        noteGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+        oscMain.connect(filter);
+        oscHarm.connect(harmGain);
+        harmGain.connect(filter);
+
+        filter.connect(noteGain);
+        noteGain.connect(masterGain);
+        if (reverbNode) noteGain.connect(reverbNode);
+
+        oscMain.start(startTime);
+        oscHarm.start(startTime);
+        oscMain.stop(startTime + duration + 0.05);
+        oscHarm.stop(startTime + duration + 0.05);
+      }
+
+      return {
+        // 1. BAŞLANGIÇTA (Perde açılırken): Masalsı Perde Açılış Arp Glissando'su
+        playCurtainHarpGlissando() {
+          init();
+          if (isMuted || !ctx) return;
+          const now = ctx.currentTime;
+          const harpStrings = [261.63, 329.63, 392.00, 493.88, 587.33, 659.25, 783.99, 987.77, 1046.50];
+          harpStrings.forEach((f, idx) => {
+            playInstrumentVoice(f, now + idx * 0.055, 1.4, 0.085, 'harp');
+          });
+        },
+
+        // 2. KART SEÇİMLERİNDE: Her Sahneye Özgü Müzikal Nota & Enstrüman!
+        playSceneNote(sceneNumber = 1, isSelecting = true) {
+          init();
+          if (isMuted || !ctx) return;
+          const now = ctx.currentTime;
+          const scale = SCENE_SCALES[sceneNumber] || SCENE_SCALES[1];
+          let idx = sceneStepIndex[sceneNumber] || 0;
+
+          if (isSelecting) {
+            const freq = scale[idx % scale.length];
+            sceneStepIndex[sceneNumber] = (idx + 1) % scale.length;
+
+            if (sceneNumber === 1) {
+              // Sahne 1 (Yaş Grupları): Masalsı Celesta + zarif üst süsleme notası
+              playInstrumentVoice(freq, now, 0.78, 0.11, 'celesta');
+              playInstrumentVoice(freq * 1.5, now + 0.055, 0.55, 0.045, 'celesta');
+            } else if (sceneNumber === 2) {
+              // Sahne 2 (Çocuk Dünyası): Sıcak Konser Arpı çift tel (Üçlü armoni)
+              playInstrumentVoice(freq, now, 0.95, 0.11, 'harp');
+              playInstrumentVoice(freq * 1.25, now + 0.045, 0.85, 0.065, 'harp');
+            } else if (sceneNumber === 3) {
+              // Sahne 3 (Süper Güçler): Kahraman Kristal Vibraphone akoru
+              playInstrumentVoice(freq, now, 0.72, 0.11, 'vibraphone');
+              playInstrumentVoice(freq * 1.5, now + 0.035, 0.60, 0.055, 'vibraphone');
+            } else {
+              // Sahne 4 (Hobiler & Pasaport): Büyük Final Yıldız Çanları 2 notalı yükselen arpej
+              playInstrumentVoice(freq, now, 0.85, 0.10, 'chimes');
+              playInstrumentVoice(freq * 1.25, now + 0.05, 0.75, 0.07, 'chimes');
+              playInstrumentVoice(freq * 1.5, now + 0.10, 0.70, 0.05, 'chimes');
+            }
+          } else {
+            // Seçim kaldırıldığında: Aynı sahnenin enstrümanıyla yumuşak bir adım geri (alçalan) nota
+            sceneStepIndex[sceneNumber] = Math.max(0, idx - 1);
+            const freq = scale[sceneStepIndex[sceneNumber] % scale.length];
+            const timbreMap = { 1: 'celesta', 2: 'harp', 3: 'vibraphone', 4: 'chimes' };
+            playInstrumentVoice(freq * 0.75, now, 0.45, 0.065, timbreMap[sceneNumber] || 'harp');
+          }
+        },
+
+        // 3. SAHNE GEÇİŞLERİNDE: Gidilen Sahnenin Makamında 3 Notalı Müzikal Geçiş Akoru
+        playSceneTransition(targetScene = 1, direction = 1) {
+          init();
+          if (isMuted || !ctx) return;
+          const now = ctx.currentTime;
+          const chord = SCENE_TRANSITION_CHORDS[targetScene] || SCENE_TRANSITION_CHORDS[1];
+          const notes = direction > 0 ? chord : [...chord].reverse();
+          const timbreMap = { 1: 'celesta', 2: 'harp', 3: 'vibraphone', 4: 'chimes' };
+          const timbre = timbreMap[targetScene] || 'harp';
+
+          notes.forEach((f, i) => {
+            playInstrumentVoice(f, now + i * 0.065, 0.90, 0.075, timbre);
+          });
+        },
+
+        // Uyarı / Eksik Seçim Durumunda Yumuşak İkaz Sesi
+        playGentleReminder() {
+          init();
+          if (isMuted || !ctx) return;
+          const now = ctx.currentTime;
+          playInstrumentVoice(349.23, now, 0.35, 0.08, 'harp');
+          playInstrumentVoice(329.63, now + 0.09, 0.45, 0.07, 'harp');
+        },
+
+        // 4. EN SONDA MÜHÜR VURULURKEN: Kraliyet Fanfarı + Tok Mühür Çarpması + Bronz Çan "DOOOOOONG!"
+        playRoyalWaxSealDong(withHeavyStamp = true) {
+          init();
+          if (isMuted || !ctx) return;
+          const now = ctx.currentTime;
+
+          // Modal açılırken yükselen 4 notalı müzikal müjde arpeji (D Major)
+          const fanfare = [587.33, 739.99, 880.00, 1174.66];
+          fanfare.forEach((f, idx) => {
+            playInstrumentVoice(f, now + idx * 0.08, 1.1, 0.085, 'chimes');
+          });
+
+          // Mühür animasyonu tam 0.65s'de pasaporta çarptığında "DOOOOOONG!" patlar
+          const hit = withHeavyStamp ? (now + 0.65) : (now + 0.35);
+
+          // KATMAN A: Fiziksel Mühür Darbesi (Derin Sub-Bass "GÜM" Vuruşu)
+          const impactOsc = ctx.createOscillator();
+          const impactGain = ctx.createGain();
+          impactOsc.type = 'sine';
+          impactOsc.frequency.setValueAtTime(150, hit);
+          impactOsc.frequency.exponentialRampToValueAtTime(32, hit + 0.35);
+
+          impactGain.gain.setValueAtTime(0.001, hit);
+          impactGain.gain.linearRampToValueAtTime(0.48, hit + 0.01);
+          impactGain.gain.exponentialRampToValueAtTime(0.0001, hit + 0.38);
+
+          impactOsc.connect(impactGain);
+          impactGain.connect(masterGain);
+          impactOsc.start(hit);
+          impactOsc.stop(hit + 0.42);
+
+          // KATMAN B: Gerçek Bronz Katedral Çanı / Kraliyet Gongu ("DOOOOOONG!")
+          const bellPartials = [
+            { freq: 110.00, amp: 0.34, decay: 3.5 }, // Derin Sub-Çan Gövdesi "DOOONG" (A2)
+            { freq: 220.00, amp: 0.28, decay: 3.1 }, // Ana Çan Gövdesi (A3)
+            { freq: 261.63, amp: 0.15, decay: 2.4 }, // Bronz Çan Karakteri (C4 - Minör 3'lü Çan Harmoniği)
+            { freq: 329.63, amp: 0.17, decay: 2.6 }, // Beşli Rezonans (E4)
+            { freq: 440.00, amp: 0.15, decay: 2.1 }, // Parlak Çan Vuruşu (A4)
+            { freq: 668.00, amp: 0.09, decay: 1.1 }, // Metalik Çan Tokmağı Tınısı (Inharmonic Strike)
+            { freq: 880.00, amp: 0.08, decay: 1.6 }  // Altın Işıltı (A5)
+          ];
+
+          bellPartials.forEach(p => {
+            const bOsc = ctx.createOscillator();
+            const bGain = ctx.createGain();
+            const bFilter = ctx.createBiquadFilter();
+
+            bOsc.type = 'sine';
+            bOsc.frequency.setValueAtTime(p.freq, hit);
+
+            bFilter.type = 'lowpass';
+            bFilter.frequency.setValueAtTime(3200, hit);
+            bFilter.frequency.exponentialRampToValueAtTime(220, hit + p.decay);
+
+            bGain.gain.setValueAtTime(0.0001, hit);
+            bGain.gain.linearRampToValueAtTime(p.amp, hit + 0.006);
+            bGain.gain.exponentialRampToValueAtTime(p.amp * 0.36, hit + 0.4);
+            bGain.gain.exponentialRampToValueAtTime(0.0001, hit + p.decay);
+
+            bOsc.connect(bFilter);
+            bFilter.connect(bGain);
+            bGain.connect(masterGain);
+            if (reverbNode) bGain.connect(reverbNode);
+
+            bOsc.start(hit);
+            bOsc.stop(hit + p.decay + 0.05);
+          });
+        },
+
+        toggleMute() {
+          isMuted = !isMuted;
+          return isMuted;
+        }
+      };
+    })();
+
+    function toggleSoundEngine() {
+      const muted = SoundStudio.toggleMute();
+      const btn = document.getElementById('soundToggleBtn');
+      const icon = document.getElementById('soundToggleIcon');
+      btn.classList.toggle('muted', muted);
+      icon.className = muted ? 'ph-fill ph-speaker-slash' : 'ph-fill ph-speaker-high';
+      if (!muted) SoundStudio.playSceneNote(currentScene, true);
+      showToast(muted ? '🔇 Müzikal ses efektleri kapatıldı' : '🔊 4 Sahneli Müzikal Ses Motoru aktif');
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
 
-    class FairyDustParticle {
-      constructor() {
-        this.reset();
-      }
-      reset() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.size = Math.random() * 2.2 + 0.8;
-        this.speedX = (Math.random() - 0.5) * 0.4;
-        this.speedY = -(Math.random() * 0.3 + 0.1);
-        this.opacity = Math.random() * 0.6 + 0.2;
-        this.fadeSpeed = Math.random() * 0.008 + 0.004;
-        this.color = Math.random() < 0.6 ? '#DDA323' : '#00A9E0'; // Masalsı Altın & Gök Mavisi
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.opacity -= this.fadeSpeed;
-        if (this.opacity <= 0 || this.y < 0) {
-          this.reset();
-          this.y = height + 10;
+    // ── 1. İNTERAKTİF YILDIZ BAĞLANTISI & KAYAN YILDIZ MOTORU (%100 KORUNDU) ──
+    const cosCanvas = document.getElementById('cosmosCanvas');
+    const cosCtx = cosCanvas.getContext('2d');
+    let cw, ch;
+    let stars = [];
+    let shootingStars = [];
+    let mouse = { x: -9999, y: -9999 };
+
+    function resizeCosmos() {
+      cw = cosCanvas.width = window.innerWidth;
+      ch = cosCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCosmos);
+    resizeCosmos();
+
+    window.addEventListener('mousemove', e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    for (let i = 0; i < 55; i++) {
+      stars.push({
+        x: Math.random() * cw,
+        y: Math.random() * ch,
+        r: Math.random() * 2.2 + 0.9,
+        vx: (Math.random() - 0.5) * 0.28,
+        vy: (Math.random() - 0.5) * 0.28,
+        alpha: Math.random() * 0.65 + 0.25,
+        pulse: Math.random() * 0.02 + 0.005,
+        gold: Math.random() < 0.6
+      });
+    }
+
+    function spawnShootingStar() {
+      if (isCurtainOpen || shootingStars.length > 2) return;
+      shootingStars.push({
+        x: Math.random() * cw * 0.8,
+        y: Math.random() * ch * 0.35,
+        len: Math.random() * 90 + 60,
+        speed: Math.random() * 9 + 8,
+        alpha: 1
+      });
+    }
+    setInterval(spawnShootingStar, 3200);
+
+    function animateCosmos() {
+      cosCtx.clearRect(0, 0, cw, ch);
+
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        s.x += s.vx;
+        s.y += s.vy;
+        if (s.x < 0) s.x = cw;
+        if (s.x > cw) s.x = 0;
+        if (s.y < 0) s.y = ch;
+        if (s.y > ch) s.y = 0;
+
+        s.alpha += s.pulse;
+        if (s.alpha > 0.95 || s.alpha < 0.25) s.pulse *= -1;
+
+        cosCtx.beginPath();
+        cosCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        if (!isCurtainOpen) {
+          cosCtx.fillStyle = s.gold ? `rgba(252, 227, 138, ${s.alpha})` : `rgba(125, 211, 252, ${s.alpha})`;
+        } else {
+          cosCtx.fillStyle = s.gold ? `rgba(221, 163, 35, ${s.alpha * 0.85})` : `rgba(0, 169, 224, ${s.alpha * 0.75})`;
+        }
+        cosCtx.fill();
+
+        // Yıldızların Birbirine Bağlanması
+        for (let j = i + 1; j < stars.length; j++) {
+          const s2 = stars[j];
+          const dist = Math.hypot(s.x - s2.x, s.y - s2.y);
+          if (dist < 115) {
+            cosCtx.beginPath();
+            cosCtx.moveTo(s.x, s.y);
+            cosCtx.lineTo(s2.x, s2.y);
+            const lineAlpha = (1 - dist / 115) * (isCurtainOpen ? 0.22 : 0.16);
+            cosCtx.strokeStyle = isCurtainOpen
+              ? `rgba(221, 163, 35, ${lineAlpha})`
+              : `rgba(252, 227, 138, ${lineAlpha})`;
+            cosCtx.lineWidth = 0.9;
+            cosCtx.stroke();
+          }
+        }
+
+        // Fareyle Yıldız Bağlantısı
+        const mDist = Math.hypot(s.x - mouse.x, s.y - mouse.y);
+        if (mDist < 150) {
+          cosCtx.beginPath();
+          cosCtx.moveTo(s.x, s.y);
+          cosCtx.lineTo(mouse.x, mouse.y);
+          const mAlpha = (1 - mDist / 150) * (isCurtainOpen ? 0.42 : 0.36);
+          cosCtx.strokeStyle = isCurtainOpen
+            ? `rgba(0, 169, 224, ${mAlpha})`
+            : `rgba(252, 227, 138, ${mAlpha})`;
+          cosCtx.lineWidth = 1.1;
+          cosCtx.stroke();
         }
       }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = this.opacity * 0.7;
-        ctx.fill();
-        ctx.globalAlpha = 1;
+
+      // Kayan Yıldızlar (Perde Açıkken)
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const sh = shootingStars[i];
+        sh.x += sh.speed;
+        sh.y += sh.speed * 0.45;
+        sh.alpha -= 0.018;
+        if (sh.alpha <= 0) {
+          shootingStars.splice(i, 1);
+          continue;
+        }
+        const tailX = sh.x - sh.len;
+        const tailY = sh.y - sh.len * 0.45;
+        const grad = cosCtx.createLinearGradient(sh.x, sh.y, tailX, tailY);
+        grad.addColorStop(0, `rgba(255, 246, 214, ${sh.alpha})`);
+        grad.addColorStop(1, 'rgba(255, 246, 214, 0)');
+        cosCtx.beginPath();
+        cosCtx.moveTo(sh.x, sh.y);
+        cosCtx.lineTo(tailX, tailY);
+        cosCtx.strokeStyle = grad;
+        cosCtx.lineWidth = 2.2;
+        cosCtx.stroke();
+      }
+
+      requestAnimationFrame(animateCosmos);
+    }
+    animateCosmos();
+
+    // ── 2. KARŞILAMA PERDESİ AÇILIŞI ──
+    function openMagicCurtain(event) {
+      SoundStudio.playCurtainHarpGlissando();
+      fireStarBurstFromEvent(event, 26);
+
+      const curtain = document.getElementById('welcomeCurtain');
+      const content = document.getElementById('curtainContent');
+
+      if (window.gsap) {
+        gsap.to(content, {
+          scale: 0.92,
+          opacity: 0,
+          duration: 0.35,
+          ease: 'power2.in'
+        });
+        gsap.to(curtain, {
+          yPercent: -100,
+          opacity: 0,
+          duration: 0.72,
+          delay: 0.12,
+          ease: 'power3.inOut',
+          onComplete: () => {
+            curtain.style.display = 'none';
+            isCurtainOpen = true;
+            cosCanvas.style.zIndex = '1';
+          }
+        });
+        gsap.fromTo('#scene1 .age-card',
+          { y: 24, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            stagger: 0.08,
+            duration: 0.45,
+            delay: 0.35,
+            ease: 'back.out(1.3)',
+            clearProps: 'transform,opacity'
+          }
+        );
+      } else {
+        curtain.style.display = 'none';
+        isCurtainOpen = true;
+        cosCanvas.style.zIndex = '1';
       }
     }
 
-    // 40 sakin peri tozu parçacığı
-    for (let i = 0; i < 40; i++) {
-      particles.push(new FairyDustParticle());
+    function fireStarBurstFromEvent(event, count = 12) {
+      if (typeof confetti !== 'function' || !event) return;
+      const x = (event.clientX || window.innerWidth / 2) / window.innerWidth;
+      const y = (event.clientY || window.innerHeight / 2) / window.innerHeight;
+
+      confetti({
+        particleCount: count,
+        spread: 58,
+        startVelocity: 20,
+        gravity: 0.7,
+        scalar: 0.85,
+        origin: { x, y },
+        shapes: ['star', 'circle'],
+        colors: ['#DDA323', '#F9E7B4', '#00A9E0', '#002B7F']
+      });
     }
 
-    function animateFairyDust() {
-      ctx.clearRect(0, 0, width, height);
-      for (let p of particles) {
-        p.update();
-        p.draw();
+    // ── 3. KART SEÇİM FONKSİYONLARI (HER SAHNE KENDİ ENSTRÜMAN VE MAKAMINDA NOTA ÇALAR) ──
+    function toggleAgeGroup(card, event) {
+      const willSelect = !card.classList.contains('selected');
+      card.classList.toggle('selected');
+      SoundStudio.playSceneNote(1, willSelect);
+      if (willSelect) fireStarBurstFromEvent(event, 10);
+      calculateProgress();
+    }
+
+    function toggleChildGroup(item, event) {
+      const willSelect = !item.classList.contains('selected');
+      item.classList.toggle('selected');
+      SoundStudio.playSceneNote(2, willSelect);
+      if (willSelect) fireStarBurstFromEvent(event, 8);
+      calculateProgress();
+    }
+
+    function toggleTag(tag, event) {
+      const willSelect = !tag.classList.contains('selected');
+      tag.classList.toggle('selected');
+      const tagScene = tag.closest('#scene3') ? 3 : 4;
+      SoundStudio.playSceneNote(tagScene, willSelect);
+      if (willSelect) fireStarBurstFromEvent(event, 8);
+      calculateProgress();
+    }
+
+    // ── 4. 4 SAHNE ARASI WIZARD GEÇİŞİ (HER SAYFANIN KENDİ MÜZİKAL MOTİFİYLE) ──
+    function goToScene(targetScene) {
+      if (targetScene === currentScene) return;
+
+      if (targetScene > currentScene) {
+        if (currentScene === 1 && document.querySelectorAll('#scene1 .age-card.selected').length === 0) {
+          SoundStudio.playGentleReminder();
+          showToast('🎈 Lütfen devam etmeden önce en az 1 yaş grubu seç!');
+          return;
+        }
+        if (currentScene === 2 && document.querySelectorAll('#scene2 .child-group-item.selected').length === 0) {
+          SoundStudio.playGentleReminder();
+          showToast('✨ Lütfen dokunabileceğin en az 1 çocuk dünyası seç!');
+          return;
+        }
       }
-      requestAnimationFrame(animateFairyDust);
-    }
-    animateFairyDust();
 
-    // ── 2. SEÇİM & İLERLEME HESAPLAMA SİSTEMİ ──
+      const direction = targetScene > currentScene ? 1 : -1;
+      SoundStudio.playSceneTransition(targetScene, direction);
+      const currentEl = document.getElementById('scene' + currentScene);
+      const nextEl = document.getElementById('scene' + targetScene);
+
+      currentScene = targetScene;
+      updateWizardNavigationUI();
+
+      if (window.gsap && currentEl && nextEl) {
+        gsap.killTweensOf([currentEl, nextEl]);
+        gsap.to(currentEl, {
+          x: -36 * direction,
+          opacity: 0,
+          duration: 0.18,
+          ease: 'power2.in',
+          onComplete: () => {
+            currentEl.classList.remove('active');
+            gsap.set(currentEl, { clearProps: 'all' });
+
+            nextEl.classList.add('active');
+            gsap.fromTo(nextEl,
+              { x: 36 * direction, opacity: 0 },
+              { x: 0, opacity: 1, duration: 0.28, ease: 'power3.out', clearProps: 'all' }
+            );
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+      } else {
+        currentEl.classList.remove('active');
+        nextEl.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function nextScene() {
+      if (currentScene < 4) {
+        goToScene(currentScene + 1);
+      } else {
+        openCongratsModal();
+      }
+    }
+
+    function prevScene() {
+      if (currentScene > 1) {
+        goToScene(currentScene - 1);
+      }
+    }
+
+    function updateWizardNavigationUI() {
+      const hasAges = document.querySelectorAll('#scene1 .age-card.selected').length > 0;
+      const hasChildGroups = document.querySelectorAll('#scene2 .child-group-item.selected').length > 0;
+      const hasSkills = document.querySelectorAll('#scene3 .magical-tag.selected').length > 0;
+
+      const completionMap = { 1: hasAges, 2: hasChildGroups, 3: hasSkills, 4: false };
+
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById('navStep' + i);
+        btn.classList.remove('active', 'completed');
+        if (i === currentScene) {
+          btn.classList.add('active');
+        } else if (completionMap[i]) {
+          btn.classList.add('completed');
+        }
+      }
+
+      const prevBtn = document.getElementById('btnPrevScene');
+      const nextText = document.getElementById('btnNextText');
+      const nextIcon = document.getElementById('btnNextIcon');
+      const hint = document.getElementById('bottomStepHint');
+
+      prevBtn.classList.toggle('hidden', currentScene === 1);
+
+      const hints = {
+        1: 'Sahne 1 / 4 • En az 1 yaş grubu seçerek ilerle ✨',
+        2: 'Sahne 2 / 4 • Kalbine dokunan çocuk gruplarını işaretle 🎈',
+        3: 'Sahne 3 / 4 • Yetenek ve araçların (İsteğe bağlı) 🎸',
+        4: 'Sahne 4 / 4 • Hobilerini seç ve pasaportunu tamamla 🌟'
+      };
+      hint.textContent = hints[currentScene];
+
+      if (currentScene < 4) {
+        nextText.textContent = `${currentScene + 1}. Sahneye Geç`;
+        nextIcon.className = 'ph-bold ph-arrow-right';
+      } else {
+        nextText.textContent = isApprovedSimulated
+          ? '✦ Keşfi Tamamla & Mührü Vur!'
+          : '✦ Keşfi Tamamla & Onaya Gönder';
+        nextIcon.className = 'ph-bold ph-sparkle';
+      }
+    }
+
+    // ── 5. ÖRNEK DİLEK ÇOCUĞU HAVUZU & HESAPLAMA (ORİJİNAL SİSTEM) ──
+    const MOCK_WISH_CHILDREN = [
+      {
+        id: 'child-1',
+        name: 'Ömer',
+        age: 8,
+        ageGroup: '7-9 Yaş',
+        city: 'Örnek Dilek Hikayesi',
+        avatar: '🏰',
+        badge: 'Mimarlık Hayali',
+        wish: '"En büyük hayalim binlerce Lego parçasıyla dev bir uzay üssü inşa etmek ve bir gönüllüyle birlikte tamamlamak!"',
+        tags: ['7-9 Yaş', 'Lego', 'Uzay'],
+        keywords: ['lego', 'uzay', '7-9']
+      },
+      {
+        id: 'child-2',
+        name: 'Zeynep',
+        age: 11,
+        ageGroup: '10-13 Yaş',
+        city: 'Örnek Dilek Hikayesi',
+        avatar: '🎮',
+        badge: 'Oyun Evreni',
+        wish: '"Minecraft’ta kendi peri masalı şatomu tasarladım; onu gerçek dünyada bir dilek gönüllüsüyle kutlamak istiyorum!"',
+        tags: ['10-13 Yaş', 'Minecraft', 'Resim'],
+        keywords: ['minecraft', 'resim', '10-13']
+      },
+      {
+        id: 'child-3',
+        name: 'Elif',
+        age: 5,
+        ageGroup: '3-6 Yaş',
+        city: 'Örnek Dilek Hikayesi',
+        avatar: '🦋',
+        badge: 'Masal Dünyası',
+        wish: '"Prenses kostümü giyip rengarenk masallar dinlemek ve yüzüme pırıl pırıl bir kelebek çizdirmek istiyorum!"',
+        tags: ['3-6 Yaş', 'Resim', 'Yüz Boyama'],
+        keywords: ['kitap & masal', 'yüz boyama', 'resim', '3-6']
+      },
+      {
+        id: 'child-4',
+        name: 'Kaan',
+        age: 15,
+        ageGroup: '14-17 Yaş',
+        city: 'Örnek Dilek Hikayesi',
+        avatar: '🎸',
+        badge: 'Müzik Sahnesi',
+        wish: '"Elektro gitarımla mini bir sahne performansı sergilemek ve müzik tutkunu bir abi/abla ile şarkı çalmak!"',
+        tags: ['14-17 Yaş', 'Gitar', 'Müzik'],
+        keywords: ['gitar', 'müzik', '14-17']
+      },
+      {
+        id: 'child-5',
+        name: 'Baran',
+        age: 9,
+        ageGroup: '7-9 Yaş',
+        city: 'Örnek Dilek Hikayesi',
+        avatar: '⚽',
+        badge: 'Stadyum Coşkusu',
+        wish: '"Örümcek Adam kostümüyle stadyumda maç izlemek ve sahada bir gönüllüyle top koşturmak!"',
+        tags: ['7-9 Yaş', 'Spor', 'Süper Kahramanlar'],
+        keywords: ['spor', 'süper kahramanlar', '7-9']
+      }
+    ];
+
+    function updateLiveMatchPrediction() {
+      const selectedAgeTitles = Array.from(document.querySelectorAll('.age-card.selected .age-card-title')).map(el => el.textContent.trim());
+      const selectedTags = Array.from(document.querySelectorAll('.magical-tag.selected span:nth-child(2)')).map(el => el.textContent.toLowerCase().trim());
+
+      if (selectedAgeTitles.length === 0 && selectedTags.length === 0) {
+        document.getElementById('matchChildAvatar').textContent = '🌟';
+        document.getElementById('matchChildName').textContent = 'Dilek Çocukları Beklemede';
+        document.getElementById('matchChildBadge').textContent = 'Keşif Başlat';
+        document.getElementById('matchChildWish').textContent = '"Aşağıdan yaş gruplarını ve ilgi alanlarını seçtikçe, senin iletişim dilinle tam uyuşan örnek bir çocuğun dilek hikayesi burada canlanacak!"';
+        document.getElementById('matchChildTags').innerHTML = '<span class="match-tag-pill">✨ Seçimlerini Yap</span>';
+        return;
+      }
+
+      let bestMatch = MOCK_WISH_CHILDREN[0];
+      let maxScore = -1;
+
+      for (const child of MOCK_WISH_CHILDREN) {
+        let childScore = 0;
+        if (selectedAgeTitles.some(a => a.includes(child.ageGroup.replace(' Yaş','')))) childScore += 3;
+        for (const kw of child.keywords) {
+          if (selectedTags.some(t => t.includes(kw.toLowerCase()))) childScore += 2;
+        }
+        if (childScore > maxScore) {
+          maxScore = childScore;
+          bestMatch = child;
+        }
+      }
+
+      document.getElementById('matchChildAvatar').textContent = bestMatch.avatar;
+      document.getElementById('matchChildName').textContent = `${bestMatch.name} (${bestMatch.age} Yaş • ${bestMatch.city})`;
+      document.getElementById('matchChildBadge').textContent = bestMatch.badge;
+      document.getElementById('matchChildWish').textContent = bestMatch.wish;
+
+      const tagsContainer = document.getElementById('matchChildTags');
+      tagsContainer.innerHTML = '';
+      bestMatch.tags.forEach(t => {
+        const span = document.createElement('span');
+        const isAgeMatched = selectedAgeTitles.some(a => a.includes(t.replace(' Yaş', '')));
+        const isTagMatched = selectedTags.some(sel => sel.includes(t.toLowerCase()));
+        span.className = 'match-tag-pill' + (isAgeMatched || isTagMatched ? ' highlight' : '');
+        span.textContent = t;
+        tagsContainer.appendChild(span);
+      });
+    }
+
     function calculateProgress() {
       const selectedAges = document.querySelectorAll('.age-card.selected').length;
       const selectedChildGroups = document.querySelectorAll('.child-group-item.selected').length;
       const selectedTags = document.querySelectorAll('.magical-tag.selected').length;
 
-      let score = 20; // Kayıt olan herkes %20 başlar
-      if (selectedAges > 0) score += 25;
-      if (selectedChildGroups > 0) score += 25;
-      if (selectedTags >= 3) score += 30;
-      else if (selectedTags > 0) score += (selectedTags * 10);
-
+      let score = 0;
+      if (selectedAges > 0 || selectedChildGroups > 0 || selectedTags > 0) {
+        score = 20;
+        if (selectedAges > 0) score += 25;
+        if (selectedChildGroups > 0) score += 25;
+        if (selectedTags >= 3) score += 30;
+        else if (selectedTags > 0) score += (selectedTags * 10);
+      }
       if (score > 100) score = 100;
 
-      // Çubuğu güncelle
       const fillBar = document.getElementById('meterFillBar');
       const badge = document.getElementById('meterBadgeText');
       const statusText = document.getElementById('meterStatusText');
 
       fillBar.style.width = score + '%';
 
-      if (score < 45) {
-        badge.innerHTML = `<span>%${score}</span> &nbsp;✦&nbsp; <span>Frekans Aranıyor</span>`;
-        statusText.textContent = "Yaş gruplarını seçerek başla ✨";
+      if (score === 0) {
+        badge.innerHTML = `<span>%0</span> &nbsp;✦&nbsp; <span>Keşif Bekleniyor</span>`;
+        statusText.textContent = "Seni tanımak için yaş gruplarını seçerek başla ✨";
+      } else if (score < 45) {
+        badge.innerHTML = `<span>%${score}</span> &nbsp;✦&nbsp; <span>Kalp Bağı Kuruluyor</span>`;
+        statusText.textContent = "Harika başladın! İlgilendiğin çocuk gruplarını da belirle 🎈";
       } else if (score < 75) {
         badge.innerHTML = `<span>%${score}</span> &nbsp;✦&nbsp; <span>Güçler Yükleniyor</span>`;
-        statusText.textContent = "Harika gidiyorsun! Çocuk grupları uyumlanıyor 🎈";
+        statusText.textContent = "Kalp bağın çocuklarla güçleniyor, süper güçlerini seç ✨";
       } else if (score < 100) {
         badge.innerHTML = `<span>%${score}</span> &nbsp;✦&nbsp; <span>Neredeyse Hazır</span>`;
-        statusText.textContent = "Süper güçlerin ve hobilerin eşleşiyor 🧱";
+        statusText.textContent = "Süper güçlerin ve hobilerin eşleşti 🧱";
       } else {
-        badge.innerHTML = `<span>%100</span> &nbsp;✦&nbsp; <span>Mükemmel Kaşif</span>`;
-        statusText.textContent = "Tebrikler! Dilek Kaşifi Profilin Tamamlandı 🎉";
+        badge.innerHTML = `<span>%100</span> &nbsp;✦&nbsp; <span>Parlayan Gönüllü Yıldızı</span>`;
+        statusText.textContent = "Tebrikler! Gönüllü Yıldız Profilin Tamamlandı 🎉";
       }
 
+      document.getElementById('passportScoreDisplay').textContent = `%${score}`;
+      updateWizardNavigationUI();
       updatePassportBadges();
+      updateLiveMatchPrediction();
     }
 
-    function toggleAgeGroup(card, label) {
-      card.classList.toggle('selected');
-      calculateProgress();
-    }
-
-    function toggleChildGroup(item, label) {
-      item.classList.toggle('selected');
-      calculateProgress();
-    }
-
-    function toggleTag(tag, label) {
-      tag.classList.toggle('selected');
-      calculateProgress();
-    }
-
-    // ── 3. CANLI PASAPORT ROZETLERİNİ GÜNCELLE ──
     function updatePassportBadges() {
       const tray = document.getElementById('passportBadgesTray');
       tray.innerHTML = '';
 
-      // Seçilen yaş grupları
-      document.querySelectorAll('.age-card.selected').forEach(card => {
+      const selectedAgeCards = document.querySelectorAll('.age-card.selected');
+      const selectedTags = document.querySelectorAll('.magical-tag.selected');
+
+      if (selectedAgeCards.length === 0 && selectedTags.length === 0) {
+        tray.innerHTML = '<span class="passport-empty-hint">✦ Henüz rozet seçilmedi. Yetenek ve ilgi alanlarını seçtikçe burada parlayacak! ✨</span>';
+        return;
+      }
+
+      selectedAgeCards.forEach(card => {
         const title = card.querySelector('.age-card-title').textContent.trim();
         const icon = card.querySelector('.age-card-icon').textContent.trim();
         const pill = document.createElement('span');
@@ -1458,8 +3195,6 @@
         tray.appendChild(pill);
       });
 
-      // Seçilen hobiler & yetenekler (ilk 5 tanesi)
-      const selectedTags = document.querySelectorAll('.magical-tag.selected');
       let count = 0;
       selectedTags.forEach(tag => {
         if (count < 5) {
@@ -1481,19 +3216,346 @@
       }
     }
 
-    // ── 4. TEBRİKLER MODALI AÇMA / KAPAMA ──
+    // ── 6. PROTOTİP TEST ANAHTARI (ADAY vs ONAYLI GÖNÜLLÜ) ──
+    function setApprovalSimulation(approved) {
+      isApprovedSimulated = approved;
+      document.getElementById('btnModeCandidate').classList.toggle('active', !approved);
+      document.getElementById('btnModeApproved').classList.toggle('active', approved);
+
+      const archPill = document.getElementById('passportVolunteerArchetype');
+      const subLabel = document.getElementById('previewPassportSubtitle');
+
+      if (approved) {
+        archPill.textContent = '✦ Resmi Dilek Gönüllüsü (Onaylı)';
+        subLabel.textContent = 'Gönüllü Yıldız Pasaportu';
+        showToast('🌟 Simülasyon: Yönetici Onaylı Gönüllü Modu (Altın Mühür ve Story İndirme Açık!)');
+      } else {
+        archPill.textContent = '🔒 Aday Başvurusu (Onay Bekliyor)';
+        subLabel.textContent = 'Gönüllü Yıldız Aday Kimlik Önizlemesi';
+        showToast('🔒 Simülasyon: Yeni Kayıt Aday Modu (Sahte gönüllü koruması aktif, Story İndirme Kilitli!)');
+      }
+      updateWizardNavigationUI();
+    }
+
+    // ── 7. TEBRİKLER & ALTIN MUM MÜHRÜ MODALI ──
     function openCongratsModal() {
-      const modal = document.getElementById('congratsModal');
-      modal.classList.add('active');
+      const ages = document.querySelectorAll('#scene1 .age-card.selected');
+      const cgs = document.querySelectorAll('#scene2 .child-group-item.selected');
+
+      if (ages.length === 0) {
+        goToScene(1);
+        showToast('🎈 Lütfen en az 1 yaş grubu seç!');
+        return;
+      }
+      if (cgs.length === 0) {
+        goToScene(2);
+        showToast('✨ Lütfen en az 1 çocuk dünyası seç!');
+        return;
+      }
+
+      const durationSeconds = Math.max(1, Math.round((Date.now() - pageLoadTimestamp) / 1000));
+      document.getElementById('modalPassportScore').textContent = document.getElementById('passportScoreDisplay').textContent;
+      document.getElementById('modalPassportBadges').innerHTML = document.getElementById('passportBadgesTray').innerHTML;
+
+      const seal = document.getElementById('modalWaxSeal');
+      const pageSeal = document.getElementById('pageWaxSeal');
+      const candBlock = document.getElementById('candidatePendingBlock');
+      const appBlock = document.getElementById('approvedVolunteerBlock');
+      const eyebrow = document.getElementById('modalEyebrow');
+      const title = document.getElementById('modalTitle');
+      const desc = document.getElementById('modalDesc');
+      const roleBadge = document.getElementById('modalPassportArchetype');
+
+      if (isApprovedSimulated) {
+        eyebrow.textContent = '✦ GÖNÜLLÜ YILDIZ PASAPORTU ✦';
+        title.textContent = 'Harikasın Gönüllü Yıldızı! 🌟';
+        desc.innerHTML = 'Süper güçlerin ve ilgi alanların Make-A-Wish Türkiye altın mum mührüyle onaylandı.<br/>Bu gurur kartını indirebilir, Instagram\'da paylaşarak yüzlerce çocuğa umut ışığı olabilirsin!';
+        roleBadge.textContent = '✦ Resmi Dilek Gönüllüsü';
+        candBlock.style.display = 'none';
+        appBlock.style.display = 'block';
+
+        seal.style.display = 'block';
+        seal.classList.remove('anim-stamp');
+        void seal.offsetWidth;
+        seal.classList.add('anim-stamp');
+
+        if (pageSeal) {
+          pageSeal.style.display = 'block';
+          pageSeal.classList.remove('anim-stamp');
+          void pageSeal.offsetWidth;
+          pageSeal.classList.add('anim-stamp');
+        }
+      } else {
+        eyebrow.textContent = `✦ KEŞİF TAMAMLANDI (${durationSeconds} SN) • ONAY BEKLENİYOR ✦`;
+        title.textContent = 'Dilek Mektubun Yöneticimize Uçtu! 🕊️✨';
+        desc.innerHTML = 'Seçtiğin yaş grupları ve süper güçlerin <strong>yöneticimizin onay masasına</strong> iletildi.';
+        roleBadge.textContent = '⏳ Yönetici Onayı Bekleniyor';
+        seal.style.display = 'none';
+        if (pageSeal) pageSeal.style.display = 'none';
+        candBlock.style.display = 'block';
+        appBlock.style.display = 'none';
+      }
+
+      document.getElementById('congratsModal').classList.add('active');
+      SoundStudio.playRoyalWaxSealDong(isApprovedSimulated);
+
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 55,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#DDA323', '#F9E7B4', '#00A9E0', '#002B7F']
+        });
+      }
     }
 
     function closeCongratsModal() {
-      const modal = document.getElementById('congratsModal');
-      modal.classList.remove('active');
+      document.getElementById('congratsModal').classList.remove('active');
     }
 
-    // İlk hesaplama
-    calculateProgress();
+    // ── 8. ORİJİNAL 250 SATIRLIK DETAYLI 1080x1350 STORY CANVAS OLUŞTURUCU (%100 GERİ YÜKLENDİ) ──
+    function generatePassportCanvas() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1080;
+      canvas.height = 1350;
+      const ctx = canvas.getContext('2d');
+
+      const bgGrad = ctx.createLinearGradient(0, 0, 1080, 1350);
+      bgGrad.addColorStop(0, '#001440');
+      bgGrad.addColorStop(0.45, '#002266');
+      bgGrad.addColorStop(1, '#002B7F');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 1080, 1350);
+
+      ctx.fillStyle = '#DDA323';
+      const starPts = [
+        [90, 110, 2.5, 0.4], [960, 130, 3, 0.5], [130, 360, 2, 0.3], [940, 420, 2.5, 0.45],
+        [80, 780, 3, 0.5], [1010, 840, 2, 0.35], [110, 1140, 3, 0.6], [970, 1220, 2.5, 0.4]
+      ];
+      starPts.forEach(([x, y, r, a]) => {
+        ctx.globalAlpha = a;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1.0;
+
+      ctx.strokeStyle = '#DDA323';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(36, 36, 1008, 1278);
+
+      ctx.strokeStyle = 'rgba(253, 243, 199, 0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(48, 48, 984, 1254);
+
+      ctx.fillStyle = '#FDF9EC';
+      ctx.font = 'bold 24px "Plus Jakarta Sans", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('MAKE-A-WISH TÜRKİYE ✦ BİR DİLEK TUT DERNEĞİ', 540, 108);
+
+      ctx.fillStyle = '#F9E7B4';
+      ctx.font = 'italic 18px "Playfair Display", Georgia, serif';
+      ctx.fillText('Gönüllü Yıldız Pasaportu', 540, 140);
+
+      ctx.strokeStyle = 'rgba(221, 163, 35, 0.5)';
+      ctx.beginPath();
+      ctx.moveTo(120, 166);
+      ctx.lineTo(960, 166);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(540, 280, 80, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#DDA323';
+      ctx.stroke();
+
+      ctx.font = '72px "Segoe UI Emoji", "Apple Color Emoji", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🌟', 540, 280);
+      ctx.textBaseline = 'alphabetic';
+
+      const volunteerName = document.getElementById('passportVolunteerName')?.textContent || 'Ayşe Yılmaz';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '800 44px "Playfair Display", Georgia, serif';
+      ctx.fillText(volunteerName, 540, 410);
+
+      ctx.fillStyle = '#FDE68A';
+      ctx.font = 'bold 26px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('✦ Resmi Dilek Gönüllüsü', 540, 455);
+
+      const score = document.getElementById('passportScoreDisplay')?.textContent || '%100';
+      ctx.fillStyle = '#BAE6FD';
+      ctx.font = '600 20px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(`✦ Kalp Bağı & Uyum: ${score}`, 540, 495);
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+      ctx.beginPath();
+      ctx.moveTo(160, 535);
+      ctx.lineTo(920, 535);
+      ctx.stroke();
+
+      ctx.fillStyle = '#FDF9EC';
+      ctx.font = 'bold 20px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('KAZANILAN SÜPER GÜÇLER & İLETİŞİM ROZETLERİ', 540, 578);
+
+      const badgeElements = Array.from(document.querySelectorAll('#passportBadgesTray .passport-mini-badge'))
+        .map(b => b.textContent.trim())
+        .filter(t => !t.startsWith('+') && !t.includes('Henüz'));
+
+      const badgesToDraw = badgeElements.length > 0 ? badgeElements : ['🎈 3-6 Yaş', '🧱 Lego', '🎨 Resim', '🎸 Gitar'];
+
+      let curX = 140;
+      let curY = 630;
+      ctx.font = 'bold 20px "Plus Jakarta Sans", sans-serif';
+
+      badgesToDraw.slice(0, 9).forEach((bText) => {
+        const textWidth = ctx.measureText(bText).width;
+        const pillWidth = textWidth + 38;
+        const pillHeight = 44;
+
+        if (curX + pillWidth > 940) {
+          curX = 140;
+          curY += 58;
+        }
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
+        ctx.strokeStyle = 'rgba(221, 163, 35, 0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        if (typeof ctx.roundRect === 'function') {
+          ctx.roundRect(curX, curY - 30, pillWidth, pillHeight, 22);
+        } else {
+          ctx.rect(curX, curY - 30, pillWidth, pillHeight);
+        }
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#FFFBEB';
+        ctx.textAlign = 'left';
+        ctx.fillText(bText, curX + 19, curY);
+
+        curX += pillWidth + 14;
+      });
+
+      const sealX = 790;
+      const sealY = 960;
+      const sealR = 92;
+
+      const sealGrad = ctx.createRadialGradient(sealX - 25, sealY - 25, 10, sealX, sealY, sealR);
+      sealGrad.addColorStop(0, '#FEF3C7');
+      sealGrad.addColorStop(0.3, '#F59E0B');
+      sealGrad.addColorStop(0.7, '#D97706');
+      sealGrad.addColorStop(1, '#78350F');
+
+      ctx.fillStyle = sealGrad;
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, sealR, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(254, 243, 199, 0.75)';
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, sealR - 16, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const innerGrad = ctx.createRadialGradient(sealX - 10, sealY - 10, 5, sealX, sealY, sealR - 26);
+      innerGrad.addColorStop(0, '#FBBF24');
+      innerGrad.addColorStop(0.6, '#D97706');
+      innerGrad.addColorStop(1, '#78350F');
+      ctx.fillStyle = innerGrad;
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, sealR - 26, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 28px serif';
+      ctx.fillText('★', sealX, sealY - 18);
+
+      ctx.font = '800 12px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#FEF3C7';
+      ctx.fillText('MAKE-A-WISH', sealX, sealY + 2);
+      ctx.font = '800 15px "Playfair Display", serif';
+      ctx.fillText('2026', sealX, sealY + 20);
+      ctx.font = '800 10px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#FDE68A';
+      ctx.fillText('RESMİ GÖNÜLLÜ', sealX, sealY + 36);
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+      ctx.font = 'italic 19px "Playfair Display", Georgia, serif';
+      ctx.fillText('"Hayati tehlikesi olan bir çocuğun dileğini', 120, 920);
+      ctx.fillText('gerçeğe dönüştürmek, ona umut ve yaşama', 120, 950);
+      ctx.fillText('sevinci aşılamak için bu yola çıktım."', 120, 980);
+
+      ctx.fillStyle = '#BAE6FD';
+      ctx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('✦ Belge Kodu: WISH-2026-TR  •  Resmi Mühürlü Kayıt', 120, 1025);
+
+      ctx.strokeStyle = 'rgba(221, 163, 35, 0.4)';
+      ctx.beginPath();
+      ctx.moveTo(100, 1140);
+      ctx.lineTo(980, 1140);
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#FEF3C7';
+      ctx.font = 'bold 19px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('BİR DİLEK BİR MUCİZE! ✦ makeawishturkiye.org ✦ @makeawishturkiye', 540, 1185);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+      ctx.font = '14px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('Make-A-Wish Türkiye — Hayati Tehlikesi Olan Çocuklar İçin Dilek Gerçekleştirme Derneği', 540, 1215);
+
+      return canvas;
+    }
+
+    function downloadPassportCard() {
+      if (!isApprovedSimulated) {
+        showToast('🔒 Pasaport indirme özelliği sadece yönetici onaylı gönüllülere açıktır!');
+        return;
+      }
+      const canvas = generatePassportCanvas();
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Make-A-Wish-Gonullu-Yildiz-Pasaportu.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("📱 Gönüllü Yıldız Pasaportun başarıyla indirildi!");
+      }, 'image/png');
+    }
+
+    async function shareOnInstagramStory() {
+      if (!isApprovedSimulated) return;
+      const caption = "Ben Make-A-Wish Türkiye resmi Dilek Gönüllüsü oldum! 🌟 Hayati tehlikesi olan çocukların dünyasına dokunmak ve bir hayali gerçeğe dönüştürmek için adımı attım. 🎈✨ @makeawishturkiye #MakeAWish #GönüllüYıldızı #BirDilekBirMucize";
+      try { await navigator.clipboard.writeText(caption); } catch (err) {}
+      downloadPassportCard();
+      showToast("📸 Paylaşım metni panoya kopyalandı & Pasaport görselin indirildi! ✨");
+    }
+
+    function showToast(msg) {
+      let toast = document.getElementById('magicToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'magicToast';
+        toast.className = 'magic-toast-bubble';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => toast.classList.remove('show'), 4000);
+    }
   </script>
 </body>
 </html>
